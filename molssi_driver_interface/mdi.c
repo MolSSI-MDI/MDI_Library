@@ -271,6 +271,16 @@ int MDI_Recv(char* data_ptr, int* len_ptr, int* type_ptr, int* sockfd_ptr)
 }
 
 
+int MDI_Recv_Command(char* data_ptr, int* sockfd_ptr)
+{
+   int len = MDI_COMMAND_LENGTH;
+   int* len_ptr = &len;
+   int type = MDI_CHAR;
+   int* type_ptr = &type;
+   return MDI_Recv( data_ptr, len_ptr, type_ptr, sockfd_ptr );
+}
+
+
 int launch_server(const char* line)
 {
   // create a fork
