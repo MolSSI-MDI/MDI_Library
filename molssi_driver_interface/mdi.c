@@ -34,6 +34,29 @@ const int MDI_INT    = 0;
 const int MDI_DOUBLE = 1;
 const int MDI_CHAR   = 2;
 
+/*----------------------*/
+/* MDI unit conversions */
+/*----------------------*/
+
+// length
+const int MDI_METER_TO_BOHR = 1.88972612546e10;
+const int MDI_ANGSTROM_TO_BOHR = 1.88972612546;
+
+// time
+const int MDI_SECOND_TO_AUT = 4.1341374575751e16;
+const int MDI_PICOSECOND_TO_AUT = 4.1341374575751e4;
+
+// force
+const int MDI_NEWTON_TO_AUF = 1.213780478e7;
+
+// energy
+const int MDI_JOULE_TO_HARTREE = 2.29371265835792e17;
+const int MDI_KJ_TO_HARTREE = 2.29371265835792e20;
+const int MDI_KJPERMOL_TO_HARTREE = 3.80879947807451e-4;
+const int MDI_KCALPERMOL_TO_HARTREE = 1.5941730215480900E-3;
+const int MDI_EV_TO_HARTREE = 3.67493266806491e-2;
+const int MDI_RYDBERG_TO_HARTREE = 0.5;
+
 
 /* Initialize MDI */
 int MDI_Init(int* sockfd_ptr)
