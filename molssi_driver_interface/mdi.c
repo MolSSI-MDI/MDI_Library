@@ -25,6 +25,7 @@ Contents:
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include "mdi.h"
 
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
