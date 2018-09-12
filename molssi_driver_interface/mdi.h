@@ -32,24 +32,24 @@ extern const int MDI_CHAR;
 /*----------------------*/
 
 // length
-extern const int MDI_METER_TO_BOHR;
-extern const int MDI_ANGSTROM_TO_BOHR;
+extern const double MDI_METER_TO_BOHR;
+extern const double MDI_ANGSTROM_TO_BOHR;
 
 // time
-extern const int MDI_SECOND_TO_AUT;
-extern const int MDI_PICOSECOND_TO_AUT;
+extern const double MDI_SECOND_TO_AUT;
+extern const double MDI_PICOSECOND_TO_AUT;
 
 // force
-extern const int MDI_NEWTON_TO_AUF;
+extern const double MDI_NEWTON_TO_AUF;
 
 // energy
-extern const int MDI_JOULE_TO_HARTREE;
-extern const int MDI_KJ_TO_HARTREE;
-extern const int MDI_KJPERMOL_TO_HARTREE;
-extern const int MDI_KCALPERMOL_TO_HARTREE;
-extern const int MDI_EV_TO_HARTREE;
-extern const int MDI_RYDBERG_TO_HARTREE;
-extern const int MDI_KELVIN_TO_HARTREE;
+extern const double MDI_JOULE_TO_HARTREE;
+extern const double MDI_KJ_TO_HARTREE;
+extern const double MDI_KJPERMOL_TO_HARTREE;
+extern const double MDI_KCALPERMOL_TO_HARTREE;
+extern const double MDI_EV_TO_HARTREE;
+extern const double MDI_RYDBERG_TO_HARTREE;
+extern const double MDI_KELVIN_TO_HARTREE;
 
 int MDI_Init(int*);
 int MDI_Open(int*, int*, int*, const char*);
