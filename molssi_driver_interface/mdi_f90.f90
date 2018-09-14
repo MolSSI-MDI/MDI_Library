@@ -1,6 +1,6 @@
 ! Fortran 90 wrapper for the MolSSI Driver Interface
 
-   MODULE F90MESSAGES
+   MODULE MDI
    USE ISO_C_BINDING
    
    IMPLICIT NONE
