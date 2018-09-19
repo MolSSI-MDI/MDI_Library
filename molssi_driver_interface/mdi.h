@@ -51,13 +51,13 @@ extern const double MDI_EV_TO_HARTREE;
 extern const double MDI_RYDBERG_TO_HARTREE;
 extern const double MDI_KELVIN_TO_HARTREE;
 
-int MDI_Init(int*);
-int MDI_Open(int*, int*, int*, const char*);
-int MDI_Accept_Connection(int*, int*);
-int MDI_Send(const char*, int*, int*, int*);
-int MDI_Recv(char*, int*, int*, int*);
-int MDI_Send_Command(const char*, int*);
-int MDI_Recv_Command(char*, int*);
+int MDI_Init();
+int MDI_Open(int, int, const char*);
+int MDI_Accept_Connection(int);
+int MDI_Send(const char*, int, int, int);
+int MDI_Recv(char*, int, int, int);
+int MDI_Send_Command(const char*, int);
+int MDI_Recv_Command(char*, int);
 
 int launch_server(const char*);
 

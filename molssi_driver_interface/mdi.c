@@ -61,7 +61,7 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
 /* Initialize MDI */
-int MDI_Init(int* sockfd_ptr)
+int MDI_Init()
 {
   int ret;
   int sockfd;
@@ -78,6 +78,7 @@ int MDI_Init(int* sockfd_ptr)
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
     error("Could not create socket");
+    return -1;
   }
 
   // create the socket address
@@ -90,41 +91,39 @@ int MDI_Init(int* sockfd_ptr)
   ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse_value, sizeof(int));
   if (ret < 0) {
     error("Could not reuse socket");
+    return -1;
   }
 
   // bind the socket
   ret = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
   if (ret < 0) {
     error("Could not bind socket");
+    return -1;
   }
 
   // start listening (the second argument is the backlog size)
   ret = listen(sockfd, 20);
   if (ret < 0) {
     error("Could not listen");
+    return -1;
   }
 
-  *sockfd_ptr = sockfd;
-
-  return ret;
+  return sockfd;
 }
 
 
-int MDI_Open(int* sockfd_ptr, int* inet_ptr, int* port_ptr, const char* hostname_ptr)
+int MDI_Open(int inet, int port, const char* hostname_ptr)
 {
-   int sockfd, ai_err;
-   int ret;
+   int ai_err;
+   int ret, sockfd;
 
-   if (*inet_ptr>0) { // create a TCP socket
+   if (inet>0) { // create a TCP socket
      
      struct sockaddr_in driver_address;
      int i;
-     int port;
      struct hostent* host_ptr;
      FILE* hostfile;
      char buff[255];
-
-     port = 8021;
 
      hostfile = fopen("../hostname","r");
      fgets(buff, 255, (FILE*)hostfile);
@@ -144,9 +143,11 @@ int MDI_Open(int* sockfd_ptr, int* inet_ptr, int* port_ptr, const char* hostname
      host_ptr = gethostbyname(serv_host);
      if (host_ptr == NULL) {
        error("Error in gethostbyname");
+       return -1;
      }
      if (host_ptr->h_addrtype != AF_INET) {
        error("Unkown address type");
+       return -1;
      }
 
      bzero((char *) &driver_address, sizeof(driver_address));
@@ -159,6 +160,7 @@ int MDI_Open(int* sockfd_ptr, int* inet_ptr, int* port_ptr, const char* hostname
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0) {
        error("Could not create socket");
+       return -1;
      }
      printf("Here is the socket: %i\n",sockfd);
 
@@ -166,6 +168,7 @@ int MDI_Open(int* sockfd_ptr, int* inet_ptr, int* port_ptr, const char* hostname
      ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr_un));
      if (ret < 0) {
        error("Could not connect to the driver");
+       return -1;
      }
      
    }
@@ -185,18 +188,16 @@ int MDI_Open(int* sockfd_ptr, int* inet_ptr, int* port_ptr, const char* hostname
      // connect through the socket
      if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) { 
        perror("Error opening UNIX socket: path unavailable, or already existing"); exit(-1);
+       return -1;
      }
    }
 
-   *sockfd_ptr=sockfd;
-
-   return ret;
+   return sockfd;
 }
 
 
-int MDI_Accept_Connection(int* sockfd_ptr, int* connection_ptr)
+int MDI_Accept_Connection(int sockfd)
 {
-  int sockfd=*sockfd_ptr;
   int connection;
 
   //accept a connection
@@ -205,17 +206,14 @@ int MDI_Accept_Connection(int* sockfd_ptr, int* connection_ptr)
     error("Could not accept connection");
   }
 
-  *connection_ptr = connection;
-
-  return 0;
+  return connection;
 }
 
 
-int MDI_Send_Command(const char* data_ptr, int* sockfd_ptr)
+int MDI_Send_Command(const char* data_ptr, int sockfd)
 {
    int i;
    int n;
-   int sockfd=*sockfd_ptr;
    int len=MDI_COMMAND_LENGTH;
    char buffer[MDI_COMMAND_LENGTH];
    int str_end;
@@ -240,12 +238,9 @@ int MDI_Send_Command(const char* data_ptr, int* sockfd_ptr)
 }
 
 
-int MDI_Send(const char* data_ptr, int* len_ptr, int* type_ptr, int* sockfd_ptr)
+int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 {
    int n;
-   int len=*len_ptr;
-   int type=*type_ptr;
-   int sockfd=*sockfd_ptr;
 
    // determine the byte size of the data type being sent
    int datasize;
@@ -266,12 +261,9 @@ int MDI_Send(const char* data_ptr, int* len_ptr, int* type_ptr, int* sockfd_ptr)
 }
 
 
-int MDI_Recv(char* data_ptr, int* len_ptr, int* type_ptr, int* sockfd_ptr)
+int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 {
    int n, nr;
-   int len=*len_ptr;
-   int type=*type_ptr;
-   int sockfd=*sockfd_ptr;
 
    // determine the byte size of the data type being received
    int datasize;
@@ -296,13 +288,11 @@ int MDI_Recv(char* data_ptr, int* len_ptr, int* type_ptr, int* sockfd_ptr)
 }
 
 
-int MDI_Recv_Command(char* data_ptr, int* sockfd_ptr)
+int MDI_Recv_Command(char* data_ptr, int sockfd)
 {
    int len = MDI_COMMAND_LENGTH;
-   int* len_ptr = &len;
    int type = MDI_CHAR;
-   int* type_ptr = &type;
-   return MDI_Recv( data_ptr, len_ptr, type_ptr, sockfd_ptr );
+   return MDI_Recv( data_ptr, len, type, sockfd);
 }
 
 
