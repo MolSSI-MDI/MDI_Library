@@ -25,6 +25,7 @@ Contents:
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <errno.h>
 #include "mdi.h"
 
 // length of an MDI command in characters
@@ -74,7 +75,7 @@ int MDI_Init(int port)
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
-    error("Could not create socket");
+    perror("Could not create socket");
     return -1;
   }
 
@@ -87,21 +88,21 @@ int MDI_Init(int port)
   // enable reuse of the socket
   ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse_value, sizeof(int));
   if (ret < 0) {
-    error("Could not reuse socket");
+    perror("Could not reuse socket");
     return -1;
   }
 
   // bind the socket
   ret = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
   if (ret < 0) {
-    error("Could not bind socket");
+    perror("Could not bind socket");
     return -1;
   }
 
   // start listening (the second argument is the backlog size)
   ret = listen(sockfd, 20);
   if (ret < 0) {
-    error("Could not listen");
+    perror("Could not listen");
     return -1;
   }
 
@@ -139,11 +140,11 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      // get the address of the host
      host_ptr = gethostbyname(serv_host);
      if (host_ptr == NULL) {
-       error("Error in gethostbyname");
+       perror("Error in gethostbyname");
        return -1;
      }
      if (host_ptr->h_addrtype != AF_INET) {
-       error("Unkown address type");
+       perror("Unkown address type");
        return -1;
      }
 
@@ -156,16 +157,26 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      // create the socket
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0) {
-       error("Could not create socket");
+       perror("Could not create socket");
        return -1;
      }
      printf("Here is the socket: %i\n",sockfd);
 
      // connect to the driver
-     ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr_un));
-     if (ret < 0) {
-       error("Could not connect to the driver");
-       return -1;
+     // if the connection is refused, try again
+     //   this allows the production code to start before the driver
+     int try_connect = 1;
+     while (try_connect == 1) {
+       ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr_un));
+       if (ret < 0 ) {
+         if ( errno != ECONNREFUSED ) { // only error out for errors other than "connection refused"
+           perror("Could not connect to the driver");
+           return -1;
+         }
+       }
+       else {
+         try_connect = 0;
+       }
      }
      
    }
@@ -200,7 +211,7 @@ int MDI_Accept_Connection(int sockfd)
   //accept a connection
   connection = accept(sockfd, NULL, NULL);
   if (connection < 0) {
-    error("Could not accept connection");
+    perror("Could not accept connection");
   }
 
   return connection;
