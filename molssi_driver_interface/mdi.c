@@ -64,15 +64,12 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
 /* Initialize MDI */
-int MDI_Init()
+int MDI_Init(int port)
 {
   int ret;
   int sockfd;
   struct sockaddr_in serv_addr;
-  int port;
   int reuse_value = 1;
-
-  port = 8021;
 
   // write the hostname to a file
   system("hostname > ../hostname");
