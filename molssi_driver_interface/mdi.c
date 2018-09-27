@@ -30,6 +30,9 @@ Contents:
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
 
+// length of an MDI name in characters
+const int MDI_NAME_LENGTH = 12;
+
 // MDI data types
 const int MDI_INT    = 0;
 const int MDI_DOUBLE = 1;

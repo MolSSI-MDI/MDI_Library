@@ -22,6 +22,9 @@ Contents:
 // length of an MDI command in characters
 extern const int MDI_COMMAND_LENGTH;
 
+// length of an MDI name in characters
+extern const int MDI_NAME_LENGTH;
+
 // MDI data types
 extern const int MDI_INT;
 extern const int MDI_DOUBLE;
