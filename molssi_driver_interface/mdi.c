@@ -71,9 +71,6 @@ int MDI_Init(int port)
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
 
-  // write the hostname to a file
-  system("hostname > ../hostname");
-
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
