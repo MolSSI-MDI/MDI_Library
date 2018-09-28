@@ -9,10 +9,10 @@ Contents:
    MDI_Open: Opens a socket and requests a connection with a specified host
    MDI_Accept_Connection: Accepts an incoming connection request
    MDI_Send: Sends data through the socket
-   MDI_Recv: Receives data from the socket
-   MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH over the
+   MDI_Recv: Receives data through the socket
+   MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH through the
       socket
-   MDI_Recv_Command: Receives a string of length MDI_COMMAND_LENGTH over the
+   MDI_Recv_Command: Receives a string of length MDI_COMMAND_LENGTH through the
       socket
 */
 
@@ -64,7 +64,11 @@ const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
-/* Initialize MDI */
+/*--------------------------*/
+/* MDI function definitions */
+/*--------------------------*/
+
+/* Initialize a socket and set it to listen */
 int MDI_Init(int port)
 {
   int ret;
@@ -110,35 +114,18 @@ int MDI_Init(int port)
 }
 
 
+/* Open a socket and request a connection with a specified host */
 int MDI_Open(int inet, int port, const char* hostname_ptr)
 {
-   int ai_err;
    int ret, sockfd;
 
    if (inet>0) { // create a TCP socket
-     
+
      struct sockaddr_in driver_address;
-     int i;
      struct hostent* host_ptr;
-     FILE* hostfile;
-     char buff[255];
-
-     hostfile = fopen("../hostname","r");
-     fgets(buff, 255, (FILE*)hostfile);
-
-     int hlen = 10;
-     hlen = strlen(buff);
-
-     char serv_host[hlen];
-     for (i=0; i < hlen; i++) {
-       serv_host[i] = buff[i];
-     }
-     serv_host[hlen-1] = '\0';
-
-     printf("Driver hostname: %s\n",serv_host);
 
      // get the address of the host
-     host_ptr = gethostbyname(serv_host);
+     host_ptr = gethostbyname((char*) hostname_ptr);
      if (host_ptr == NULL) {
        perror("Error in gethostbyname");
        return -1;
@@ -178,7 +165,7 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
          try_connect = 0;
        }
      }
-     
+
    }
    else { // create a unix socket
 
@@ -189,7 +176,7 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      serv_addr.sun_family = AF_UNIX;
      strcpy(serv_addr.sun_path, "/tmp/ipi_");
      strcpy(serv_addr.sun_path+9, hostname_ptr);
-  
+
      // create the socket
      sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
 
@@ -204,6 +191,7 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
 }
 
 
+/* Accept an incoming connection request */
 int MDI_Accept_Connection(int sockfd)
 {
   int connection;
@@ -218,6 +206,59 @@ int MDI_Accept_Connection(int sockfd)
 }
 
 
+/* Send data through the socket */
+int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
+{
+   int n;
+
+   // determine the byte size of the data type being sent
+   int datasize;
+   if (type == MDI_INT) {
+     datasize = sizeof(int);
+   }
+   else if (type == MDI_DOUBLE) {
+     datasize = sizeof(double);
+   }
+   else if (type == MDI_CHAR) {
+     datasize = sizeof(char);
+   }
+
+   n = write(sockfd,data_ptr,len*datasize);
+   if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
+
+   return 0;
+}
+
+
+/* Receive data through the socket */
+int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
+{
+   int n, nr;
+
+   // determine the byte size of the data type being received
+   int datasize;
+   if (type == MDI_INT) {
+     datasize = sizeof(int);
+   }
+   else if (type == MDI_DOUBLE) {
+     datasize = sizeof(double);
+   }
+   else if (type == MDI_CHAR) {
+     datasize = sizeof(char);
+   }
+
+   n = nr = read(sockfd,data_ptr,len*datasize);
+
+   while (nr>0 && n<len*datasize )
+   {  nr=read(sockfd,&data_ptr[n],len-n); n+=nr; }
+
+   if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
+
+   return 0;
+}
+
+
+/* Send a string of length MDI_COMMAND_LENGTH through the socket */
 int MDI_Send_Command(const char* data_ptr, int sockfd)
 {
    int i;
@@ -246,75 +287,10 @@ int MDI_Send_Command(const char* data_ptr, int sockfd)
 }
 
 
-int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
-{
-   int n;
-
-   // determine the byte size of the data type being sent
-   int datasize;
-   if (type == MDI_INT) {
-     datasize = sizeof(int);
-   }
-   else if (type == MDI_DOUBLE) {
-     datasize = sizeof(double);
-   }
-   else if (type == MDI_CHAR) {
-     datasize = sizeof(char);
-   }
-
-   n = write(sockfd,data_ptr,len*datasize);
-   if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
-
-   return 0;
-}
-
-
-int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
-{
-   int n, nr;
-
-   // determine the byte size of the data type being received
-   int datasize;
-   if (type == MDI_INT) {
-     datasize = sizeof(int);
-   }
-   else if (type == MDI_DOUBLE) {
-     datasize = sizeof(double);
-   }
-   else if (type == MDI_CHAR) {
-     datasize = sizeof(char);
-   }
-
-   n = nr = read(sockfd,data_ptr,len*datasize);
-
-   while (nr>0 && n<len*datasize )
-   {  nr=read(sockfd,&data_ptr[n],len-n); n+=nr; }
-
-   if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
-
-   return 0;
-}
-
-
+/* Receive a string of length MDI_COMMAND_LENGTH through the socket */
 int MDI_Recv_Command(char* data_ptr, int sockfd)
 {
    int len = MDI_COMMAND_LENGTH;
    int type = MDI_CHAR;
    return MDI_Recv( data_ptr, len, type, sockfd);
 }
-
-
-int launch_server(const char* line)
-{
-  // create a fork
-  int pid = fork();
-
-  if (pid == 0) {
-    // child process
-    system(line);
-    exit(0);
-  }
-
-  return 0;
-}
-

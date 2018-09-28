@@ -62,6 +62,4 @@ int MDI_Recv(char*, int, int, int);
 int MDI_Send_Command(const char*, int);
 int MDI_Recv_Command(char*, int);
 
-int launch_server(const char*);
-
 #endif
