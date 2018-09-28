@@ -147,7 +147,6 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
        perror("Could not create socket");
        return -1;
      }
-     printf("Here is the socket: %i\n",sockfd);
 
      // connect to the driver
      // if the connection is refused, try again
