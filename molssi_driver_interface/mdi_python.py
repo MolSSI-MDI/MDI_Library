@@ -65,8 +65,8 @@ def MDI_Init(arg):
 # MDI_Open
 mdi.MDI_Open.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Open.restype = ctypes.c_int
-def MDI_Open(arg):
-    return mdi.MDI_Open(arg)
+def MDI_Open(arg1, arg2, arg3):
+    return mdi.MDI_Open(arg1, arg2, arg3)
 
 # MDI_Accept_Connection
 mdi.MDI_Accept_Connection.argtypes = [ctypes.c_int]
@@ -77,23 +77,59 @@ def MDI_Accept_Connection(arg):
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
 mdi.MDI_Send.restype = ctypes.c_int
-def MDI_Send(arg):
-    return mdi.MDI_Send(arg)
+def MDI_Send(arg1, arg2, arg3, arg4):
+
+    if (arg3 == MDI_INT):
+        arg_type = ctypes.c_int
+    elif (arg3 == MDI_DOUBLE):
+        arg_type = ctypes.c_double
+    elif (arg3 == MDI_CHAR):
+        arg_type = ctypes.c_char
+    arg_size = ctypes.sizeof(arg_type)
+
+    arg1_ = (ctypes.c_char*(arg2*arg_size))()
+
+    arg_value = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
+    if arg2 == 1:
+        arg_value = arg1
+    else:
+        for i in range(arg2):
+            arg_value[i] = arg1[i]
+
+    return mdi.MDI_Send(arg1_, arg2, arg3, arg4)
 
 # MDI_Recv
 mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
 mdi.MDI_Recv.restype = ctypes.c_int
-def MDI_Recv(arg):
-    return mdi.MDI_Recv(arg)
+def MDI_Recv(arg2, arg3, arg4):
+
+    if (arg3 == MDI_INT):
+        arg_type = ctypes.c_int
+    elif (arg3 == MDI_DOUBLE):
+        arg_type = ctypes.c_double
+    elif (arg3 == MDI_CHAR):
+        arg_type = ctypes.c_char
+    arg_size = ctypes.sizeof(arg_type)
+
+    arg1 = (ctypes.c_char*(arg2*arg_size))()
+    ret = mdi.MDI_Recv(arg1, arg2, arg3, arg4)
+
+    result = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
+    if arg2 == 1:
+        presult = result[0]
+    else:
+        presult = [ result[i] for i in range(arg2) ]
+    return presult
 
 # MDI_Send_Command
 mdi.MDI_Send_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Send_Command.restype = ctypes.c_int
-def MDI_Send_Command(arg):
-    return mdi.MDI_Send_Command(arg)
+def MDI_Send_Command(arg1, arg2):
+    return mdi.MDI_Send_Command(arg1, arg2)
 
 # MDI_Recv_Command
 mdi.MDI_Recv_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Recv_Command.restype = ctypes.c_int
-def MDI_Recv_Command(arg):
-    return mdi.MDI_Recv_Command(arg)
+def MDI_Recv_Command(arg2):
+    ret = mdi.MDI_Recv_Command(arg1, arg2)
+    return arg1
