@@ -155,10 +155,28 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      while (try_connect == 1) {
        ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
        if (ret < 0 ) {
-         if ( errno != ECONNREFUSED ) { // only error out for errors other than "connection refused"
+         if ( errno == ECONNREFUSED ) {
+
+           // close the socket, so that a new one can be created
+           ret = close(sockfd);
+           if (ret < 0) {
+	     perror("Could not close socket");
+             return -1;
+           }
+
+	   // create the socket
+	   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	   if (sockfd < 0) {
+	     perror("Could not create socket");
+	     return -1;
+	   }
+
+	 }
+         else { // only error out for errors other than "connection refused"
            perror("Could not connect to the driver");
            return -1;
          }
+
        }
        else {
          try_connect = 0;
