@@ -5,15 +5,12 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 import ctypes
 
-# find and load the library
-
-# OSX or linux
-#from ctypes.util import find_library
-#libm = ctypes.cdll.LoadLibrary(find_library('m'))
-
-# Windows
-# from ctypes import windll
-# libm = cdll.msvcrt
+try:
+    import numpy as np
+    import numpy.ctypeslib as npct
+    use_numpy = True
+except ImportError:
+    use_numpy = False
 
 # get the name of the MDI library
 mdi_name_file = open(dir_path + "/mdi_name","r")
@@ -21,17 +18,6 @@ mdi_name = mdi_name_file.read()
 
 # load the MDI library
 mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
-
-
-
-# set the argument type
-#libm.cos.argtypes = [ctypes.c_double]
-# set the return type
-#libm.cos.restype = ctypes.c_double
-
-#def cos_func(arg):
-#    ''' Wrapper for cos from math.h '''
-#    return libm.cos(arg)
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH")
@@ -125,7 +111,8 @@ def MDI_Recv(arg2, arg3, arg4):
 mdi.MDI_Send_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Send_Command.restype = ctypes.c_int
 def MDI_Send_Command(arg1, arg2):
-    return mdi.MDI_Send_Command(arg1, arg2)
+    command = arg1.encode('utf-8')
+    return mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
 
 # MDI_Recv_Command
 mdi.MDI_Recv_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
