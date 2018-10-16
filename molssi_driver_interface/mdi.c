@@ -153,7 +153,7 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      //   this allows the production code to start before the driver
      int try_connect = 1;
      while (try_connect == 1) {
-       ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr_un));
+       ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
        if (ret < 0 ) {
          if ( errno != ECONNREFUSED ) { // only error out for errors other than "connection refused"
            perror("Could not connect to the driver");
