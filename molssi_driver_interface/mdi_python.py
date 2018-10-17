@@ -73,14 +73,11 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         arg_type = ctypes.c_char
     arg_size = ctypes.sizeof(arg_type)
 
-    arg1_ = (ctypes.c_char*(arg2*arg_size))()
-
-    arg_value = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
     if arg2 == 1:
-        arg_value = arg1
+        arg1_ = (ctypes.c_char*(arg2*arg_size))(arg1)
     else:
-        for i in range(arg2):
-            arg_value[i] = arg1[i]
+        arg1_temp = (arg_type*arg2)(*arg1)
+        arg1_ = ctypes.cast(arg1_temp, ctypes.POINTER(ctypes.c_char))
 
     return mdi.MDI_Send(arg1_, arg2, ctypes.c_int(arg3), arg4)
 
