@@ -16,6 +16,7 @@ Contents:
       socket
 */
 
+#include <signal.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -64,6 +65,18 @@ const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
+
+/*----------------------------*/
+/* Signal handler definitions */
+/*----------------------------*/
+
+int driver_sockfd;
+void sigint_handler(int dummy) {
+  close(driver_sockfd);
+}
+
+
+
 /*--------------------------*/
 /* MDI function definitions */
 /*--------------------------*/
@@ -82,6 +95,10 @@ int MDI_Init(int port)
     perror("Could not create socket");
     return -1;
   }
+
+  // ensure that the socket is closed on sigint
+  driver_sockfd = sockfd;
+  signal(SIGINT, sigint_handler);
 
   // create the socket address
   bzero((char *) &serv_addr, sizeof(serv_addr));
