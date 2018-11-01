@@ -5,7 +5,8 @@
 -------------------------------------------------------------------------
 
 Contents:
-   MDI_Init: Initializes a socket and sets it to listen
+   MDI_Init_MPI: Initializes MPI and creates the communicators
+   MDI_Init: Initializes a TCP socket and sets it to listen
    MDI_Open: Opens a socket and requests a connection with a specified host
    MDI_Accept_Connection: Accepts an incoming connection request
    MDI_Send: Sends data through the socket
@@ -27,18 +28,24 @@ Contents:
 #include <sys/un.h>
 #include <unistd.h>
 #include <errno.h>
+#include <mpi.h>
 #include "mdi.h"
 
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
 
 // length of an MDI name in characters
-const int MDI_NAME_LENGTH = 12;
+#define MDI_NAME_LENGTH_INTERNAL 12
+const int MDI_NAME_LENGTH = MDI_NAME_LENGTH_INTERNAL;
 
 // MDI data types
 const int MDI_INT    = 0;
 const int MDI_DOUBLE = 1;
 const int MDI_CHAR   = 2;
+
+// MDI communication types
+const int MDI_TCP    = 1;
+const int MDI_MPI    = 2;
 
 /*----------------------*/
 /* MDI unit conversions */
@@ -64,6 +71,82 @@ const double MDI_EV_TO_HARTREE = 3.67493266806491e-2;
 const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
+// has any MDI_Init_X function been called?
+int any_initialization = 0;
+
+// the TCP socket, initialized by MDI_Init
+int tcp_socket = -1;
+
+// the MPI rank, initialized by MDI_Init_MPI
+int world_rank = -1;
+
+typedef struct communicator_struct {
+  int type; // the type of communicator
+  int handle; // for TCP, the socket descriptor
+              // for MPI, the MPI communicator
+  char name[MDI_NAME_LENGTH_INTERNAL]; // the name of the connected program
+} communicator;
+
+typedef struct dynamic_array_struct {
+  //void* data;
+  unsigned char* data;
+  size_t stride; //size of each element
+  size_t capacity; //total number of elements that can be contained
+  size_t size; //number of elements actually stored
+} vector;
+
+//this is the number of communicator handles that have been returned by MDI_Accept_Connection()
+int returned_comms = 0;
+
+
+int vector_init(vector* v, size_t stride) {
+  //initialize the vector with the given stride
+  v->data = malloc(0);
+  if (!v->data) {
+    perror("Could not initialize vector");
+    exit(-1);
+  }
+
+  v->size = 0;
+  v->capacity = 0;
+  v->stride = stride;
+
+  return 0;
+}
+
+int vector_push_back(vector* v, void* element) {
+  //grow the vector
+  if (v->size >= v->capacity) {
+    int new_capacity;
+    if ( v->capacity > 0 ) {
+      new_capacity = 2 * v->capacity;
+    }
+    else {
+      new_capacity = 1;
+    }
+    void* new_data = malloc( v->stride * new_capacity );
+    memcpy(new_data, v->data, v->size * v->stride);
+    free(v->data);
+    v->data = new_data;
+    v->capacity = new_capacity;
+  }
+
+  //add the new data to the vector
+  memcpy( v->data + (v->size * v->stride), (unsigned char*)element, v->stride );
+  v->size++;
+
+  return 0;
+}
+
+void* vector_get(vector* v, int index) {
+  if (index < 0 || index >= v->size) {
+    perror("Vector accessed out-of-bounds");
+    exit(-1);
+  }
+  return ( void* )( v->data + (index * v->stride) );
+}
+
+vector comms;
 
 
 /*----------------------------*/
@@ -76,10 +159,117 @@ void sigint_handler(int dummy) {
 }
 
 
+int gather_names(const char* hostname_ptr){
+  int i, icomm;
+
+   // get the number of processes
+   int world_size;
+   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+   // get the rank of this process
+   world_rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+   //create the name of this process
+   char buffer[MDI_NAME_LENGTH];
+   int str_end;
+   strcpy(buffer, hostname_ptr);
+   /*
+   strcpy(buffer, hostname_ptr);
+   str_end = 0;
+   for (i=0; i<MDI_NAME_LENGTH; i++) {
+     if( buffer[i] == '\0' ) {
+       str_end = 1;
+     }
+     if( str_end == 1 ) {
+       buffer[i] = ' ';
+     }
+   }
+   */
+
+   char *names = NULL;
+   if (world_rank == 0) {
+     names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+   }
+
+   MPI_Gather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
+              MPI_CHAR, 0, MPI_COMM_WORLD);
+
+   if (world_rank == 0) {
+     for (i=0; i<world_size; i++) {
+       char *ptr1 = &names[i*MDI_NAME_LENGTH];
+     }
+   }
+
+   if (world_rank == 0) {
+
+     //create communicators
+     for (i=0; i<world_size; i++) {
+       char name[MDI_NAME_LENGTH];
+       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+
+       int found = 0;
+       for (icomm=0; icomm<comms.size; icomm++) {
+	 communicator* comm = vector_get(&comms,icomm);
+	 if ( strcmp(name, comm->name) == 0 ) {
+	   found = 1;
+	 }
+       }
+
+       if ( found == 0 && strcmp(name,"") != 0 ) {
+	 communicator new_comm;
+	 new_comm.type = MDI_MPI;
+	 new_comm.handle = MPI_COMM_WORLD;
+	 memcpy( new_comm.name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+
+	 vector_push_back( &comms, &new_comm );
+       }
+     }
+
+     //print the communicators
+     for (i=0; i<comms.size; i++) {
+       communicator* pcomm = vector_get(&comms,i);
+     }
+
+   }
+
+   // if this is a process from one of the production codes, create a communicator to the driver
+   if ( strcmp(buffer,"") != 0 ) {
+     communicator new_comm;
+     new_comm.type = MDI_MPI;
+     new_comm.handle = MPI_COMM_WORLD;
+     vector_push_back( &comms, &new_comm );
+   }
+
+
+   MPI_Barrier(MPI_COMM_WORLD);
+
+   return 0;
+}
+
 
 /*--------------------------*/
 /* MDI function definitions */
 /*--------------------------*/
+
+int MDI_Init_MPI()
+{
+  int ret;
+  int sockfd;
+  struct sockaddr_in serv_addr;
+  int reuse_value = 1;
+
+  if ( any_initialization == 0 ) {
+    //create the vector for the communicators
+    vector_init( &comms, sizeof(communicator) );
+    any_initialization = 1;
+  }
+
+  gather_names("");
+
+  return 0;
+}
+
 
 /* Initialize a socket and set it to listen */
 int MDI_Init(int port)
@@ -88,6 +278,12 @@ int MDI_Init(int port)
   int sockfd;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
+
+  if ( any_initialization == 0 ) {
+    //create the vector for the communicators
+    vector_init( &comms, sizeof(communicator) );
+    any_initialization = 1;
+  }
 
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -127,16 +323,26 @@ int MDI_Init(int port)
     return -1;
   }
 
-  return sockfd;
+  //return sockfd;
+  tcp_socket = sockfd;
+
+  return 0;
 }
 
 
 /* Open a socket and request a connection with a specified host */
 int MDI_Open(int inet, int port, const char* hostname_ptr)
 {
+   int i;
    int ret, sockfd;
 
-   if (inet>0) { // create a TCP socket
+   if ( any_initialization == 0 ) {
+     //create the vector for the communicators
+     vector_init( &comms, sizeof(communicator) );
+     any_initialization = 1;
+   }
+
+   if (inet==MDI_TCP) { // create a TCP socket
 
      struct sockaddr_in driver_address;
      struct hostent* host_ptr;
@@ -200,43 +406,65 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
        }
      }
 
+     communicator new_comm;
+     new_comm.type = MDI_TCP;
+     new_comm.handle = sockfd;
+     vector_push_back( &comms, &new_comm );
+
    }
-   else { // create a unix socket
+   else if (inet==MDI_MPI) { // create an MPI communicator
 
-     struct sockaddr_un serv_addr;
+     gather_names(hostname_ptr);
 
-     // fills up details of the socket addres
-     memset(&serv_addr, 0, sizeof(serv_addr));
-     serv_addr.sun_family = AF_UNIX;
-     strcpy(serv_addr.sun_path, "/tmp/ipi_");
-     strcpy(serv_addr.sun_path+9, hostname_ptr);
-
-     // create the socket
-     sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-
-     // connect through the socket
-     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) { 
-       perror("Error opening UNIX socket: path unavailable, or already existing"); exit(-1);
-       return -1;
-     }
+   }
+   else {
+     perror("Connection type not recognized"); exit(-1);
+     return -1;
    }
 
-   return sockfd;
+   if ( returned_comms < comms.size ) {
+     returned_comms++;
+     return returned_comms;
+   }
+
+   return -1;
 }
 
 
 /* Accept an incoming connection request */
-int MDI_Accept_Connection(int sockfd)
+int MDI_Accept_Connection()
 {
   int connection;
 
-  //accept a connection
-  connection = accept(sockfd, NULL, NULL);
-  if (connection < 0) {
-    perror("Could not accept connection");
+  // if MDI hasn't returned some connections, do that now
+  if ( returned_comms < comms.size ) {
+    returned_comms++;
+    return returned_comms;
   }
 
-  return connection;
+  // check for any production codes connecting via TCP
+  if ( tcp_socket > 0 ) {
+    //accept a connection via TCP
+    connection = accept(tcp_socket, NULL, NULL);
+    if (connection < 0) {
+      perror("Could not accept connection");
+      exit(-1);
+    }
+
+    communicator new_comm;
+    new_comm.type = MDI_TCP;
+    new_comm.handle = connection;
+    vector_push_back( &comms, &new_comm );
+
+    // if MDI hasn't returned some connections, do that now
+    if ( returned_comms < comms.size ) {
+      returned_comms++;
+      return returned_comms;
+    }
+  }
+
+  // unable to accept any connections
+  return 0;
 }
 
 
@@ -256,9 +484,36 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
    else if (type == MDI_CHAR) {
      datasize = sizeof(char);
    }
+   else {
+     perror("MDI data type not recognized in MDI_Send");
+     exit(-1);
+   }
 
-   n = write(sockfd,data_ptr,len*datasize);
-   if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
+   communicator* comm = vector_get(&comms,sockfd-1);
+
+   if ( comm->type == MDI_MPI ) {
+     if (type == MDI_INT) {
+       MPI_Send(data_ptr, len, MPI_INT, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+     }
+     else if (type == MDI_DOUBLE) {
+       MPI_Send(data_ptr, len, MPI_DOUBLE, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+     }
+     else if (type == MDI_CHAR) {
+       MPI_Send(data_ptr, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+     }
+     else {
+       perror("MDI data type not recognized in MDI_Send");
+       exit(-1);
+     }
+   }
+   else if ( comm->type == MDI_TCP ) {
+     n = write(comm->handle,data_ptr,len*datasize);
+     if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
+   }
+   else {
+     perror("MDI communication type not recognized in MDI_Send");
+     exit(-1);
+   }
 
    return 0;
 }
@@ -280,13 +535,40 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
    else if (type == MDI_CHAR) {
      datasize = sizeof(char);
    }
+   else {
+     perror("MDI data type not recognized in MDI_Recv");
+     exit(-1);
+   }
 
-   n = nr = read(sockfd,data_ptr,len*datasize);
+   communicator* comm = vector_get(&comms,sockfd-1);
 
-   while (nr>0 && n<len*datasize )
-   {  nr=read(sockfd,&data_ptr[n],len-n); n+=nr; }
+   if ( comm->type == MDI_MPI ) {
+     if (type == MDI_INT) {
+       MPI_Recv(data_ptr, len, MPI_INT, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+     }
+     else if (type == MDI_DOUBLE) {
+       MPI_Recv(data_ptr, len, MPI_DOUBLE, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+     }
+     else if (type == MDI_CHAR) {
+       MPI_Recv(data_ptr, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+     }
+     else {
+       perror("MDI data type not recognized in MDI_Recv");
+       exit(-1);
+     }
+   }
+   else if ( comm->type == MDI_TCP ) {
+     n = nr = read(comm->handle,data_ptr,len*datasize);
 
-   if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
+     while (nr>0 && n<len*datasize )
+       {  nr=read(comm->handle,&data_ptr[n],len-n); n+=nr; }
+
+     if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
+   }
+   else {
+     perror("MDI communication type not recognized in MDI_Recv");
+     exit(-1);
+   }
 
    return 0;
 }
@@ -314,8 +596,19 @@ int MDI_Send_Command(const char* data_ptr, int sockfd)
      }
    }
 
-   n = write(sockfd,buffer,len);
-   if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
+   communicator* comm = vector_get(&comms,sockfd-1);
+
+   if ( comm->type == MDI_MPI ) {
+     MPI_Send(buffer, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+   }
+   else if ( comm->type == MDI_TCP ) {
+     n = write(comm->handle,buffer,len);
+     if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
+   }
+   else {
+     perror("MDI communication type not recognized in MDI_Send_Command");
+     exit(-1);
+   }
 
    return 0;
 }

@@ -30,6 +30,10 @@ extern const int MDI_INT;
 extern const int MDI_DOUBLE;
 extern const int MDI_CHAR;
 
+// MDI communication types
+extern const int MDI_TCP;
+extern const int MDI_MPI;
+
 /*----------------------*/
 /* MDI unit conversions */
 /*----------------------*/
@@ -56,7 +60,7 @@ extern const double MDI_KELVIN_TO_HARTREE;
 
 int MDI_Init(int);
 int MDI_Open(int, int, const char*);
-int MDI_Accept_Connection(int);
+int MDI_Accept_Connection();
 int MDI_Send(const char*, int, int, int);
 int MDI_Recv(char*, int, int, int);
 int MDI_Send_Command(const char*, int);

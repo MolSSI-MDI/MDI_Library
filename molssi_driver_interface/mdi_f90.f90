@@ -12,6 +12,9 @@
    INTEGER, PROTECTED, BIND(C, name="MDI_DOUBLE")                :: MDI_DOUBLE
    INTEGER, PROTECTED, BIND(C, name="MDI_CHAR")                  :: MDI_CHAR
 
+   INTEGER, PROTECTED, BIND(C, name="MDI_TCP")                   :: MDI_TCP
+   INTEGER, PROTECTED, BIND(C, name="MDI_MPI")                   :: MDI_MPI
+
    !----------------------!
    ! MDI unit conversions !
    !----------------------!
@@ -50,6 +53,11 @@
 
   INTERFACE
 
+     FUNCTION MDI_Init_MPI_(port) bind(c, name="MDI_Init_MPI")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT)                      :: MDI_Init_MPI_
+     END FUNCTION MDI_Init_MPI_
+
      FUNCTION MDI_Init_(port) bind(c, name="MDI_Init")
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT), VALUE               :: port
@@ -63,9 +71,8 @@
        INTEGER(KIND=C_INT)                      :: MDI_Open_
      END FUNCTION MDI_Open_
 
-     FUNCTION MDI_Accept_Connection_(sockfd) bind(c, name="MDI_Accept_Connection")
+     FUNCTION MDI_Accept_Connection_() bind(c, name="MDI_Accept_Connection")
        USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT), VALUE               :: sockfd
        INTEGER(KIND=C_INT)                      :: MDI_Accept_Connection_
      END FUNCTION MDI_Accept_Connection_
 
@@ -103,12 +110,19 @@
 
   CONTAINS
 
-    SUBROUTINE MDI_Init(sockfd, port)
+    SUBROUTINE MDI_Init_MPI(ierr)
+      IMPLICIT NONE
+      INTEGER, INTENT(OUT) :: ierr
+
+      ierr = MDI_Init_MPI_()
+    END SUBROUTINE MDI_Init_MPI
+
+    SUBROUTINE MDI_Init(port, ierr)
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: port
-      INTEGER, INTENT(OUT) :: sockfd
+      INTEGER, INTENT(OUT) :: ierr
 
-      sockfd = MDI_Init_(port)
+      ierr = MDI_Init_(port)
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Open(sockfd, inet, port, hostname_ptr)
@@ -122,9 +136,8 @@
       sockfd = MDI_Open_(inet, port, chost)
     END SUBROUTINE MDI_Open
 
-    SUBROUTINE MDI_Accept_Connection(sockfd, connection)
+    SUBROUTINE MDI_Accept_Connection(connection)
       IMPLICIT NONE
-      INTEGER, INTENT(IN) :: sockfd
       INTEGER, INTENT(OUT) :: connection
 
       connection = MDI_Accept_Connection_(sockfd)

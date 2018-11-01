@@ -25,6 +25,8 @@ MDI_NAME_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_NAME_LENGTH").value
 MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
 MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
 MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
+MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
+MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 
 # Unit conversions
 MDI_METER_TO_BOHR = ctypes.c_double.in_dll(mdi, "MDI_METER_TO_BOHR").value
@@ -42,6 +44,12 @@ MDI_KELVIN_TO_HARTREE = ctypes.c_double.in_dll(mdi, "MDI_KELVIN_TO_HARTREE").val
 
 
 
+# MDI_Init_MPI
+mdi.MDI_Init.argtypes = []
+mdi.MDI_Init.restype = ctypes.c_int
+def MDI_Init_MPI(arg):
+    return mdi.MDI_Init_MPI(arg)
+
 # MDI_Init
 mdi.MDI_Init.argtypes = [ctypes.c_int]
 mdi.MDI_Init.restype = ctypes.c_int
@@ -55,7 +63,7 @@ def MDI_Open(arg1, arg2, arg3):
     return mdi.MDI_Open(arg1, arg2, arg3)
 
 # MDI_Accept_Connection
-mdi.MDI_Accept_Connection.argtypes = [ctypes.c_int]
+mdi.MDI_Accept_Connection.argtypes = []
 mdi.MDI_Accept_Connection.restype = ctypes.c_int
 def MDI_Accept_Connection(arg):
     return mdi.MDI_Accept_Connection(arg)
