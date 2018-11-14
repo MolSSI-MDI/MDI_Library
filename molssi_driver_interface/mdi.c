@@ -596,21 +596,8 @@ int MDI_Send_Command(const char* data_ptr, int sockfd)
      }
    }
 
-   communicator* comm = vector_get(&comms,sockfd-1);
+   return MDI_Send( &buffer[0], len, MDI_CHAR, sockfd );
 
-   if ( comm->type == MDI_MPI ) {
-     MPI_Send(buffer, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD);
-   }
-   else if ( comm->type == MDI_TCP ) {
-     n = write(comm->handle,buffer,len);
-     if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
-   }
-   else {
-     perror("MDI communication type not recognized in MDI_Send_Command");
-     exit(-1);
-   }
-
-   return 0;
 }
 
 
@@ -619,5 +606,5 @@ int MDI_Recv_Command(char* data_ptr, int sockfd)
 {
    int len = MDI_COMMAND_LENGTH;
    int type = MDI_CHAR;
-   return MDI_Recv( data_ptr, len, type, sockfd);
+   return MDI_Recv( data_ptr, len, type, sockfd );
 }
