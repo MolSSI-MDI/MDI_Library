@@ -53,16 +53,13 @@
 
   INTERFACE
 
-     FUNCTION MDI_Init_MPI_(port) bind(c, name="MDI_Init_MPI")
+     FUNCTION MDI_Listen_(method, options, world_comm) bind(c, name="MDI_Listen")
        USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT)                      :: MDI_Init_MPI_
-     END FUNCTION MDI_Init_MPI_
-
-     FUNCTION MDI_Init_(port) bind(c, name="MDI_Init")
-       USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT), VALUE               :: port
-       INTEGER(KIND=C_INT)                      :: MDI_Init_
-     END FUNCTION MDI_Init_
+       CHARACTER(C_CHAR)                        :: method(*)
+       TYPE(C_PTR)                              :: options
+       TYPE(C_PTR), VALUE                       :: world_comm
+       INTEGER(KIND=C_INT)                      :: MDI_Listen_
+     END FUNCTION MDI_Listen_
 
      FUNCTION MDI_Open_(inet, port, hostname_ptr) BIND(C, name="MDI_Open")
        USE ISO_C_BINDING
@@ -110,20 +107,21 @@
 
   CONTAINS
 
-    SUBROUTINE MDI_Init_MPI(ierr)
+    SUBROUTINE MDI_Listen(fmethod, options, fworld_comm, ierr)
       IMPLICIT NONE
+      !CHARACTER(LEN=1024), INTENT(IN) :: fmethod
+      CHARACTER(LEN=*), INTENT(IN) :: fmethod
+      TYPE(C_PTR), INTENT(IN) :: options
+      INTEGER, INTENT(IN) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
+      CHARACTER(LEN=1,KIND=C_CHAR) :: cmethod(1024)
+      INTEGER, TARGET :: comm
 
-      ierr = MDI_Init_MPI_()
-    END SUBROUTINE MDI_Init_MPI
+      CALL fstr2cstr(fmethod, cmethod)
 
-    SUBROUTINE MDI_Init(port, ierr)
-      IMPLICIT NONE
-      INTEGER, INTENT(IN) :: port
-      INTEGER, INTENT(OUT) :: ierr
-
-      ierr = MDI_Init_(port)
-    END SUBROUTINE MDI_Init
+      comm = fworld_comm
+      ierr = MDI_Listen_(cmethod, options, c_loc(comm))
+    END SUBROUTINE MDI_Listen
 
     SUBROUTINE MDI_Open(sockfd, inet, port, hostname_ptr)
       IMPLICIT NONE
@@ -140,7 +138,7 @@
       IMPLICIT NONE
       INTEGER, INTENT(OUT) :: connection
 
-      connection = MDI_Accept_Connection_(sockfd)
+      connection = MDI_Accept_Connection_()
     END SUBROUTINE MDI_Accept_Connection
 
     SUBROUTINE fstr2cstr(fstr, cstr, plen)

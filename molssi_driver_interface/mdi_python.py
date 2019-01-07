@@ -44,17 +44,11 @@ MDI_KELVIN_TO_HARTREE = ctypes.c_double.in_dll(mdi, "MDI_KELVIN_TO_HARTREE").val
 
 
 
-# MDI_Init_MPI
-mdi.MDI_Init.argtypes = []
-mdi.MDI_Init.restype = ctypes.c_int
-def MDI_Init_MPI(arg):
-    return mdi.MDI_Init_MPI(arg)
-
-# MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.c_int]
-mdi.MDI_Init.restype = ctypes.c_int
-def MDI_Init(arg):
-    return mdi.MDI_Init(arg)
+# MDI_Listen
+mdi.MDI_Listen.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Listen.restype = ctypes.c_int
+def MDI_Listen(arg1, arg2, arg3):
+    return mdi.MDI_Listen(arg1, arg2, arg3)
 
 # MDI_Open
 mdi.MDI_Open.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]

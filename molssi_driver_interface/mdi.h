@@ -58,7 +58,7 @@ extern const double MDI_EV_TO_HARTREE;
 extern const double MDI_RYDBERG_TO_HARTREE;
 extern const double MDI_KELVIN_TO_HARTREE;
 
-int MDI_Init(int);
+int MDI_Listen(const char* method, void* options, void* world_comm);
 int MDI_Open(int, int, const char*);
 int MDI_Accept_Connection();
 int MDI_Send(const char*, int, int, int);

@@ -5,8 +5,7 @@
 -------------------------------------------------------------------------
 
 Contents:
-   MDI_Init_MPI: Initializes MPI and creates the communicators
-   MDI_Init: Initializes a TCP socket and sets it to listen
+   MDI_Listen: Listen for an incoming connection of the specified type
    MDI_Open: Opens a socket and requests a connection with a specified host
    MDI_Accept_Connection: Accepts an incoming connection request
    MDI_Send: Sends data through the socket
@@ -74,10 +73,10 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 // has any MDI_Init_X function been called?
 int any_initialization = 0;
 
-// the TCP socket, initialized by MDI_Init
+// the TCP socket, initialized by MDI_Listen when method="TCP"
 int tcp_socket = -1;
 
-// the MPI rank, initialized by MDI_Init_MPI
+// the MPI rank, initialized by MDI_Listen when method="MPI"
 int world_rank = -1;
 
 typedef struct communicator_struct {
@@ -248,42 +247,13 @@ int gather_names(const char* hostname_ptr){
 }
 
 
-/*--------------------------*/
-/* MDI function definitions */
-/*--------------------------*/
 
-int MDI_Init_MPI()
+int MDI_Listen_TCP(int port)
 {
   int ret;
   int sockfd;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
-
-  if ( any_initialization == 0 ) {
-    //create the vector for the communicators
-    vector_init( &comms, sizeof(communicator) );
-    any_initialization = 1;
-  }
-
-  gather_names("");
-
-  return 0;
-}
-
-
-/* Initialize a socket and set it to listen */
-int MDI_Init(int port)
-{
-  int ret;
-  int sockfd;
-  struct sockaddr_in serv_addr;
-  int reuse_value = 1;
-
-  if ( any_initialization == 0 ) {
-    //create the vector for the communicators
-    vector_init( &comms, sizeof(communicator) );
-    any_initialization = 1;
-  }
 
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -330,8 +300,52 @@ int MDI_Init(int port)
 }
 
 
+
+
+
+/*--------------------------*/
+/* MDI function definitions */
+/*--------------------------*/
+
+
+/* Initialize a socket and set it to listen */
+int MDI_Listen(const char* method, void* options, void* world_comm)
+{
+  int ret;
+  int sockfd;
+  int port;
+  struct sockaddr_in serv_addr;
+  int reuse_value = 1;
+  char *strtol_ptr;
+
+  if ( any_initialization == 0 ) {
+    //create the vector for the communicators
+    vector_init( &comms, sizeof(communicator) );
+    any_initialization = 1;
+  }
+
+  printf("IN MDI_LISTEN\n");
+  printf("   %s\n",method);
+
+  if ( strcmp(method, "MPI") == 0 ) {
+    gather_names("");
+  }
+  else if ( strcmp(method, "TCP") == 0 ) {
+    port = strtol( options, &strtol_ptr, 10 );
+    MDI_Listen_TCP(port);
+  }
+  else {
+    perror("Error in MDI_Listen: method not recognized");
+    return -1;
+  }
+
+  return 0;
+}
+
+
 /* Open a socket and request a connection with a specified host */
 int MDI_Open(int inet, int port, const char* hostname_ptr)
+//int MDI_Connect(const char* method, void* options, void* world_comm)
 {
    int i;
    int ret, sockfd;
