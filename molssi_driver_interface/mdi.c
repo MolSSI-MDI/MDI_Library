@@ -173,18 +173,6 @@ int gather_names(const char* hostname_ptr){
    char buffer[MDI_NAME_LENGTH];
    int str_end;
    strcpy(buffer, hostname_ptr);
-   /*
-   strcpy(buffer, hostname_ptr);
-   str_end = 0;
-   for (i=0; i<MDI_NAME_LENGTH; i++) {
-     if( buffer[i] == '\0' ) {
-       str_end = 1;
-     }
-     if( str_end == 1 ) {
-       buffer[i] = ' ';
-     }
-   }
-   */
 
    char *names = NULL;
    if (world_rank == 0) {
@@ -591,27 +579,11 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 /* Send a string of length MDI_COMMAND_LENGTH through the socket */
 int MDI_Send_Command(const char* data_ptr, int sockfd)
 {
-   int i;
-   int n;
    int len=MDI_COMMAND_LENGTH;
    char buffer[MDI_COMMAND_LENGTH];
-   int str_end;
 
    strcpy(buffer, data_ptr);
-
-   //Fortran has trouble with null characters, so convert them to whitespace
-   str_end = 0;
-   for (i=0; i<MDI_COMMAND_LENGTH; i++) {
-     if( buffer[i] == '\0' ) {
-       str_end = 1;
-     }
-     if( str_end == 1 ) {
-       buffer[i] = ' ';
-     }
-   }
-
    return MDI_Send( &buffer[0], len, MDI_CHAR, sockfd );
-
 }
 
 
@@ -620,5 +592,6 @@ int MDI_Recv_Command(char* data_ptr, int sockfd)
 {
    int len = MDI_COMMAND_LENGTH;
    int type = MDI_CHAR;
+
    return MDI_Recv( data_ptr, len, type, sockfd );
 }

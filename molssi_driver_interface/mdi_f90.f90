@@ -109,29 +109,23 @@
 
     SUBROUTINE MDI_Listen(fmethod, options, fworld_comm, ierr)
       IMPLICIT NONE
-      !CHARACTER(LEN=1024), INTENT(IN) :: fmethod
       CHARACTER(LEN=*), INTENT(IN) :: fmethod
       TYPE(C_PTR), INTENT(IN) :: options
       INTEGER, INTENT(IN) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
-      CHARACTER(LEN=1,KIND=C_CHAR) :: cmethod(1024)
       INTEGER, TARGET :: comm
 
-      CALL fstr2cstr(fmethod, cmethod)
-
       comm = fworld_comm
-      ierr = MDI_Listen_(cmethod, options, c_loc(comm))
+      ierr = MDI_Listen_( TRIM(fmethod)//c_null_char, options, c_loc(comm))
     END SUBROUTINE MDI_Listen
 
     SUBROUTINE MDI_Open(sockfd, inet, port, hostname_ptr)
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: inet, port
       INTEGER, INTENT(OUT) :: sockfd
-      CHARACTER(LEN=1024), INTENT(IN) :: hostname_ptr
-      CHARACTER(LEN=1,KIND=C_CHAR) :: chost(1024)
+      CHARACTER(LEN=*), INTENT(IN) :: hostname_ptr
 
-      CALL fstr2cstr(hostname_ptr, chost)
-      sockfd = MDI_Open_(inet, port, chost)
+      sockfd = MDI_Open_(inet, port, TRIM(hostname_ptr)//c_null_char)
     END SUBROUTINE MDI_Open
 
     SUBROUTINE MDI_Accept_Connection(connection)
@@ -141,40 +135,13 @@
       connection = MDI_Accept_Connection_()
     END SUBROUTINE MDI_Accept_Connection
 
-    SUBROUTINE fstr2cstr(fstr, cstr, plen)
-      IMPLICIT NONE
-      CHARACTER(LEN=*), INTENT(IN) :: fstr
-      CHARACTER(LEN=1,KIND=C_CHAR), INTENT(OUT) :: cstr(:)
-      INTEGER, INTENT(IN), OPTIONAL :: plen
-
-      INTEGER i,n
-      IF (PRESENT(plen)) THEN
-         n = plen
-         DO i=1,n
-            cstr(i) = fstr(i:i)
-         ENDDO
-      ELSE
-         n = LEN_TRIM(fstr)
-         DO i=1,n
-            cstr(i) = fstr(i:i)
-         ENDDO
-         cstr(n+1) = C_NULL_CHAR
-      END IF
-    END SUBROUTINE fstr2cstr
-
     SUBROUTINE MDI_Send_s (fstring, len, type, sockfd, ierr)
       USE ISO_C_BINDING
       INTEGER, INTENT(IN)                      :: len, type, sockfd
       CHARACTER(LEN=*), INTENT(IN)             :: fstring
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: i
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(len)
-
-      DO i = 1,len
-         cstring(i) = fstring(i:i)
-      ENDDO
-      ierr = MDI_Send_(c_loc(cstring(1)), len, type, sockfd)
+      ierr = MDI_Send_( c_loc(TRIM(fstring)//c_null_char), len, type, sockfd)
     END SUBROUTINE MDI_Send_s
 
     SUBROUTINE MDI_Send_d (fdata, len, type, sockfd, ierr)
@@ -226,12 +193,21 @@
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
+      LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(len)
 
       ierr = MDI_Recv_(c_loc(cstring(1)), len, type, sockfd)
-      fstring=""   
+
+      ! convert from C string to Fortran string
+      fstring = ""
+      end_string = .false.
       DO i = 1,len
-         fstring(i:i) = cstring(i)
+         IF ( cstring(i) == c_null_char ) end_string = .true.
+         IF ( end_string ) THEN
+            fstring(i:i) = ' '
+         ELSE
+            fstring(i:i) = cstring(i)
+         END IF
       ENDDO
     END SUBROUTINE MDI_Recv_s
 
@@ -283,18 +259,7 @@
       INTEGER, INTENT(IN)                      :: sockfd
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: i
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(MDI_COMMAND_LENGTH)
-
-      DO i = 1, LEN(fstring)
-         cstring(i) = fstring(i:i)
-      ENDDO
-
-      DO i = LEN(fstring) + 1, MDI_COMMAND_LENGTH
-         cstring(i) = " "
-      END DO
-
-      ierr = MDI_Send_Command_(c_loc(cstring(1)), sockfd)
+      ierr = MDI_Send_Command_( c_loc(TRIM(fstring)//c_null_char), sockfd)
     END SUBROUTINE MDI_Send_Command
 
     SUBROUTINE MDI_Recv_Command(fstring, sockfd, ierr)
@@ -304,14 +269,22 @@
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
+      LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(MDI_COMMAND_LENGTH)
 
       ierr = MDI_Recv_Command_(c_loc(cstring(1)), sockfd)
 
+      ! convert from C string to Fortran string
+      fstring = ""
+      end_string = .false.
       DO i = 1, MDI_COMMAND_LENGTH
-         fstring(i:i) = cstring(i)
+         IF ( cstring(i) == c_null_char ) end_string = .true.
+         IF ( end_string ) THEN
+            fstring(i:i) = ' '
+         ELSE
+            fstring(i:i) = cstring(i)
+         END IF
       ENDDO
-
     END SUBROUTINE MDI_Recv_Command
 
   END MODULE
