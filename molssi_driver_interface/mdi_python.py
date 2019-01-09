@@ -50,11 +50,11 @@ mdi.MDI_Listen.restype = ctypes.c_int
 def MDI_Listen(arg1, arg2, arg3):
     return mdi.MDI_Listen(arg1, arg2, arg3)
 
-# MDI_Open
-mdi.MDI_Open.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Open.restype = ctypes.c_int
-def MDI_Open(arg1, arg2, arg3):
-    return mdi.MDI_Open(arg1, arg2, arg3)
+# MDI_Request_Connection
+mdi.MDI_Request_Connection.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Request_Connection.restype = ctypes.c_int
+def MDI_Request_Connection(arg1, arg2, arg3):
+    return mdi.MDI_Request_Connection(arg1, arg2, arg3)
 
 # MDI_Accept_Connection
 mdi.MDI_Accept_Connection.argtypes = []

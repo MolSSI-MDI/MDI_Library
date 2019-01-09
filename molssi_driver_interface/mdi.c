@@ -304,16 +304,13 @@ int MDI_Listen(const char* method, void* options, void* world_comm)
   int port;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
-  char *strtol_ptr;
+  char* strtol_ptr;
 
   if ( any_initialization == 0 ) {
-    //create the vector for the communicators
+    // create the vector for the communicators
     vector_init( &comms, sizeof(communicator) );
     any_initialization = 1;
   }
-
-  printf("IN MDI_LISTEN\n");
-  printf("   %s\n",method);
 
   if ( strcmp(method, "MPI") == 0 ) {
     gather_names("");
@@ -332,25 +329,52 @@ int MDI_Listen(const char* method, void* options, void* world_comm)
 
 
 /* Open a socket and request a connection with a specified host */
-int MDI_Open(int inet, int port, const char* hostname_ptr)
-//int MDI_Connect(const char* method, void* options, void* world_comm)
+//int MDI_Open(int inet, int port, const char* hostname_ptr)
+int MDI_Request_Connection(const char* method, void* options, void* world_comm)
 {
    int i;
+   int port;
    int ret, sockfd;
+   char* char_ptr;
+   char* hostname_ptr;
+   char* temp_char;
 
    if ( any_initialization == 0 ) {
-     //create the vector for the communicators
+     // create the vector for the communicators
      vector_init( &comms, sizeof(communicator) );
      any_initialization = 1;
    }
 
-   if (inet==MDI_TCP) { // create a TCP socket
+   //if (inet==MDI_TCP) { // create a TCP socket
+   if ( strcmp(method, "MPI") == 0 ) {
+
+     gather_names(options);
+
+   }
+   else if ( strcmp(method, "TCP") == 0 ) {
+     char sub_buff[strlen(options)];
+     char hostname_buff[strlen(options)];
+     char* strtol_ptr;
+
+     // parse the hostname and port number from the options string
+     temp_char = options;
+     char_ptr = strrchr( options, ':' );
+     memcpy( sub_buff, char_ptr+1, strlen(options) - (char_ptr - temp_char) );
+     sub_buff[strlen(options) - (char_ptr - temp_char) - 1] = '\0';
+     port = strtol( sub_buff, &strtol_ptr, 10 );
+
+     //memcpy( hostname_buff, temp_char, char_ptr - temp_char + 1 );
+     memcpy( hostname_buff, temp_char, (char_ptr-temp_char) );
+     hostname_buff[ (char_ptr-temp_char) + 1 ] = '\0';
+     hostname_ptr = &hostname_buff[0];
 
      struct sockaddr_in driver_address;
      struct hostent* host_ptr;
 
      // get the address of the host
      host_ptr = gethostbyname((char*) hostname_ptr);
+     //host_ptr = gethostbyname((char*) hostname_buff); 
+     //host_ptr = gethostbyname("knl3.sirius.local.net");
      if (host_ptr == NULL) {
        perror("Error in gethostbyname");
        return -1;
@@ -412,11 +436,6 @@ int MDI_Open(int inet, int port, const char* hostname_ptr)
      new_comm.type = MDI_TCP;
      new_comm.handle = sockfd;
      vector_push_back( &comms, &new_comm );
-
-   }
-   else if (inet==MDI_MPI) { // create an MPI communicator
-
-     gather_names(hostname_ptr);
 
    }
    else {

@@ -61,12 +61,13 @@
        INTEGER(KIND=C_INT)                      :: MDI_Listen_
      END FUNCTION MDI_Listen_
 
-     FUNCTION MDI_Open_(inet, port, hostname_ptr) BIND(C, name="MDI_Open")
+     FUNCTION MDI_Request_Connection_(method, options, world_comm) BIND(C, name="MDI_Request_Connection")
        USE ISO_C_BINDING
-       INTEGER(KIND=C_INT), VALUE               :: inet, port
-       CHARACTER(KIND=C_CHAR), DIMENSION(*)     :: hostname_ptr
-       INTEGER(KIND=C_INT)                      :: MDI_Open_
-     END FUNCTION MDI_Open_
+       CHARACTER(C_CHAR)                        :: method(*)
+       TYPE(C_PTR)                              :: options
+       TYPE(C_PTR), VALUE                       :: world_comm
+       INTEGER(KIND=C_INT)                      :: MDI_Request_Connection_
+     END FUNCTION MDI_Request_Connection_
 
      FUNCTION MDI_Accept_Connection_() bind(c, name="MDI_Accept_Connection")
        USE, INTRINSIC :: iso_c_binding
@@ -113,20 +114,26 @@
       TYPE(C_PTR), INTENT(IN) :: options
       INTEGER, INTENT(IN) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
-      INTEGER, TARGET :: comm
+      INTEGER, TARGET :: cworld_comm
 
-      comm = fworld_comm
-      ierr = MDI_Listen_( TRIM(fmethod)//c_null_char, options, c_loc(comm))
+      cworld_comm = fworld_comm
+      ierr = MDI_Listen_( TRIM(fmethod)//c_null_char, options, c_loc(cworld_comm) )
     END SUBROUTINE MDI_Listen
 
-    SUBROUTINE MDI_Open(sockfd, inet, port, hostname_ptr)
+    SUBROUTINE MDI_Request_Connection(fmethod, options, fworld_comm, comm)
       IMPLICIT NONE
-      INTEGER, INTENT(IN) :: inet, port
-      INTEGER, INTENT(OUT) :: sockfd
-      CHARACTER(LEN=*), INTENT(IN) :: hostname_ptr
+      CHARACTER(LEN=*), INTENT(IN) :: fmethod
+      !TYPE(C_PTR), INTENT(IN) :: options
+      CHARACTER(LEN=*), INTENT(IN) :: options
+      INTEGER, INTENT(IN) :: fworld_comm
+      INTEGER, TARGET, INTENT(OUT) :: comm
+      INTEGER, TARGET :: cworld_comm
 
-      sockfd = MDI_Open_(inet, port, TRIM(hostname_ptr)//c_null_char)
-    END SUBROUTINE MDI_Open
+      cworld_comm = fworld_comm
+      !comm = MDI_Request_Connection_( TRIM(fmethod)//c_null_char, options, c_loc(cworld_comm) )
+      comm = MDI_Request_Connection_( TRIM(fmethod)//c_null_char, &
+           c_loc(TRIM(options)//c_null_char), c_loc(cworld_comm) )
+    END SUBROUTINE MDI_Request_Connection
 
     SUBROUTINE MDI_Accept_Connection(connection)
       IMPLICIT NONE
