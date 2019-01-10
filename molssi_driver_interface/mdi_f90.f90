@@ -120,19 +120,25 @@
       ierr = MDI_Listen_( TRIM(fmethod)//c_null_char, options, c_loc(cworld_comm) )
     END SUBROUTINE MDI_Listen
 
-    SUBROUTINE MDI_Request_Connection(fmethod, options, fworld_comm, comm)
+    SUBROUTINE MDI_Request_Connection(fmethod, foptions, fworld_comm, comm)
       IMPLICIT NONE
       CHARACTER(LEN=*), INTENT(IN) :: fmethod
-      !TYPE(C_PTR), INTENT(IN) :: options
-      CHARACTER(LEN=*), INTENT(IN) :: options
+      CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(IN) :: fworld_comm
       INTEGER, TARGET, INTENT(OUT) :: comm
       INTEGER, TARGET :: cworld_comm
 
+      INTEGER                                  :: i
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: coptions( LEN_TRIM(foptions) + 1 )
+
+      DO i = 1, LEN_TRIM(foptions)
+         coptions(i) = foptions(i:i)
+      END DO
+      coptions( LEN_TRIM(foptions) + 1 ) = c_null_char
+
       cworld_comm = fworld_comm
-      !comm = MDI_Request_Connection_( TRIM(fmethod)//c_null_char, options, c_loc(cworld_comm) )
       comm = MDI_Request_Connection_( TRIM(fmethod)//c_null_char, &
-           c_loc(TRIM(options)//c_null_char), c_loc(cworld_comm) )
+           c_loc(coptions), c_loc(cworld_comm) )
     END SUBROUTINE MDI_Request_Connection
 
     SUBROUTINE MDI_Accept_Connection(connection)
@@ -148,7 +154,15 @@
       CHARACTER(LEN=*), INTENT(IN)             :: fstring
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Send_( c_loc(TRIM(fstring)//c_null_char), len, type, sockfd)
+      INTEGER                                  :: i
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(len)
+
+      DO i = 1, LEN_TRIM(fstring)
+         cstring(i) = fstring(i:i)
+      END DO
+      cstring( LEN_TRIM(fstring) + 1 ) = c_null_char
+
+      ierr = MDI_Send_( c_loc(cstring), len, type, sockfd)
     END SUBROUTINE MDI_Send_s
 
     SUBROUTINE MDI_Send_d (fdata, len, type, sockfd, ierr)
@@ -266,7 +280,15 @@
       INTEGER, INTENT(IN)                      :: sockfd
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Send_Command_( c_loc(TRIM(fstring)//c_null_char), sockfd)
+      INTEGER                                  :: i
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(MDI_COMMAND_LENGTH)
+
+      DO i = 1, LEN_TRIM(fstring)
+         cstring(i) = fstring(i:i)
+      END DO
+      cstring( LEN_TRIM(fstring) + 1 ) = c_null_char
+
+      ierr = MDI_Send_Command_( c_loc(cstring), sockfd)
     END SUBROUTINE MDI_Send_Command
 
     SUBROUTINE MDI_Recv_Command(fstring, sockfd, ierr)
