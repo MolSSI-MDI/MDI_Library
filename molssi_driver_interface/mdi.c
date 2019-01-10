@@ -166,7 +166,6 @@ int gather_names(const char* hostname_ptr){
    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
    // get the rank of this process
-   world_rank;
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
    //create the name of this process
@@ -365,13 +364,16 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
 
      //memcpy( hostname_buff, temp_char, char_ptr - temp_char + 1 );
      memcpy( hostname_buff, temp_char, (char_ptr-temp_char) );
-     hostname_buff[ (char_ptr-temp_char) + 1 ] = '\0';
+     //////hostname_buff[ (char_ptr-temp_char) + 1 ] = '\0';
+     hostname_buff[ (char_ptr-temp_char) ] = '\0';
      hostname_ptr = &hostname_buff[0];
 
      struct sockaddr_in driver_address;
      struct hostent* host_ptr;
 
      // get the address of the host
+     printf("port: %d\n",port);
+     printf("hostname: %s\n",hostname_ptr);
      host_ptr = gethostbyname((char*) hostname_ptr);
      //host_ptr = gethostbyname((char*) hostname_buff); 
      //host_ptr = gethostbyname("knl3.sirius.local.net");
