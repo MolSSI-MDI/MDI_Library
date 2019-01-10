@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 option(language "language")
+option(libtype "libtype")
 
 set(use_C "")
 set(use_Fortran "")
