@@ -56,7 +56,7 @@
      FUNCTION MDI_Listen_(method, options, world_comm) bind(c, name="MDI_Listen")
        USE, INTRINSIC :: iso_c_binding
        CHARACTER(C_CHAR)                        :: method(*)
-       TYPE(C_PTR)                              :: options
+       TYPE(C_PTR), VALUE                       :: options
        TYPE(C_PTR), VALUE                       :: world_comm
        INTEGER(KIND=C_INT)                      :: MDI_Listen_
      END FUNCTION MDI_Listen_
@@ -64,7 +64,7 @@
      FUNCTION MDI_Request_Connection_(method, options, world_comm) BIND(C, name="MDI_Request_Connection")
        USE ISO_C_BINDING
        CHARACTER(C_CHAR)                        :: method(*)
-       TYPE(C_PTR)                              :: options
+       TYPE(C_PTR), VALUE                       :: options
        TYPE(C_PTR), VALUE                       :: world_comm
        INTEGER(KIND=C_INT)                      :: MDI_Request_Connection_
      END FUNCTION MDI_Request_Connection_
@@ -73,6 +73,12 @@
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT)                      :: MDI_Accept_Connection_
      END FUNCTION MDI_Accept_Connection_
+
+     FUNCTION MDI_MPI_Comm_(comm) bind(c, name="MDI_MPI_Comm")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT)                      :: comm
+       INTEGER(KIND=C_INT)                      :: MDI_MPI_Comm_
+     END FUNCTION MDI_MPI_Comm_
 
      FUNCTION MDI_Send_(data_ptr, len, type, sockfd) BIND(C, name="MDI_Send")
        USE ISO_C_BINDING
@@ -147,6 +153,14 @@
 
       connection = MDI_Accept_Connection_()
     END SUBROUTINE MDI_Accept_Connection
+
+    SUBROUTINE MDI_MPI_Comm(comm, ierr)
+      IMPLICIT NONE
+      INTEGER, INTENT(INOUT) :: comm
+      INTEGER, INTENT(OUT) :: ierr
+
+      ierr = MDI_MPI_Comm_(comm)
+    END SUBROUTINE MDI_MPI_Comm
 
     SUBROUTINE MDI_Send_s (fstring, len, type, sockfd, ierr)
       USE ISO_C_BINDING

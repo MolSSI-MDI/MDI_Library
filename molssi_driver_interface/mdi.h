@@ -19,6 +19,8 @@ Contents:
 #ifndef MDI_LIBRARY
 #define MDI_LIBRARY
 
+#include <mpi.h>
+
 // length of an MDI command in characters
 extern const int MDI_COMMAND_LENGTH;
 
@@ -65,5 +67,6 @@ int MDI_Send(const char*, int, int, int);
 int MDI_Recv(char*, int, int, int);
 int MDI_Send_Command(const char*, int);
 int MDI_Recv_Command(char*, int);
+int MDI_MPI_Comm(MPI_Comm*);
 
 #endif

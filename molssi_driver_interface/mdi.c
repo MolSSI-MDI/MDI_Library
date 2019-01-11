@@ -8,6 +8,7 @@ Contents:
    MDI_Listen: Listen for an incoming connection of the specified type
    MDI_Open: Opens a socket and requests a connection with a specified host
    MDI_Accept_Connection: Accepts an incoming connection request
+   MDI_Get_MPI_Comm: Return the intra-code MPI communicator
    MDI_Send: Sends data through the socket
    MDI_Recv: Receives data through the socket
    MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH through the
@@ -27,7 +28,6 @@ Contents:
 #include <sys/un.h>
 #include <unistd.h>
 #include <errno.h>
-#include <mpi.h>
 #include "mdi.h"
 
 // length of an MDI command in characters
@@ -70,19 +70,30 @@ const double MDI_EV_TO_HARTREE = 3.67493266806491e-2;
 const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
-// has any MDI_Init_X function been called?
-int any_initialization = 0;
+// has MDI_Listen or MDI_Request_Connection been called?
+static int any_initialization = 0;
+
+// has MDI_Listen or MDI_Request_Connection been called with method="MPI"?
+static int mpi_initialization = 0;
+
+// internal MPI communicator
+static MPI_Comm intra_MPI_comm;
 
 // the TCP socket, initialized by MDI_Listen when method="TCP"
-int tcp_socket = -1;
+static int tcp_socket = -1;
 
 // the MPI rank, initialized by MDI_Listen when method="MPI"
-int world_rank = -1;
+static int world_rank = -1;
+
+// the MPI rank within the code
+static int intra_rank = -1;
 
 typedef struct communicator_struct {
   int type; // the type of communicator
   int handle; // for TCP, the socket descriptor
               // for MPI, the MPI communicator
+  MPI_Comm MPI_handle;
+  int MPI_rank;
   char name[MDI_NAME_LENGTH_INTERNAL]; // the name of the connected program
 } communicator;
 
@@ -95,7 +106,7 @@ typedef struct dynamic_array_struct {
 } vector;
 
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
-int returned_comms = 0;
+static int returned_comms = 0;
 
 
 int vector_init(vector* v, size_t stride) {
@@ -145,7 +156,7 @@ void* vector_get(vector* v, int index) {
   return ( void* )( v->data + (index * v->stride) );
 }
 
-vector comms;
+static vector comms;
 
 
 /*----------------------------*/
@@ -159,7 +170,10 @@ void sigint_handler(int dummy) {
 
 
 int gather_names(const char* hostname_ptr){
-  int i, icomm;
+   int i, j, icomm;
+   int driver_rank;
+   int nunique_names = 0;
+   int my_name_count = 0;
 
    // get the number of processes
    int world_size;
@@ -173,21 +187,39 @@ int gather_names(const char* hostname_ptr){
    int str_end;
    strcpy(buffer, hostname_ptr);
 
-   char *names = NULL;
-   if (world_rank == 0) {
-     names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
-   }
+   char* names = NULL;
+   names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
-   MPI_Gather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-              MPI_CHAR, 0, MPI_COMM_WORLD);
+   char* unique_names = NULL;
+   unique_names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+
+   //MPI_Gather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
+   //           MPI_CHAR, 0, MPI_COMM_WORLD);
+   MPI_Allgather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
+              MPI_CHAR, MPI_COMM_WORLD);
 
    if (world_rank == 0) {
      for (i=0; i<world_size; i++) {
-       char *ptr1 = &names[i*MDI_NAME_LENGTH];
+       char* ptr1 = &names[i*MDI_NAME_LENGTH];
      }
    }
 
-   if (world_rank == 0) {
+   // determine which rank corresponds to rank 0 of the driver
+   driver_rank = -1;
+   for (i=0; i<world_size; i++) {
+     if ( driver_rank == -1 ) {
+       char name[MDI_NAME_LENGTH];
+       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+       if ( strcmp(name, "") == 0 ) {
+	 driver_rank = i;
+       }
+     }
+   }
+   if ( driver_rank == -1 ) {
+     perror("Unable to identify driver when attempting to connect via MPI");
+   }
+
+   //if (world_rank == 0) {
 
      //create communicators
      for (i=0; i<world_size; i++) {
@@ -195,38 +227,61 @@ int gather_names(const char* hostname_ptr){
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
        int found = 0;
+       /*
        for (icomm=0; icomm<comms.size; icomm++) {
 	 communicator* comm = vector_get(&comms,icomm);
 	 if ( strcmp(name, comm->name) == 0 ) {
 	   found = 1;
 	 }
        }
+       */
+       for (j=0; j<i; j++) {
+	 char prev_name[MDI_NAME_LENGTH];
+	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+	 if ( strcmp(name, prev_name) == 0 ) {
+	   found = 1;
+	 }
+       }
 
+       // check if this rank is the first instance of a new production code
        if ( found == 0 && strcmp(name,"") != 0 ) {
-	 communicator new_comm;
-	 new_comm.type = MDI_MPI;
-	 new_comm.handle = MPI_COMM_WORLD;
-	 memcpy( new_comm.name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+	 // add this code's name to the list of unique names
+	 memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
+	 nunique_names++;
+	 char my_name[MDI_NAME_LENGTH];
+	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+	 if ( strcmp(my_name, name) == 0 ) {
+	   my_name_count = nunique_names;
+	 }
 
-	 vector_push_back( &comms, &new_comm );
+         // create a communicator to handle communication with this production code
+	 MPI_Comm new_mpi_comm;
+	 int color = 0;
+	 int key = 0;
+	 if ( world_rank == driver_rank ) {
+	   color = 1;
+	 }
+	 else if ( world_rank == i ) {
+	   color = 1;
+	   key = 1;
+	 }
+         MPI_Comm_split(MPI_COMM_WORLD, color, key, &new_mpi_comm);
+
+	 if ( world_rank == driver_rank || world_rank == i ) {
+	   communicator new_comm;
+	   new_comm.type = MDI_MPI;
+	   new_comm.MPI_handle = new_mpi_comm;
+	   new_comm.MPI_rank = key;
+	   memcpy( new_comm.name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
+
+	   vector_push_back( &comms, &new_comm );
+	 }
        }
      }
 
-     //print the communicators
-     for (i=0; i<comms.size; i++) {
-       communicator* pcomm = vector_get(&comms,i);
-     }
-
-   }
-
-   // if this is a process from one of the production codes, create a communicator to the driver
-   if ( strcmp(buffer,"") != 0 ) {
-     communicator new_comm;
-     new_comm.type = MDI_MPI;
-     new_comm.handle = MPI_COMM_WORLD;
-     vector_push_back( &comms, &new_comm );
-   }
-
+     // create the intra-code communicators
+     MPI_Comm_split(MPI_COMM_WORLD, my_name_count, world_rank, &intra_MPI_comm);
+     MPI_Comm_rank(intra_MPI_comm, &intra_rank);
 
    MPI_Barrier(MPI_COMM_WORLD);
 
@@ -313,6 +368,7 @@ int MDI_Listen(const char* method, void* options, void* world_comm)
 
   if ( strcmp(method, "MPI") == 0 ) {
     gather_names("");
+    mpi_initialization = 1;
   }
   else if ( strcmp(method, "TCP") == 0 ) {
     port = strtol( options, &strtol_ptr, 10 );
@@ -348,6 +404,7 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
    if ( strcmp(method, "MPI") == 0 ) {
 
      gather_names(options);
+     mpi_initialization = 1;
 
    }
    else if ( strcmp(method, "TCP") == 0 ) {
@@ -491,9 +548,28 @@ int MDI_Accept_Connection()
 }
 
 
+/* Get the intra-code MPI communicator */
+int MDI_MPI_Comm(MPI_Comm* input_comm)
+{
+  if ( any_initialization == 0 ) {
+    perror("Must call MDI_Listen or MDI_Request_Connection before MDI_Get_MPI_Comm");
+  }
+  if ( mpi_initialization == 0 ) {
+    *input_comm = MPI_COMM_WORLD;
+  }
+  else {
+    *input_comm = intra_MPI_comm;
+  }
+  return 0;
+}
+
+
 /* Send data through the socket */
 int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 {
+   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+     perror("Called MDI_Send with incorrect rank");
+   }
    int n;
 
    // determine the byte size of the data type being sent
@@ -516,13 +592,13 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 
    if ( comm->type == MDI_MPI ) {
      if (type == MDI_INT) {
-       MPI_Send(data_ptr, len, MPI_INT, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+       MPI_Send(data_ptr, len, MPI_INT, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
      }
      else if (type == MDI_DOUBLE) {
-       MPI_Send(data_ptr, len, MPI_DOUBLE, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+       MPI_Send(data_ptr, len, MPI_DOUBLE, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
      }
      else if (type == MDI_CHAR) {
-       MPI_Send(data_ptr, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD);
+       MPI_Send(data_ptr, len, MPI_CHAR, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
      }
      else {
        perror("MDI data type not recognized in MDI_Send");
@@ -545,6 +621,9 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 /* Receive data through the socket */
 int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 {
+   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+     perror("Called MDI_Recv with incorrect rank");
+   }
    int n, nr;
 
    // determine the byte size of the data type being received
@@ -567,13 +646,13 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 
    if ( comm->type == MDI_MPI ) {
      if (type == MDI_INT) {
-       MPI_Recv(data_ptr, len, MPI_INT, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       MPI_Recv(data_ptr, len, MPI_INT, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
      }
      else if (type == MDI_DOUBLE) {
-       MPI_Recv(data_ptr, len, MPI_DOUBLE, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       MPI_Recv(data_ptr, len, MPI_DOUBLE, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
      }
      else if (type == MDI_CHAR) {
-       MPI_Recv(data_ptr, len, MPI_CHAR, (world_rank+1)%2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       MPI_Recv(data_ptr, len, MPI_CHAR, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
      }
      else {
        perror("MDI data type not recognized in MDI_Recv");
@@ -600,6 +679,9 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 /* Send a string of length MDI_COMMAND_LENGTH through the socket */
 int MDI_Send_Command(const char* data_ptr, int sockfd)
 {
+   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+     perror("Called MDI_Send_Command with incorrect rank");
+   }
    int len=MDI_COMMAND_LENGTH;
    char buffer[MDI_COMMAND_LENGTH];
 
@@ -611,6 +693,9 @@ int MDI_Send_Command(const char* data_ptr, int sockfd)
 /* Receive a string of length MDI_COMMAND_LENGTH through the socket */
 int MDI_Recv_Command(char* data_ptr, int sockfd)
 {
+   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+     perror("Called MDI_Recv_Command with incorrect rank");
+   }
    int len = MDI_COMMAND_LENGTH;
    int type = MDI_CHAR;
 
