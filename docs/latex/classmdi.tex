@@ -1,0 +1,151 @@
+\hypertarget{classmdi}{\section{mdi Module Reference}
+\label{classmdi}\index{mdi@{mdi}}
+}
+\subsection*{Data Types}
+\begin{DoxyCompactItemize}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Accept__Connection__}{M\-D\-I\-\_\-\-Accept\-\_\-\-Connection\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Listen__}{M\-D\-I\-\_\-\-Listen\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__MPI__Comm__}{M\-D\-I\-\_\-\-M\-P\-I\-\_\-\-Comm\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1mdi__recv}{mdi\-\_\-recv}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Recv__}{M\-D\-I\-\_\-\-Recv\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Recv__Command__}{M\-D\-I\-\_\-\-Recv\-\_\-\-Command\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Request__Connection__}{M\-D\-I\-\_\-\-Request\-\_\-\-Connection\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1mdi__send}{mdi\-\_\-send}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Send__}{M\-D\-I\-\_\-\-Send\-\_\-}
+\item 
+interface \hyperlink{interfacemdi_1_1MDI__Send__Command__}{M\-D\-I\-\_\-\-Send\-\_\-\-Command\-\_\-}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classmdi_abb29b2ed5c592d2c5e4585ca14ae9c69}{subroutine {\bfseries mdi\-\_\-listen} (fmethod, options, fworld\-\_\-comm, ierr)}\label{classmdi_abb29b2ed5c592d2c5e4585ca14ae9c69}
+
+\item 
+\hypertarget{classmdi_ae6b39060c3cc856f240b5239a87a63d8}{subroutine {\bfseries mdi\-\_\-request\-\_\-connection} (fmethod, foptions, fworld\-\_\-comm, comm)}\label{classmdi_ae6b39060c3cc856f240b5239a87a63d8}
+
+\item 
+\hypertarget{classmdi_a5f9df9a8c58f50163196ee7ce57d63d6}{subroutine {\bfseries mdi\-\_\-accept\-\_\-connection} (connection)}\label{classmdi_a5f9df9a8c58f50163196ee7ce57d63d6}
+
+\item 
+\hypertarget{classmdi_a127a7303cd7217c0d0d646e10b188f39}{subroutine {\bfseries mdi\-\_\-mpi\-\_\-comm} (comm, ierr)}\label{classmdi_a127a7303cd7217c0d0d646e10b188f39}
+
+\item 
+\hypertarget{classmdi_a83a8409162740c37f82776526e19d4cf}{subroutine {\bfseries mdi\-\_\-send\-\_\-s} (fstring, len, type, sockfd, ierr)}\label{classmdi_a83a8409162740c37f82776526e19d4cf}
+
+\item 
+\hypertarget{classmdi_ad5a7755632e8712b6d5609e2486b184a}{subroutine {\bfseries mdi\-\_\-send\-\_\-d} (fdata, len, type, sockfd, ierr)}\label{classmdi_ad5a7755632e8712b6d5609e2486b184a}
+
+\item 
+\hypertarget{classmdi_a57bcbe45a8445f19b02126f904b43774}{subroutine {\bfseries mdi\-\_\-send\-\_\-dv} (fdata, len, type, sockfd, ierr)}\label{classmdi_a57bcbe45a8445f19b02126f904b43774}
+
+\item 
+\hypertarget{classmdi_a9451f9ead8226273424cb7efbef245c3}{subroutine {\bfseries mdi\-\_\-send\-\_\-i} (fdata, len, type, sockfd, ierr)}\label{classmdi_a9451f9ead8226273424cb7efbef245c3}
+
+\item 
+\hypertarget{classmdi_add16db0836d8e0f3cfe310e175e8243c}{subroutine {\bfseries mdi\-\_\-send\-\_\-iv} (fdata, len, type, sockfd, ierr)}\label{classmdi_add16db0836d8e0f3cfe310e175e8243c}
+
+\item 
+\hypertarget{classmdi_a78af4fc262563d2d8820a3a7cbfe0a92}{subroutine {\bfseries mdi\-\_\-recv\-\_\-s} (fstring, len, type, sockfd, ierr)}\label{classmdi_a78af4fc262563d2d8820a3a7cbfe0a92}
+
+\item 
+\hypertarget{classmdi_a557c30482625b71f46ee392d70426014}{subroutine {\bfseries mdi\-\_\-recv\-\_\-d} (fdata, len, type, sockfd, ierr)}\label{classmdi_a557c30482625b71f46ee392d70426014}
+
+\item 
+\hypertarget{classmdi_a66dc1c9e1462e5c53bd36c720aa12a38}{subroutine {\bfseries mdi\-\_\-recv\-\_\-dv} (fdata, len, type, sockfd, ierr)}\label{classmdi_a66dc1c9e1462e5c53bd36c720aa12a38}
+
+\item 
+\hypertarget{classmdi_a50204266766bbd60ec46f697309b9c5c}{subroutine {\bfseries mdi\-\_\-recv\-\_\-i} (fdata, len, type, sockfd, ierr)}\label{classmdi_a50204266766bbd60ec46f697309b9c5c}
+
+\item 
+\hypertarget{classmdi_adb59292b64be533922c3bd55c04df653}{subroutine {\bfseries mdi\-\_\-recv\-\_\-iv} (fdata, len, type, sockfd, ierr)}\label{classmdi_adb59292b64be533922c3bd55c04df653}
+
+\item 
+\hypertarget{classmdi_a9b4dc2e960271e8779e842b9e1edc0dd}{subroutine {\bfseries mdi\-\_\-send\-\_\-command} (fstring, sockfd, ierr)}\label{classmdi_a9b4dc2e960271e8779e842b9e1edc0dd}
+
+\item 
+\hypertarget{classmdi_a3a3b366cde72e01a9d3a928e902e58d0}{subroutine {\bfseries mdi\-\_\-recv\-\_\-command} (fstring, sockfd, ierr)}\label{classmdi_a3a3b366cde72e01a9d3a928e902e58d0}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classmdi_accae5b01e087f8738d86006e68417f6d}{integer, dimension(c, name=\char`\"{}mdi\-\_\-kelvin\-\_\-to\-\_\-hartree\char`\"{}), \\*
+protected {\bfseries bind}}\label{classmdi_accae5b01e087f8738d86006e68417f6d}
+
+\item 
+\hypertarget{classmdi_a476a171077b89b7bc1e0153edaee118a}{integer, protected {\bfseries mdi\-\_\-command\-\_\-length}}\label{classmdi_a476a171077b89b7bc1e0153edaee118a}
+
+\item 
+\hypertarget{classmdi_a8038fa45863d082fafb692e8bc1f4b5a}{integer, protected {\bfseries mdi\-\_\-name\-\_\-length}}\label{classmdi_a8038fa45863d082fafb692e8bc1f4b5a}
+
+\item 
+\hypertarget{classmdi_ae85ef43174229bd688543ad4bcc08a2b}{integer, protected {\bfseries mdi\-\_\-int}}\label{classmdi_ae85ef43174229bd688543ad4bcc08a2b}
+
+\item 
+\hypertarget{classmdi_a69ba399f9ad46c8ac033b26574c9b6ef}{integer, protected {\bfseries mdi\-\_\-double}}\label{classmdi_a69ba399f9ad46c8ac033b26574c9b6ef}
+
+\item 
+\hypertarget{classmdi_a5741adbde5b79f06a9b94b17c7f16eb7}{integer, protected {\bfseries mdi\-\_\-char}}\label{classmdi_a5741adbde5b79f06a9b94b17c7f16eb7}
+
+\item 
+\hypertarget{classmdi_a1605c457efb88fc7e1f169734c58b52c}{integer, protected {\bfseries mdi\-\_\-tcp}}\label{classmdi_a1605c457efb88fc7e1f169734c58b52c}
+
+\item 
+\hypertarget{classmdi_a4039d7ab89098798e98dda20ece81eaf}{integer, protected {\bfseries mdi\-\_\-mpi}}\label{classmdi_a4039d7ab89098798e98dda20ece81eaf}
+
+\item 
+\hypertarget{classmdi_aff013df9c91a218d860486ff0fc757e4}{real(kind=8), dimension(c, \\*
+name=\char`\"{}mdi\-\_\-kelvin\-\_\-to\-\_\-hartree\char`\"{}), \\*
+protected {\bfseries bind}}\label{classmdi_aff013df9c91a218d860486ff0fc757e4}
+
+\item 
+\hypertarget{classmdi_af74f78803c251e23cd5022a8df7abc1e}{real(kind=8), protected {\bfseries mdi\-\_\-meter\-\_\-to\-\_\-bohr}}\label{classmdi_af74f78803c251e23cd5022a8df7abc1e}
+
+\item 
+\hypertarget{classmdi_a6abac217d729188855210e9327333578}{real(kind=8), protected {\bfseries mdi\-\_\-angstrom\-\_\-to\-\_\-bohr}}\label{classmdi_a6abac217d729188855210e9327333578}
+
+\item 
+\hypertarget{classmdi_a583e3421719bbf0bd951f455a0032766}{real(kind=8), protected {\bfseries mdi\-\_\-second\-\_\-to\-\_\-aut}}\label{classmdi_a583e3421719bbf0bd951f455a0032766}
+
+\item 
+\hypertarget{classmdi_ad350838a7aea84b6eca15da72d3ee4fc}{real(kind=8), protected {\bfseries mdi\-\_\-picosecond\-\_\-to\-\_\-aut}}\label{classmdi_ad350838a7aea84b6eca15da72d3ee4fc}
+
+\item 
+\hypertarget{classmdi_ace10d5db76cf54244d54b62e77b9d9a6}{real(kind=8), protected {\bfseries mdi\-\_\-newton\-\_\-to\-\_\-auf}}\label{classmdi_ace10d5db76cf54244d54b62e77b9d9a6}
+
+\item 
+\hypertarget{classmdi_a0b4e777d36fe90d506f70b16abb1b910}{real(kind=8), protected {\bfseries mdi\-\_\-joule\-\_\-to\-\_\-hartree}}\label{classmdi_a0b4e777d36fe90d506f70b16abb1b910}
+
+\item 
+\hypertarget{classmdi_a12a5c4e648f84d60dd261349d5e2cf37}{real(kind=8), protected {\bfseries mdi\-\_\-kj\-\_\-to\-\_\-hartree}}\label{classmdi_a12a5c4e648f84d60dd261349d5e2cf37}
+
+\item 
+\hypertarget{classmdi_a761336e719b236672a145cf86a8b7c95}{real(kind=8), protected {\bfseries mdi\-\_\-kjpermol\-\_\-to\-\_\-hartree}}\label{classmdi_a761336e719b236672a145cf86a8b7c95}
+
+\item 
+\hypertarget{classmdi_a2a5635f450c619dabb104846fd972b22}{real(kind=8), protected {\bfseries mdi\-\_\-kcalpermol\-\_\-to\-\_\-hartree}}\label{classmdi_a2a5635f450c619dabb104846fd972b22}
+
+\item 
+\hypertarget{classmdi_a02fe8f5658dc9d6379ceb2cc40b24b56}{real(kind=8), protected {\bfseries mdi\-\_\-ev\-\_\-to\-\_\-hartree}}\label{classmdi_a02fe8f5658dc9d6379ceb2cc40b24b56}
+
+\item 
+\hypertarget{classmdi_a4eefaa8b0fe9c708b1ba69ae86bac95c}{real(kind=8), protected {\bfseries mdi\-\_\-rydberg\-\_\-to\-\_\-hartree}}\label{classmdi_a4eefaa8b0fe9c708b1ba69ae86bac95c}
+
+\item 
+\hypertarget{classmdi_a5fc09af33b0b858f96014b3f9fdd7ee5}{real(kind=8), protected {\bfseries mdi\-\_\-kelvin\-\_\-to\-\_\-hartree}}\label{classmdi_a5fc09af33b0b858f96014b3f9fdd7ee5}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/mdi\-\_\-f90.\-f90\end{DoxyCompactItemize}
