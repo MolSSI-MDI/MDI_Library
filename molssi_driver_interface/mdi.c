@@ -6,9 +6,9 @@
 
 Contents:
    MDI_Listen: Listen for an incoming connection of the specified type
-   MDI_Open: Opens a socket and requests a connection with a specified host
+   MDI_Request_Connection: Creates an outgoing connection request
    MDI_Accept_Connection: Accepts an incoming connection request
-   MDI_Get_MPI_Comm: Return the intra-code MPI communicator
+   MDI_MPI_Comm: Return the intra-code MPI communicator
    MDI_Send: Sends data through the socket
    MDI_Recv: Receives data through the socket
    MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH through the
