@@ -59,8 +59,8 @@ def MDI_Request_Connection(arg1, arg2, arg3):
 # MDI_Accept_Connection
 mdi.MDI_Accept_Connection.argtypes = []
 mdi.MDI_Accept_Connection.restype = ctypes.c_int
-def MDI_Accept_Connection(arg):
-    return mdi.MDI_Accept_Connection(arg)
+def MDI_Accept_Connection():
+    return mdi.MDI_Accept_Connection()
 
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
