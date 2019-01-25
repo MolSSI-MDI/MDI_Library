@@ -5,7 +5,7 @@
 -------------------------------------------------------------------------
 
 Contents:
-   MDI_Listen: Listen for an incoming connection of the specified type
+   MDI_Init: Initialize MDI
    MDI_Request_Connection: Creates an outgoing connection request
    MDI_Accept_Connection: Accepts an incoming connection request
    MDI_MPI_Comm: Return the intra-code MPI communicator
@@ -108,6 +108,10 @@ typedef struct dynamic_array_struct {
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
 static int returned_comms = 0;
 
+void mdi_error(const char* message) {
+  perror(message);
+  exit(1);
+}
 
 int vector_init(vector* v, size_t stride) {
   //initialize the vector with the given stride
@@ -351,14 +355,67 @@ int MDI_Listen_TCP(int port)
 
 
 /* Initialize a socket and set it to listen */
-int MDI_Listen(const char* method, void* options, void* world_comm)
+int MDI_Init(const char* options, void* data, void* world_comm)
 {
   int ret;
   int sockfd;
-  int port;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
   char* strtol_ptr;
+  int i;
+
+  //values acquired from the input options
+  char* method;
+  int port;
+
+  //calculate argc
+  char* argv_line = strdup(options);
+  char* token = strtok(argv_line, " ");
+  int argc = 0;
+  while (token != NULL) {
+    argc++;
+    token = strtok(NULL," ");
+  }
+
+  //calculate argv
+  char* argv[argc];
+  argv_line = strdup(options);
+  token = strtok(argv_line, " ");
+  for (i=0; i<argc; i++) {
+    argv[i] = token;
+    token = strtok(NULL," ");
+  }
+
+  //read options
+  int iarg = 0;
+  while (iarg < argc) {
+
+    //-role
+    //-method
+    if (strcmp(argv[iarg],"-method") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -method option");
+      }
+      method = argv[iarg+1];
+      iarg += 2;
+    }
+    //-name
+    //-hostname
+    //-port
+    else if (strcmp(argv[iarg],"-port") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -port option");
+      }
+      port = strtol( argv[iarg+1], &strtol_ptr, 10 );
+      iarg += 2;
+    }
+    else {
+      mdi_error("Unrecognized option");
+    }
+  }
+
+
+  free( argv_line );
 
   if ( any_initialization == 0 ) {
     // create the vector for the communicators
@@ -371,7 +428,7 @@ int MDI_Listen(const char* method, void* options, void* world_comm)
     mpi_initialization = 1;
   }
   else if ( strcmp(method, "TCP") == 0 ) {
-    port = strtol( options, &strtol_ptr, 10 );
+    //port = strtol( options, &strtol_ptr, 10 );
     MDI_Listen_TCP(port);
   }
   else {
