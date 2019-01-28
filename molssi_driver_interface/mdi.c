@@ -346,6 +346,111 @@ int MDI_Listen_TCP(int port)
 }
 
 
+int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
+{
+  //int i;
+  //int port;
+  int ret, sockfd;
+  //char* char_ptr;
+  //char* hostname_ptr;
+  //char* temp_char;
+
+  if ( any_initialization == 0 ) {
+    // create the vector for the communicators
+    vector_init( &comms, sizeof(communicator) );
+    any_initialization = 1;
+  }
+
+  /*
+  char sub_buff[strlen(options)];
+  char hostname_buff[strlen(options)];
+  char* strtol_ptr;
+
+  // parse the hostname and port number from the options string
+  temp_char = options;
+  char_ptr = strrchr( options, ':' );
+  memcpy( sub_buff, char_ptr+1, strlen(options) - (char_ptr - temp_char) );
+  sub_buff[strlen(options) - (char_ptr - temp_char) - 1] = '\0';
+  port = strtol( sub_buff, &strtol_ptr, 10 );
+
+  memcpy( hostname_buff, temp_char, (char_ptr-temp_char) );
+  hostname_buff[ (char_ptr-temp_char) ] = '\0';
+  hostname_ptr = &hostname_buff[0];
+  */
+
+  struct sockaddr_in driver_address;
+  struct hostent* host_ptr;
+
+  // get the address of the host
+  printf("port: %d\n",port);
+  printf("hostname: %s\n",hostname_ptr);
+  host_ptr = gethostbyname((char*) hostname_ptr);
+  if (host_ptr == NULL) {
+    perror("Error in gethostbyname");
+    return -1;
+  }
+  if (host_ptr->h_addrtype != AF_INET) {
+    perror("Unkown address type");
+    return -1;
+  }
+
+  bzero((char *) &driver_address, sizeof(driver_address));
+  driver_address.sin_family = AF_INET;
+  driver_address.sin_addr.s_addr = 
+    ((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
+  driver_address.sin_port = htons(port);
+
+  // create the socket
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd < 0) {
+    perror("Could not create socket");
+    return -1;
+  }
+
+  // connect to the driver
+  // if the connection is refused, try again
+  //   this allows the production code to start before the driver
+  int try_connect = 1;
+  while (try_connect == 1) {
+    ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
+    if (ret < 0 ) {
+      if ( errno == ECONNREFUSED ) {
+
+	// close the socket, so that a new one can be created
+	ret = close(sockfd);
+	if (ret < 0) {
+	  perror("Could not close socket");
+	  return -1;
+	}
+
+	// create the socket
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0) {
+	  perror("Could not create socket");
+	  return -1;
+	}
+
+      }
+      else { // only error out for errors other than "connection refused"
+	perror("Could not connect to the driver");
+	return -1;
+      }
+
+    }
+    else {
+      try_connect = 0;
+    }
+  }
+
+  communicator new_comm;
+  new_comm.type = MDI_TCP;
+  new_comm.handle = sockfd;
+  vector_push_back( &comms, &new_comm );
+
+   return 0;
+}
+
+
 
 
 
@@ -355,7 +460,7 @@ int MDI_Listen_TCP(int port)
 
 
 /* Initialize a socket and set it to listen */
-int MDI_Init(const char* options, void* data, void* world_comm)
+int MDI_Init(const char* options, void* data, MPI_Comm* world_comm)
 {
   int ret;
   int sockfd;
@@ -363,12 +468,25 @@ int MDI_Init(const char* options, void* data, void* world_comm)
   int reuse_value = 1;
   char* strtol_ptr;
   int i;
+  int mpi_rank;
 
-  //values acquired from the input options
+  // values acquired from the input options
+  char* role;
   char* method;
+  char* name;
+  char* hostname;
   int port;
+  int has_role = 0;
+  int has_method = 0;
+  int has_name = 0;
+  int has_hostname = 0;
+  int has_port = 0;
 
-  //calculate argc
+  // get the MPI rank
+  MPI_Comm mpi_communicator = *(MPI_Comm*) world_comm;
+  MPI_Comm_rank(mpi_communicator, &mpi_rank);
+
+  // calculate argc
   char* argv_line = strdup(options);
   char* token = strtok(argv_line, " ");
   int argc = 0;
@@ -377,7 +495,7 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     token = strtok(NULL," ");
   }
 
-  //calculate argv
+  // calculate argv
   char* argv[argc];
   argv_line = strdup(options);
   token = strtok(argv_line, " ");
@@ -386,27 +504,53 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     token = strtok(NULL," ");
   }
 
-  //read options
+  // read options
   int iarg = 0;
   while (iarg < argc) {
 
     //-role
+    if (strcmp(argv[iarg],"-role") == 0){
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -role option");
+      }
+      role = argv[iarg+1];
+      has_role = 1;
+      iarg += 2;
+    }
     //-method
-    if (strcmp(argv[iarg],"-method") == 0) {
+    else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -method option");
       }
       method = argv[iarg+1];
+      has_method = 1;
       iarg += 2;
     }
     //-name
+    else if (strcmp(argv[iarg],"-name") == 0){
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -name option");
+      }
+      name = argv[iarg+1];
+      has_name = 1;
+      iarg += 2;
+    }
     //-hostname
+    else if (strcmp(argv[iarg],"-hostname") == 0){
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -hostname option");
+      }
+      hostname = argv[iarg+1];
+      has_hostname = 1;
+      iarg += 2;
+    }
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -port option");
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
+      has_port = 1;
       iarg += 2;
     }
     else {
@@ -414,8 +558,17 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     }
   }
 
+  // ensure the -role option was provided
+  if ( has_role == 0 ) {
+    mdi_error("Error in MDI_Init: -role option not provided");
+  }
 
-  free( argv_line );
+  // ensure the -name option was provided
+  if ( has_name == 0 ) {
+    mdi_error("Error in MDI_Init: -name option not provided");
+  }
+
+
 
   if ( any_initialization == 0 ) {
     // create the vector for the communicators
@@ -423,18 +576,62 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     any_initialization = 1;
   }
 
-  if ( strcmp(method, "MPI") == 0 ) {
-    gather_names("");
-    mpi_initialization = 1;
+  if ( strcmp(role, "DRIVER") == 0 ) {
+    // initialize this code as a driver
+
+    if ( strcmp(method, "MPI") == 0 ) {
+      gather_names("");
+      mpi_initialization = 1;
+    }
+    else if ( strcmp(method, "TCP") == 0 ) {
+      if ( has_port == 0 ) {
+	mdi_error("Error in MDI_Init: -port option not provided");
+      }
+      if ( mpi_rank == 0 ) {
+	MDI_Listen_TCP(port);
+      }
+    }
+    else {
+      mdi_error("Error in MDI_Init: method not recognized");
+    }
+
   }
-  else if ( strcmp(method, "TCP") == 0 ) {
-    //port = strtol( options, &strtol_ptr, 10 );
-    MDI_Listen_TCP(port);
+  else if ( strcmp(role,"ENGINE") == 0 ) {
+    // initialize this code as an engine
+
+    if ( strcmp(method, "MPI") == 0 ) {
+      gather_names(name);
+      mpi_initialization = 1;
+    }
+    else if ( strcmp(method, "TCP") == 0 ) {
+      if ( has_hostname == 0 ) {
+	mdi_error("Error in MDI_Init: -hostname option not provided");
+      }
+      if ( has_port == 0 ) {
+	mdi_error("Error in MDI_Init: -port option not provided");
+      }
+      if ( mpi_rank == 0 ) {
+	MDI_Request_Connection_TCP(port, hostname);
+      }
+    }
+    
   }
   else {
-    perror("Error in MDI_Listen: method not recognized");
-    return -1;
+    mdi_error("Error in MDI_Init: role not recognized");
   }
+
+  // set the MPI communicator correctly
+  if ( mpi_initialization != 0 ) {
+    /*
+    *input_comm = MPI_COMM_WORLD;
+  }
+  else {
+    *input_comm = intra_MPI_comm;
+    */
+    *world_comm = intra_MPI_comm;
+  }
+
+  free( argv_line );
 
   return 0;
 }

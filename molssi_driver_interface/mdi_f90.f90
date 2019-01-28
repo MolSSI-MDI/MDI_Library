@@ -57,7 +57,7 @@
        USE, INTRINSIC :: iso_c_binding
        CHARACTER(C_CHAR)                        :: options(*)
        TYPE(C_PTR), VALUE                       :: data
-       TYPE(C_PTR), VALUE                       :: world_comm
+       INTEGER(KIND=C_INT)                      :: world_comm
        INTEGER(KIND=C_INT)                      :: MDI_Init_
      END FUNCTION MDI_Init_
 
@@ -118,12 +118,13 @@
       IMPLICIT NONE
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       TYPE(C_PTR), INTENT(IN) :: data
-      INTEGER, INTENT(IN) :: fworld_comm
+      INTEGER, INTENT(INOUT) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
-      INTEGER, TARGET :: cworld_comm
+      !INTEGER, TARGET :: cworld_comm
 
-      cworld_comm = fworld_comm
-      ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, c_loc(cworld_comm) )
+      !cworld_comm = fworld_comm
+      !ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, c_loc(cworld_comm) )
+      ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, fworld_comm )
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Request_Connection(fmethod, foptions, fworld_comm, comm)
