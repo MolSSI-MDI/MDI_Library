@@ -483,8 +483,15 @@ int MDI_Init(const char* options, void* data, MPI_Comm* world_comm)
   int has_port = 0;
 
   // get the MPI rank
-  MPI_Comm mpi_communicator = *(MPI_Comm*) world_comm;
-  MPI_Comm_rank(mpi_communicator, &mpi_rank);
+  MPI_Comm mpi_communicator;
+  if ( world_comm == NULL ) {
+    mpi_communicator = 0;
+    mpi_rank = 0;
+  }
+  else {
+    mpi_communicator = *(MPI_Comm*) world_comm;
+    MPI_Comm_rank(mpi_communicator, &mpi_rank);
+  }
 
   // calculate argc
   char* argv_line = strdup(options);
