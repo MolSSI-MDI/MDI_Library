@@ -48,7 +48,8 @@ MDI_KELVIN_TO_HARTREE = ctypes.c_double.in_dll(mdi, "MDI_KELVIN_TO_HARTREE").val
 mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Init.restype = ctypes.c_int
 def MDI_Init(arg1, arg2, arg3):
-    return mdi.MDI_Init(arg1, arg2, arg3)
+    command = arg1.encode('utf-8')
+    return mdi.MDI_Init(ctypes.c_char_p(command), arg2, arg3)
 
 # MDI_Request_Connection
 mdi.MDI_Request_Connection.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
