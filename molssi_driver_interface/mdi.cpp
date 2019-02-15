@@ -28,7 +28,12 @@ Contents:
 #include <sys/un.h>
 #include <unistd.h>
 #include <errno.h>
+#include <iostream>
+#include <vector>
 #include "mdi.h"
+
+using namespace MDI_STUBS;
+using namespace std;
 
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
@@ -97,6 +102,15 @@ typedef struct communicator_struct {
   char name[MDI_NAME_LENGTH_INTERNAL]; // the name of the connected program
 } communicator;
 
+void mdi_error(const char* message) {
+  perror(message);
+  exit(1);
+}
+
+//this is the number of communicator handles that have been returned by MDI_Accept_Connection()
+static int returned_comms = 0;
+
+/*
 typedef struct dynamic_array_struct {
   //void* data;
   unsigned char* data;
@@ -104,14 +118,6 @@ typedef struct dynamic_array_struct {
   size_t capacity; //total number of elements that can be contained
   size_t size; //number of elements actually stored
 } vector;
-
-//this is the number of communicator handles that have been returned by MDI_Accept_Connection()
-static int returned_comms = 0;
-
-void mdi_error(const char* message) {
-  perror(message);
-  exit(1);
-}
 
 int vector_init(vector* v, size_t stride) {
   //initialize the vector with the given stride
@@ -159,8 +165,10 @@ void* vector_get(vector* v, int index) {
   }
   return ( void* )( v->data + (index * v->stride) );
 }
+*/
 
-static vector comms;
+//static vector comms;
+static vector <communicator> comms;
 
 
 /*----------------------------*/
@@ -192,10 +200,10 @@ int gather_names(const char* hostname_ptr){
    strcpy(buffer, hostname_ptr);
 
    char* names = NULL;
-   names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+   names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
    char* unique_names = NULL;
-   unique_names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
    //MPI_Gather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
    //           MPI_CHAR, 0, MPI_COMM_WORLD);
@@ -231,14 +239,6 @@ int gather_names(const char* hostname_ptr){
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
        int found = 0;
-       /*
-       for (icomm=0; icomm<comms.size; icomm++) {
-	 communicator* comm = vector_get(&comms,icomm);
-	 if ( strcmp(name, comm->name) == 0 ) {
-	   found = 1;
-	 }
-       }
-       */
        for (j=0; j<i; j++) {
 	 char prev_name[MDI_NAME_LENGTH];
 	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
@@ -278,7 +278,8 @@ int gather_names(const char* hostname_ptr){
 	   new_comm.MPI_rank = key;
 	   memcpy( new_comm.name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
-	   vector_push_back( &comms, &new_comm );
+	   //vector_push_back( &comms, &new_comm );
+	   comms.push_back( new_comm );
 	 }
        }
      }
@@ -357,7 +358,7 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 
   if ( any_initialization == 0 ) {
     // create the vector for the communicators
-    vector_init( &comms, sizeof(communicator) );
+    //vector_init( &comms, sizeof(communicator) );
     any_initialization = 1;
   }
 
@@ -445,9 +446,10 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
   communicator new_comm;
   new_comm.type = MDI_TCP;
   new_comm.handle = sockfd;
-  vector_push_back( &comms, &new_comm );
+  //vector_push_back( &comms, &new_comm );
+  comms.push_back( new_comm );
 
-   return 0;
+  return 0;
 }
 
 
@@ -460,7 +462,7 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 
 
 /* Initialize a socket and set it to listen */
-int MDI_Init(const char* options, void* data, MPI_Comm* world_comm)
+int MDI_Init(const char* options, void* data, void* world_comm)
 {
   int ret;
   int sockfd;
@@ -579,7 +581,7 @@ int MDI_Init(const char* options, void* data, MPI_Comm* world_comm)
 
   if ( any_initialization == 0 ) {
     // create the vector for the communicators
-    vector_init( &comms, sizeof(communicator) );
+    //vector_init( &comms, sizeof(communicator) );
     any_initialization = 1;
   }
 
@@ -635,7 +637,9 @@ int MDI_Init(const char* options, void* data, MPI_Comm* world_comm)
   else {
     *input_comm = intra_MPI_comm;
     */
-    *world_comm = intra_MPI_comm;
+    //*world_comm = intra_MPI_comm;
+    MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
+    *world_comm_ptr = intra_MPI_comm;
   }
 
   free( argv_line );
@@ -657,27 +661,27 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
 
    if ( any_initialization == 0 ) {
      // create the vector for the communicators
-     vector_init( &comms, sizeof(communicator) );
+     //vector_init( &comms, sizeof(communicator) );
      any_initialization = 1;
    }
 
    //if (inet==MDI_TCP) { // create a TCP socket
    if ( strcmp(method, "MPI") == 0 ) {
 
-     gather_names(options);
+     gather_names((char*)options);
      mpi_initialization = 1;
 
    }
    else if ( strcmp(method, "TCP") == 0 ) {
-     char sub_buff[strlen(options)];
-     char hostname_buff[strlen(options)];
+     char sub_buff[strlen((char*)options)];
+     char hostname_buff[strlen((char*)options)];
      char* strtol_ptr;
 
      // parse the hostname and port number from the options string
-     temp_char = options;
-     char_ptr = strrchr( options, ':' );
-     memcpy( sub_buff, char_ptr+1, strlen(options) - (char_ptr - temp_char) );
-     sub_buff[strlen(options) - (char_ptr - temp_char) - 1] = '\0';
+     temp_char = (char*)options;
+     char_ptr = strrchr( (char*)options, ':' );
+     memcpy( sub_buff, char_ptr+1, strlen((char*)options) - (char_ptr - temp_char) );
+     sub_buff[strlen((char*)options) - (char_ptr - temp_char) - 1] = '\0';
      port = strtol( sub_buff, &strtol_ptr, 10 );
 
      //memcpy( hostname_buff, temp_char, char_ptr - temp_char + 1 );
@@ -755,7 +759,8 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
      communicator new_comm;
      new_comm.type = MDI_TCP;
      new_comm.handle = sockfd;
-     vector_push_back( &comms, &new_comm );
+     //vector_push_back( &comms, &new_comm );
+     comms.push_back( new_comm );
 
    }
    else {
@@ -763,7 +768,7 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
      return -1;
    }
 
-   if ( returned_comms < comms.size ) {
+   if ( returned_comms < comms.size() ) {
      returned_comms++;
      return returned_comms;
    }
@@ -778,7 +783,7 @@ int MDI_Accept_Connection()
   int connection;
 
   // if MDI hasn't returned some connections, do that now
-  if ( returned_comms < comms.size ) {
+  if ( returned_comms < comms.size() ) {
     returned_comms++;
     return returned_comms;
   }
@@ -795,10 +800,11 @@ int MDI_Accept_Connection()
     communicator new_comm;
     new_comm.type = MDI_TCP;
     new_comm.handle = connection;
-    vector_push_back( &comms, &new_comm );
+    //vector_push_back( &comms, &new_comm );
+    comms.push_back( new_comm );
 
     // if MDI hasn't returned some connections, do that now
-    if ( returned_comms < comms.size ) {
+    if ( returned_comms < comms.size() ) {
       returned_comms++;
       return returned_comms;
     }
@@ -810,16 +816,19 @@ int MDI_Accept_Connection()
 
 
 /* Get the intra-code MPI communicator */
-int MDI_MPI_Comm(MPI_Comm* input_comm)
+int MDI_MPI_Comm(void* input_comm)
 {
+  MPI_Comm* world_comm_ptr = (MPI_Comm*) input_comm;
   if ( any_initialization == 0 ) {
     perror("Must call MDI_Listen or MDI_Request_Connection before MDI_Get_MPI_Comm");
   }
   if ( mpi_initialization == 0 ) {
-    *input_comm = MPI_COMM_WORLD;
+    //*input_comm = MPI_COMM_WORLD;
+    *world_comm_ptr = MPI_COMM_WORLD;
   }
   else {
-    *input_comm = intra_MPI_comm;
+    //*input_comm = intra_MPI_comm;
+    *world_comm_ptr = intra_MPI_comm;
   }
   return 0;
 }
@@ -849,7 +858,8 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
      exit(-1);
    }
 
-   communicator* comm = vector_get(&comms,sockfd-1);
+   //communicator* comm = vector_get(&comms,sockfd-1);
+   communicator* comm = &comms[sockfd-1];
 
    if ( comm->type == MDI_MPI ) {
      if (type == MDI_INT) {
@@ -903,7 +913,8 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
      exit(-1);
    }
 
-   communicator* comm = vector_get(&comms,sockfd-1);
+   //communicator* comm = vector_get(&comms,sockfd-1);
+   communicator* comm = &comms[sockfd-1];
 
    if ( comm->type == MDI_MPI ) {
      if (type == MDI_INT) {

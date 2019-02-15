@@ -1,6 +1,12 @@
 #ifndef MPI_STUB
 #define MPI_STUB
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
+namespace MDI_STUBS {
+
 typedef int MPI_Comm;
 typedef int MPI_Datatype;
 typedef int MPI_Status;
@@ -26,5 +32,7 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
              MPI_Comm comm, MPI_Status *status) { return 0; };
 int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm) { return 0; };
+
+}
 
 #endif

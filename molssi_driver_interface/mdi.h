@@ -21,6 +21,11 @@ Contents:
 
 #include <mpi.h>
 
+#ifdef __cplusplus
+namespace MDI_STUBS { }
+extern "C" {
+#endif
+
 // length of an MDI command in characters
 extern const int MDI_COMMAND_LENGTH;
 
@@ -60,13 +65,17 @@ extern const double MDI_EV_TO_HARTREE;
 extern const double MDI_RYDBERG_TO_HARTREE;
 extern const double MDI_KELVIN_TO_HARTREE;
 
-int MDI_Init(const char* options, void* data, MPI_Comm* world_comm);
+int MDI_Init(const char* options, void* data, void* world_comm);
 int MDI_Request_Connection(const char* method, void* options, void* world_comm);
 int MDI_Accept_Connection();
 int MDI_Send(const char*, int, int, int);
 int MDI_Recv(char*, int, int, int);
 int MDI_Send_Command(const char*, int);
 int MDI_Recv_Command(char*, int);
-int MDI_MPI_Comm(MPI_Comm*);
+int MDI_MPI_Comm(void*);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
