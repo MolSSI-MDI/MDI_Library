@@ -27,7 +27,7 @@ if( mpi STREQUAL "ON" )
    find_package(MPI)
 
    if( NOT MPI_FOUND )
-      message( FATAL_ERROR "Could not find MPI.  Recompile with -DMPI=OFF to compile without MPI support." )
+      message( FATAL_ERROR "Could not find MPI.  Recompile with -Dmpi=OFF to compile without MPI support." )
    endif()
 
    #include MPI
