@@ -1,3 +1,12 @@
+#check for MPI
+find_package(MPI)
+if( NOT MPI_FOUND )
+   if( mpi STREQUAL "ON" )
+      message( WARNING "Could not find MPI.  Compiling without MPI support." )
+   endif()
+   set(mpi "OFF")
+endif()
+
 #confirm that "language" is a valid value
 if( language AND (NOT language STREQUAL "CXX") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
    message( FATAL_ERROR "Value of language not recognized. Accepted values are: CXX; Fortran; Python." )
@@ -24,11 +33,6 @@ add_library(mdi ${libtype}
 
 #include and link to MPI
 if( mpi STREQUAL "ON" )
-   find_package(MPI)
-
-   if( NOT MPI_FOUND )
-      message( FATAL_ERROR "Could not find MPI.  Recompile with -Dmpi=OFF to compile without MPI support." )
-   endif()
 
    #include MPI
    target_include_directories(mdi PRIVATE ${MPI_CXX_INCLUDE_PATH})
