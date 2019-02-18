@@ -470,7 +470,6 @@ int MDI_Init(const char* options, void* data, void* world_comm)
   int reuse_value = 1;
   char* strtol_ptr;
   int i;
-  int mpi_rank;
 
   // values acquired from the input options
   char* role;
@@ -486,6 +485,7 @@ int MDI_Init(const char* options, void* data, void* world_comm)
 
   // get the MPI rank
   MPI_Comm mpi_communicator;
+  int mpi_rank = 0;
   if ( world_comm == NULL ) {
     mpi_communicator = 0;
     mpi_rank = 0;
