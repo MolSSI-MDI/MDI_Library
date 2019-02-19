@@ -77,14 +77,24 @@ def MDI_Init(arg1, arg2, comm):
 
     # call MDI_Init
     command = arg1.encode('utf-8')
-    mpi_communicator = MPI._addressof(comm)
-    mpi_communicator_ptr = ctypes.c_int(mpi_communicator)
+    if comm is None:
+        mpi_communicator_ptr = None
+        do_mpi_split = False
+    else:
+        if use_mpi4py:
+            mpi_communicator = MPI._addressof(comm)
+            mpi_communicator_ptr = ctypes.c_int(mpi_communicator)
+            do_mpi_split = True
+        else:
+            raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but mpi4py is not found")
+
     ret = mdi.MDI_Init(ctypes.c_char_p(command), arg2, mpi_communicator_ptr )
 
     # split the intra-code communicator
-    mpi_color = mdi.MDI_Get_MPI_Code_Rank()
-    intra_code_comm = comm.Split(mpi_color, comm.Get_rank())
-    mdi.MDI_Set_MPI_Intra_Rank( intra_code_comm.Get_rank() )
+    if do_mpi_split:
+        mpi_color = mdi.MDI_Get_MPI_Code_Rank()
+        intra_code_comm = comm.Split(mpi_color, comm.Get_rank())
+        mdi.MDI_Set_MPI_Intra_Rank( intra_code_comm.Get_rank() )
 
     return ret
 
