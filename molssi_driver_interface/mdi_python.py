@@ -95,6 +95,7 @@ def MDI_Init(arg1, arg2, comm):
         mpi_color = mdi.MDI_Get_MPI_Code_Rank()
         intra_code_comm = comm.Split(mpi_color, comm.Get_rank())
         mdi.MDI_Set_MPI_Intra_Rank( intra_code_comm.Get_rank() )
+        comm.Barrier()
 
     return ret
 
