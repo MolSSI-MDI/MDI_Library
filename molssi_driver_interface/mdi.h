@@ -74,6 +74,10 @@ int MDI_Send_Command(const char*, int);
 int MDI_Recv_Command(char*, int);
 int MDI_MPI_Comm(void*);
 
+// only used internally by MDI
+int MDI_Get_MPI_Code_Rank();
+void MDI_Set_MPI_Intra_Rank(int rank);
+
 #ifdef __cplusplus
 }
 #endif

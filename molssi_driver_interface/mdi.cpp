@@ -93,6 +93,9 @@ static int world_rank = -1;
 // the MPI rank within the code
 static int intra_rank = -1;
 
+// the MPI rank of the code
+static int mpi_code_rank = 0;
+
 typedef struct communicator_struct {
   int type; // the type of communicator
   int handle; // for TCP, the socket descriptor
@@ -181,11 +184,11 @@ void sigint_handler(int dummy) {
 }
 
 
-int gather_names(const char* hostname_ptr){
+int gather_names(const char* hostname_ptr, bool do_split){
    int i, j, icomm;
    int driver_rank;
    int nunique_names = 0;
-   int my_name_count = 0;
+   //int my_name_count = 0;
 
    // get the number of processes
    int world_size;
@@ -255,7 +258,7 @@ int gather_names(const char* hostname_ptr){
 	 char my_name[MDI_NAME_LENGTH];
 	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(my_name, name) == 0 ) {
-	   my_name_count = nunique_names;
+	   mpi_code_rank = nunique_names;
 	 }
 
          // create a communicator to handle communication with this production code
@@ -284,11 +287,15 @@ int gather_names(const char* hostname_ptr){
        }
      }
 
-     // create the intra-code communicators
-     MPI_Comm_split(MPI_COMM_WORLD, my_name_count, world_rank, &intra_MPI_comm);
-     MPI_Comm_rank(intra_MPI_comm, &intra_rank);
+     if ( do_split ) {
 
-   MPI_Barrier(MPI_COMM_WORLD);
+       // create the intra-code communicators
+       MPI_Comm_split(MPI_COMM_WORLD, mpi_code_rank, world_rank, &intra_MPI_comm);
+       MPI_Comm_rank(intra_MPI_comm, &intra_rank);
+
+       MPI_Barrier(MPI_COMM_WORLD);
+
+     }
 
    return 0;
 }
@@ -477,11 +484,13 @@ int MDI_Init(const char* options, void* data, void* world_comm)
   char* name;
   char* hostname;
   int port;
+  char* language;
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
+  int has_language;
 
   // get the MPI rank
   MPI_Comm mpi_communicator;
@@ -562,6 +571,15 @@ int MDI_Init(const char* options, void* data, void* world_comm)
       has_port = 1;
       iarg += 2;
     }
+    //_language
+    else if (strcmp(argv[iarg],"_language") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from _language option");
+      }
+      language = argv[iarg+1];
+      has_language = 1;
+      iarg += 2;
+    }
     else {
       mdi_error("Unrecognized option");
     }
@@ -577,6 +595,12 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     mdi_error("Error in MDI_Init: -name option not provided");
   }
 
+  // determine whether the intra-code MPI communicator should be split by gather_names
+  bool do_split = true;
+  if ( strcmp(language, "Python") == 0 ) {
+    do_split = false;
+  }
+
 
 
   if ( any_initialization == 0 ) {
@@ -589,7 +613,7 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names("");
+      gather_names("", do_split);
       mpi_initialization = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -609,7 +633,7 @@ int MDI_Init(const char* options, void* data, void* world_comm)
     // initialize this code as an engine
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names(name);
+      gather_names(name, do_split);
       mpi_initialization = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -668,7 +692,7 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
    //if (inet==MDI_TCP) { // create a TCP socket
    if ( strcmp(method, "MPI") == 0 ) {
 
-     gather_names((char*)options);
+     //gather_names((char*)options);
      mpi_initialization = 1;
 
    }
@@ -972,4 +996,15 @@ int MDI_Recv_Command(char* data_ptr, int sockfd)
    int type = MDI_CHAR;
 
    return MDI_Recv( data_ptr, len, type, sockfd );
+}
+
+
+int MDI_Get_MPI_Code_Rank()
+{
+  return mpi_code_rank;
+}
+
+void MDI_Set_MPI_Intra_Rank(int rank)
+{
+  intra_rank = rank;
 }
