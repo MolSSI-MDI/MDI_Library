@@ -67,7 +67,7 @@ mdi.MDI_Set_MPI_Intra_Rank.restype = None
 
 
 # MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p, ctypes.c_void_p]
 mdi.MDI_Init.restype = ctypes.c_int
 def MDI_Init(arg1, arg2, comm):
     global intra_code_comm
@@ -83,7 +83,8 @@ def MDI_Init(arg1, arg2, comm):
     else:
         if use_mpi4py:
             mpi_communicator = MPI._addressof(comm)
-            mpi_communicator_ptr = ctypes.c_int(mpi_communicator)
+            #mpi_communicator_ptr = ctypes.c_int(mpi_communicator)
+            mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
             do_mpi_split = True
         else:
             raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but mpi4py is not found")

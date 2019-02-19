@@ -655,15 +655,10 @@ int MDI_Init(const char* options, void* data, void* world_comm)
 
   // set the MPI communicator correctly
   if ( mpi_initialization != 0 ) {
-    /*
-    *input_comm = MPI_COMM_WORLD;
-  }
-  else {
-    *input_comm = intra_MPI_comm;
-    */
-    //*world_comm = intra_MPI_comm;
-    MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
-    *world_comm_ptr = intra_MPI_comm;
+    if ( do_split ) {
+      MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
+      *world_comm_ptr = intra_MPI_comm;
+    }
   }
 
   free( argv_line );
