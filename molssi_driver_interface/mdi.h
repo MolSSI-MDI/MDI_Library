@@ -36,6 +36,8 @@ extern const int MDI_NAME_LENGTH;
 extern const int MDI_INT;
 extern const int MDI_DOUBLE;
 extern const int MDI_CHAR;
+extern const int MDI_INT_NUMPY;
+extern const int MDI_DOUBLE_NUMPY;
 
 // MDI communication types
 extern const int MDI_TCP;

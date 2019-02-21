@@ -33,6 +33,8 @@ MDI_NAME_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_NAME_LENGTH").value
 MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
 MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
 MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
+MDI_INT_NUMPY = ctypes.c_int.in_dll(mdi, "MDI_INT_NUMPY").value
+MDI_DOUBLE_NUMPY = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE_NUMPY").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 
@@ -123,35 +125,81 @@ def MDI_Send(arg1, arg2, arg3, arg4):
 
     if (arg3 == MDI_INT):
         arg_type = ctypes.c_int
+        mdi_type = MDI_INT
     elif (arg3 == MDI_DOUBLE):
         arg_type = ctypes.c_double
+        mdi_type = MDI_DOUBLE
     elif (arg3 == MDI_CHAR):
         arg_type = ctypes.c_char
-    arg_size = ctypes.sizeof(arg_type)
+        mdi_type = MDI_CHAR
+    elif (arg3 == MDI_INT_NUMPY):
+        if not use_numpy:
+            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
+        arg_type = ctypes.c_int
+        data = arg1.astype(np.int32)
+        data = data.ctypes.data_as(ctypes.c_char_p)
+        mdi_type = MDI_INT
+    elif (arg3 == MDI_DOUBLE_NUMPY):
+        if not use_numpy:
+            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
+        arg_type = ctypes.c_double
+        data = arg1.astype(np.float64)
+        data = data.ctypes.data_as(ctypes.c_char_p)
+        mdi_type = MDI_DOUBLE
 
-    if arg2 == 1:
-        arg1_ = (ctypes.c_char*(arg2*arg_size))(arg1)
-    else:
-        arg1_temp = (arg_type*arg2)(*arg1)
-        arg1_ = ctypes.cast(arg1_temp, ctypes.POINTER(ctypes.c_char))
 
-    return mdi.MDI_Send(arg1_, arg2, ctypes.c_int(arg3), arg4)
+    if ( arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR ):
+        arg_size = ctypes.sizeof(arg_type)
+        if arg2 == 1:
+            data = (ctypes.c_char*(arg2*arg_size))(arg1)
+        else:
+            data_temp = (arg_type*arg2)(*arg1)
+            data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
+
+    return mdi.MDI_Send(data, arg2, ctypes.c_int(mdi_type), arg4)
 
 # MDI_Recv
-mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
 mdi.MDI_Recv.restype = ctypes.c_int
 def MDI_Recv(arg2, arg3, arg4):
 
     if (arg3 == MDI_INT):
+        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_int
+        mdi_type = MDI_INT
     elif (arg3 == MDI_DOUBLE):
+        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_double
+        mdi_type = MDI_DOUBLE
     elif (arg3 == MDI_CHAR):
+        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_char
-    arg_size = ctypes.sizeof(arg_type)
+        mdi_type = MDI_CHAR
+    elif (arg3 == MDI_INT_NUMPY):
+        if not use_numpy:
+            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
+        mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS'), 
+                                 ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        arg_type = ctypes.c_int
+        mdi_type = MDI_INT
+    elif (arg3 == MDI_DOUBLE_NUMPY):
+        if not use_numpy:
+            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
+        mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'), 
+                                 ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        arg_type = ctypes.c_double
+        mdi_type = MDI_DOUBLE
 
-    arg1 = (ctypes.c_char*(arg2*arg_size))()
-    ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(arg3), arg4)
+    if (arg3 == MDI_DOUBLE_NUMPY):
+        arg1 = np.zeros(arg2, dtype='float64')
+    elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR):
+        arg_size = ctypes.sizeof(arg_type)
+        arg1 = (ctypes.c_char*(arg2*arg_size))()
+    ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(mdi_type), arg4)
+
+    if (arg3 == MDI_INT_NUMPY):
+        return arg1
+    elif (arg3 == MDI_DOUBLE_NUMPY):
+        return arg1
 
     result = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
 

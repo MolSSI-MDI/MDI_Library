@@ -43,9 +43,11 @@ const int MDI_COMMAND_LENGTH = 12;
 const int MDI_NAME_LENGTH = MDI_NAME_LENGTH_INTERNAL;
 
 // MDI data types
-const int MDI_INT    = 0;
-const int MDI_DOUBLE = 1;
-const int MDI_CHAR   = 2;
+const int MDI_INT          = 0;
+const int MDI_DOUBLE       = 1;
+const int MDI_CHAR         = 2;
+const int MDI_INT_NUMPY    = 3;
+const int MDI_DOUBLE_NUMPY = 4;
 
 // MDI communication types
 const int MDI_TCP    = 1;
