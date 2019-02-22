@@ -59,8 +59,6 @@ intra_code_comm = None
 # MDI_Get_MPI_Code_Rank
 mdi.MDI_Get_MPI_Code_Rank.argtypes = []
 mdi.MDI_Get_MPI_Code_Rank.restype = ctypes.c_int
-#def MDI_Accept_Connection():
-#    return mdi.MDI_Accept_Connection()
 
 # MDI_Set_MPI_Intra_Rank
 mdi.MDI_Set_MPI_Intra_Rank.argtypes = [ctypes.c_int]
@@ -106,17 +104,11 @@ def MDI_Get_Intra_Code_MPI_Comm():
     global intra_code_comm
     return intra_code_comm
 
-# MDI_Request_Connection
-mdi.MDI_Request_Connection.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int)]
-mdi.MDI_Request_Connection.restype = ctypes.c_int
-def MDI_Request_Connection(arg1, arg2, arg3):
-    return mdi.MDI_Request_Connection(arg1, arg2, arg3)
-
-# MDI_Accept_Connection
-mdi.MDI_Accept_Connection.argtypes = []
-mdi.MDI_Accept_Connection.restype = ctypes.c_int
-def MDI_Accept_Connection():
-    return mdi.MDI_Accept_Connection()
+# MDI_Accept_Communicator
+mdi.MDI_Accept_Communicator.argtypes = []
+mdi.MDI_Accept_Communicator.restype = ctypes.c_int
+def MDI_Accept_Communicator():
+    return mdi.MDI_Accept_Communicator()
 
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]

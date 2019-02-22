@@ -6,8 +6,7 @@
 
 Contents:
    MDI_Init: Initializes a socket and sets it to listen
-   MDI_Open: Opens a socket and requests a connection with a specified host
-   MDI_Accept_Connection: Accepts an incoming connection request
+   MDI_Accept_Communicator: Accepts a new MDI communicator
    MDI_Send: Sends data through the socket
    MDI_Recv: Receives data from the socket
    MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH over the
@@ -68,8 +67,7 @@ extern const double MDI_RYDBERG_TO_HARTREE;
 extern const double MDI_KELVIN_TO_HARTREE;
 
 int MDI_Init(const char* options, void* data, void* world_comm);
-int MDI_Request_Connection(const char* method, void* options, void* world_comm);
-int MDI_Accept_Connection();
+int MDI_Accept_Communicator();
 int MDI_Send(const char*, int, int, int);
 int MDI_Recv(char*, int, int, int);
 int MDI_Send_Command(const char*, int);

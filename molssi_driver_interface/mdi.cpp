@@ -6,9 +6,7 @@
 
 Contents:
    MDI_Init: Initialize MDI
-   MDI_Request_Connection: Creates an outgoing connection request
-   MDI_Accept_Connection: Accepts an incoming connection request
-   MDI_MPI_Comm: Return the intra-code MPI communicator
+   MDI_Accept_Communicator: Accepts a new MDI communicator
    MDI_Send: Sends data through the socket
    MDI_Recv: Receives data through the socket
    MDI_Send_Command: Sends a string of length MDI_COMMAND_LENGTH through the
@@ -112,7 +110,7 @@ void mdi_error(const char* message) {
   exit(1);
 }
 
-//this is the number of communicator handles that have been returned by MDI_Accept_Connection()
+//this is the number of communicator handles that have been returned by MDI_Accept_Communicator()
 static int returned_comms = 0;
 
 /*
@@ -798,8 +796,8 @@ int MDI_Request_Connection(const char* method, void* options, void* world_comm)
 }
 
 
-/* Accept an incoming connection request */
-int MDI_Accept_Connection()
+/* Accept a new MDI communicator */
+int MDI_Accept_Communicator()
 {
   int connection;
 
@@ -841,7 +839,7 @@ int MDI_MPI_Comm(void* input_comm)
 {
   MPI_Comm* world_comm_ptr = (MPI_Comm*) input_comm;
   if ( any_initialization == 0 ) {
-    perror("Must call MDI_Listen or MDI_Request_Connection before MDI_Get_MPI_Comm");
+    perror("Must call MDI_Init before MDI_Accept_Communicator");
   }
   if ( mpi_initialization == 0 ) {
     //*input_comm = MPI_COMM_WORLD;

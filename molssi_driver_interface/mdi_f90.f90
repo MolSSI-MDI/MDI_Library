@@ -61,18 +61,10 @@
        INTEGER(KIND=C_INT)                      :: MDI_Init_
      END FUNCTION MDI_Init_
 
-     FUNCTION MDI_Request_Connection_(method, options, world_comm) BIND(C, name="MDI_Request_Connection")
-       USE ISO_C_BINDING
-       CHARACTER(C_CHAR)                        :: method(*)
-       TYPE(C_PTR), VALUE                       :: options
-       TYPE(C_PTR), VALUE                       :: world_comm
-       INTEGER(KIND=C_INT)                      :: MDI_Request_Connection_
-     END FUNCTION MDI_Request_Connection_
-
-     FUNCTION MDI_Accept_Connection_() bind(c, name="MDI_Accept_Connection")
+     FUNCTION MDI_Accept_Communicator_() bind(c, name="MDI_Accept_Communicator")
        USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT)                      :: MDI_Accept_Connection_
-     END FUNCTION MDI_Accept_Connection_
+       INTEGER(KIND=C_INT)                      :: MDI_Accept_Communicator_
+     END FUNCTION MDI_Accept_Communicator_
 
      FUNCTION MDI_MPI_Comm_(comm) bind(c, name="MDI_MPI_Comm")
        USE, INTRINSIC :: iso_c_binding
@@ -120,40 +112,16 @@
       TYPE(C_PTR), INTENT(IN) :: data
       INTEGER, INTENT(INOUT) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
-      !INTEGER, TARGET :: cworld_comm
 
-      !cworld_comm = fworld_comm
-      !ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, c_loc(cworld_comm) )
       ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, fworld_comm )
     END SUBROUTINE MDI_Init
 
-    SUBROUTINE MDI_Request_Connection(fmethod, foptions, fworld_comm, comm)
+    SUBROUTINE MDI_Accept_Communicator(connection)
       IMPLICIT NONE
-      CHARACTER(LEN=*), INTENT(IN) :: fmethod
-      CHARACTER(LEN=*), INTENT(IN) :: foptions
-      INTEGER, INTENT(IN) :: fworld_comm
-      INTEGER, TARGET, INTENT(OUT) :: comm
-      INTEGER, TARGET :: cworld_comm
+      INTEGER, INTENT(OUT) :: communicator
 
-      INTEGER                                  :: i
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: coptions( LEN_TRIM(foptions) + 1 )
-
-      DO i = 1, LEN_TRIM(foptions)
-         coptions(i) = foptions(i:i)
-      END DO
-      coptions( LEN_TRIM(foptions) + 1 ) = c_null_char
-
-      cworld_comm = fworld_comm
-      comm = MDI_Request_Connection_( TRIM(fmethod)//c_null_char, &
-           c_loc(coptions), c_loc(cworld_comm) )
-    END SUBROUTINE MDI_Request_Connection
-
-    SUBROUTINE MDI_Accept_Connection(connection)
-      IMPLICIT NONE
-      INTEGER, INTENT(OUT) :: connection
-
-      connection = MDI_Accept_Connection_()
-    END SUBROUTINE MDI_Accept_Connection
+      communicator = MDI_Accept_Communicator_()
+    END SUBROUTINE MDI_Accept_Communicator
 
     SUBROUTINE MDI_MPI_Comm(comm, ierr)
       IMPLICIT NONE
