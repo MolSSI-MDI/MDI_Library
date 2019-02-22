@@ -1,3 +1,10 @@
+/*! \file
+ *
+ * \brief Functions callable by users of the MolSSI Driver Interface
+ */
+
+
+
 /* ----------------------------------------------------------------------
    MDI - MolSSI Driver Interface
    https://molssi.org/, Molecular Sciences Software Institute
@@ -112,63 +119,6 @@ void mdi_error(const char* message) {
 
 //this is the number of communicator handles that have been returned by MDI_Accept_Communicator()
 static int returned_comms = 0;
-
-/*
-typedef struct dynamic_array_struct {
-  //void* data;
-  unsigned char* data;
-  size_t stride; //size of each element
-  size_t capacity; //total number of elements that can be contained
-  size_t size; //number of elements actually stored
-} vector;
-
-int vector_init(vector* v, size_t stride) {
-  //initialize the vector with the given stride
-  v->data = malloc(0);
-  if (!v->data) {
-    perror("Could not initialize vector");
-    exit(-1);
-  }
-
-  v->size = 0;
-  v->capacity = 0;
-  v->stride = stride;
-
-  return 0;
-}
-
-int vector_push_back(vector* v, void* element) {
-  //grow the vector
-  if (v->size >= v->capacity) {
-    int new_capacity;
-    if ( v->capacity > 0 ) {
-      new_capacity = 2 * v->capacity;
-    }
-    else {
-      new_capacity = 1;
-    }
-    void* new_data = malloc( v->stride * new_capacity );
-    memcpy(new_data, v->data, v->size * v->stride);
-    free(v->data);
-    v->data = new_data;
-    v->capacity = new_capacity;
-  }
-
-  //add the new data to the vector
-  memcpy( v->data + (v->size * v->stride), (unsigned char*)element, v->stride );
-  v->size++;
-
-  return 0;
-}
-
-void* vector_get(vector* v, int index) {
-  if (index < 0 || index >= v->size) {
-    perror("Vector accessed out-of-bounds");
-    exit(-1);
-  }
-  return ( void* )( v->data + (index * v->stride) );
-}
-*/
 
 //static vector comms;
 static vector <communicator> comms;
@@ -468,7 +418,18 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 /*--------------------------*/
 
 
-/* Initialize a socket and set it to listen */
+/*! \brief Initialize communication through the MDI library
+ *
+ * If using the "-method MPI" option, this function must be called by all ranks.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       options
+ *                   Options describing the communication method used to connect to codes
+ * \param [in, out]  world_comm
+ *                   On input, the MPI communicator that spans all of the codes.
+ *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
+ *                   Only used if the "-method MPI" option is provided.
+ */
 int MDI_Init(const char* options, void* world_comm)
 {
   int ret;
@@ -667,136 +628,12 @@ int MDI_Init(const char* options, void* world_comm)
 }
 
 
-/* Open a socket and request a connection with a specified host */
-//int MDI_Open(int inet, int port, const char* hostname_ptr)
-int MDI_Request_Connection(const char* method, void* options, void* world_comm)
-{
-   int i;
-   int port;
-   int ret, sockfd;
-   char* char_ptr;
-   char* hostname_ptr;
-   char* temp_char;
-
-   if ( any_initialization == 0 ) {
-     // create the vector for the communicators
-     //vector_init( &comms, sizeof(communicator) );
-     any_initialization = 1;
-   }
-
-   //if (inet==MDI_TCP) { // create a TCP socket
-   if ( strcmp(method, "MPI") == 0 ) {
-
-     //gather_names((char*)options);
-     mpi_initialization = 1;
-
-   }
-   else if ( strcmp(method, "TCP") == 0 ) {
-     char sub_buff[strlen((char*)options)];
-     char hostname_buff[strlen((char*)options)];
-     char* strtol_ptr;
-
-     // parse the hostname and port number from the options string
-     temp_char = (char*)options;
-     char_ptr = strrchr( (char*)options, ':' );
-     memcpy( sub_buff, char_ptr+1, strlen((char*)options) - (char_ptr - temp_char) );
-     sub_buff[strlen((char*)options) - (char_ptr - temp_char) - 1] = '\0';
-     port = strtol( sub_buff, &strtol_ptr, 10 );
-
-     //memcpy( hostname_buff, temp_char, char_ptr - temp_char + 1 );
-     memcpy( hostname_buff, temp_char, (char_ptr-temp_char) );
-     //////hostname_buff[ (char_ptr-temp_char) + 1 ] = '\0';
-     hostname_buff[ (char_ptr-temp_char) ] = '\0';
-     hostname_ptr = &hostname_buff[0];
-
-     struct sockaddr_in driver_address;
-     struct hostent* host_ptr;
-
-     // get the address of the host
-     printf("port: %d\n",port);
-     printf("hostname: %s\n",hostname_ptr);
-     host_ptr = gethostbyname((char*) hostname_ptr);
-     //host_ptr = gethostbyname((char*) hostname_buff); 
-     //host_ptr = gethostbyname("knl3.sirius.local.net");
-     if (host_ptr == NULL) {
-       perror("Error in gethostbyname");
-       return -1;
-     }
-     if (host_ptr->h_addrtype != AF_INET) {
-       perror("Unkown address type");
-       return -1;
-     }
-
-     bzero((char *) &driver_address, sizeof(driver_address));
-     driver_address.sin_family = AF_INET;
-     driver_address.sin_addr.s_addr = 
-       ((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
-     driver_address.sin_port = htons(port);
-
-     // create the socket
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) {
-       perror("Could not create socket");
-       return -1;
-     }
-
-     // connect to the driver
-     // if the connection is refused, try again
-     //   this allows the production code to start before the driver
-     int try_connect = 1;
-     while (try_connect == 1) {
-       ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
-       if (ret < 0 ) {
-         if ( errno == ECONNREFUSED ) {
-
-           // close the socket, so that a new one can be created
-           ret = close(sockfd);
-           if (ret < 0) {
-	     perror("Could not close socket");
-             return -1;
-           }
-
-	   // create the socket
-	   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	   if (sockfd < 0) {
-	     perror("Could not create socket");
-	     return -1;
-	   }
-
-	 }
-         else { // only error out for errors other than "connection refused"
-           perror("Could not connect to the driver");
-           return -1;
-         }
-
-       }
-       else {
-         try_connect = 0;
-       }
-     }
-
-     communicator new_comm;
-     new_comm.type = MDI_TCP;
-     new_comm.handle = sockfd;
-     //vector_push_back( &comms, &new_comm );
-     comms.push_back( new_comm );
-
-   }
-   else {
-     perror("Connection type not recognized"); exit(-1);
-     return -1;
-   }
-
-   if ( returned_comms < comms.size() ) {
-     returned_comms++;
-     return returned_comms;
-   }
-
-   return -1;
-}
-
-
-/* Accept a new MDI communicator */
+/*! \brief Accept a new MDI communicator
+ *
+ * The function returns an MDI_COMM that describes a connection between two codes.
+ * If no new communicators are available, the function returns \p 0.
+ *
+ */
 int MDI_Accept_Communicator()
 {
   int connection;
@@ -834,27 +671,21 @@ int MDI_Accept_Communicator()
 }
 
 
-/* Get the intra-code MPI communicator */
-int MDI_MPI_Comm(void* input_comm)
-{
-  MPI_Comm* world_comm_ptr = (MPI_Comm*) input_comm;
-  if ( any_initialization == 0 ) {
-    perror("Must call MDI_Init before MDI_Accept_Communicator");
-  }
-  if ( mpi_initialization == 0 ) {
-    //*input_comm = MPI_COMM_WORLD;
-    *world_comm_ptr = MPI_COMM_WORLD;
-  }
-  else {
-    //*input_comm = intra_MPI_comm;
-    *world_comm_ptr = intra_MPI_comm;
-  }
-  return 0;
-}
-
-
-/* Send data through the socket */
-int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
+/*! \brief Send data through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
+int MDI_Send(const char* buf, int count, int datatype, int comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Send with incorrect rank");
@@ -863,13 +694,13 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 
    // determine the byte size of the data type being sent
    int datasize;
-   if (type == MDI_INT) {
+   if (datatype == MDI_INT) {
      datasize = sizeof(int);
    }
-   else if (type == MDI_DOUBLE) {
+   else if (datatype == MDI_DOUBLE) {
      datasize = sizeof(double);
    }
-   else if (type == MDI_CHAR) {
+   else if (datatype == MDI_CHAR) {
      datasize = sizeof(char);
    }
    else {
@@ -877,26 +708,25 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
      exit(-1);
    }
 
-   //communicator* comm = vector_get(&comms,sockfd-1);
-   communicator* comm = &comms[sockfd-1];
+   communicator* send_comm = &comms[comm-1];
 
-   if ( comm->type == MDI_MPI ) {
-     if (type == MDI_INT) {
-       MPI_Send(data_ptr, len, MPI_INT, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
+   if ( send_comm->type == MDI_MPI ) {
+     if (datatype == MDI_INT) {
+       MPI_Send(buf, count, MPI_INT, (send_comm->MPI_rank+1)%2, 0, send_comm->MPI_handle);
      }
-     else if (type == MDI_DOUBLE) {
-       MPI_Send(data_ptr, len, MPI_DOUBLE, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
+     else if (datatype == MDI_DOUBLE) {
+       MPI_Send(buf, count, MPI_DOUBLE, (send_comm->MPI_rank+1)%2, 0, send_comm->MPI_handle);
      }
-     else if (type == MDI_CHAR) {
-       MPI_Send(data_ptr, len, MPI_CHAR, (comm->MPI_rank+1)%2, 0, comm->MPI_handle);
+     else if (datatype == MDI_CHAR) {
+       MPI_Send(buf, count, MPI_CHAR, (send_comm->MPI_rank+1)%2, 0, send_comm->MPI_handle);
      }
      else {
        perror("MDI data type not recognized in MDI_Send");
        exit(-1);
      }
    }
-   else if ( comm->type == MDI_TCP ) {
-     n = write(comm->handle,data_ptr,len*datasize);
+   else if ( send_comm->type == MDI_TCP ) {
+     n = write(send_comm->handle,buf,count*datasize);
      if (n < 0) { perror("Error writing to socket: server has quit or connection broke"); exit(-1); }
    }
    else {
@@ -908,8 +738,21 @@ int MDI_Send(const char* data_ptr, int len, int type, int sockfd)
 }
 
 
-/* Receive data through the socket */
-int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
+/*! \brief Receive data through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int MDI_Recv(char* buf, int count, int datatype, int comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Recv with incorrect rank");
@@ -918,13 +761,13 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 
    // determine the byte size of the data type being received
    int datasize;
-   if (type == MDI_INT) {
+   if (datatype == MDI_INT) {
      datasize = sizeof(int);
    }
-   else if (type == MDI_DOUBLE) {
+   else if (datatype == MDI_DOUBLE) {
      datasize = sizeof(double);
    }
-   else if (type == MDI_CHAR) {
+   else if (datatype == MDI_CHAR) {
      datasize = sizeof(char);
    }
    else {
@@ -932,29 +775,28 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
      exit(-1);
    }
 
-   //communicator* comm = vector_get(&comms,sockfd-1);
-   communicator* comm = &comms[sockfd-1];
+   communicator* recv_comm = &comms[comm-1];
 
-   if ( comm->type == MDI_MPI ) {
-     if (type == MDI_INT) {
-       MPI_Recv(data_ptr, len, MPI_INT, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
+   if ( recv_comm->type == MDI_MPI ) {
+     if (datatype == MDI_INT) {
+       MPI_Recv(buf, count, MPI_INT, (recv_comm->MPI_rank+1)%2, 0, recv_comm->MPI_handle, MPI_STATUS_IGNORE);
      }
-     else if (type == MDI_DOUBLE) {
-       MPI_Recv(data_ptr, len, MPI_DOUBLE, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
+     else if (datatype == MDI_DOUBLE) {
+       MPI_Recv(buf, count, MPI_DOUBLE, (recv_comm->MPI_rank+1)%2, 0, recv_comm->MPI_handle, MPI_STATUS_IGNORE);
      }
-     else if (type == MDI_CHAR) {
-       MPI_Recv(data_ptr, len, MPI_CHAR, (comm->MPI_rank+1)%2, 0, comm->MPI_handle, MPI_STATUS_IGNORE);
+     else if (datatype == MDI_CHAR) {
+       MPI_Recv(buf, count, MPI_CHAR, (recv_comm->MPI_rank+1)%2, 0, recv_comm->MPI_handle, MPI_STATUS_IGNORE);
      }
      else {
        perror("MDI data type not recognized in MDI_Recv");
        exit(-1);
      }
    }
-   else if ( comm->type == MDI_TCP ) {
-     n = nr = read(comm->handle,data_ptr,len*datasize);
+   else if ( recv_comm->type == MDI_TCP ) {
+     n = nr = read(recv_comm->handle,buf,count*datasize);
 
-     while (nr>0 && n<len*datasize )
-       {  nr=read(comm->handle,&data_ptr[n],len-n); n+=nr; }
+     while (nr>0 && n<count*datasize )
+       {  nr=read(recv_comm->handle,&buf[n],count-n); n+=nr; }
 
      if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
    }
@@ -967,30 +809,48 @@ int MDI_Recv(char* data_ptr, int len, int type, int sockfd)
 }
 
 
-/* Send a string of length MDI_COMMAND_LENGTH through the socket */
-int MDI_Send_Command(const char* data_ptr, int sockfd)
+/*! \brief Send a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
+int MDI_Send_Command(const char* buf, int comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Send_Command with incorrect rank");
    }
-   int len=MDI_COMMAND_LENGTH;
-   char buffer[MDI_COMMAND_LENGTH];
+   int count = MDI_COMMAND_LENGTH;
+   char command[MDI_COMMAND_LENGTH];
 
-   strcpy(buffer, data_ptr);
-   return MDI_Send( &buffer[0], len, MDI_CHAR, sockfd );
+   strcpy(command, buf);
+   return MDI_Send( &command[0], count, MDI_CHAR, comm );
 }
 
 
-/* Receive a string of length MDI_COMMAND_LENGTH through the socket */
-int MDI_Recv_Command(char* data_ptr, int sockfd)
+/*! \brief Receive a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int MDI_Recv_Command(char* buf, int comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Recv_Command with incorrect rank");
    }
-   int len = MDI_COMMAND_LENGTH;
-   int type = MDI_CHAR;
+   int count = MDI_COMMAND_LENGTH;
+   int datatype = MDI_CHAR;
 
-   return MDI_Recv( data_ptr, len, type, sockfd );
+   return MDI_Recv( buf, count, datatype, comm );
 }
 
 

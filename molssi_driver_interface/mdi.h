@@ -68,11 +68,10 @@ extern const double MDI_KELVIN_TO_HARTREE;
 
 int MDI_Init(const char* options, void* world_comm);
 int MDI_Accept_Communicator();
-int MDI_Send(const char*, int, int, int);
-int MDI_Recv(char*, int, int, int);
-int MDI_Send_Command(const char*, int);
-int MDI_Recv_Command(char*, int);
-int MDI_MPI_Comm(void*);
+int MDI_Send(const char* buf, int count, int datatype, int comm);
+int MDI_Recv(char* buf, int count, int datatype, int comm);
+int MDI_Send_Command(const char* buf, int comm);
+int MDI_Recv_Command(char* buf, int comm);
 
 // only used internally by MDI
 int MDI_Get_MPI_Code_Rank();

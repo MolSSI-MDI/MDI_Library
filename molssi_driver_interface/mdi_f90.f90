@@ -65,37 +65,31 @@
        INTEGER(KIND=C_INT)                      :: MDI_Accept_Communicator_
      END FUNCTION MDI_Accept_Communicator_
 
-     FUNCTION MDI_MPI_Comm_(comm) bind(c, name="MDI_MPI_Comm")
-       USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT)                      :: comm
-       INTEGER(KIND=C_INT)                      :: MDI_MPI_Comm_
-     END FUNCTION MDI_MPI_Comm_
-
-     FUNCTION MDI_Send_(data_ptr, len, type, sockfd) BIND(C, name="MDI_Send")
+     FUNCTION MDI_Send_(buf, count, datatype, comm) BIND(C, name="MDI_Send")
        USE ISO_C_BINDING
-       INTEGER(KIND=C_INT), VALUE               :: len, type, sockfd
-       TYPE(C_PTR), VALUE                       :: data_ptr
+       INTEGER(KIND=C_INT), VALUE               :: count, datatype, comm
+       TYPE(C_PTR), VALUE                       :: buf
        INTEGER(KIND=C_INT)                      :: MDI_Send_
      END FUNCTION MDI_Send_
 
-     FUNCTION MDI_Recv_(data_ptr, len, type, sockfd) BIND(C, name="MDI_Recv")
+     FUNCTION MDI_Recv_(buf, count, datatype, comm) BIND(C, name="MDI_Recv")
        USE ISO_C_BINDING
-       INTEGER(KIND=C_INT), VALUE               :: len, type, sockfd
-       TYPE(C_PTR), VALUE                       :: data_ptr
+       INTEGER(KIND=C_INT), VALUE               :: count, datatype, comm
+       TYPE(C_PTR), VALUE                       :: buf
        INTEGER(KIND=C_INT)                      :: MDI_Recv_
      END FUNCTION MDI_Recv_
 
-     FUNCTION MDI_Send_Command_(data_ptr, sockfd) bind(c, name="MDI_Send_Command")
+     FUNCTION MDI_Send_Command_(buf, comm) bind(c, name="MDI_Send_Command")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: data_ptr
-       INTEGER(KIND=C_INT), VALUE               :: sockfd
+       TYPE(C_PTR), VALUE                       :: buf
+       INTEGER(KIND=C_INT), VALUE               :: comm
        INTEGER(KIND=C_INT)                      :: MDI_Send_Command_
      END FUNCTION MDI_Send_Command_
 
-     FUNCTION MDI_Recv_Command_(data_ptr, sockfd) bind(c, name="MDI_Recv_Command")
+     FUNCTION MDI_Recv_Command_(buf, comm) bind(c, name="MDI_Recv_Command")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: data_ptr
-       INTEGER(KIND=C_INT), VALUE               :: sockfd
+       TYPE(C_PTR), VALUE                       :: buf
+       INTEGER(KIND=C_INT), VALUE               :: comm
        INTEGER(KIND=C_INT)                      :: MDI_Recv_Command_
      END FUNCTION MDI_Recv_Command_
 
@@ -121,178 +115,170 @@
       communicator = MDI_Accept_Communicator_()
     END SUBROUTINE MDI_Accept_Communicator
 
-    SUBROUTINE MDI_MPI_Comm(comm, ierr)
-      IMPLICIT NONE
-      INTEGER, INTENT(INOUT) :: comm
-      INTEGER, INTENT(OUT) :: ierr
-
-      ierr = MDI_MPI_Comm_(comm)
-    END SUBROUTINE MDI_MPI_Comm
-
-    SUBROUTINE MDI_Send_s (fstring, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      CHARACTER(LEN=*), INTENT(IN)             :: fstring
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      CHARACTER(LEN=*), INTENT(IN)             :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(len)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(count)
 
-      DO i = 1, LEN_TRIM(fstring)
-         cstring(i) = fstring(i:i)
+      DO i = 1, LEN_TRIM(fbuf)
+         cbuf(i) = fbuf(i:i)
       END DO
-      cstring( LEN_TRIM(fstring) + 1 ) = c_null_char
+      cbuf( LEN_TRIM(fbuf) + 1 ) = c_null_char
 
-      ierr = MDI_Send_( c_loc(cstring), len, type, sockfd)
+      ierr = MDI_Send_( c_loc(cbuf), count, datatype, comm)
     END SUBROUTINE MDI_Send_s
 
-    SUBROUTINE MDI_Send_d (fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Send_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      REAL(KIND=8), INTENT(IN)                 :: fdata
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      REAL(KIND=8), INTENT(IN)                 :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
-      REAL(KIND=C_DOUBLE), TARGET              :: cdata
+      REAL(KIND=C_DOUBLE), TARGET              :: cbuf
 
-      cdata = fdata
-      ierr = MDI_Send_(c_loc(cdata), 1, type, sockfd)
+      cbuf = fbuf
+      ierr = MDI_Send_(c_loc(cbuf), 1, datatype, comm)
     END SUBROUTINE MDI_Send_d
 
-    SUBROUTINE MDI_Send_dv(fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Send_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      REAL(KIND=8), INTENT(IN), TARGET         :: fdata(len)
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      REAL(KIND=8), INTENT(IN), TARGET         :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Send_(c_loc(fdata(1)), len, type, sockfd)
+      ierr = MDI_Send_(c_loc(fbuf(1)), count, datatype, comm)
     END SUBROUTINE MDI_Send_dv
 
-    SUBROUTINE MDI_Send_i (fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Send_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      INTEGER, INTENT(IN)                      :: fdata
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      INTEGER, INTENT(IN)                      :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER(KIND=C_INT), TARGET              :: cdata
+      INTEGER(KIND=C_INT), TARGET              :: cbuf
 
-      cdata = fdata
-      ierr = MDI_Send_(c_loc(cdata), 1, type, sockfd)
+      cbuf = fbuf
+      ierr = MDI_Send_(c_loc(cbuf), 1, datatype, comm)
     END SUBROUTINE MDI_Send_i
 
-    SUBROUTINE MDI_Send_iv(fdata, len, type, sockfd, ierr)
-      USE ISO_C_BINDING  
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      INTEGER(KIND=C_INT), TARGET              :: fdata(len)
+    SUBROUTINE MDI_Send_iv(fbuf, count, datatype, comm, ierr)
+      USE ISO_C_BINDING
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      INTEGER(KIND=C_INT), TARGET              :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Send_(c_loc(fdata(1)), len, type, sockfd)
+      ierr = MDI_Send_(c_loc(fbuf(1)), count, datatype, comm)
     END SUBROUTINE MDI_Send_iv
 
-    SUBROUTINE MDI_Recv_s (fstring, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Recv_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      CHARACTER(LEN=*), INTENT(OUT)            :: fstring
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      CHARACTER(LEN=*), INTENT(OUT)            :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
       LOGICAL                                  :: end_string
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(len)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(count)
 
-      ierr = MDI_Recv_(c_loc(cstring(1)), len, type, sockfd)
+      ierr = MDI_Recv_(c_loc(cbuf(1)), count, datatype, comm)
 
       ! convert from C string to Fortran string
-      fstring = ""
+      fbuf = ""
       end_string = .false.
-      DO i = 1,len
-         IF ( cstring(i) == c_null_char ) end_string = .true.
+      DO i = 1, count
+         IF ( cbuf(i) == c_null_char ) end_string = .true.
          IF ( end_string ) THEN
-            fstring(i:i) = ' '
+            fbuf(i:i) = ' '
          ELSE
-            fstring(i:i) = cstring(i)
+            fbuf(i:i) = cbuf(i)
          END IF
       ENDDO
     END SUBROUTINE MDI_Recv_s
 
-    SUBROUTINE MDI_Recv_d (fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Recv_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      REAL(KIND=8), INTENT(OUT)                :: fdata
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      REAL(KIND=8), INTENT(OUT)                :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
-      REAL(KIND=C_DOUBLE), TARGET              :: cdata
+      REAL(KIND=C_DOUBLE), TARGET              :: cbuf
 
-      ierr = MDI_Recv_(c_loc(cdata), 1, type, sockfd)
-      fdata=cdata
+      ierr = MDI_Recv_(c_loc(cbuf), 1, datatype, comm)
+      fbuf = cbuf
     END SUBROUTINE MDI_Recv_d
 
-    SUBROUTINE MDI_Recv_dv(fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Recv_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      REAL(KIND=8), INTENT(OUT), TARGET        :: fdata(len)
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      REAL(KIND=8), INTENT(OUT), TARGET        :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Recv_(c_loc(fdata(1)), len, type, sockfd)
+      ierr = MDI_Recv_(c_loc(fbuf(1)), count, datatype, comm)
     END SUBROUTINE MDI_Recv_dv
 
-    SUBROUTINE MDI_Recv_i (fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Recv_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      INTEGER, INTENT(OUT)                     :: fdata
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      INTEGER, INTENT(OUT)                     :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER(KIND=C_INT), TARGET              :: cdata
+      INTEGER(KIND=C_INT), TARGET              :: cbuf
 
-      ierr = MDI_Recv_(c_loc(cdata), 1, type, sockfd)
-      fdata = cdata
+      ierr = MDI_Recv_(c_loc(cbuf), 1, datatype, comm)
+      fbuf = cbuf
     END SUBROUTINE MDI_Recv_i
 
-    SUBROUTINE MDI_Recv_iv (fdata, len, type, sockfd, ierr)
+    SUBROUTINE MDI_Recv_iv (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      INTEGER, INTENT(IN)                      :: len, type, sockfd
-      INTEGER(KIND=C_INT), INTENT(OUT), TARGET :: fdata(len)
+      INTEGER, INTENT(IN)                      :: count, datatype, comm
+      INTEGER(KIND=C_INT), INTENT(OUT), TARGET :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
 
-      ierr = MDI_Recv_(c_loc(fdata(1)), len, type, sockfd)
+      ierr = MDI_Recv_(c_loc(fbuf(1)), count, datatype, comm)
     END SUBROUTINE MDI_Recv_iv
 
-    SUBROUTINE MDI_Send_Command(fstring, sockfd, ierr)
+    SUBROUTINE MDI_Send_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-      CHARACTER(LEN=*), INTENT(IN)             :: fstring
-      INTEGER, INTENT(IN)                      :: sockfd
+      CHARACTER(LEN=*), INTENT(IN)             :: fbuf
+      INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-      DO i = 1, LEN_TRIM(fstring)
-         cstring(i) = fstring(i:i)
+      DO i = 1, LEN_TRIM(fbuf)
+         cbuf(i) = fbuf(i:i)
       END DO
-      cstring( LEN_TRIM(fstring) + 1 ) = c_null_char
+      cbuf( LEN_TRIM(fbuf) + 1 ) = c_null_char
 
-      ierr = MDI_Send_Command_( c_loc(cstring), sockfd)
+      ierr = MDI_Send_Command_( c_loc(cbuf), comm)
     END SUBROUTINE MDI_Send_Command
 
-    SUBROUTINE MDI_Recv_Command(fstring, sockfd, ierr)
+    SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-      CHARACTER(LEN=*), INTENT(OUT)            :: fstring
-      INTEGER, INTENT(IN)                      :: sockfd
+      CHARACTER(LEN=*), INTENT(OUT)            :: fbuf
+      INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
       LOGICAL                                  :: end_string
-      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cstring(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-      ierr = MDI_Recv_Command_(c_loc(cstring(1)), sockfd)
+      ierr = MDI_Recv_Command_(c_loc(cbuf(1)), comm)
 
       ! convert from C string to Fortran string
-      fstring = ""
+      fbuf = ""
       end_string = .false.
       DO i = 1, MDI_COMMAND_LENGTH
-         IF ( cstring(i) == c_null_char ) end_string = .true.
+         IF ( cbuf(i) == c_null_char ) end_string = .true.
          IF ( end_string ) THEN
-            fstring(i:i) = ' '
+            fbuf(i:i) = ' '
          ELSE
-            fstring(i:i) = cstring(i)
+            fbuf(i:i) = cbuf(i)
          END IF
       ENDDO
     END SUBROUTINE MDI_Recv_Command
