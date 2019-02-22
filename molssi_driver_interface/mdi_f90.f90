@@ -116,7 +116,7 @@
       ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, fworld_comm )
     END SUBROUTINE MDI_Init
 
-    SUBROUTINE MDI_Accept_Communicator(connection)
+    SUBROUTINE MDI_Accept_Communicator(communicator)
       IMPLICIT NONE
       INTEGER, INTENT(OUT) :: communicator
 
