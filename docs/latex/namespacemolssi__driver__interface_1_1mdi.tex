@@ -1,0 +1,119 @@
+\hypertarget{namespacemolssi__driver__interface_1_1mdi}{\section{molssi\-\_\-driver\-\_\-interface.\-mdi Namespace Reference}
+\label{namespacemolssi__driver__interface_1_1mdi}\index{molssi\-\_\-driver\-\_\-interface.\-mdi@{molssi\-\_\-driver\-\_\-interface.\-mdi}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a7fa45893a21039fbc4f4558adff09247}{def {\bfseries M\-D\-I\-\_\-\-Init}}\label{namespacemolssi__driver__interface_1_1mdi_a7fa45893a21039fbc4f4558adff09247}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a13123f38cd87a7834a1686f3620b26f5}{def {\bfseries M\-D\-I\-\_\-\-Get\-\_\-\-Intra\-\_\-\-Code\-\_\-\-M\-P\-I\-\_\-\-Comm}}\label{namespacemolssi__driver__interface_1_1mdi_a13123f38cd87a7834a1686f3620b26f5}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a6491914c9c4bb9d3818f53895a735625}{def {\bfseries M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator}}\label{namespacemolssi__driver__interface_1_1mdi_a6491914c9c4bb9d3818f53895a735625}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a75666a1612c8fde657f9783f3c42fcaf}{def {\bfseries M\-D\-I\-\_\-\-Send}}\label{namespacemolssi__driver__interface_1_1mdi_a75666a1612c8fde657f9783f3c42fcaf}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_aad08bf01bdb806196e9a41140325b6ae}{def {\bfseries M\-D\-I\-\_\-\-Recv}}\label{namespacemolssi__driver__interface_1_1mdi_aad08bf01bdb806196e9a41140325b6ae}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a09f3c593e5222f1adbec84021f2b3f34}{def {\bfseries M\-D\-I\-\_\-\-Send\-\_\-\-Command}}\label{namespacemolssi__driver__interface_1_1mdi_a09f3c593e5222f1adbec84021f2b3f34}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_aad3f7850b204cc18683005d43797bebc}{def {\bfseries M\-D\-I\-\_\-\-Recv\-\_\-\-Command}}\label{namespacemolssi__driver__interface_1_1mdi_aad3f7850b204cc18683005d43797bebc}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a659f7f2c2dad27268542893627dddd76}{tuple {\bfseries dir\-\_\-path} = os.\-path.\-dirname(os.\-path.\-realpath(\-\_\-\-\_\-file\-\_\-\-\_\-))}\label{namespacemolssi__driver__interface_1_1mdi_a659f7f2c2dad27268542893627dddd76}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ab641655ae2e8ddbbf84bea8e8e5bf953}{{\bfseries use\-\_\-numpy} = True}\label{namespacemolssi__driver__interface_1_1mdi_ab641655ae2e8ddbbf84bea8e8e5bf953}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a2d2043c182591fed4963dbcb9cf30484}{{\bfseries use\-\_\-mpi4py} = True}\label{namespacemolssi__driver__interface_1_1mdi_a2d2043c182591fed4963dbcb9cf30484}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ab47fd48619ba8e2bfe10f6d86d5be1b5}{tuple {\bfseries mdi\-\_\-name\-\_\-file} = open(dir\-\_\-path + \char`\"{}/mdi\-\_\-name\char`\"{},\char`\"{}r\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_ab47fd48619ba8e2bfe10f6d86d5be1b5}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_afc7bde19c202368b68fce956fdbc9035}{tuple {\bfseries mdi\-\_\-name} = mdi\-\_\-name\-\_\-file.\-read()}\label{namespacemolssi__driver__interface_1_1mdi_afc7bde19c202368b68fce956fdbc9035}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a57cb628499747477003d54de706ab429}{tuple {\bfseries mdi} = ctypes.\-C\-D\-L\-L(dir\-\_\-path + \char`\"{}/\char`\"{} + mdi\-\_\-name)}\label{namespacemolssi__driver__interface_1_1mdi_a57cb628499747477003d54de706ab429}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_aa92fd47513f406f91b87c70b9dd221c6}{tuple {\bfseries M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_aa92fd47513f406f91b87c70b9dd221c6}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a3be426ffa2c8696fe44d1bec166a21a8}{tuple {\bfseries M\-D\-I\-\_\-\-N\-A\-M\-E\-\_\-\-L\-E\-N\-G\-T\-H} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-N\-A\-M\-E\-\_\-\-L\-E\-N\-G\-T\-H\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a3be426ffa2c8696fe44d1bec166a21a8}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a451ed61cd0edd447d5a559ec99d479d5}{tuple {\bfseries M\-D\-I\-\_\-\-I\-N\-T} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-I\-N\-T\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a451ed61cd0edd447d5a559ec99d479d5}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a52d5a1823d4b38b60df486d5b7a76d83}{tuple {\bfseries M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a52d5a1823d4b38b60df486d5b7a76d83}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a2f9bb33fbf05ad85f489344f098c19e4}{tuple {\bfseries M\-D\-I\-\_\-\-C\-H\-A\-R} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-C\-H\-A\-R\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a2f9bb33fbf05ad85f489344f098c19e4}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a30427c26974ad9a7bca4651b4a347896}{tuple {\bfseries M\-D\-I\-\_\-\-I\-N\-T\-\_\-\-N\-U\-M\-P\-Y} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-I\-N\-T\-\_\-\-N\-U\-M\-P\-Y\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a30427c26974ad9a7bca4651b4a347896}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ae23a31205ba45db924a6cd8f6851c301}{tuple {\bfseries M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E\-\_\-\-N\-U\-M\-P\-Y} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E\-\_\-\-N\-U\-M\-P\-Y\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_ae23a31205ba45db924a6cd8f6851c301}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a2cd83c28d46d7488dc81d0ab7d1e1b11}{tuple {\bfseries M\-D\-I\-\_\-\-T\-C\-P} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-T\-C\-P\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a2cd83c28d46d7488dc81d0ab7d1e1b11}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a232cbdf0cd4b5f002a1163a9f71c5330}{tuple {\bfseries M\-D\-I\-\_\-\-M\-P\-I} = ctypes.\-c\-\_\-int.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-M\-P\-I\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a232cbdf0cd4b5f002a1163a9f71c5330}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a05bc005cf82c527130e4b3517355d24d}{tuple {\bfseries M\-D\-I\-\_\-\-M\-E\-T\-E\-R\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-M\-E\-T\-E\-R\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a05bc005cf82c527130e4b3517355d24d}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a56a1ab0c7e9e1e0e55af72a20d1d0e3a}{tuple {\bfseries M\-D\-I\-\_\-\-A\-N\-G\-S\-T\-R\-O\-M\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-A\-N\-G\-S\-T\-R\-O\-M\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a56a1ab0c7e9e1e0e55af72a20d1d0e3a}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ab087d6326f12a106a44d4ddaca4c8608}{tuple {\bfseries M\-D\-I\-\_\-\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_ab087d6326f12a106a44d4ddaca4c8608}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ace2ba89b94963cf584ce8b1d00ebb59b}{tuple {\bfseries M\-D\-I\-\_\-\-P\-I\-C\-O\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-P\-I\-C\-O\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_ace2ba89b94963cf584ce8b1d00ebb59b}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a0898e7e5c47d8dc21ae38b29c10f5827}{tuple {\bfseries M\-D\-I\-\_\-\-N\-E\-W\-T\-O\-N\-\_\-\-T\-O\-\_\-\-A\-U\-F} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-N\-E\-W\-T\-O\-N\-\_\-\-T\-O\-\_\-\-A\-U\-F\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a0898e7e5c47d8dc21ae38b29c10f5827}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a1bae6adb6f6eaaae9ad87cdfa47f337d}{tuple {\bfseries M\-D\-I\-\_\-\-J\-O\-U\-L\-E\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-J\-O\-U\-L\-E\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a1bae6adb6f6eaaae9ad87cdfa47f337d}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a446e20f10967433ccf12ea80f32d41a0}{tuple {\bfseries M\-D\-I\-\_\-\-K\-J\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-K\-J\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a446e20f10967433ccf12ea80f32d41a0}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a3937ae9828af2f61a47a184f84ee095d}{tuple {\bfseries M\-D\-I\-\_\-\-K\-J\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-K\-J\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a3937ae9828af2f61a47a184f84ee095d}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a1179ce5d81a422949e186263ac4cb6c7}{tuple {\bfseries M\-D\-I\-\_\-\-K\-C\-A\-L\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-K\-C\-A\-L\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a1179ce5d81a422949e186263ac4cb6c7}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_ac13177eae2f4a37d788d8e1442b340dd}{tuple {\bfseries M\-D\-I\-\_\-\-E\-V\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-E\-V\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_ac13177eae2f4a37d788d8e1442b340dd}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_afe9788e9e4cc752443059aea980d16f2}{tuple {\bfseries M\-D\-I\-\_\-\-R\-Y\-D\-B\-E\-R\-G\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-R\-Y\-D\-B\-E\-R\-G\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_afe9788e9e4cc752443059aea980d16f2}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a964195f72c62a67a99c43e1e25398a23}{tuple {\bfseries M\-D\-I\-\_\-\-K\-E\-L\-V\-I\-N\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = ctypes.\-c\-\_\-double.\-in\-\_\-dll(\hyperlink{classmdi}{mdi}, \char`\"{}M\-D\-I\-\_\-\-K\-E\-L\-V\-I\-N\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E\char`\"{})}\label{namespacemolssi__driver__interface_1_1mdi_a964195f72c62a67a99c43e1e25398a23}
+
+\item 
+\hypertarget{namespacemolssi__driver__interface_1_1mdi_a1dc45097ca1a63ea2cd91ac0fc0cfd12}{{\bfseries intra\-\_\-code\-\_\-comm} = None}\label{namespacemolssi__driver__interface_1_1mdi_a1dc45097ca1a63ea2cd91ac0fc0cfd12}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Pyrhon wrapper for MDI. \end{DoxyVerb}
+ 

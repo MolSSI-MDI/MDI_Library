@@ -92,9 +92,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Types</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Accept__Connection__.html">MDI_Accept_Connection_</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Accept__Communicator__.html">MDI_Accept_Communicator_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Listen__.html">MDI_Listen_</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Init__.html">MDI_Init_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__MPI__Comm__.html">MDI_MPI_Comm_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,8 +103,6 @@ Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Recv__.html">MDI_Recv_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Recv__Command__.html">MDI_Recv_Command_</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Request__Connection__.html">MDI_Request_Connection_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1mdi__send.html">mdi_send</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,15 +113,12 @@ Data Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abb29b2ed5c592d2c5e4585ca14ae9c69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abb29b2ed5c592d2c5e4585ca14ae9c69"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_listen</b> (fmethod, options, fworld_comm, ierr)</td></tr>
-<tr class="separator:abb29b2ed5c592d2c5e4585ca14ae9c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6b39060c3cc856f240b5239a87a63d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6b39060c3cc856f240b5239a87a63d8"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_request_connection</b> (fmethod, foptions, fworld_comm, comm)</td></tr>
-<tr class="separator:ae6b39060c3cc856f240b5239a87a63d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f9df9a8c58f50163196ee7ce57d63d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f9df9a8c58f50163196ee7ce57d63d6"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_accept_connection</b> (connection)</td></tr>
-<tr class="separator:a5f9df9a8c58f50163196ee7ce57d63d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35894bce734c441b9937f571436443b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35894bce734c441b9937f571436443b9"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_init</b> (foptions, fworld_comm, ierr)</td></tr>
+<tr class="separator:a35894bce734c441b9937f571436443b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a614089c34c2781079993f86374ee6d93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a614089c34c2781079993f86374ee6d93"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_accept_communicator</b> (<a class="el" href="structcommunicator__struct.html">communicator</a>)</td></tr>
+<tr class="separator:a614089c34c2781079993f86374ee6d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a127a7303cd7217c0d0d646e10b188f39"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a127a7303cd7217c0d0d646e10b188f39"></a>
 subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_mpi_comm</b> (comm, ierr)</td></tr>
 <tr class="separator:a127a7303cd7217c0d0d646e10b188f39"><td class="memSeparator" colspan="2">&#160;</td></tr>

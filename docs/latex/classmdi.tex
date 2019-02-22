@@ -4,9 +4,9 @@
 \subsection*{Data Types}
 \begin{DoxyCompactItemize}
 \item 
-interface \hyperlink{interfacemdi_1_1MDI__Accept__Connection__}{M\-D\-I\-\_\-\-Accept\-\_\-\-Connection\-\_\-}
+interface \hyperlink{interfacemdi_1_1MDI__Accept__Communicator__}{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator\-\_\-}
 \item 
-interface \hyperlink{interfacemdi_1_1MDI__Listen__}{M\-D\-I\-\_\-\-Listen\-\_\-}
+interface \hyperlink{interfacemdi_1_1MDI__Init__}{M\-D\-I\-\_\-\-Init\-\_\-}
 \item 
 interface \hyperlink{interfacemdi_1_1MDI__MPI__Comm__}{M\-D\-I\-\_\-\-M\-P\-I\-\_\-\-Comm\-\_\-}
 \item 
@@ -15,8 +15,6 @@ interface \hyperlink{interfacemdi_1_1mdi__recv}{mdi\-\_\-recv}
 interface \hyperlink{interfacemdi_1_1MDI__Recv__}{M\-D\-I\-\_\-\-Recv\-\_\-}
 \item 
 interface \hyperlink{interfacemdi_1_1MDI__Recv__Command__}{M\-D\-I\-\_\-\-Recv\-\_\-\-Command\-\_\-}
-\item 
-interface \hyperlink{interfacemdi_1_1MDI__Request__Connection__}{M\-D\-I\-\_\-\-Request\-\_\-\-Connection\-\_\-}
 \item 
 interface \hyperlink{interfacemdi_1_1mdi__send}{mdi\-\_\-send}
 \item 
@@ -27,13 +25,10 @@ interface \hyperlink{interfacemdi_1_1MDI__Send__Command__}{M\-D\-I\-\_\-\-Send\-
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classmdi_abb29b2ed5c592d2c5e4585ca14ae9c69}{subroutine {\bfseries mdi\-\_\-listen} (fmethod, options, fworld\-\_\-comm, ierr)}\label{classmdi_abb29b2ed5c592d2c5e4585ca14ae9c69}
+\hypertarget{classmdi_a35894bce734c441b9937f571436443b9}{subroutine {\bfseries mdi\-\_\-init} (foptions, fworld\-\_\-comm, ierr)}\label{classmdi_a35894bce734c441b9937f571436443b9}
 
 \item 
-\hypertarget{classmdi_ae6b39060c3cc856f240b5239a87a63d8}{subroutine {\bfseries mdi\-\_\-request\-\_\-connection} (fmethod, foptions, fworld\-\_\-comm, comm)}\label{classmdi_ae6b39060c3cc856f240b5239a87a63d8}
-
-\item 
-\hypertarget{classmdi_a5f9df9a8c58f50163196ee7ce57d63d6}{subroutine {\bfseries mdi\-\_\-accept\-\_\-connection} (connection)}\label{classmdi_a5f9df9a8c58f50163196ee7ce57d63d6}
+\hypertarget{classmdi_a614089c34c2781079993f86374ee6d93}{subroutine {\bfseries mdi\-\_\-accept\-\_\-communicator} (\hyperlink{structcommunicator__struct}{communicator})}\label{classmdi_a614089c34c2781079993f86374ee6d93}
 
 \item 
 \hypertarget{classmdi_a127a7303cd7217c0d0d646e10b188f39}{subroutine {\bfseries mdi\-\_\-mpi\-\_\-comm} (comm, ierr)}\label{classmdi_a127a7303cd7217c0d0d646e10b188f39}
