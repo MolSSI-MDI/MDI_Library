@@ -47,6 +47,9 @@ const int MDI_COMMAND_LENGTH = 12;
 #define MDI_NAME_LENGTH_INTERNAL 12
 const int MDI_NAME_LENGTH = MDI_NAME_LENGTH_INTERNAL;
 
+// value of a null communicator
+const MDI_Comm MDI_NULL_COMM = 0;
+
 // MDI data types
 const int MDI_INT          = 0;
 const int MDI_DOUBLE       = 1;
@@ -630,11 +633,11 @@ int MDI_Init(const char* options, void* world_comm)
 
 /*! \brief Accept a new MDI communicator
  *
- * The function returns an MDI_COMM that describes a connection between two codes.
- * If no new communicators are available, the function returns \p 0.
+ * The function returns an MDI_Comm that describes a connection between two codes.
+ * If no new communicators are available, the function returns \p MDI_NULL_COMM.
  *
  */
-int MDI_Accept_Communicator()
+MDI_Comm MDI_Accept_Communicator()
 {
   int connection;
 
@@ -667,7 +670,7 @@ int MDI_Accept_Communicator()
   }
 
   // unable to accept any connections
-  return 0;
+  return MDI_NULL_COMM;
 }
 
 
@@ -685,7 +688,7 @@ int MDI_Accept_Communicator()
  * \param [in]       comm
  *                   MDI communicator associated with the intended recipient code.
  */
-int MDI_Send(const char* buf, int count, int datatype, int comm)
+int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Send with incorrect rank");
@@ -752,7 +755,7 @@ int MDI_Send(const char* buf, int count, int datatype, int comm)
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
  */
-int MDI_Recv(char* buf, int count, int datatype, int comm)
+int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Recv with incorrect rank");
@@ -819,7 +822,7 @@ int MDI_Recv(char* buf, int count, int datatype, int comm)
  * \param [in]       comm
  *                   MDI communicator associated with the intended recipient code.
  */
-int MDI_Send_Command(const char* buf, int comm)
+int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Send_Command with incorrect rank");
@@ -842,7 +845,7 @@ int MDI_Send_Command(const char* buf, int comm)
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
  */
-int MDI_Recv_Command(char* buf, int comm)
+int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
    if ( mpi_initialization == 1 && intra_rank != 0 ) {
      perror("Called MDI_Recv_Command with incorrect rank");

@@ -25,11 +25,20 @@ namespace MDI_STUBS { }
 extern "C" {
 #endif
 
+// type of an MDI communicator handle
+typedef int MDI_Comm;
+
+// type of an MDI datatype handle
+typedef int MDI_Datatype;
+
 // length of an MDI command in characters
 extern const int MDI_COMMAND_LENGTH;
 
 // length of an MDI name in characters
 extern const int MDI_NAME_LENGTH;
+
+// value of a null communicator
+extern const MPI_Comm MDI_NULL_COMM;
 
 // MDI data types
 extern const int MDI_INT;
@@ -68,10 +77,10 @@ extern const double MDI_KELVIN_TO_HARTREE;
 
 int MDI_Init(const char* options, void* world_comm);
 int MDI_Accept_Communicator();
-int MDI_Send(const char* buf, int count, int datatype, int comm);
-int MDI_Recv(char* buf, int count, int datatype, int comm);
-int MDI_Send_Command(const char* buf, int comm);
-int MDI_Recv_Command(char* buf, int comm);
+int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int MDI_Send_Command(const char* buf, MDI_Comm comm);
+int MDI_Recv_Command(char* buf, MDI_Comm comm);
 
 // only used internally by MDI
 int MDI_Get_MPI_Code_Rank();
