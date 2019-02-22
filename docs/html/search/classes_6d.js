@@ -3,7 +3,6 @@ var searchData=
   ['mdi',['mdi',['../classmdi.html',1,'']]],
   ['mdi_5faccept_5fcommunicator_5f',['MDI_Accept_Communicator_',['../interfacemdi_1_1MDI__Accept__Communicator__.html',1,'mdi']]],
   ['mdi_5finit_5f',['MDI_Init_',['../interfacemdi_1_1MDI__Init__.html',1,'mdi']]],
-  ['mdi_5fmpi_5fcomm_5f',['MDI_MPI_Comm_',['../interfacemdi_1_1MDI__MPI__Comm__.html',1,'mdi']]],
   ['mdi_5frecv',['mdi_recv',['../interfacemdi_1_1mdi__recv.html',1,'mdi']]],
   ['mdi_5frecv_5f',['MDI_Recv_',['../interfacemdi_1_1MDI__Recv__.html',1,'mdi']]],
   ['mdi_5frecv_5fcommand_5f',['MDI_Recv_Command_',['../interfacemdi_1_1MDI__Recv__Command__.html',1,'mdi']]],

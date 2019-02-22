@@ -69,7 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,8 +96,6 @@ Data Types</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Init__.html">MDI_Init_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__MPI__Comm__.html">MDI_MPI_Comm_</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1mdi__recv.html">mdi_recv</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Recv__.html">MDI_Recv_</a></td></tr>
@@ -119,45 +117,42 @@ subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_init</b> (f
 <tr class="memitem:a614089c34c2781079993f86374ee6d93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a614089c34c2781079993f86374ee6d93"></a>
 subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_accept_communicator</b> (<a class="el" href="structcommunicator__struct.html">communicator</a>)</td></tr>
 <tr class="separator:a614089c34c2781079993f86374ee6d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a127a7303cd7217c0d0d646e10b188f39"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a127a7303cd7217c0d0d646e10b188f39"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_mpi_comm</b> (comm, ierr)</td></tr>
-<tr class="separator:a127a7303cd7217c0d0d646e10b188f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83a8409162740c37f82776526e19d4cf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83a8409162740c37f82776526e19d4cf"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_s</b> (fstring, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a83a8409162740c37f82776526e19d4cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5a7755632e8712b6d5609e2486b184a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5a7755632e8712b6d5609e2486b184a"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_d</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:ad5a7755632e8712b6d5609e2486b184a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57bcbe45a8445f19b02126f904b43774"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57bcbe45a8445f19b02126f904b43774"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_dv</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a57bcbe45a8445f19b02126f904b43774"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9451f9ead8226273424cb7efbef245c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9451f9ead8226273424cb7efbef245c3"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_i</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a9451f9ead8226273424cb7efbef245c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add16db0836d8e0f3cfe310e175e8243c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add16db0836d8e0f3cfe310e175e8243c"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_iv</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:add16db0836d8e0f3cfe310e175e8243c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78af4fc262563d2d8820a3a7cbfe0a92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78af4fc262563d2d8820a3a7cbfe0a92"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_s</b> (fstring, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a78af4fc262563d2d8820a3a7cbfe0a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a557c30482625b71f46ee392d70426014"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a557c30482625b71f46ee392d70426014"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_d</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a557c30482625b71f46ee392d70426014"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66dc1c9e1462e5c53bd36c720aa12a38"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66dc1c9e1462e5c53bd36c720aa12a38"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_dv</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a66dc1c9e1462e5c53bd36c720aa12a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50204266766bbd60ec46f697309b9c5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50204266766bbd60ec46f697309b9c5c"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_i</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:a50204266766bbd60ec46f697309b9c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb59292b64be533922c3bd55c04df653"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb59292b64be533922c3bd55c04df653"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_iv</b> (fdata, len, type, sockfd, ierr)</td></tr>
-<tr class="separator:adb59292b64be533922c3bd55c04df653"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b4dc2e960271e8779e842b9e1edc0dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b4dc2e960271e8779e842b9e1edc0dd"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_command</b> (fstring, sockfd, ierr)</td></tr>
-<tr class="separator:a9b4dc2e960271e8779e842b9e1edc0dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a3b366cde72e01a9d3a928e902e58d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a3b366cde72e01a9d3a928e902e58d0"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_command</b> (fstring, sockfd, ierr)</td></tr>
-<tr class="separator:a3a3b366cde72e01a9d3a928e902e58d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca4f914ed81b61608b82072c034e2990"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca4f914ed81b61608b82072c034e2990"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_s</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:aca4f914ed81b61608b82072c034e2990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec59c1cdcf1fa6438a2d1d7b87a39b25"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec59c1cdcf1fa6438a2d1d7b87a39b25"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_d</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:aec59c1cdcf1fa6438a2d1d7b87a39b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53817bdecd52bd0ac15e492050ce7f18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53817bdecd52bd0ac15e492050ce7f18"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_dv</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a53817bdecd52bd0ac15e492050ce7f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac98e90a334cfdefcd9ef67ec9138b29d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98e90a334cfdefcd9ef67ec9138b29d"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_i</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:ac98e90a334cfdefcd9ef67ec9138b29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a319b5646a6013e724ec626e0c3a40d4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a319b5646a6013e724ec626e0c3a40d4b"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_iv</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a319b5646a6013e724ec626e0c3a40d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cb1ca30b5286e39ea33f0ce94c41134"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9cb1ca30b5286e39ea33f0ce94c41134"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_s</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a9cb1ca30b5286e39ea33f0ce94c41134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f60540c592948d6170a46433402dbdc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f60540c592948d6170a46433402dbdc"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_d</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a1f60540c592948d6170a46433402dbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a702f07d3972442a7e2192344cbc39591"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a702f07d3972442a7e2192344cbc39591"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_dv</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a702f07d3972442a7e2192344cbc39591"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6db12fbef0c2a759ef7b44d55ade27e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6db12fbef0c2a759ef7b44d55ade27e6"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_i</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a6db12fbef0c2a759ef7b44d55ade27e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44067a3dc1c77a4c0263f070e65e0da6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44067a3dc1c77a4c0263f070e65e0da6"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_iv</b> (fbuf, count, datatype, comm, ierr)</td></tr>
+<tr class="separator:a44067a3dc1c77a4c0263f070e65e0da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab16198c5de2102500ab27e0d69df8487"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab16198c5de2102500ab27e0d69df8487"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_command</b> (fbuf, comm, ierr)</td></tr>
+<tr class="separator:ab16198c5de2102500ab27e0d69df8487"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b09a1c50a57cc6fe253985b530993ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b09a1c50a57cc6fe253985b530993ec"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_command</b> (fbuf, comm, ierr)</td></tr>
+<tr class="separator:a2b09a1c50a57cc6fe253985b530993ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>

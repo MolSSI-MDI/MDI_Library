@@ -8,8 +8,6 @@ interface \hyperlink{interfacemdi_1_1MDI__Accept__Communicator__}{M\-D\-I\-\_\-\
 \item 
 interface \hyperlink{interfacemdi_1_1MDI__Init__}{M\-D\-I\-\_\-\-Init\-\_\-}
 \item 
-interface \hyperlink{interfacemdi_1_1MDI__MPI__Comm__}{M\-D\-I\-\_\-\-M\-P\-I\-\_\-\-Comm\-\_\-}
-\item 
 interface \hyperlink{interfacemdi_1_1mdi__recv}{mdi\-\_\-recv}
 \item 
 interface \hyperlink{interfacemdi_1_1MDI__Recv__}{M\-D\-I\-\_\-\-Recv\-\_\-}
@@ -31,43 +29,40 @@ interface \hyperlink{interfacemdi_1_1MDI__Send__Command__}{M\-D\-I\-\_\-\-Send\-
 \hypertarget{classmdi_a614089c34c2781079993f86374ee6d93}{subroutine {\bfseries mdi\-\_\-accept\-\_\-communicator} (\hyperlink{structcommunicator__struct}{communicator})}\label{classmdi_a614089c34c2781079993f86374ee6d93}
 
 \item 
-\hypertarget{classmdi_a127a7303cd7217c0d0d646e10b188f39}{subroutine {\bfseries mdi\-\_\-mpi\-\_\-comm} (comm, ierr)}\label{classmdi_a127a7303cd7217c0d0d646e10b188f39}
+\hypertarget{classmdi_aca4f914ed81b61608b82072c034e2990}{subroutine {\bfseries mdi\-\_\-send\-\_\-s} (fbuf, count, datatype, comm, ierr)}\label{classmdi_aca4f914ed81b61608b82072c034e2990}
 
 \item 
-\hypertarget{classmdi_a83a8409162740c37f82776526e19d4cf}{subroutine {\bfseries mdi\-\_\-send\-\_\-s} (fstring, len, type, sockfd, ierr)}\label{classmdi_a83a8409162740c37f82776526e19d4cf}
+\hypertarget{classmdi_aec59c1cdcf1fa6438a2d1d7b87a39b25}{subroutine {\bfseries mdi\-\_\-send\-\_\-d} (fbuf, count, datatype, comm, ierr)}\label{classmdi_aec59c1cdcf1fa6438a2d1d7b87a39b25}
 
 \item 
-\hypertarget{classmdi_ad5a7755632e8712b6d5609e2486b184a}{subroutine {\bfseries mdi\-\_\-send\-\_\-d} (fdata, len, type, sockfd, ierr)}\label{classmdi_ad5a7755632e8712b6d5609e2486b184a}
+\hypertarget{classmdi_a53817bdecd52bd0ac15e492050ce7f18}{subroutine {\bfseries mdi\-\_\-send\-\_\-dv} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a53817bdecd52bd0ac15e492050ce7f18}
 
 \item 
-\hypertarget{classmdi_a57bcbe45a8445f19b02126f904b43774}{subroutine {\bfseries mdi\-\_\-send\-\_\-dv} (fdata, len, type, sockfd, ierr)}\label{classmdi_a57bcbe45a8445f19b02126f904b43774}
+\hypertarget{classmdi_ac98e90a334cfdefcd9ef67ec9138b29d}{subroutine {\bfseries mdi\-\_\-send\-\_\-i} (fbuf, count, datatype, comm, ierr)}\label{classmdi_ac98e90a334cfdefcd9ef67ec9138b29d}
 
 \item 
-\hypertarget{classmdi_a9451f9ead8226273424cb7efbef245c3}{subroutine {\bfseries mdi\-\_\-send\-\_\-i} (fdata, len, type, sockfd, ierr)}\label{classmdi_a9451f9ead8226273424cb7efbef245c3}
+\hypertarget{classmdi_a319b5646a6013e724ec626e0c3a40d4b}{subroutine {\bfseries mdi\-\_\-send\-\_\-iv} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a319b5646a6013e724ec626e0c3a40d4b}
 
 \item 
-\hypertarget{classmdi_add16db0836d8e0f3cfe310e175e8243c}{subroutine {\bfseries mdi\-\_\-send\-\_\-iv} (fdata, len, type, sockfd, ierr)}\label{classmdi_add16db0836d8e0f3cfe310e175e8243c}
+\hypertarget{classmdi_a9cb1ca30b5286e39ea33f0ce94c41134}{subroutine {\bfseries mdi\-\_\-recv\-\_\-s} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a9cb1ca30b5286e39ea33f0ce94c41134}
 
 \item 
-\hypertarget{classmdi_a78af4fc262563d2d8820a3a7cbfe0a92}{subroutine {\bfseries mdi\-\_\-recv\-\_\-s} (fstring, len, type, sockfd, ierr)}\label{classmdi_a78af4fc262563d2d8820a3a7cbfe0a92}
+\hypertarget{classmdi_a1f60540c592948d6170a46433402dbdc}{subroutine {\bfseries mdi\-\_\-recv\-\_\-d} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a1f60540c592948d6170a46433402dbdc}
 
 \item 
-\hypertarget{classmdi_a557c30482625b71f46ee392d70426014}{subroutine {\bfseries mdi\-\_\-recv\-\_\-d} (fdata, len, type, sockfd, ierr)}\label{classmdi_a557c30482625b71f46ee392d70426014}
+\hypertarget{classmdi_a702f07d3972442a7e2192344cbc39591}{subroutine {\bfseries mdi\-\_\-recv\-\_\-dv} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a702f07d3972442a7e2192344cbc39591}
 
 \item 
-\hypertarget{classmdi_a66dc1c9e1462e5c53bd36c720aa12a38}{subroutine {\bfseries mdi\-\_\-recv\-\_\-dv} (fdata, len, type, sockfd, ierr)}\label{classmdi_a66dc1c9e1462e5c53bd36c720aa12a38}
+\hypertarget{classmdi_a6db12fbef0c2a759ef7b44d55ade27e6}{subroutine {\bfseries mdi\-\_\-recv\-\_\-i} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a6db12fbef0c2a759ef7b44d55ade27e6}
 
 \item 
-\hypertarget{classmdi_a50204266766bbd60ec46f697309b9c5c}{subroutine {\bfseries mdi\-\_\-recv\-\_\-i} (fdata, len, type, sockfd, ierr)}\label{classmdi_a50204266766bbd60ec46f697309b9c5c}
+\hypertarget{classmdi_a44067a3dc1c77a4c0263f070e65e0da6}{subroutine {\bfseries mdi\-\_\-recv\-\_\-iv} (fbuf, count, datatype, comm, ierr)}\label{classmdi_a44067a3dc1c77a4c0263f070e65e0da6}
 
 \item 
-\hypertarget{classmdi_adb59292b64be533922c3bd55c04df653}{subroutine {\bfseries mdi\-\_\-recv\-\_\-iv} (fdata, len, type, sockfd, ierr)}\label{classmdi_adb59292b64be533922c3bd55c04df653}
+\hypertarget{classmdi_ab16198c5de2102500ab27e0d69df8487}{subroutine {\bfseries mdi\-\_\-send\-\_\-command} (fbuf, comm, ierr)}\label{classmdi_ab16198c5de2102500ab27e0d69df8487}
 
 \item 
-\hypertarget{classmdi_a9b4dc2e960271e8779e842b9e1edc0dd}{subroutine {\bfseries mdi\-\_\-send\-\_\-command} (fstring, sockfd, ierr)}\label{classmdi_a9b4dc2e960271e8779e842b9e1edc0dd}
-
-\item 
-\hypertarget{classmdi_a3a3b366cde72e01a9d3a928e902e58d0}{subroutine {\bfseries mdi\-\_\-recv\-\_\-command} (fstring, sockfd, ierr)}\label{classmdi_a3a3b366cde72e01a9d3a928e902e58d0}
+\hypertarget{classmdi_a2b09a1c50a57cc6fe253985b530993ec}{subroutine {\bfseries mdi\-\_\-recv\-\_\-command} (fbuf, comm, ierr)}\label{classmdi_a2b09a1c50a57cc6fe253985b530993ec}
 
 \end{DoxyCompactItemize}
 \subsection*{Public Attributes}
