@@ -53,10 +53,9 @@
 
   INTERFACE
 
-     FUNCTION MDI_Init_(options, data, world_comm) bind(c, name="MDI_Init")
+     FUNCTION MDI_Init_(options, world_comm) bind(c, name="MDI_Init")
        USE, INTRINSIC :: iso_c_binding
        CHARACTER(C_CHAR)                        :: options(*)
-       TYPE(C_PTR), VALUE                       :: data
        INTEGER(KIND=C_INT)                      :: world_comm
        INTEGER(KIND=C_INT)                      :: MDI_Init_
      END FUNCTION MDI_Init_
@@ -106,14 +105,13 @@
 
   CONTAINS
 
-    SUBROUTINE MDI_Init(foptions, data, fworld_comm, ierr)
+    SUBROUTINE MDI_Init(foptions, fworld_comm, ierr)
       IMPLICIT NONE
       CHARACTER(LEN=*), INTENT(IN) :: foptions
-      TYPE(C_PTR), INTENT(IN) :: data
       INTEGER, INTENT(INOUT) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
 
-      ierr = MDI_Init_( TRIM(foptions)//c_null_char, data, fworld_comm )
+      ierr = MDI_Init_( TRIM(foptions)//c_null_char, fworld_comm )
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Accept_Communicator(communicator)

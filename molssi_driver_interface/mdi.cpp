@@ -469,7 +469,7 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 
 
 /* Initialize a socket and set it to listen */
-int MDI_Init(const char* options, void* data, void* world_comm)
+int MDI_Init(const char* options, void* world_comm)
 {
   int ret;
   int sockfd;

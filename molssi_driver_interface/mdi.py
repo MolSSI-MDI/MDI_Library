@@ -67,9 +67,9 @@ mdi.MDI_Set_MPI_Intra_Rank.restype = None
 
 
 # MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p, ctypes.c_void_p]
+mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p]
 mdi.MDI_Init.restype = ctypes.c_int
-def MDI_Init(arg1, arg2, comm):
+def MDI_Init(arg1, comm):
     global intra_code_comm
 
     # append the _language option, so that MDI knows this is a Python code
@@ -89,7 +89,7 @@ def MDI_Init(arg1, arg2, comm):
         else:
             raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but mpi4py is not found")
 
-    ret = mdi.MDI_Init(ctypes.c_char_p(command), arg2, mpi_communicator_ptr )
+    ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
 
     # split the intra-code communicator
     if do_mpi_split:
