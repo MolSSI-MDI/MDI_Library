@@ -21,6 +21,10 @@ endif()
 
 #construct the list of source files
 list(APPEND sources "mdi.cpp")
+list(APPEND sources "communicator.h")
+list(APPEND sources "communicator.cpp")
+list(APPEND sources "mdi_global.h")
+list(APPEND sources "mdi_global.cpp")
 if( mpi STREQUAL "OFF" )
    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/mpi.h")
 endif()

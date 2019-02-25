@@ -19,12 +19,14 @@ Contents:
 #define MDI_LIBRARY
 
 #include <mpi.h>
+#include "mdi_global.h"
 
 #ifdef __cplusplus
 namespace MDI_STUBS { }
 extern "C" {
 #endif
 
+  /*
 // type of an MDI communicator handle
 typedef int MDI_Comm;
 
@@ -51,10 +53,6 @@ extern const int MDI_DOUBLE_NUMPY;
 extern const int MDI_TCP;
 extern const int MDI_MPI;
 
-/*----------------------*/
-/* MDI unit conversions */
-/*----------------------*/
-
 // length
 extern const double MDI_METER_TO_BOHR;
 extern const double MDI_ANGSTROM_TO_BOHR;
@@ -74,6 +72,7 @@ extern const double MDI_KCALPERMOL_TO_HARTREE;
 extern const double MDI_EV_TO_HARTREE;
 extern const double MDI_RYDBERG_TO_HARTREE;
 extern const double MDI_KELVIN_TO_HARTREE;
+*/
 
 int MDI_Init(const char* options, void* world_comm);
 int MDI_Accept_Communicator();
