@@ -91,6 +91,12 @@
        INTEGER(KIND=C_INT)                      :: MDI_Recv_Command_
      END FUNCTION MDI_Recv_Command_
 
+     FUNCTION MDI_Conversion_Factor_(in_unit, out_unit) bind(c, name="MDI_Conversion_Factor")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: in_unit, out_unit
+       REAL(KIND=C_DOUBLE)                      :: MDI_Conversion_Factor_
+     END FUNCTION MDI_Conversion_Factor_
+
   END INTERFACE
 
 
@@ -280,5 +286,27 @@
          END IF
       ENDDO
     END SUBROUTINE MDI_Recv_Command
+
+    SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor)
+      USE ISO_C_BINDING
+      CHARACTER(LEN=*), INTENT(IN)             :: fin_unit, fout_unit
+      DOUBLE PRECISION, INTENT(OUT)            :: factor
+
+      INTEGER                                  :: i
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cin_unit(LEN_TRIM(fin_unit)+1)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cout_unit(LEN_TRIM(fout_unit)+1)
+
+      DO i = 1, LEN_TRIM(fin_unit)
+         cin_unit(i) = fin_unit(i:i)
+      END DO
+      cin_unit( LEN_TRIM(fin_unit) + 1 ) = c_null_char
+
+      DO i = 1, LEN_TRIM(fout_unit)
+         cout_unit(i) = fout_unit(i:i)
+      END DO
+      cout_unit( LEN_TRIM(fout_unit) + 1 ) = c_null_char
+
+      factor = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit) )
+    END SUBROUTINE MDI_Conversion_Factor
 
   END MODULE

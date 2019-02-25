@@ -857,6 +857,26 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
 }
 
 
+/*! \brief Return a conversion factor between two units
+ *
+ * The function returns the conversion factor from \p in_unit to \p out_unit.
+ *
+ * \param [in]       in_unit
+ *                   Name of the unit to convert from.
+ * \param [in]       out_unit
+ *                   Name of the unit to convert to.
+ */
+double MDI_Conversion_Factor(char* in_unit, char* out_unit)
+{
+  if ( strcmp(in_unit,"Angstrom") == 0 and strcmp(out_unit,"Bohr") == 0 ) {
+    return MDI_ANGSTROM_TO_BOHR;
+  }
+  else {
+    mdi_error("Unrecognized conversion requested in MDI_Conversion_Factor");
+  }
+}
+
+
 int MDI_Get_MPI_Code_Rank()
 {
   return mpi_code_rank;

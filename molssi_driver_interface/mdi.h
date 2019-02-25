@@ -81,6 +81,7 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int MDI_Send_Command(const char* buf, MDI_Comm comm);
 int MDI_Recv_Command(char* buf, MDI_Comm comm);
+double MDI_Conversion_Factor(char* in_unit, char* out_unit);
 
 // only used internally by MDI
 int MDI_Get_MPI_Code_Rank();
