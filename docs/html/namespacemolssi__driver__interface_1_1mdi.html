@@ -115,6 +115,9 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Send_Command</b></
 <tr class="memitem:aad3f7850b204cc18683005d43797bebc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad3f7850b204cc18683005d43797bebc"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Recv_Command</b></td></tr>
 <tr class="separator:aad3f7850b204cc18683005d43797bebc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe90c4e2dfbc92f7c9f6b6e7b9378355"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe90c4e2dfbc92f7c9f6b6e7b9378355"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Conversion_Factor</b></td></tr>
+<tr class="separator:abe90c4e2dfbc92f7c9f6b6e7b9378355"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -142,6 +145,9 @@ tuple&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_COMMAND_LENGTH</
 <tr class="memitem:a3be426ffa2c8696fe44d1bec166a21a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3be426ffa2c8696fe44d1bec166a21a8"></a>
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NAME_LENGTH</b> = ctypes.c_int.in_dll(<a class="el" href="classmdi.html">mdi</a>, &quot;MDI_NAME_LENGTH&quot;)</td></tr>
 <tr class="separator:a3be426ffa2c8696fe44d1bec166a21a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2f6132398baf7a280e420f1f191f3c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2f6132398baf7a280e420f1f191f3c8"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NULL_COMM</b> = ctypes.c_int.in_dll(<a class="el" href="classmdi.html">mdi</a>, &quot;MDI_NULL_COMM&quot;)</td></tr>
+<tr class="separator:ae2f6132398baf7a280e420f1f191f3c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a451ed61cd0edd447d5a559ec99d479d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a451ed61cd0edd447d5a559ec99d479d5"></a>
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_INT</b> = ctypes.c_int.in_dll(<a class="el" href="classmdi.html">mdi</a>, &quot;MDI_INT&quot;)</td></tr>
 <tr class="separator:a451ed61cd0edd447d5a559ec99d479d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,7 +225,7 @@ tuple&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KELVIN_TO_HARTRE
 </div><div class="memdoc">
 
 <p>Accept a new MDI communicator. </p>
-<p>The function returns an MDI_COMM that describes a connection between two codes. If no new communicators are available, the function returns <code>0</code>. </p>
+<p>The function returns an MDI_Comm that describes a connection between two codes. If no new communicators are available, the function returns <code>MDI_NULL_COMM</code>. </p>
 
 </div>
 </div>

@@ -62,6 +62,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -94,6 +95,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Accept__Communicator__.html">MDI_Accept_Communicator_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Conversion__Factor__.html">MDI_Conversion_Factor_</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1MDI__Init__.html">MDI_Init_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacemdi_1_1mdi__recv.html">mdi_recv</a></td></tr>
@@ -115,7 +118,7 @@ Public Member Functions</h2></td></tr>
 subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_init</b> (foptions, fworld_comm, ierr)</td></tr>
 <tr class="separator:a35894bce734c441b9937f571436443b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a614089c34c2781079993f86374ee6d93"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a614089c34c2781079993f86374ee6d93"></a>
-subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_accept_communicator</b> (<a class="el" href="structcommunicator__struct.html">communicator</a>)</td></tr>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_accept_communicator</b> (communicator)</td></tr>
 <tr class="separator:a614089c34c2781079993f86374ee6d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4f914ed81b61608b82072c034e2990"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aca4f914ed81b61608b82072c034e2990"></a>
 subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_s</b> (fbuf, count, datatype, comm, ierr)</td></tr>
@@ -153,75 +156,71 @@ subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_send_comman
 <tr class="memitem:a2b09a1c50a57cc6fe253985b530993ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b09a1c50a57cc6fe253985b530993ec"></a>
 subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_recv_command</b> (fbuf, comm, ierr)</td></tr>
 <tr class="separator:a2b09a1c50a57cc6fe253985b530993ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae00c1e188d87821449bbe1a03e7b337"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae00c1e188d87821449bbe1a03e7b337"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_conversion_factor</b> (fin_unit, fout_unit, factor)</td></tr>
+<tr class="separator:aae00c1e188d87821449bbe1a03e7b337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:accae5b01e087f8738d86006e68417f6d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="accae5b01e087f8738d86006e68417f6d"></a>
-integer, dimension(c, name=&quot;mdi_kelvin_to_hartree&quot;), <br class="typebreak"/>
-protected&#160;</td><td class="memItemRight" valign="bottom"><b>bind</b></td></tr>
-<tr class="separator:accae5b01e087f8738d86006e68417f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a476a171077b89b7bc1e0153edaee118a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a476a171077b89b7bc1e0153edaee118a"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_command_length</b></td></tr>
-<tr class="separator:a476a171077b89b7bc1e0153edaee118a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8038fa45863d082fafb692e8bc1f4b5a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8038fa45863d082fafb692e8bc1f4b5a"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_length</b></td></tr>
-<tr class="separator:a8038fa45863d082fafb692e8bc1f4b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae85ef43174229bd688543ad4bcc08a2b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae85ef43174229bd688543ad4bcc08a2b"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_int</b></td></tr>
-<tr class="separator:ae85ef43174229bd688543ad4bcc08a2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69ba399f9ad46c8ac033b26574c9b6ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69ba399f9ad46c8ac033b26574c9b6ef"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_double</b></td></tr>
-<tr class="separator:a69ba399f9ad46c8ac033b26574c9b6ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5741adbde5b79f06a9b94b17c7f16eb7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5741adbde5b79f06a9b94b17c7f16eb7"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_char</b></td></tr>
-<tr class="separator:a5741adbde5b79f06a9b94b17c7f16eb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1605c457efb88fc7e1f169734c58b52c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1605c457efb88fc7e1f169734c58b52c"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_tcp</b></td></tr>
-<tr class="separator:a1605c457efb88fc7e1f169734c58b52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4039d7ab89098798e98dda20ece81eaf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4039d7ab89098798e98dda20ece81eaf"></a>
-integer, protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_mpi</b></td></tr>
-<tr class="separator:a4039d7ab89098798e98dda20ece81eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff013df9c91a218d860486ff0fc757e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff013df9c91a218d860486ff0fc757e4"></a>
-real(kind=8), dimension(c, <br class="typebreak"/>
+<tr class="memitem:a5dd70157d0ceacaa171718ae92d85b2d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5dd70157d0ceacaa171718ae92d85b2d"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_command_length</b> = 12</td></tr>
+<tr class="separator:a5dd70157d0ceacaa171718ae92d85b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b06002b55031976d6f1c42f66ef6786"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b06002b55031976d6f1c42f66ef6786"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_length</b> = 12</td></tr>
+<tr class="separator:a7b06002b55031976d6f1c42f66ef6786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af79d712d71e077d3178e433909b5a0eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af79d712d71e077d3178e433909b5a0eb"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_null_comm</b> = 0</td></tr>
+<tr class="separator:af79d712d71e077d3178e433909b5a0eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abae2888c4daf7459e43cc11e044ee09e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abae2888c4daf7459e43cc11e044ee09e"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_int</b> = 0</td></tr>
+<tr class="separator:abae2888c4daf7459e43cc11e044ee09e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a469cebca4e357b05650fb3fb7ed4b4eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a469cebca4e357b05650fb3fb7ed4b4eb"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_double</b> = 1</td></tr>
+<tr class="separator:a469cebca4e357b05650fb3fb7ed4b4eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f22a6642786e1f973eb22034bdb35c1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f22a6642786e1f973eb22034bdb35c1"></a>
+integer(kind=c_int), parameter&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_char</b> = 2</td></tr>
+<tr class="separator:a2f22a6642786e1f973eb22034bdb35c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff8528c7eb71021e46aa6273c1e8101f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff8528c7eb71021e46aa6273c1e8101f"></a>
+real(kind=c_double), dimension(c, <br class="typebreak"/>
 name=&quot;mdi_kelvin_to_hartree&quot;), <br class="typebreak"/>
 protected&#160;</td><td class="memItemRight" valign="bottom"><b>bind</b></td></tr>
-<tr class="separator:aff013df9c91a218d860486ff0fc757e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af74f78803c251e23cd5022a8df7abc1e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af74f78803c251e23cd5022a8df7abc1e"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_meter_to_bohr</b></td></tr>
-<tr class="separator:af74f78803c251e23cd5022a8df7abc1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6abac217d729188855210e9327333578"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6abac217d729188855210e9327333578"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_angstrom_to_bohr</b></td></tr>
-<tr class="separator:a6abac217d729188855210e9327333578"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a583e3421719bbf0bd951f455a0032766"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a583e3421719bbf0bd951f455a0032766"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_second_to_aut</b></td></tr>
-<tr class="separator:a583e3421719bbf0bd951f455a0032766"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad350838a7aea84b6eca15da72d3ee4fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad350838a7aea84b6eca15da72d3ee4fc"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_picosecond_to_aut</b></td></tr>
-<tr class="separator:ad350838a7aea84b6eca15da72d3ee4fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace10d5db76cf54244d54b62e77b9d9a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ace10d5db76cf54244d54b62e77b9d9a6"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_newton_to_auf</b></td></tr>
-<tr class="separator:ace10d5db76cf54244d54b62e77b9d9a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b4e777d36fe90d506f70b16abb1b910"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b4e777d36fe90d506f70b16abb1b910"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_joule_to_hartree</b></td></tr>
-<tr class="separator:a0b4e777d36fe90d506f70b16abb1b910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12a5c4e648f84d60dd261349d5e2cf37"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12a5c4e648f84d60dd261349d5e2cf37"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kj_to_hartree</b></td></tr>
-<tr class="separator:a12a5c4e648f84d60dd261349d5e2cf37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a761336e719b236672a145cf86a8b7c95"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a761336e719b236672a145cf86a8b7c95"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kjpermol_to_hartree</b></td></tr>
-<tr class="separator:a761336e719b236672a145cf86a8b7c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a5635f450c619dabb104846fd972b22"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a5635f450c619dabb104846fd972b22"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kcalpermol_to_hartree</b></td></tr>
-<tr class="separator:a2a5635f450c619dabb104846fd972b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02fe8f5658dc9d6379ceb2cc40b24b56"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02fe8f5658dc9d6379ceb2cc40b24b56"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_ev_to_hartree</b></td></tr>
-<tr class="separator:a02fe8f5658dc9d6379ceb2cc40b24b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4eefaa8b0fe9c708b1ba69ae86bac95c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4eefaa8b0fe9c708b1ba69ae86bac95c"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_rydberg_to_hartree</b></td></tr>
-<tr class="separator:a4eefaa8b0fe9c708b1ba69ae86bac95c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fc09af33b0b858f96014b3f9fdd7ee5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fc09af33b0b858f96014b3f9fdd7ee5"></a>
-real(kind=8), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kelvin_to_hartree</b></td></tr>
-<tr class="separator:a5fc09af33b0b858f96014b3f9fdd7ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:aff8528c7eb71021e46aa6273c1e8101f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2ed0af91b09cc46c7e89c2acde9068a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2ed0af91b09cc46c7e89c2acde9068a"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_meter_to_bohr</b></td></tr>
+<tr class="separator:ac2ed0af91b09cc46c7e89c2acde9068a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15dff5ce38e55b9d0317d758149844b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15dff5ce38e55b9d0317d758149844b2"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_angstrom_to_bohr</b></td></tr>
+<tr class="separator:a15dff5ce38e55b9d0317d758149844b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed2af8a16a8cb79135a8998326f288eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aed2af8a16a8cb79135a8998326f288eb"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_second_to_aut</b></td></tr>
+<tr class="separator:aed2af8a16a8cb79135a8998326f288eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ccfec3fa70a29c0e688945503c15aee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9ccfec3fa70a29c0e688945503c15aee"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_picosecond_to_aut</b></td></tr>
+<tr class="separator:a9ccfec3fa70a29c0e688945503c15aee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a505bfc3bd5ffc77b7b7e7d51bb1b2570"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a505bfc3bd5ffc77b7b7e7d51bb1b2570"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_newton_to_auf</b></td></tr>
+<tr class="separator:a505bfc3bd5ffc77b7b7e7d51bb1b2570"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8f5371595d43c99ff92c405abe6bbc5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8f5371595d43c99ff92c405abe6bbc5"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_joule_to_hartree</b></td></tr>
+<tr class="separator:ad8f5371595d43c99ff92c405abe6bbc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0383653d855c0cfe9fe3d02543a8a24"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0383653d855c0cfe9fe3d02543a8a24"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kj_to_hartree</b></td></tr>
+<tr class="separator:af0383653d855c0cfe9fe3d02543a8a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa350b4ca3fdf524621eeff6ad406907b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa350b4ca3fdf524621eeff6ad406907b"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kjpermol_to_hartree</b></td></tr>
+<tr class="separator:aa350b4ca3fdf524621eeff6ad406907b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35a22fbf5dd528f6c325d1a78232c22c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35a22fbf5dd528f6c325d1a78232c22c"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kcalpermol_to_hartree</b></td></tr>
+<tr class="separator:a35a22fbf5dd528f6c325d1a78232c22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1024396911608751492a2283a94bd65"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1024396911608751492a2283a94bd65"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_ev_to_hartree</b></td></tr>
+<tr class="separator:ab1024396911608751492a2283a94bd65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8e40ef3112f495d4a85108715c88395"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8e40ef3112f495d4a85108715c88395"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_rydberg_to_hartree</b></td></tr>
+<tr class="separator:ae8e40ef3112f495d4a85108715c88395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace39b5ca0b7b69166069899231fa4aaf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ace39b5ca0b7b69166069899231fa4aaf"></a>
+real(kind=c_double), protected&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_kelvin_to_hartree</b></td></tr>
+<tr class="separator:ace39b5ca0b7b69166069899231fa4aaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this module was generated from the following file:<ul>
 <li>/home/tbarnes/mdi/molssi_driver_interface/molssi_driver_interface/mdi_f90.f90</li>

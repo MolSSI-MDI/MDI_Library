@@ -109,75 +109,85 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define MDI_LIBRARY</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;mpi.h&gt;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor"></span><span class="keyword">namespace </span>MDI_STUBS { }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// length of an MDI command in characters</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_COMMAND_LENGTH;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">// length of an MDI name in characters</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_NAME_LENGTH;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">// MDI data types</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_INT;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_DOUBLE;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_CHAR;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_INT_NUMPY;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_DOUBLE_NUMPY;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">// MDI communication types</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_TCP;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> MDI_MPI;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/*----------------------*/</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">/* MDI unit conversions */</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/*----------------------*/</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">// length</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_METER_TO_BOHR;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_ANGSTROM_TO_BOHR;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">// time</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_SECOND_TO_AUT;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_PICOSECOND_TO_AUT;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// force</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_NEWTON_TO_AUF;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// energy</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_JOULE_TO_HARTREE;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_KJ_TO_HARTREE;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_KJPERMOL_TO_HARTREE;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_KCALPERMOL_TO_HARTREE;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_EV_TO_HARTREE;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_RYDBERG_TO_HARTREE;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> MDI_KELVIN_TO_HARTREE;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* options, <span class="keywordtype">void</span>* world_comm);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#af13ac32549acde2f176447663449ae8d">MDI_Accept_Communicator</a>();</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#af186725e545bc894336d28aa18fdb89e">MDI_Send</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> count, <span class="keywordtype">int</span> datatype, <span class="keywordtype">int</span> comm);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#aa17b455a7e09fbb80224b726110979e6">MDI_Recv</a>(<span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> count, <span class="keywordtype">int</span> datatype, <span class="keywordtype">int</span> comm);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#aea30c460e6369a77acc101437e94e87e">MDI_Send_Command</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> comm);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#a4a1d5d1b629bd53ee6f6099058f5b019">MDI_Recv_Command</a>(<span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> comm);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// only used internally by MDI</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keywordtype">int</span> MDI_Get_MPI_Code_Rank();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keywordtype">void</span> MDI_Set_MPI_Intra_Rank(<span class="keywordtype">int</span> rank);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="mdi_8cpp_html_af13ac32549acde2f176447663449ae8d"><div class="ttname"><a href="mdi_8cpp.html#af13ac32549acde2f176447663449ae8d">MDI_Accept_Communicator</a></div><div class="ttdeci">int MDI_Accept_Communicator()</div><div class="ttdoc">Accept a new MDI communicator. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:637</div></div>
-<div class="ttc" id="mdi_8cpp_html_aa17b455a7e09fbb80224b726110979e6"><div class="ttname"><a href="mdi_8cpp.html#aa17b455a7e09fbb80224b726110979e6">MDI_Recv</a></div><div class="ttdeci">int MDI_Recv(char *buf, int count, int datatype, int comm)</div><div class="ttdoc">Receive data through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:755</div></div>
-<div class="ttc" id="mdi_8cpp_html_ae05ae377fa8de592f62c696c041b7d0a"><div class="ttname"><a href="mdi_8cpp.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a></div><div class="ttdeci">int MDI_Init(const char *options, void *world_comm)</div><div class="ttdoc">Initialize communication through the MDI library. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:433</div></div>
-<div class="ttc" id="mdi_8cpp_html_af186725e545bc894336d28aa18fdb89e"><div class="ttname"><a href="mdi_8cpp.html#af186725e545bc894336d28aa18fdb89e">MDI_Send</a></div><div class="ttdeci">int MDI_Send(const char *buf, int count, int datatype, int comm)</div><div class="ttdoc">Send data through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:688</div></div>
-<div class="ttc" id="mdi_8cpp_html_aea30c460e6369a77acc101437e94e87e"><div class="ttname"><a href="mdi_8cpp.html#aea30c460e6369a77acc101437e94e87e">MDI_Send_Command</a></div><div class="ttdeci">int MDI_Send_Command(const char *buf, int comm)</div><div class="ttdoc">Send a command of length MDI_COMMAND_LENGTH through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:822</div></div>
-<div class="ttc" id="mdi_8cpp_html_a4a1d5d1b629bd53ee6f6099058f5b019"><div class="ttname"><a href="mdi_8cpp.html#a4a1d5d1b629bd53ee6f6099058f5b019">MDI_Recv_Command</a></div><div class="ttdeci">int MDI_Recv_Command(char *buf, int comm)</div><div class="ttdoc">Receive a command of length MDI_COMMAND_LENGTH through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:845</div></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;mdi_global.h&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor"></span><span class="keyword">namespace </span>MDI_STUBS { }</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">// type of an MDI communicator handle</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">typedef int MDI_Comm;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">// type of an MDI datatype handle</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">typedef int MDI_Datatype;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">// length of an MDI command in characters</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">extern const int MDI_COMMAND_LENGTH;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">// length of an MDI name in characters</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">extern const int MDI_NAME_LENGTH;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">// value of a null communicator</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">extern const MPI_Comm MDI_NULL_COMM;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">// MDI data types</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">extern const int MDI_INT;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">extern const int MDI_DOUBLE;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">extern const int MDI_CHAR;</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">extern const int MDI_INT_NUMPY;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">extern const int MDI_DOUBLE_NUMPY;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">// MDI communication types</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">extern const int MDI_TCP;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">extern const int MDI_MPI;</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// length</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">extern const double MDI_METER_TO_BOHR;</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">extern const double MDI_ANGSTROM_TO_BOHR;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">// time</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">extern const double MDI_SECOND_TO_AUT;</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">extern const double MDI_PICOSECOND_TO_AUT;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// force</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">extern const double MDI_NEWTON_TO_AUF;</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment"></span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">// energy</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">extern const double MDI_JOULE_TO_HARTREE;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">extern const double MDI_KJ_TO_HARTREE;</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">extern const double MDI_KJPERMOL_TO_HARTREE;</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">extern const double MDI_KCALPERMOL_TO_HARTREE;</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">extern const double MDI_EV_TO_HARTREE;</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">extern const double MDI_RYDBERG_TO_HARTREE;</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">extern const double MDI_KELVIN_TO_HARTREE;</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* options, <span class="keywordtype">void</span>* world_comm);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#a570557fdd42049c5e285faf546037531">MDI_Accept_Communicator</a>();</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#a5356b5fe5aca86c3390e13f8762a01e1">MDI_Send</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> count, MDI_Datatype datatype, MDI_Comm comm);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#ac94ed31fb09c8445b40265a89c72e006">MDI_Recv</a>(<span class="keywordtype">char</span>* buf, <span class="keywordtype">int</span> count, MDI_Datatype datatype, MDI_Comm comm);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#a77e579331a36c3f0eb7f7ff9668e789d">MDI_Send_Command</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, MDI_Comm comm);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">int</span> <a class="code" href="mdi_8cpp.html#ab03c0ea8beda690d6f796d3089cbfe15">MDI_Recv_Command</a>(<span class="keywordtype">char</span>* buf, MDI_Comm comm);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">double</span> <a class="code" href="mdi_8cpp.html#a886c1af1124f55d869a6f2b80a68c5a7">MDI_Conversion_Factor</a>(<span class="keywordtype">char</span>* in_unit, <span class="keywordtype">char</span>* out_unit);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">// only used internally by MDI</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keywordtype">int</span> MDI_Get_MPI_Code_Rank();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keywordtype">void</span> MDI_Set_MPI_Intra_Rank(<span class="keywordtype">int</span> rank);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="mdi_8cpp_html_ac94ed31fb09c8445b40265a89c72e006"><div class="ttname"><a href="mdi_8cpp.html#ac94ed31fb09c8445b40265a89c72e006">MDI_Recv</a></div><div class="ttdeci">int MDI_Recv(char *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</div><div class="ttdoc">Receive data through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:620</div></div>
+<div class="ttc" id="mdi_8cpp_html_ab03c0ea8beda690d6f796d3089cbfe15"><div class="ttname"><a href="mdi_8cpp.html#ab03c0ea8beda690d6f796d3089cbfe15">MDI_Recv_Command</a></div><div class="ttdeci">int MDI_Recv_Command(char *buf, MDI_Comm comm)</div><div class="ttdoc">Receive a command of length MDI_COMMAND_LENGTH through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:666</div></div>
+<div class="ttc" id="mdi_8cpp_html_a886c1af1124f55d869a6f2b80a68c5a7"><div class="ttname"><a href="mdi_8cpp.html#a886c1af1124f55d869a6f2b80a68c5a7">MDI_Conversion_Factor</a></div><div class="ttdeci">double MDI_Conversion_Factor(char *in_unit, char *out_unit)</div><div class="ttdoc">Return a conversion factor between two units. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:687</div></div>
+<div class="ttc" id="mdi_8cpp_html_a570557fdd42049c5e285faf546037531"><div class="ttname"><a href="mdi_8cpp.html#a570557fdd42049c5e285faf546037531">MDI_Accept_Communicator</a></div><div class="ttdeci">MDI_Comm MDI_Accept_Communicator()</div><div class="ttdoc">Accept a new MDI communicator. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:544</div></div>
+<div class="ttc" id="mdi_8cpp_html_a77e579331a36c3f0eb7f7ff9668e789d"><div class="ttname"><a href="mdi_8cpp.html#a77e579331a36c3f0eb7f7ff9668e789d">MDI_Send_Command</a></div><div class="ttdeci">int MDI_Send_Command(const char *buf, MDI_Comm comm)</div><div class="ttdoc">Send a command of length MDI_COMMAND_LENGTH through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:643</div></div>
+<div class="ttc" id="mdi_8cpp_html_ae05ae377fa8de592f62c696c041b7d0a"><div class="ttname"><a href="mdi_8cpp.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a></div><div class="ttdeci">int MDI_Init(const char *options, void *world_comm)</div><div class="ttdoc">Initialize communication through the MDI library. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:341</div></div>
+<div class="ttc" id="mdi_8cpp_html_a5356b5fe5aca86c3390e13f8762a01e1"><div class="ttname"><a href="mdi_8cpp.html#a5356b5fe5aca86c3390e13f8762a01e1">MDI_Send</a></div><div class="ttdeci">int MDI_Send(const char *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</div><div class="ttdoc">Send data through the MDI connection. </div><div class="ttdef"><b>Definition:</b> mdi.cpp:593</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
