@@ -10,12 +10,14 @@
 #include <unistd.h>
 #include "mdi.h"
 #include "mdi_manager.h"
+#include "communicator.h"
 
 using namespace std;
 
 MDIManager::MDIManager(const char* options, void* world_comm) {
   this->method_tcp = new MethodTCP();
   this->method_mpi = new MethodMPI();
+  this->returned_comms = 0;
 
   int ret;
   int sockfd;
@@ -201,4 +203,79 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
 
   free( argv_line );
 
+}
+
+
+int MDIManager::accept_communicator() {
+  int connection;
+
+  // if MDI hasn't returned some connections, do that now
+  if ( this->returned_comms < communicators.size() ) {
+    this->returned_comms++;
+    return this->returned_comms;
+  }
+
+  // check for any production codes connecting via TCP
+  if ( this->method_tcp->tcp_socket > 0 ) {
+
+    //accept a connection via TCP
+    this->method_tcp->On_Accept_Communicator();
+
+    // if MDI hasn't returned some connections, do that now
+    if ( this->returned_comms < communicators.size() ) {
+      this->returned_comms++;
+      return this->returned_comms;
+    }
+
+  }
+
+  // unable to accept any connections
+  return MDI_NULL_COMM;
+}
+
+
+int MDIManager::send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  if ( this->method_mpi->intra_rank != 0 ) {
+    mdi_error("Called MDI_Send with incorrect rank");
+  }
+
+  Communicator* send_comm = communicators[comm-1];
+  send_comm->send(buf, count, datatype);
+
+  return 0;
+}
+
+
+int MDIManager::recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  if ( this->method_mpi->intra_rank != 0 ) {
+    mdi_error("Called MDI_Recv with incorrect rank");
+  }
+
+  Communicator* recv_comm = communicators[comm-1];
+  recv_comm->recv(buf, count, datatype);
+
+  return 0;
+}
+
+
+int MDIManager::send_command(const char* buf, MDI_Comm comm) {
+  if ( this->method_mpi->intra_rank != 0 ) {
+    mdi_error("Called MDI_Send_Command with incorrect rank");
+  }
+  int count = MDI_COMMAND_LENGTH;
+  char command[MDI_COMMAND_LENGTH];
+
+  strcpy(command, buf);
+  return this->send( &command[0], count, MDI_CHAR, comm );
+}
+
+
+int MDIManager::recv_command(char* buf, MDI_Comm comm) {
+  if ( this->method_mpi->intra_rank != 0 ) {
+    mdi_error("Called MDI_Recv_Command with incorrect rank");
+  }
+  int count = MDI_COMMAND_LENGTH;
+  int datatype = MDI_CHAR;
+
+  return this->recv( buf, count, datatype, comm );
 }

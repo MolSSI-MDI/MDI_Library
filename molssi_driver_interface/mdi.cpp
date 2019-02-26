@@ -91,7 +91,7 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
 static MDIManager* manager;
-
+static bool is_initialized = false;
 
 
 void mdi_error(const char* message) {
@@ -114,7 +114,11 @@ void mdi_error(const char* message) {
  */
 int MDI_Init(const char* options, void* world_comm)
 {
+  if ( is_initialized ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+  }
   manager = new MDIManager(options, world_comm);
+  is_initialized = true;
   return 0;
 }
 
@@ -127,30 +131,10 @@ int MDI_Init(const char* options, void* world_comm)
  */
 MDI_Comm MDI_Accept_Communicator()
 {
-  int connection;
-
-  // if MDI hasn't returned some connections, do that now
-  if ( returned_comms < communicators.size() ) {
-    returned_comms++;
-    return returned_comms;
+  if ( not is_initialized ) {
+    mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
   }
-
-  // check for any production codes connecting via TCP
-  if ( manager->method_tcp->tcp_socket > 0 ) {
-
-    //accept a connection via TCP
-    manager->method_tcp->On_Accept_Communicator();
-
-    // if MDI hasn't returned some connections, do that now
-    if ( returned_comms < communicators.size() ) {
-      returned_comms++;
-      return returned_comms;
-    }
-
-  }
-
-  // unable to accept any connections
-  return MDI_NULL_COMM;
+  return manager->accept_communicator();
 }
 
 
@@ -170,14 +154,10 @@ MDI_Comm MDI_Accept_Communicator()
  */
 int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( manager->method_mpi->intra_rank != 0 ) {
-     perror("Called MDI_Send with incorrect rank");
-   }
-
-   Communicator* send_comm = communicators[comm-1];
-   send_comm->send(buf, count, datatype);
-
-   return 0;
+  if ( not is_initialized ) {
+    mdi_error("MDI_Send called but MDI has not been initialized");
+  }
+  return manager->send(buf, count, datatype, comm);
 }
 
 
@@ -197,14 +177,10 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( manager->method_mpi->intra_rank != 0 ) {
-     perror("Called MDI_Recv with incorrect rank");
-   }
-
-   Communicator* recv_comm = communicators[comm-1];
-   recv_comm->recv(buf, count, datatype);
-
-   return 0;
+  if ( not is_initialized ) {
+    mdi_error("MDI_Recv called but MDI has not been initialized");
+  }
+  return manager->recv(buf, count, datatype, comm);
 }
 
 
@@ -220,14 +196,10 @@ int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
-   if ( manager->method_mpi->intra_rank != 0 ) {
-     perror("Called MDI_Send_Command with incorrect rank");
-   }
-   int count = MDI_COMMAND_LENGTH;
-   char command[MDI_COMMAND_LENGTH];
-
-   strcpy(command, buf);
-   return MDI_Send( &command[0], count, MDI_CHAR, comm );
+  if ( not is_initialized ) {
+    mdi_error("MDI_Send_Command called but MDI has not been initialized");
+  }
+  return manager->send_command(buf, comm);
 }
 
 
@@ -243,13 +215,10 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
-   if ( manager->method_mpi->intra_rank != 0 ) {
-     perror("Called MDI_Recv_Command with incorrect rank");
-   }
-   int count = MDI_COMMAND_LENGTH;
-   int datatype = MDI_CHAR;
-
-   return MDI_Recv( buf, count, datatype, comm );
+  if ( not is_initialized ) {
+    mdi_error("MDI_Recv_Command called but MDI has not been initialized");
+  }
+  return manager->recv_command(buf, comm);
 }
 
 
