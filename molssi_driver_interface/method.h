@@ -9,6 +9,18 @@
 #include <vector>
 #include "mdi.h"
 
+void sigint_handler(int dummy);
+
+class MethodTCP
+{
+public:
+  MethodTCP();
+  int MDI_Listen_TCP(int port);
+  int MDI_Request_Connection_TCP(int port, char* hostname_ptr);
+  int On_Accept_Communicator();
+  int tcp_socket;
+};
+
 class MethodMPI
 {
 public:
