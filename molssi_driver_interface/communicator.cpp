@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "mdi_global.h"
+#include "mdi.h"
 #include "communicator.h"
 
 using namespace std;
