@@ -37,6 +37,7 @@ Contents:
 #include <vector>
 #include "mdi.h"
 #include "communicator.h"
+#include "mdi_manager.h"
 
 using namespace MDI_STUBS;
 using namespace std;
@@ -88,26 +89,14 @@ const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
+static MDIManager* manager;
 
 
-
-// internal MPI communicator
-static MPI_Comm intra_MPI_comm;
-
-// the TCP socket, initialized by MDI_Listen when method="TCP"
-static int tcp_socket = -1;
-
-// the MPI rank within the code
-static int intra_rank = 0;
-
-// the MPI rank of the code
-static int mpi_code_rank = 0;
 
 void mdi_error(const char* message) {
   perror(message);
   exit(1);
 }
-
 
 
 /*----------------------------*/
@@ -191,7 +180,7 @@ int gather_names(const char* hostname_ptr, bool do_split){
 	 char my_name[MDI_NAME_LENGTH];
 	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(my_name, name) == 0 ) {
-	   mpi_code_rank = nunique_names;
+	   manager->mpi_code_rank = nunique_names;
 	 }
 
          // create a communicator to handle communication with this production code
@@ -216,8 +205,8 @@ int gather_names(const char* hostname_ptr, bool do_split){
      if ( do_split ) {
 
        // create the intra-code communicators
-       MPI_Comm_split(MPI_COMM_WORLD, mpi_code_rank, world_rank, &intra_MPI_comm);
-       MPI_Comm_rank(intra_MPI_comm, &intra_rank);
+       MPI_Comm_split(MPI_COMM_WORLD, manager->mpi_code_rank, world_rank, &manager->intra_MPI_comm);
+       MPI_Comm_rank(manager->intra_MPI_comm, &manager->intra_rank);
 
        MPI_Barrier(MPI_COMM_WORLD);
 
@@ -273,7 +262,7 @@ int MDI_Listen_TCP(int port)
   }
 
   //return sockfd;
-  tcp_socket = sockfd;
+  manager->tcp_socket = sockfd;
 
   return 0;
 }
@@ -372,6 +361,8 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
  */
 int MDI_Init(const char* options, void* world_comm)
 {
+  manager = new MDIManager();
+
   int ret;
   int sockfd;
   struct sockaddr_in serv_addr;
@@ -554,7 +545,7 @@ int MDI_Init(const char* options, void* world_comm)
   if ( mpi_initialized ) {
     if ( do_split ) {
       MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
-      *world_comm_ptr = intra_MPI_comm;
+      *world_comm_ptr = manager->intra_MPI_comm;
     }
   }
 
@@ -582,9 +573,9 @@ MDI_Comm MDI_Accept_Communicator()
   }
 
   // check for any production codes connecting via TCP
-  if ( tcp_socket > 0 ) {
+  if ( manager->tcp_socket > 0 ) {
     //accept a connection via TCP
-    connection = accept(tcp_socket, NULL, NULL);
+    connection = accept(manager->tcp_socket, NULL, NULL);
     if (connection < 0) {
       perror("Could not accept connection");
       exit(-1);
@@ -621,7 +612,7 @@ MDI_Comm MDI_Accept_Communicator()
  */
 int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( intra_rank != 0 ) {
+   if ( manager->intra_rank != 0 ) {
      perror("Called MDI_Send with incorrect rank");
    }
 
@@ -648,7 +639,7 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( intra_rank != 0 ) {
+   if ( manager->intra_rank != 0 ) {
      perror("Called MDI_Recv with incorrect rank");
    }
 
@@ -671,7 +662,7 @@ int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
-   if ( intra_rank != 0 ) {
+   if ( manager->intra_rank != 0 ) {
      perror("Called MDI_Send_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
@@ -694,7 +685,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
-   if ( intra_rank != 0 ) {
+   if ( manager->intra_rank != 0 ) {
      perror("Called MDI_Recv_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
@@ -726,10 +717,10 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 
 int MDI_Get_MPI_Code_Rank()
 {
-  return mpi_code_rank;
+  return manager->mpi_code_rank;
 }
 
 void MDI_Set_MPI_Intra_Rank(int rank)
 {
-  intra_rank = rank;
+  manager->intra_rank = rank;
 }
