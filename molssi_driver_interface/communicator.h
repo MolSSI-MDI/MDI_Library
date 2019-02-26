@@ -7,7 +7,7 @@
 #define MDI_COMMUNICATOR
 
 #include <vector>
-#include "mdi_global.h"
+#include "mdi.h"
 
 class Communicator
 {
