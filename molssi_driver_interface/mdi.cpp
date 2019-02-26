@@ -37,7 +37,6 @@ Contents:
 #include <vector>
 #include "mdi.h"
 #include "communicator.h"
-#include "mdi_global.h"
 
 using namespace MDI_STUBS;
 using namespace std;
