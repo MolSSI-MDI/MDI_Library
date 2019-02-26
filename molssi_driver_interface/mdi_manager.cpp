@@ -13,8 +13,5 @@
 using namespace std;
 
 MDIManager::MDIManager() {
-  this->intra_MPI_comm = 0;
   this->tcp_socket = -1;
-  this->intra_rank = 0;
-  this->mpi_code_rank = 0;
 }

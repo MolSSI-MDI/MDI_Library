@@ -38,6 +38,7 @@ Contents:
 #include "mdi.h"
 #include "communicator.h"
 #include "mdi_manager.h"
+#include "method.h"
 
 using namespace MDI_STUBS;
 using namespace std;
@@ -91,6 +92,8 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 static MDIManager* manager;
 
+static MethodMPI* method_mpi;
+
 
 
 void mdi_error(const char* message) {
@@ -106,113 +109,6 @@ void mdi_error(const char* message) {
 int driver_sockfd;
 void sigint_handler(int dummy) {
   close(driver_sockfd);
-}
-
-int gather_names(const char* hostname_ptr, bool do_split){
-   int i, j, icomm;
-   int driver_rank;
-   int nunique_names = 0;
-   int world_rank;
-
-   // get the number of processes
-   int world_size;
-   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-   // get the rank of this process
-   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-   //create the name of this process
-   char buffer[MDI_NAME_LENGTH];
-   int str_end;
-   strcpy(buffer, hostname_ptr);
-
-   char* names = NULL;
-   names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
-
-   char* unique_names = NULL;
-   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
-
-   MPI_Allgather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-              MPI_CHAR, MPI_COMM_WORLD);
-
-   if (world_rank == 0) {
-     for (i=0; i<world_size; i++) {
-       char* ptr1 = &names[i*MDI_NAME_LENGTH];
-     }
-   }
-
-   // determine which rank corresponds to rank 0 of the driver
-   driver_rank = -1;
-   for (i=0; i<world_size; i++) {
-     if ( driver_rank == -1 ) {
-       char name[MDI_NAME_LENGTH];
-       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
-       if ( strcmp(name, "") == 0 ) {
-	 driver_rank = i;
-       }
-     }
-   }
-   if ( driver_rank == -1 ) {
-     perror("Unable to identify driver when attempting to connect via MPI");
-   }
-
-   //if (world_rank == 0) {
-
-     //create communicators
-     for (i=0; i<world_size; i++) {
-       char name[MDI_NAME_LENGTH];
-       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
-
-       int found = 0;
-       for (j=0; j<i; j++) {
-	 char prev_name[MDI_NAME_LENGTH];
-	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
-	 if ( strcmp(name, prev_name) == 0 ) {
-	   found = 1;
-	 }
-       }
-
-       // check if this rank is the first instance of a new production code
-       if ( found == 0 && strcmp(name,"") != 0 ) {
-	 // add this code's name to the list of unique names
-	 memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
-	 nunique_names++;
-	 char my_name[MDI_NAME_LENGTH];
-	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
-	 if ( strcmp(my_name, name) == 0 ) {
-	   manager->mpi_code_rank = nunique_names;
-	 }
-
-         // create a communicator to handle communication with this production code
-	 MPI_Comm new_mpi_comm;
-	 int color = 0;
-	 int key = 0;
-	 if ( world_rank == driver_rank ) {
-	   color = 1;
-	 }
-	 else if ( world_rank == i ) {
-	   color = 1;
-	   key = 1;
-	 }
-         MPI_Comm_split(MPI_COMM_WORLD, color, key, &new_mpi_comm);
-
-	 if ( world_rank == driver_rank || world_rank == i ) {
-	   Communicator* new_communicator = new CommunicatorMPI( MDI_MPI, new_mpi_comm, key );
-	 }
-       }
-     }
-
-     if ( do_split ) {
-
-       // create the intra-code communicators
-       MPI_Comm_split(MPI_COMM_WORLD, manager->mpi_code_rank, world_rank, &manager->intra_MPI_comm);
-       MPI_Comm_rank(manager->intra_MPI_comm, &manager->intra_rank);
-
-       MPI_Barrier(MPI_COMM_WORLD);
-
-     }
-
-   return 0;
 }
 
 
@@ -362,6 +258,7 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 int MDI_Init(const char* options, void* world_comm)
 {
   manager = new MDIManager();
+  method_mpi = new MethodMPI();
 
   int ret;
   int sockfd;
@@ -501,7 +398,7 @@ int MDI_Init(const char* options, void* world_comm)
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names("", do_split);
+      method_mpi->gather_names("", do_split);
       mpi_initialized = true;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -521,7 +418,7 @@ int MDI_Init(const char* options, void* world_comm)
     // initialize this code as an engine
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names(name, do_split);
+      method_mpi->gather_names(name, do_split);
       mpi_initialized = true;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -544,8 +441,11 @@ int MDI_Init(const char* options, void* world_comm)
   // set the MPI communicator correctly
   if ( mpi_initialized ) {
     if ( do_split ) {
+      /*
       MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
-      *world_comm_ptr = manager->intra_MPI_comm;
+      *world_comm_ptr = method_mpi->intra_MPI_comm;
+      */
+      method_mpi->split_mpi_communicator(world_comm);
     }
   }
 
@@ -612,7 +512,7 @@ MDI_Comm MDI_Accept_Communicator()
  */
 int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( manager->intra_rank != 0 ) {
+   if ( method_mpi->intra_rank != 0 ) {
      perror("Called MDI_Send with incorrect rank");
    }
 
@@ -639,7 +539,7 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( manager->intra_rank != 0 ) {
+   if ( method_mpi->intra_rank != 0 ) {
      perror("Called MDI_Recv with incorrect rank");
    }
 
@@ -662,7 +562,7 @@ int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
-   if ( manager->intra_rank != 0 ) {
+   if ( method_mpi->intra_rank != 0 ) {
      perror("Called MDI_Send_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
@@ -685,7 +585,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
-   if ( manager->intra_rank != 0 ) {
+   if ( method_mpi->intra_rank != 0 ) {
      perror("Called MDI_Recv_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
@@ -717,10 +617,10 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 
 int MDI_Get_MPI_Code_Rank()
 {
-  return manager->mpi_code_rank;
+  return method_mpi->mpi_code_rank;
 }
 
 void MDI_Set_MPI_Intra_Rank(int rank)
 {
-  manager->intra_rank = rank;
+  method_mpi->intra_rank = rank;
 }
