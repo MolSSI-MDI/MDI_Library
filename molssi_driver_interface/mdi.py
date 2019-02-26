@@ -232,7 +232,7 @@ def MDI_Recv_Command(arg2):
 
 # MDI_Conversion_Factor
 mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Conversion_Factor.restype = ctypes.c_int
+mdi.MDI_Conversion_Factor.restype = ctypes.c_double
 def MDI_Conversion_Factor(arg1, arg2):
     in_unit = arg1.encode('utf-8')
     out_unit = arg2.encode('utf-8')
