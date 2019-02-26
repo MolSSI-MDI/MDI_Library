@@ -44,23 +44,14 @@ using namespace std;
 
 
 
-// has MDI_Listen or MDI_Request_Connection been called?
-static int any_initialization = 0;
-
-// has MDI_Listen or MDI_Request_Connection been called with method="MPI"?
-static int mpi_initialization = 0;
-
 // internal MPI communicator
 static MPI_Comm intra_MPI_comm;
 
 // the TCP socket, initialized by MDI_Listen when method="TCP"
 static int tcp_socket = -1;
 
-// the MPI rank, initialized by MDI_Listen when method="MPI"
-static int world_rank = -1;
-
 // the MPI rank within the code
-static int intra_rank = -1;
+static int intra_rank = 0;
 
 // the MPI rank of the code
 static int mpi_code_rank = 0;
@@ -85,6 +76,7 @@ int gather_names(const char* hostname_ptr, bool do_split){
    int i, j, icomm;
    int driver_rank;
    int nunique_names = 0;
+   int world_rank;
 
    // get the number of processes
    int world_size;
@@ -244,17 +236,10 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr)
 {
   int ret, sockfd;
 
-  if ( any_initialization == 0 ) {
-    // create the vector for the communicators
-    any_initialization = 1;
-  }
-
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
 
   // get the address of the host
-  printf("port: %d\n",port);
-  printf("hostname: %s\n",hostname_ptr);
   host_ptr = gethostbyname((char*) hostname_ptr);
   if (host_ptr == NULL) {
     perror("Error in gethostbyname");
@@ -346,6 +331,8 @@ int MDI_Init(const char* options, void* world_comm)
   int reuse_value = 1;
   char* strtol_ptr;
   int i;
+
+  bool mpi_initialized = false;
 
   // values acquired from the input options
   char* role;
@@ -472,17 +459,12 @@ int MDI_Init(const char* options, void* world_comm)
 
 
 
-  if ( any_initialization == 0 ) {
-    // create the vector for the communicators
-    any_initialization = 1;
-  }
-
   if ( strcmp(role, "DRIVER") == 0 ) {
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
       gather_names("", do_split);
-      mpi_initialization = 1;
+      mpi_initialized = true;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
       if ( has_port == 0 ) {
@@ -502,7 +484,7 @@ int MDI_Init(const char* options, void* world_comm)
 
     if ( strcmp(method, "MPI") == 0 ) {
       gather_names(name, do_split);
-      mpi_initialization = 1;
+      mpi_initialized = true;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
       if ( has_hostname == 0 ) {
@@ -522,7 +504,7 @@ int MDI_Init(const char* options, void* world_comm)
   }
 
   // set the MPI communicator correctly
-  if ( mpi_initialization != 0 ) {
+  if ( mpi_initialized ) {
     if ( do_split ) {
       MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
       *world_comm_ptr = intra_MPI_comm;
@@ -592,7 +574,7 @@ MDI_Comm MDI_Accept_Communicator()
  */
 int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+   if ( intra_rank != 0 ) {
      perror("Called MDI_Send with incorrect rank");
    }
 
@@ -619,7 +601,7 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+   if ( intra_rank != 0 ) {
      perror("Called MDI_Recv with incorrect rank");
    }
 
@@ -642,7 +624,7 @@ int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
-   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+   if ( intra_rank != 0 ) {
      perror("Called MDI_Send_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
@@ -665,7 +647,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
-   if ( mpi_initialization == 1 && intra_rank != 0 ) {
+   if ( intra_rank != 0 ) {
      perror("Called MDI_Recv_Command with incorrect rank");
    }
    int count = MDI_COMMAND_LENGTH;
