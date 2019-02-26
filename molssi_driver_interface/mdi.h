@@ -84,6 +84,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm);
 double MDI_Conversion_Factor(char* in_unit, char* out_unit);
 
 // only used internally by MDI
+void mdi_error(const char* message);
 int MDI_Get_MPI_Code_Rank();
 void MDI_Set_MPI_Intra_Rank(int rank);
 

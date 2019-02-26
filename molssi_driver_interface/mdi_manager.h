@@ -8,12 +8,14 @@
 
 #include <vector>
 #include "mdi.h"
+#include "method.h"
 
 class MDIManager
 {
 public:
-  MDIManager();
-  int tcp_socket;
+  MDIManager(const char* options, void* world_comm);
+  MethodTCP* method_tcp;
+  MethodMPI* method_mpi;
 
 //private:
 //  vector <Method*> methods;
