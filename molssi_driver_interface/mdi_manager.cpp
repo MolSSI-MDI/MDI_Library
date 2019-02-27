@@ -12,6 +12,7 @@
 #include "mdi_manager.h"
 #include "communicator.h"
 
+using namespace MDI_STUBS;
 using namespace std;
 
 MDIManager::MDIManager(const char* options, void* world_comm) {
