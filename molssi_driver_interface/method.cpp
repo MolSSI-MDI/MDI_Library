@@ -17,6 +17,7 @@
 #include "method.h"
 #include "communicator.h"
 
+using namespace MDI_STUBS;
 using namespace std;
 
 
