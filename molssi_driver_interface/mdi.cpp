@@ -40,7 +40,6 @@ Contents:
 #include "mdi_manager.h"
 #include "method.h"
 
-using namespace MDI_STUBS;
 using namespace std;
 
 

@@ -18,8 +18,6 @@ Contents:
 #ifndef MDI_LIBRARY
 #define MDI_LIBRARY
 
-#include <mpi.h>
-
 #ifdef __cplusplus
 namespace MDI_STUBS { }
 extern "C" {
