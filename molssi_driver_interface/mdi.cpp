@@ -151,7 +151,7 @@ MDI_Comm MDI_Accept_Communicator()
  * \param [in]       comm
  *                   MDI communicator associated with the intended recipient code.
  */
-int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
+int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
   if ( not is_initialized ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
@@ -174,7 +174,7 @@ int MDI_Send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
  */
-int MDI_Recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
+int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
   if ( not is_initialized ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");

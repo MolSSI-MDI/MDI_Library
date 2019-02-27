@@ -13,8 +13,8 @@ class Communicator
 {
   public:
     Communicator(int type_);
-    virtual int send(const char* buf, int count, MDI_Datatype datatype) = 0;
-    virtual int recv(char* buf, int count, MDI_Datatype datatype) = 0;
+    virtual int send(const void* buf, int count, MDI_Datatype datatype) = 0;
+    virtual int recv(void* buf, int count, MDI_Datatype datatype) = 0;
 
   private:
     int type;
@@ -28,8 +28,8 @@ class CommunicatorMPI : public Communicator
       this->mpi_comm = mpi_comm_;
       this->mpi_rank = mpi_rank_;
     };
-    int send(const char* buf, int count, MDI_Datatype datatype);
-    int recv(char* buf, int count, MDI_Datatype datatype);
+    int send(const void* buf, int count, MDI_Datatype datatype);
+    int recv(void* buf, int count, MDI_Datatype datatype);
 
   private:
     int mpi_comm;
@@ -44,8 +44,8 @@ class CommunicatorTCP : public Communicator
       : Communicator(type_) { 
       this->sockfd = sockfd_;
     };
-    int send(const char* buf, int count, MDI_Datatype datatype);
-    int recv(char* buf, int count, MDI_Datatype datatype);
+    int send(const void* buf, int count, MDI_Datatype datatype);
+    int recv(void* buf, int count, MDI_Datatype datatype);
 
   private:
     int sockfd;

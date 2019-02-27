@@ -235,7 +235,7 @@ int MDIManager::accept_communicator() {
 }
 
 
-int MDIManager::send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int MDIManager::send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( this->method_mpi->intra_rank != 0 ) {
     mdi_error("Called MDI_Send with incorrect rank");
   }
@@ -247,7 +247,7 @@ int MDIManager::send(const char* buf, int count, MDI_Datatype datatype, MDI_Comm
 }
 
 
-int MDIManager::recv(char* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int MDIManager::recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( this->method_mpi->intra_rank != 0 ) {
     mdi_error("Called MDI_Recv with incorrect rank");
   }
