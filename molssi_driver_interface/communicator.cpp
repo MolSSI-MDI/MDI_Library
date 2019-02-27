@@ -10,6 +10,7 @@
 #include "mdi.h"
 #include "communicator.h"
 
+using namespace MDI_STUBS;
 using namespace std;
 
 vector <Communicator*> communicators;
