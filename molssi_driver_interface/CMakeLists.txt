@@ -73,3 +73,6 @@ if( (NOT language) OR (language STREQUAL "Python") )
    )
 
 endif()
+
+#copy the mdi.h header file into the binary directory
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.h ${CMAKE_CURRENT_BINARY_DIR}/mdi.h COPYONLY)
