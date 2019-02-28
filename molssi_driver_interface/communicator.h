@@ -51,10 +51,6 @@ class CommunicatorTCP : public Communicator
     int sockfd;
 };
 
-
-//this is the number of communicator handles that have been returned by MDI_Accept_Communicator()
-static int returned_comms = 0;
-
 extern std::vector <Communicator*> communicators;
 
 #endif

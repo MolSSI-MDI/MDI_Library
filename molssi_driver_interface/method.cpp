@@ -183,7 +183,7 @@ MethodMPI::MethodMPI() {
 
 int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 
-   int i, j, icomm;
+   int i, j;
    int driver_rank;
    int nunique_names = 0;
    int world_rank;
@@ -196,8 +196,8 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
    //create the name of this process
-   char buffer[MDI_NAME_LENGTH];
-   int str_end;
+   //char buffer[MDI_NAME_LENGTH];
+   char* buffer = new char[MDI_NAME_LENGTH];
    strcpy(buffer, hostname_ptr);
 
    char* names = NULL;
@@ -206,24 +206,21 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
    char* unique_names = NULL;
    unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
-   MPI_Allgather(&buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
+   MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
               MPI_CHAR, MPI_COMM_WORLD);
-
-   if (world_rank == 0) {
-     for (i=0; i<world_size; i++) {
-       char* ptr1 = &names[i*MDI_NAME_LENGTH];
-     }
-   }
+   delete[] buffer;
 
    // determine which rank corresponds to rank 0 of the driver
    driver_rank = -1;
    for (i=0; i<world_size; i++) {
      if ( driver_rank == -1 ) {
-       char name[MDI_NAME_LENGTH];
+       //char name[MDI_NAME_LENGTH];
+       char* name = new char[MDI_NAME_LENGTH];
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
        if ( strcmp(name, "") == 0 ) {
 	 driver_rank = i;
        }
+       delete[] name;
      }
    }
    if ( driver_rank == -1 ) {
@@ -234,16 +231,19 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 
      //create communicators
      for (i=0; i<world_size; i++) {
-       char name[MDI_NAME_LENGTH];
+       //char name[MDI_NAME_LENGTH];
+       char* name = new char[MDI_NAME_LENGTH];
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
        int found = 0;
        for (j=0; j<i; j++) {
-	 char prev_name[MDI_NAME_LENGTH];
+	 //char prev_name[MDI_NAME_LENGTH];
+	 char* prev_name = new char[MDI_NAME_LENGTH];
 	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(name, prev_name) == 0 ) {
 	   found = 1;
 	 }
+	 delete[] prev_name;
        }
 
        // check if this rank is the first instance of a new production code
@@ -251,11 +251,13 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 	 // add this code's name to the list of unique names
 	 memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
 	 nunique_names++;
-	 char my_name[MDI_NAME_LENGTH];
+	 //char my_name[MDI_NAME_LENGTH];
+	 char* my_name = new char[MDI_NAME_LENGTH];
 	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(my_name, name) == 0 ) {
 	   this->mpi_code_rank = nunique_names;
 	 }
+	 delete[] my_name;
 
          // create a communicator to handle communication with this production code
 	 MPI_Comm new_mpi_comm;
@@ -274,6 +276,8 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 	   Communicator* new_communicator = new CommunicatorMPI( MDI_MPI, new_mpi_comm, key );
 	 }
        }
+
+       delete[] name;
      }
 
      if ( do_split ) {

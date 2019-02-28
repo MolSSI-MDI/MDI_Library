@@ -238,6 +238,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
   else {
     mdi_error("Unrecognized conversion requested in MDI_Conversion_Factor");
   }
+  return 0.0;
 }
 
 

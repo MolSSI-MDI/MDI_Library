@@ -20,9 +20,6 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
   this->method_mpi = new MethodMPI();
   this->returned_comms = 0;
 
-  int ret;
-  int sockfd;
-  int reuse_value = 1;
   char* strtol_ptr;
   int i;
 
@@ -40,7 +37,6 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
-  int has_language;
 
   // get the MPI rank
   MPI_Comm mpi_communicator;
@@ -64,7 +60,8 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
   }
 
   // calculate argv
-  char* argv[argc];
+  //char* argv[argc];
+  char** argv = new char*[argc];
   argv_line = strdup(options);
   token = strtok(argv_line, " ");
   for (i=0; i<argc; i++) {
@@ -127,7 +124,6 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
 	mdi_error("Argument missing from _language option");
       }
       language = argv[iarg+1];
-      has_language = 1;
       iarg += 2;
     }
     else {
@@ -143,6 +139,11 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
   // ensure the -name option was provided
   if ( has_name == 0 ) {
     mdi_error("Error in MDI_Init: -name option not provided");
+  }
+
+  // ensure the -method option was provided
+  if ( has_method == 0 ) {
+    mdi_error("Error in MDI_Init: -method option not provided");
   }
 
   // determine whether the intra-code MPI communicator should be split by gather_names
@@ -202,14 +203,13 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
     }
   }
 
+  delete[] argv;
   free( argv_line );
 
 }
 
 
 int MDIManager::accept_communicator() {
-  int connection;
-
   // if MDI hasn't returned some connections, do that now
   if ( this->returned_comms < communicators.size() ) {
     this->returned_comms++;
@@ -225,7 +225,7 @@ int MDIManager::accept_communicator() {
     // if MDI hasn't returned some connections, do that now
     if ( this->returned_comms < communicators.size() ) {
       this->returned_comms++;
-      return this->returned_comms;
+      return (MDI_Comm)this->returned_comms;
     }
 
   }
@@ -264,10 +264,13 @@ int MDIManager::send_command(const char* buf, MDI_Comm comm) {
     mdi_error("Called MDI_Send_Command with incorrect rank");
   }
   int count = MDI_COMMAND_LENGTH;
-  char command[MDI_COMMAND_LENGTH];
+  //char command[MDI_COMMAND_LENGTH];
+  char* command = new char[MDI_COMMAND_LENGTH];
 
   strcpy(command, buf);
-  return this->send( &command[0], count, MDI_CHAR, comm );
+  int ret = this->send( command, count, MDI_CHAR, comm );
+  delete[] command;
+  return ret;
 }
 
 

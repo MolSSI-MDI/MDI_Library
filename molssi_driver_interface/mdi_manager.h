@@ -23,7 +23,7 @@ public:
   MethodMPI* method_mpi;
 
 private:
-  int returned_comms;
+  uint returned_comms;
 //  vector <Method*> methods;
 };
 
