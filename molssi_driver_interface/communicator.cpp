@@ -91,6 +91,7 @@ int CommunicatorTCP::send(const void* buf, int count, MDI_Datatype datatype) {
 
 int CommunicatorTCP::recv(void* buf, int count, MDI_Datatype datatype) {
    int n, nr;
+   char* buf_char = static_cast<char*>(buf);
 
    // determine the byte size of the data type being sent
    int datasize;
@@ -108,10 +109,10 @@ int CommunicatorTCP::recv(void* buf, int count, MDI_Datatype datatype) {
      exit(-1);
    }
 
-   n = nr = read(this->sockfd,buf,count*datasize);
+   n = nr = read(this->sockfd,buf_char,count*datasize);
 
    while (nr>0 && n<count*datasize )
-     {  nr=read(this->sockfd,buf+n,count-n); n+=nr; }
+     {  nr=read(this->sockfd,buf_char+n,count-n); n+=nr; }
 
    if (n == 0) { perror("Error reading from socket: server has quit or connection broke"); exit(-1); }
 

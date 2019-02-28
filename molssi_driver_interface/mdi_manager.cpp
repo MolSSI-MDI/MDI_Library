@@ -34,7 +34,7 @@ MDIManager::MDIManager(const char* options, void* world_comm) {
   char* name;
   char* hostname;
   int port;
-  char* language = "";
+  char* language = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
