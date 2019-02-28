@@ -33,16 +33,10 @@ Contents:
 #include <sys/un.h>
 #include <unistd.h>
 #include <errno.h>
-#include <iostream>
-#include <vector>
 #include "mdi.h"
 #include "communicator.h"
 #include "mdi_manager.h"
 #include "method.h"
-
-using namespace std;
-
-
 
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
@@ -89,8 +83,7 @@ const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
-static MDIManager* manager;
-static bool is_initialized = false;
+static int is_initialized = 0;
 
 
 void mdi_error(const char* message) {
@@ -113,11 +106,11 @@ void mdi_error(const char* message) {
  */
 int MDI_Init(const char* options, void* world_comm)
 {
-  if ( is_initialized ) {
+  if ( is_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
   }
-  manager = new MDIManager(options, world_comm);
-  is_initialized = true;
+  manager_init(options, world_comm);
+  is_initialized = 1;
   return 0;
 }
 
@@ -130,10 +123,10 @@ int MDI_Init(const char* options, void* world_comm)
  */
 MDI_Comm MDI_Accept_Communicator()
 {
-  if ( not is_initialized ) {
+  if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
   }
-  return manager->accept_communicator();
+  return manager_accept_communicator();
 }
 
 
@@ -153,10 +146,10 @@ MDI_Comm MDI_Accept_Communicator()
  */
 int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-  if ( not is_initialized ) {
+  if ( is_initialized == 0 ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
   }
-  return manager->send(buf, count, datatype, comm);
+  return manager_send(buf, count, datatype, comm);
 }
 
 
@@ -176,10 +169,10 @@ int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-  if ( not is_initialized ) {
+  if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");
   }
-  return manager->recv(buf, count, datatype, comm);
+  return manager_recv(buf, count, datatype, comm);
 }
 
 
@@ -195,10 +188,10 @@ int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
-  if ( not is_initialized ) {
+  if ( is_initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
   }
-  return manager->send_command(buf, comm);
+  return manager_send_command(buf, comm);
 }
 
 
@@ -214,10 +207,10 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
-  if ( not is_initialized ) {
+  if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
   }
-  return manager->recv_command(buf, comm);
+  return manager_recv_command(buf, comm);
 }
 
 
@@ -232,7 +225,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  */
 double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 {
-  if ( strcmp(in_unit,"Angstrom") == 0 and strcmp(out_unit,"Bohr") == 0 ) {
+  if ( strcmp(in_unit,"Angstrom") == 0 && strcmp(out_unit,"Bohr") == 0 ) {
     return MDI_ANGSTROM_TO_BOHR;
   }
   else {
@@ -244,10 +237,10 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 
 int MDI_Get_MPI_Code_Rank()
 {
-  return manager->method_mpi->mpi_code_rank;
+  return mpi_code_rank;
 }
 
 void MDI_Set_MPI_Intra_Rank(int rank)
 {
-  manager->method_mpi->intra_rank = rank;
+  intra_rank = rank;
 }

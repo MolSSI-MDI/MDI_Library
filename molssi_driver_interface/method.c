@@ -17,22 +17,15 @@
 #include "method.h"
 #include "communicator.h"
 
-using namespace MDI_STUBS;
-using namespace std;
-
-
 static int sigint_sockfd;
 void sigint_handler(int dummy) {
   close(sigint_sockfd);
 }
 
+// TCP Method
+int tcp_socket = -1;
 
-MethodTCP::MethodTCP() {
-  this->tcp_socket = -1;
-}
-
-
-int MethodTCP::MDI_Listen_TCP(int port) {
+int MDI_Listen_TCP(int port) {
   int ret;
   int sockfd;
   struct sockaddr_in serv_addr;
@@ -77,13 +70,13 @@ int MethodTCP::MDI_Listen_TCP(int port) {
   }
 
   //return sockfd;
-  this->tcp_socket = sockfd;
+  tcp_socket = sockfd;
 
   return 0;
 }
 
 
-int MethodTCP::MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
+int MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
   int ret, sockfd;
 
   struct sockaddr_in driver_address;
@@ -148,22 +141,30 @@ int MethodTCP::MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
     }
   }
 
-  Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, sockfd );
+  //Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, sockfd );
+  communicator new_comm;
+  new_comm.method = MDI_TCP;
+  new_comm.sockfd = sockfd;
+  vector_push_back( &communicators, &new_comm );
 
   return 0;
 }
 
 
-int MethodTCP::On_Accept_Communicator() {
+int On_Accept_Communicator() {
   int connection;
 
-  connection = accept(this->tcp_socket, NULL, NULL);
+  connection = accept(tcp_socket, NULL, NULL);
   if (connection < 0) {
     perror("Could not accept connection");
     exit(-1);
   }
 
-  Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, connection );
+  //Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, connection );
+  communicator new_comm;
+  new_comm.method = MDI_TCP;
+  new_comm.sockfd = connection;
+  vector_push_back( &communicators, &new_comm );
 
   return 0;
 }
@@ -173,15 +174,13 @@ int MethodTCP::On_Accept_Communicator() {
 
 
 
+// MPI method
 
-MethodMPI::MethodMPI() {
-  this->intra_MPI_comm = 0;
-  this->intra_rank = 0;
-  this->mpi_code_rank = 0;
-}
+MPI_Comm intra_MPI_comm = 0;
+int intra_rank = 0;
+int mpi_code_rank = 0;
 
-
-int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
+int gather_names(const char* hostname_ptr, int do_split) {
 
    int i, j;
    int driver_rank;
@@ -196,8 +195,8 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
    //create the name of this process
-   //char buffer[MDI_NAME_LENGTH];
-   char* buffer = new char[MDI_NAME_LENGTH];
+   char buffer[MDI_NAME_LENGTH];
+   //char* buffer = new char[MDI_NAME_LENGTH];
    strcpy(buffer, hostname_ptr);
 
    char* names = NULL;
@@ -208,19 +207,19 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 
    MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
               MPI_CHAR, MPI_COMM_WORLD);
-   delete[] buffer;
+   //delete[] buffer;
 
    // determine which rank corresponds to rank 0 of the driver
    driver_rank = -1;
    for (i=0; i<world_size; i++) {
      if ( driver_rank == -1 ) {
-       //char name[MDI_NAME_LENGTH];
-       char* name = new char[MDI_NAME_LENGTH];
+       char name[MDI_NAME_LENGTH];
+       //char* name = new char[MDI_NAME_LENGTH];
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
        if ( strcmp(name, "") == 0 ) {
 	 driver_rank = i;
        }
-       delete[] name;
+       //delete[] name;
      }
    }
    if ( driver_rank == -1 ) {
@@ -231,19 +230,19 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 
      //create communicators
      for (i=0; i<world_size; i++) {
-       //char name[MDI_NAME_LENGTH];
-       char* name = new char[MDI_NAME_LENGTH];
+       char name[MDI_NAME_LENGTH];
+       //char* name = new char[MDI_NAME_LENGTH];
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
        int found = 0;
        for (j=0; j<i; j++) {
-	 //char prev_name[MDI_NAME_LENGTH];
-	 char* prev_name = new char[MDI_NAME_LENGTH];
+	 char prev_name[MDI_NAME_LENGTH];
+	 //char* prev_name = new char[MDI_NAME_LENGTH];
 	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(name, prev_name) == 0 ) {
 	   found = 1;
 	 }
-	 delete[] prev_name;
+	 //delete[] prev_name;
        }
 
        // check if this rank is the first instance of a new production code
@@ -251,13 +250,13 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 	 // add this code's name to the list of unique names
 	 memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
 	 nunique_names++;
-	 //char my_name[MDI_NAME_LENGTH];
-	 char* my_name = new char[MDI_NAME_LENGTH];
+	 char my_name[MDI_NAME_LENGTH];
+	 //char* my_name = new char[MDI_NAME_LENGTH];
 	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(my_name, name) == 0 ) {
-	   this->mpi_code_rank = nunique_names;
+	   mpi_code_rank = nunique_names;
 	 }
-	 delete[] my_name;
+	 //delete[] my_name;
 
          // create a communicator to handle communication with this production code
 	 MPI_Comm new_mpi_comm;
@@ -273,18 +272,23 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
          MPI_Comm_split(MPI_COMM_WORLD, color, key, &new_mpi_comm);
 
 	 if ( world_rank == driver_rank || world_rank == i ) {
-	   Communicator* new_communicator = new CommunicatorMPI( MDI_MPI, new_mpi_comm, key );
+	   //Communicator* new_communicator = new CommunicatorMPI( MDI_MPI, new_mpi_comm, key );
+	   communicator new_comm;
+	   new_comm.method = MDI_MPI;
+	   new_comm.mpi_comm = new_mpi_comm;
+	   new_comm.mpi_rank = key;
+	   vector_push_back( &communicators, &new_comm );
 	 }
        }
 
-       delete[] name;
+       //delete[] name;
      }
 
-     if ( do_split ) {
+     if ( do_split == 1 ) {
 
        // create the intra-code communicators
-       MPI_Comm_split(MPI_COMM_WORLD, this->mpi_code_rank, world_rank, &this->intra_MPI_comm);
-       MPI_Comm_rank(this->intra_MPI_comm, &this->intra_rank);
+       MPI_Comm_split(MPI_COMM_WORLD, mpi_code_rank, world_rank, &intra_MPI_comm);
+       MPI_Comm_rank(intra_MPI_comm, &intra_rank);
 
        MPI_Barrier(MPI_COMM_WORLD);
 
@@ -295,8 +299,8 @@ int MethodMPI::gather_names(const char* hostname_ptr, bool do_split) {
 }
 
 
-int MethodMPI::split_mpi_communicator(void* world_comm) {
+int split_mpi_communicator(void* world_comm) {
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
-  *world_comm_ptr = this->intra_MPI_comm;
+  *world_comm_ptr = intra_MPI_comm;
   return 0;
 }

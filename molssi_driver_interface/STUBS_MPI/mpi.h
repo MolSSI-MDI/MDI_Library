@@ -1,11 +1,9 @@
-#ifndef MPI_STUB
-#define MPI_STUB
+#ifndef MDI_MPI_STUBS
+#define MDI_MPI_STUBS
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-
-namespace MDI_STUBS {
 
 typedef int MPI_Comm;
 typedef int MPI_Datatype;
@@ -17,22 +15,20 @@ typedef int MPI_Status;
 #define MPI_DOUBLE 4
 #define MPI_CHAR 5
 
-inline int MPI_Comm_rank( MPI_Comm comm, int *rank ) { return 0; };
-inline int MPI_Comm_size( MPI_Comm comm, int *size ) { return 0; };
+static int MPI_Comm_rank( MPI_Comm comm, int *rank ) { return 0; };
+static int MPI_Comm_size( MPI_Comm comm, int *size ) { return 0; };
 
-inline int MPI_Barrier(MPI_Comm comm) { return 0; };
-inline int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+static int MPI_Barrier(MPI_Comm comm) { return 0; };
+static int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                int root, MPI_Comm comm) { return 0; };
-inline int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+static int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                MPI_Comm comm) { return 0; };
-inline int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag,
+static int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag,
              MPI_Comm comm) { return 0; };
-inline int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
+static int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
              MPI_Comm comm, MPI_Status *status) { return 0; };
-inline int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm) { return 0; };
-
-}
+static int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm) { return 0; };
 
 #endif

@@ -6,10 +6,17 @@
 #ifndef MDI_CLASS
 #define MDI_CLASS
 
-#include <vector>
 #include "mdi.h"
 #include "method.h"
 
+int manager_init(const char* options, void* world_comm);
+int manager_accept_communicator();
+int manager_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int manager_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int manager_send_command(const char* buf, MDI_Comm comm);
+int manager_recv_command(char* buf, MDI_Comm comm);
+
+/*
 class MDIManager
 {
 public:
@@ -24,7 +31,7 @@ public:
 
 private:
   uint returned_comms;
-//  vector <Method*> methods;
 };
+*/
 
 #endif

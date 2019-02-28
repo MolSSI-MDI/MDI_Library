@@ -8,8 +8,8 @@ if( NOT MPI_FOUND )
 endif()
 
 #confirm that "language" is a valid value
-if( language AND (NOT language STREQUAL "CXX") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
-   message( FATAL_ERROR "Value of language not recognized. Accepted values are: CXX; Fortran; Python." )
+if( language AND (NOT language STREQUAL "C") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
+   message( FATAL_ERROR "Value of language not recognized. Accepted values are: C; Fortran; Python." )
 endif()
 
 #determine whether this is a SHARED or STATIC build
@@ -20,13 +20,13 @@ elseif ( (NOT libtype STREQUAL "STATIC") AND (NOT libtype STREQUAL "SHARED") )
 endif()
 
 #construct the list of source files
-list(APPEND sources "mdi.cpp")
+list(APPEND sources "mdi.c")
 list(APPEND sources "communicator.h")
-list(APPEND sources "communicator.cpp")
+list(APPEND sources "communicator.c")
 list(APPEND sources "mdi_manager.h")
-list(APPEND sources "mdi_manager.cpp")
+list(APPEND sources "mdi_manager.c")
 list(APPEND sources "method.h")
-list(APPEND sources "method.cpp")
+list(APPEND sources "method.c")
 if( mpi STREQUAL "OFF" )
    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/mpi.h")
 endif()
@@ -41,9 +41,9 @@ add_library(mdi ${libtype}
 if( mpi STREQUAL "ON" )
 
    #include MPI
-   target_include_directories(mdi PRIVATE ${MPI_CXX_INCLUDE_PATH})
-   target_compile_options(mdi PRIVATE ${MPI_CXX_COMPILE_FLAGS})
-   target_link_libraries(mdi ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS})
+   target_include_directories(mdi PRIVATE ${MPI_C_INCLUDE_PATH})
+   target_compile_options(mdi PRIVATE ${MPI_C_COMPILE_FLAGS})
+   target_link_libraries(mdi ${MPI_C_LIBRARIES} ${MPI_C_LINK_FLAGS})
 
 elseif( mpi STREQUAL "OFF" )
 
