@@ -110,6 +110,9 @@ Command List</h2>
 <h3><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h3>
 <p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>TIMESTEP</code> commands can be used to cause the engine to calculate a new energy.</p>
+<h3><a class="anchor" id="exit_command"></a>
+EXIT</h3>
+<p>The engine terminates and can no longer be sent commands.</p>
 <h3><a class="anchor" id="send_forces"></a>
 &gt;FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, in the same format specified by the <code>&gt;COORDS</code> command. If a <code>TIMESTEP</code> command is later sent to the engine, <b> after any normal calculation of forces and immediately prior to time integration</b>, the engine will replace its internal forces with the forces sent by the driver.</p>
@@ -134,6 +137,9 @@ MD_INIT</h3>
 <h3><a class="anchor" id="recv_types"></a>
 &lt;NTYPES</h3>
 <p>The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.</p>
+<h3><a class="anchor" id="nuclear_step"></a>
+ATOMIC_STEP</h3>
+<p>The engine performs a time propagation step for the nuclear coordinates.</p>
 <h3><a class="anchor" id="send_preforces"></a>
 &gt;PRE-FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, in the same format specified by the <code>&gt;COORDS</code> command. If a <code>TIMESTEP</code> command is later sent to the engine, <b> after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms</b>, the engine will replace its internal forces with the forces sent by the driver.</p>
@@ -145,13 +151,7 @@ MD_INIT</h3>
 <p>The engine calculates and sends a set of atomic forces to the driver, in the same format specified by the <code>&gt;COORDS</code> command. These forces include all force contributions except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.).</p>
 <h3><a class="anchor" id="scf_command"></a>
 SCF</h3>
-<p>The engine performs a full self-consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command.</p>
-<h3><a class="anchor" id="nuclear_step"></a>
-NUCLEAR_STEP</h3>
-<p>The engine performs a time propagation step for the nuclear coordinates.</p>
-<h3><a class="anchor" id="exit_command"></a>
-EXIT</h3>
-<p>The engine terminates and can no longer be sent commands. </p>
+<p>The engine performs a full self-consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

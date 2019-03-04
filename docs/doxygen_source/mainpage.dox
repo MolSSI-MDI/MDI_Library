@@ -52,6 +52,10 @@ The engine sends a set of atomic coordinates to the driver, in the same format a
 The engine sends its most recently calculated energy to the driver.
 The \c MD_INIT, \c SCF, and \c TIMESTEP commands can be used to cause the engine to calculate a new energy.
 
+\subsubsection exit_command EXIT
+
+The engine terminates and can no longer be sent commands.
+
 \subsubsection send_forces >FORCES
 
 The driver sends a set of atomic forces to the engine, in the same format specified by the \c >COORDS command.
@@ -94,6 +98,10 @@ The engine sends the driver a single integer corresponding to the number of atom
 
 The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
 
+\subsubsection nuclear_step ATOMIC_STEP
+
+The engine performs a time propagation step for the nuclear coordinates.
+
 \subsubsection send_preforces >PRE-FORCES
 
 The driver sends a set of atomic forces to the engine, in the same format specified by the \c >COORDS command.
@@ -112,14 +120,6 @@ These forces include all force contributions except those related to constraint 
 
 The engine performs a full self-consistent field calculation in order to relax the electronic density distribution.
 The engine updates its energy, which can be queried with the \c <ENERGY command.
-
-\subsubsection nuclear_step NUCLEAR_STEP
-
-The engine performs a time propagation step for the nuclear coordinates.
-
-\subsubsection exit_command EXIT
-
-The engine terminates and can no longer be sent commands.
 
 **/
 
