@@ -6,21 +6,46 @@
 Class declaration for handling communication between connected codes.  
 
 
-{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$mpi.\-h$>$}\\*
 {\ttfamily \#include \char`\"{}mdi.\-h\char`\"{}}\\*
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-class \hyperlink{classCommunicator}{Communicator}
+struct \hyperlink{structcommunicator__struct}{communicator\-\_\-struct}
 \item 
-class \hyperlink{classCommunicatorMPI}{Communicator\-M\-P\-I}
+struct \hyperlink{structdynamic__array__struct}{dynamic\-\_\-array\-\_\-struct}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
 \item 
-class \hyperlink{classCommunicatorTCP}{Communicator\-T\-C\-P}
+\hypertarget{communicator_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}{typedef struct \hyperlink{structcommunicator__struct}{communicator\-\_\-struct} {\bfseries communicator}}\label{communicator_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}
+
+\item 
+\hypertarget{communicator_8h_ae301b80284ed481523c43e095398ba92}{typedef struct \hyperlink{structdynamic__array__struct}{dynamic\-\_\-array\-\_\-struct} {\bfseries vector}}\label{communicator_8h_ae301b80284ed481523c43e095398ba92}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{communicator_8h_a6c749e461a84e471bcab02d8115a1dfa}{int {\bfseries vector\-\_\-init} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, size\-\_\-t stride)}\label{communicator_8h_a6c749e461a84e471bcab02d8115a1dfa}
+
+\item 
+\hypertarget{communicator_8h_a53e2a90f50c539f8239225d6f39c0213}{int {\bfseries vector\-\_\-push\-\_\-back} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, void $\ast$element)}\label{communicator_8h_a53e2a90f50c539f8239225d6f39c0213}
+
+\item 
+\hypertarget{communicator_8h_a75ffb2ad4233613bd0c97d40b1c68611}{void $\ast$ {\bfseries vector\-\_\-get} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, int index)}\label{communicator_8h_a75ffb2ad4233613bd0c97d40b1c68611}
+
+\item 
+\hypertarget{communicator_8h_ad3c615060f602d600023a678acee7e28}{int {\bfseries communicator\-\_\-send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{communicator_8h_ad3c615060f602d600023a678acee7e28}
+
+\item 
+\hypertarget{communicator_8h_a309565fdcf2cdb4a779edef5787e6fa9}{int {\bfseries communicator\-\_\-recv} (void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{communicator_8h_a309565fdcf2cdb4a779edef5787e6fa9}
+
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{communicator_8h_a7e67b3696ce162a35e70e0b87e093caf}{std\-::vector$<$ \hyperlink{classCommunicator}{Communicator} $\ast$ $>$ {\bfseries communicators}}\label{communicator_8h_a7e67b3696ce162a35e70e0b87e093caf}
+\hypertarget{communicator_8h_aae895626c3da244edb20b7ffcca7d05f}{\hyperlink{structdynamic__array__struct}{vector} {\bfseries communicators}}\label{communicator_8h_aae895626c3da244edb20b7ffcca7d05f}
 
 \end{DoxyCompactItemize}
 

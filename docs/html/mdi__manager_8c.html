@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Molssi Driver Interface Library: /home/tbarnes/mdi/molssi_driver_interface/molssi_driver_interface/mdi_manager.h File Reference</title>
+<title>Molssi Driver Interface Library: /home/tbarnes/mdi/molssi_driver_interface/molssi_driver_interface/mdi_manager.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,17 +87,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">mdi_manager.h File Reference</div>  </div>
+<div class="title">mdi_manager.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class declaration for top-level manager of MDI operations.  
+<p>Class definition for top-level manager of MDI operations.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;mdi.h&quot;</code><br/>
+<div class="textblock"><code>#include &lt;mpi.h&gt;</code><br/>
+<code>#include &lt;stdio.h&gt;</code><br/>
+<code>#include &lt;stdlib.h&gt;</code><br/>
+<code>#include &lt;string.h&gt;</code><br/>
+<code>#include &lt;unistd.h&gt;</code><br/>
+<code>#include &quot;mdi.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="mdi__manager_8h_source.html">mdi_manager.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="communicator_8h_source.html">communicator.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="method_8h_source.html">method.h</a>&quot;</code><br/>
-</div>
-<p><a href="mdi__manager_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a5f84fc195af5a8f2fc32d13a92b43658"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f84fc195af5a8f2fc32d13a92b43658"></a>
@@ -120,7 +125,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>manager_recv_command</
 <tr class="separator:affc59574c5035063c6221dcc877820e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class declaration for top-level manager of MDI operations. </p>
+<div class="textblock"><p>Class definition for top-level manager of MDI operations. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

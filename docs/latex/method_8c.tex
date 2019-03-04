@@ -1,0 +1,61 @@
+\hypertarget{method_8c}{\section{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/method.c File Reference}
+\label{method_8c}\index{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/method.\-c@{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/method.\-c}}
+}
+
+
+Class definition for top-\/level manager of M\-D\-I operations.  
+
+
+{\ttfamily \#include $<$mpi.\-h$>$}\\*
+{\ttfamily \#include $<$stdio.\-h$>$}\\*
+{\ttfamily \#include $<$stdlib.\-h$>$}\\*
+{\ttfamily \#include $<$string.\-h$>$}\\*
+{\ttfamily \#include $<$unistd.\-h$>$}\\*
+{\ttfamily \#include $<$netinet/in.\-h$>$}\\*
+{\ttfamily \#include $<$sys/socket.\-h$>$}\\*
+{\ttfamily \#include $<$signal.\-h$>$}\\*
+{\ttfamily \#include $<$errno.\-h$>$}\\*
+{\ttfamily \#include $<$netdb.\-h$>$}\\*
+{\ttfamily \#include \char`\"{}mdi.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}method.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}communicator.\-h\char`\"{}}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{method_8c_a47630f8f823b92ad9333c3c5f130cf90}{void {\bfseries sigint\-\_\-handler} (int dummy)}\label{method_8c_a47630f8f823b92ad9333c3c5f130cf90}
+
+\item 
+\hypertarget{method_8c_af15a7354cf37401b3a482614dedbcad9}{int {\bfseries M\-D\-I\-\_\-\-Listen\-\_\-\-T\-C\-P} (int port)}\label{method_8c_af15a7354cf37401b3a482614dedbcad9}
+
+\item 
+\hypertarget{method_8c_a200d815da834074e8a718519b9f833a6}{int {\bfseries M\-D\-I\-\_\-\-Request\-\_\-\-Connection\-\_\-\-T\-C\-P} (int port, char $\ast$hostname\-\_\-ptr)}\label{method_8c_a200d815da834074e8a718519b9f833a6}
+
+\item 
+\hypertarget{method_8c_a3a7ddb6846048fedb7a50e24e3e6eb48}{int {\bfseries On\-\_\-\-Accept\-\_\-\-Communicator} ()}\label{method_8c_a3a7ddb6846048fedb7a50e24e3e6eb48}
+
+\item 
+\hypertarget{method_8c_a7015ada5eb2def03e044160eb83cfc65}{int {\bfseries gather\-\_\-names} (const char $\ast$hostname\-\_\-ptr, int do\-\_\-split)}\label{method_8c_a7015ada5eb2def03e044160eb83cfc65}
+
+\item 
+\hypertarget{method_8c_aeaa32341a57ef7dc21775b73813e20cc}{int {\bfseries split\-\_\-mpi\-\_\-communicator} (void $\ast$world\-\_\-comm)}\label{method_8c_aeaa32341a57ef7dc21775b73813e20cc}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{method_8c_a58bcdde21e0687d1b5634b673451357a}{int {\bfseries tcp\-\_\-socket} = -\/1}\label{method_8c_a58bcdde21e0687d1b5634b673451357a}
+
+\item 
+\hypertarget{method_8c_a94117669fa21b6293d144b9f2ec9bc77}{M\-P\-I\-\_\-\-Comm {\bfseries intra\-\_\-\-M\-P\-I\-\_\-comm} = 0}\label{method_8c_a94117669fa21b6293d144b9f2ec9bc77}
+
+\item 
+\hypertarget{method_8c_ac7c9ae008d0383e5a99af93c0c0a741c}{int {\bfseries intra\-\_\-rank} = 0}\label{method_8c_ac7c9ae008d0383e5a99af93c0c0a741c}
+
+\item 
+\hypertarget{method_8c_a6da60e1bcb42aadfd89405b192a82cf4}{int {\bfseries mpi\-\_\-code\-\_\-rank} = 0}\label{method_8c_a6da60e1bcb42aadfd89405b192a82cf4}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class definition for top-\/level manager of M\-D\-I operations. 

@@ -85,8 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">method.h File Reference</div>  </div>
 </div><!--header-->
@@ -94,23 +94,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Class declaration for top-level manager of MDI operations.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;vector&gt;</code><br/>
+<div class="textblock"><code>#include &lt;mpi.h&gt;</code><br/>
 <code>#include &quot;mdi.h&quot;</code><br/>
 </div>
 <p><a href="method_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMethodTCP.html">MethodTCP</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMethodMPI.html">MethodMPI</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a47630f8f823b92ad9333c3c5f130cf90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47630f8f823b92ad9333c3c5f130cf90"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>sigint_handler</b> (int dummy)</td></tr>
 <tr class="separator:a47630f8f823b92ad9333c3c5f130cf90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af15a7354cf37401b3a482614dedbcad9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af15a7354cf37401b3a482614dedbcad9"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Listen_TCP</b> (int port)</td></tr>
+<tr class="separator:af15a7354cf37401b3a482614dedbcad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a200d815da834074e8a718519b9f833a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a200d815da834074e8a718519b9f833a6"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Request_Connection_TCP</b> (int port, char *hostname_ptr)</td></tr>
+<tr class="separator:a200d815da834074e8a718519b9f833a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a7ddb6846048fedb7a50e24e3e6eb48"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a7ddb6846048fedb7a50e24e3e6eb48"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>On_Accept_Communicator</b> ()</td></tr>
+<tr class="separator:a3a7ddb6846048fedb7a50e24e3e6eb48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7015ada5eb2def03e044160eb83cfc65"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7015ada5eb2def03e044160eb83cfc65"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>gather_names</b> (const char *hostname_ptr, int do_split)</td></tr>
+<tr class="separator:a7015ada5eb2def03e044160eb83cfc65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaa32341a57ef7dc21775b73813e20cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeaa32341a57ef7dc21775b73813e20cc"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>split_mpi_communicator</b> (void *world_comm)</td></tr>
+<tr class="separator:aeaa32341a57ef7dc21775b73813e20cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a58bcdde21e0687d1b5634b673451357a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a58bcdde21e0687d1b5634b673451357a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>tcp_socket</b></td></tr>
+<tr class="separator:a58bcdde21e0687d1b5634b673451357a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94117669fa21b6293d144b9f2ec9bc77"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94117669fa21b6293d144b9f2ec9bc77"></a>
+MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><b>intra_MPI_comm</b></td></tr>
+<tr class="separator:a94117669fa21b6293d144b9f2ec9bc77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7c9ae008d0383e5a99af93c0c0a741c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7c9ae008d0383e5a99af93c0c0a741c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>intra_rank</b></td></tr>
+<tr class="separator:ac7c9ae008d0383e5a99af93c0c0a741c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6da60e1bcb42aadfd89405b192a82cf4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6da60e1bcb42aadfd89405b192a82cf4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>mpi_code_rank</b></td></tr>
+<tr class="separator:a6da60e1bcb42aadfd89405b192a82cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class declaration for top-level manager of MDI operations. </p>

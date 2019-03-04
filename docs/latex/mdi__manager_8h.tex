@@ -6,13 +6,28 @@
 Class declaration for top-\/level manager of M\-D\-I operations.  
 
 
-{\ttfamily \#include $<$vector$>$}\\*
 {\ttfamily \#include \char`\"{}mdi.\-h\char`\"{}}\\*
 {\ttfamily \#include \char`\"{}method.\-h\char`\"{}}\\*
-\subsection*{Classes}
+\subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-class \hyperlink{classMDIManager}{M\-D\-I\-Manager}
+\hypertarget{mdi__manager_8h_a5f84fc195af5a8f2fc32d13a92b43658}{int {\bfseries manager\-\_\-init} (const char $\ast$options, void $\ast$world\-\_\-comm)}\label{mdi__manager_8h_a5f84fc195af5a8f2fc32d13a92b43658}
+
+\item 
+\hypertarget{mdi__manager_8h_a63c119c73c5a244bd663532a7298173e}{int {\bfseries manager\-\_\-accept\-\_\-communicator} ()}\label{mdi__manager_8h_a63c119c73c5a244bd663532a7298173e}
+
+\item 
+\hypertarget{mdi__manager_8h_a04b7197191414a7167bc1550895562d1}{int {\bfseries manager\-\_\-send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{mdi__manager_8h_a04b7197191414a7167bc1550895562d1}
+
+\item 
+\hypertarget{mdi__manager_8h_a68d33c020a21fd195cd5fd7cbbf70841}{int {\bfseries manager\-\_\-recv} (void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{mdi__manager_8h_a68d33c020a21fd195cd5fd7cbbf70841}
+
+\item 
+\hypertarget{mdi__manager_8h_a1dd54895fda5baed8f0644123ecf8721}{int {\bfseries manager\-\_\-send\-\_\-command} (const char $\ast$buf, M\-D\-I\-\_\-\-Comm comm)}\label{mdi__manager_8h_a1dd54895fda5baed8f0644123ecf8721}
+
+\item 
+\hypertarget{mdi__manager_8h_affc59574c5035063c6221dcc877820e5}{int {\bfseries manager\-\_\-recv\-\_\-command} (char $\ast$buf, M\-D\-I\-\_\-\-Comm comm)}\label{mdi__manager_8h_affc59574c5035063c6221dcc877820e5}
+
 \end{DoxyCompactItemize}
 
 

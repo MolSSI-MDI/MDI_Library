@@ -9,8 +9,5 @@ var searchData=
   ['mdi_5frecv_5fcommand_5f',['MDI_Recv_Command_',['../interfacemdi_1_1MDI__Recv__Command__.html',1,'mdi']]],
   ['mdi_5fsend',['mdi_send',['../interfacemdi_1_1mdi__send.html',1,'mdi']]],
   ['mdi_5fsend_5f',['MDI_Send_',['../interfacemdi_1_1MDI__Send__.html',1,'mdi']]],
-  ['mdi_5fsend_5fcommand_5f',['MDI_Send_Command_',['../interfacemdi_1_1MDI__Send__Command__.html',1,'mdi']]],
-  ['mdimanager',['MDIManager',['../classMDIManager.html',1,'']]],
-  ['methodmpi',['MethodMPI',['../classMethodMPI.html',1,'']]],
-  ['methodtcp',['MethodTCP',['../classMethodTCP.html',1,'']]]
+  ['mdi_5fsend_5fcommand_5f',['MDI_Send_Command_',['../interfacemdi_1_1MDI__Send__Command__.html',1,'mdi']]]
 ];

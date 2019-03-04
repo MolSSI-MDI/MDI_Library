@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>Molssi Driver Interface Library: /home/tbarnes/mdi/molssi_driver_interface/molssi_driver_interface/communicator.h File Reference</title>
+<title>Molssi Driver Interface Library: /home/tbarnes/mdi/molssi_driver_interface/molssi_driver_interface/communicator.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,38 +85,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">communicator.h File Reference</div>  </div>
+<div class="title">communicator.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class declaration for handling communication between connected codes.  
+<p>Class definition for handling communication between connect codes.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;mpi.h&gt;</code><br/>
+<code>#include &lt;stdio.h&gt;</code><br/>
+<code>#include &lt;stdlib.h&gt;</code><br/>
+<code>#include &lt;unistd.h&gt;</code><br/>
 <code>#include &quot;mdi.h&quot;</code><br/>
-</div>
-<p><a href="communicator_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html">communicator_struct</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html">dynamic_array_struct</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a7f1369263a8fc2bfc5c3f69302d4dea7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f1369263a8fc2bfc5c3f69302d4dea7"></a>
-typedef struct <a class="el" href="structcommunicator__struct.html">communicator_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>communicator</b></td></tr>
-<tr class="separator:a7f1369263a8fc2bfc5c3f69302d4dea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae301b80284ed481523c43e095398ba92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae301b80284ed481523c43e095398ba92"></a>
-typedef struct <a class="el" href="structdynamic__array__struct.html">dynamic_array_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vector</b></td></tr>
-<tr class="separator:ae301b80284ed481523c43e095398ba92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
+<code>#include &quot;<a class="el" href="communicator_8h_source.html">communicator.h</a>&quot;</code><br/>
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a6c749e461a84e471bcab02d8115a1dfa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c749e461a84e471bcab02d8115a1dfa"></a>
@@ -128,6 +112,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>vector_push_back</b> (
 <tr class="memitem:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75ffb2ad4233613bd0c97d40b1c68611"></a>
 void *&#160;</td><td class="memItemRight" valign="bottom"><b>vector_get</b> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
 <tr class="separator:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9dae0d84965b4f499f98e51c35d13b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9dae0d84965b4f499f98e51c35d13b9"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>mpi_send</b> (const void *buf, int count, MDI_Datatype datatype, <a class="el" href="structcommunicator__struct.html">communicator</a> *this)</td></tr>
+<tr class="separator:aa9dae0d84965b4f499f98e51c35d13b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac117c114ae18ae74a96f02b0502e49d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac117c114ae18ae74a96f02b0502e49d1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>mpi_recv</b> (void *buf, int count, MDI_Datatype datatype, <a class="el" href="structcommunicator__struct.html">communicator</a> *this)</td></tr>
+<tr class="separator:ac117c114ae18ae74a96f02b0502e49d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a430d793711c1d98dae164531be3afc1b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a430d793711c1d98dae164531be3afc1b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>tcp_send</b> (const void *buf, int count, MDI_Datatype datatype, <a class="el" href="structcommunicator__struct.html">communicator</a> *this)</td></tr>
+<tr class="separator:a430d793711c1d98dae164531be3afc1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a664cdda3506cac0afd32bea1aab6fb19"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a664cdda3506cac0afd32bea1aab6fb19"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>tcp_recv</b> (const void *buf, int count, MDI_Datatype datatype, <a class="el" href="structcommunicator__struct.html">communicator</a> *this)</td></tr>
+<tr class="separator:a664cdda3506cac0afd32bea1aab6fb19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3c615060f602d600023a678acee7e28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3c615060f602d600023a678acee7e28"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>communicator_send</b> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
 <tr class="separator:ad3c615060f602d600023a678acee7e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,7 +138,7 @@ Variables</h2></td></tr>
 <tr class="separator:aae895626c3da244edb20b7ffcca7d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class declaration for handling communication between connected codes. </p>
+<div class="textblock"><p>Class definition for handling communication between connect codes. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

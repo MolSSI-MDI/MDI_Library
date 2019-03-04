@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['communicator',['Communicator',['../classCommunicator.html',1,'']]],
-  ['communicatormpi',['CommunicatorMPI',['../classCommunicatorMPI.html',1,'']]],
-  ['communicatortcp',['CommunicatorTCP',['../classCommunicatorTCP.html',1,'']]]
+  ['communicator_5fstruct',['communicator_struct',['../structcommunicator__struct.html',1,'']]]
 ];
