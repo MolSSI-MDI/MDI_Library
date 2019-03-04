@@ -10,31 +10,33 @@ The MolSSI Driver Interface (MDI) library enables codes to interoperate via the 
 
 The source code of the MDI library is available at GitHub at https://github.com/MolSSI/molssi_driver_interface
 
-\section commands_sec Commands
+\section commands_sec MDI Standard
+
+\subsection command_list Command List
 
 The following is a list of commands that are officially part of the MDI standard.
 
-\subsection set_cell >CELL
+\subsubsection set_cell >CELL
 
 The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors.
 In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
 
-\subsection recv_cell <CELL
+\subsubsection recv_cell <CELL
 
 The engine sends a set of cell vectors to the driver, in the same format as specified for the \c >CELL command.
 
-\subsection send_charges >CHARGES
+\subsubsection send_charges >CHARGES
 
 The driver sends a set of atomic charges to the engine, which immediately changes its atomic charges to those sent by the driver.
 The charges are represented by double precision floats.
 The number of values sent is equal to the response to the <NATOMS command.
 The charges are provided in sequentially ascending order of atomic index.
 
-\subsection recv_charges <CHARGES
+\subsubsection recv_charges <CHARGES
 
 The engine sends a set of atomic charges to the driver, in the same format as specified for the \c >CHARGES command.
 
-\subsection send_coords >COORDS
+\subsubsection send_coords >COORDS
 
 The driver sends a set of atomic coordinates to the engine, which immediately changes its atomic coordinates to those sent by the driver.
 The coordinates are represented by double precision floats.
@@ -45,32 +47,37 @@ The coordinates for each atom are provided in sequentially ascending order of at
 
 The engine sends a set of atomic coordinates to the driver, in the same format as specified for the \c >COORDS command.
 
-\subsection send_name <NAME
+\subsubsection recv_masses <MASSES
+
+The engine sends the driver the mass of each of the atom types.
+The masses are represented by double precision floats.
+The number of values sent is equal to response to the <NTYPES command.
+The values are provided in sequentially ascending order of type index (see the \c <TYPES command).
+
+\subsubsection md_init MD_INIT
+
+The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
+These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
+
+\subsubsection send_name <NAME
 
 The engine sends the driver a string of length \c MDI_NAME_LENGTH that corresponds to the argument of \c -name in the MDI initialization options.
 This argument allows a driver to identify the purpose of connected engine codes within the simulation.
 For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM".
 After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
 
-\subsection md_init MD_INIT
-
-The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
-These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
-
-\subsection recv_natoms <NATOMS
+\subsubsection recv_natoms <NATOMS
 
 The engine sends the driver a single integer corresponding to the number of atoms in the engine's system.
 
-\subsection recv_types <NTYPES
+\subsubsection recv_types <NTYPES
 
 The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
 
-\subsection recv_masses <MASSES
+\subsubsection scf_command SCF
 
-The engine sends the driver the mass of each of the atom types.
-The masses are represented by double precision floats.
-The number of values sent is equal to response to the <NTYPES command.
-The values are provided in sequentially ascending order of type index (see the \c <TYPES command).
+The engine performs a full self-consistent field calculation in order to relax the electronic density distribution.
+The engine updates its energy, which can be queried with the \c <ENERGY command.
 
 **/
 

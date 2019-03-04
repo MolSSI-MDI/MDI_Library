@@ -85,41 +85,46 @@ Overview</h1>
 Source Code</h1>
 <p>The source code of the MDI library is available at GitHub at <a href="https://github.com/MolSSI/molssi_driver_interface">https://github.com/MolSSI/molssi_driver_interface</a></p>
 <h1><a class="anchor" id="commands_sec"></a>
-Commands</h1>
+MDI Standard</h1>
+<h2><a class="anchor" id="command_list"></a>
+Command List</h2>
 <p>The following is a list of commands that are officially part of the MDI standard.</p>
-<h2><a class="anchor" id="set_cell"></a>
-&gt;CELL</h2>
+<h3><a class="anchor" id="set_cell"></a>
+&gt;CELL</h3>
 <p>The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors. In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.</p>
-<h2><a class="anchor" id="recv_cell"></a>
-&lt;CELL</h2>
+<h3><a class="anchor" id="recv_cell"></a>
+&lt;CELL</h3>
 <p>The engine sends a set of cell vectors to the driver, in the same format as specified for the <code>&gt;CELL</code> command.</p>
-<h2><a class="anchor" id="send_charges"></a>
-&gt;CHARGES</h2>
+<h3><a class="anchor" id="send_charges"></a>
+&gt;CHARGES</h3>
 <p>The driver sends a set of atomic charges to the engine, which immediately changes its atomic charges to those sent by the driver. The charges are represented by double precision floats. The number of values sent is equal to the response to the &lt;NATOMS command. The charges are provided in sequentially ascending order of atomic index.</p>
-<h2><a class="anchor" id="recv_charges"></a>
-&lt;CHARGES</h2>
+<h3><a class="anchor" id="recv_charges"></a>
+&lt;CHARGES</h3>
 <p>The engine sends a set of atomic charges to the driver, in the same format as specified for the <code>&gt;CHARGES</code> command.</p>
-<h2><a class="anchor" id="send_coords"></a>
-&lt;COORDS</h2>
+<h3><a class="anchor" id="send_coords"></a>
+&lt;COORDS</h3>
 <p>The driver sends a set of atomic coordinates to the engine, which immediately changes its atomic coordinates to those sent by the driver. The coordinates are represented by double precision floats. The number of values sent is equal to three times the response to the &lt;NATOMS command. The coordinates for each atom are provided in sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order.</p>
 <h3><a class="anchor" id="send_coords"></a>
 &lt;COORDS</h3>
 <p>The engine sends a set of atomic coordinates to the driver, in the same format as specified for the <code>&gt;COORDS</code> command.</p>
-<h2><a class="anchor" id="send_name"></a>
-&lt;NAME</h2>
-<p>The engine sends the driver a string of length <code>MDI_NAME_LENGTH</code> that corresponds to the argument of <code>-name</code> in the MDI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM". After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.</p>
-<h2><a class="anchor" id="md_init"></a>
-MD_INIT</h2>
+<h3><a class="anchor" id="recv_masses"></a>
+&lt;MASSES</h3>
+<p>The engine sends the driver the mass of each of the atom types. The masses are represented by double precision floats. The number of values sent is equal to response to the &lt;NTYPES command. The values are provided in sequentially ascending order of type index (see the <code>&lt;TYPES</code> command).</p>
+<h3><a class="anchor" id="md_init"></a>
+MD_INIT</h3>
 <p>The engine performs any initialization operations that are necessary before an MD simulation can be time propagated. These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.</p>
-<h2><a class="anchor" id="recv_natoms"></a>
-&lt;NATOMS</h2>
+<h3><a class="anchor" id="send_name"></a>
+&lt;NAME</h3>
+<p>The engine sends the driver a string of length <code>MDI_NAME_LENGTH</code> that corresponds to the argument of <code>-name</code> in the MDI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM". After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.</p>
+<h3><a class="anchor" id="recv_natoms"></a>
+&lt;NATOMS</h3>
 <p>The engine sends the driver a single integer corresponding to the number of atoms in the engine's system.</p>
-<h2><a class="anchor" id="recv_types"></a>
-&lt;NTYPES</h2>
+<h3><a class="anchor" id="recv_types"></a>
+&lt;NTYPES</h3>
 <p>The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.</p>
-<h2><a class="anchor" id="recv_masses"></a>
-&lt;MASSES</h2>
-<p>The engine sends the driver the mass of each of the atom types. The masses are represented by double precision floats. The number of values sent is equal to response to the &lt;NTYPES command. The values are provided in sequentially ascending order of type index (see the <code>&lt;TYPES</code> command). </p>
+<h3><a class="anchor" id="scf_command"></a>
+SCF</h3>
+<p>The engine performs a full self-consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
