@@ -14,16 +14,27 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 The following is a list of commands that are officially part of the MDI standard.
 
-\subsubsection set_cell >CELL
+\subsection set_cell >CELL
 
 The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors.
 In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
 
-\subsubsection recv_cell <CELL
+\subsection recv_cell <CELL
 
 The engine sends a set of cell vectors to the driver, in the same format as specified for the \c >CELL command.
 
-\subsubsection send_coords >COORDS
+\subsection send_charges >CHARGES
+
+The driver sends a set of atomic charges to the engine, which immediately changes its atomic charges to those sent by the driver.
+The charges are represented by double precision floats.
+The number of values sent is equal to the response to the <NATOMS command.
+The charges are provided in sequentially ascending order of atomic index.
+
+\subsection recv_charges <CHARGES
+
+The engine sends a set of atomic charges to the driver, in the same format as specified for the \c >CHARGES command.
+
+\subsection send_coords >COORDS
 
 The driver sends a set of atomic coordinates to the engine, which immediately changes its atomic coordinates to those sent by the driver.
 The coordinates are represented by double precision floats.
