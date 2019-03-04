@@ -107,12 +107,15 @@ Command List</h2>
 <h3><a class="anchor" id="send_coords"></a>
 &lt;COORDS</h3>
 <p>The engine sends a set of atomic coordinates to the driver, in the same format as specified for the <code>&gt;COORDS</code> command.</p>
+<h3><a class="anchor" id="recv_energy"></a>
+\c &lt;ENERGY</h3>
+<p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>TIMESTEP</code> commands can be used to cause the engine to calculate a new energy.</p>
 <h3><a class="anchor" id="recv_masses"></a>
 &lt;MASSES</h3>
 <p>The engine sends the driver the mass of each of the atom types. The masses are represented by double precision floats. The number of values sent is equal to response to the &lt;NTYPES command. The values are provided in sequentially ascending order of type index (see the <code>&lt;TYPES</code> command).</p>
 <h3><a class="anchor" id="md_init"></a>
 MD_INIT</h3>
-<p>The engine performs any initialization operations that are necessary before an MD simulation can be time propagated. These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.</p>
+<p>The engine performs any initialization operations that are necessary before an MD simulation can be time propagated. These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used. This engine calculates the energy of the system, which can be queried by the <code>&lt;ENERGY</code> command.</p>
 <h3><a class="anchor" id="send_name"></a>
 &lt;NAME</h3>
 <p>The engine sends the driver a string of length <code>MDI_NAME_LENGTH</code> that corresponds to the argument of <code>-name</code> in the MDI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM". After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.</p>

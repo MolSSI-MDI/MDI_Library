@@ -47,6 +47,11 @@ The coordinates for each atom are provided in sequentially ascending order of at
 
 The engine sends a set of atomic coordinates to the driver, in the same format as specified for the \c >COORDS command.
 
+\subsubsection recv_energy \c <ENERGY
+
+The engine sends its most recently calculated energy to the driver.
+The \c MD_INIT, \c SCF, and \c TIMESTEP commands can be used to cause the engine to calculate a new energy.
+
 \subsubsection recv_masses <MASSES
 
 The engine sends the driver the mass of each of the atom types.
@@ -58,6 +63,7 @@ The values are provided in sequentially ascending order of type index (see the \
 
 The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
 These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
+This engine calculates the energy of the system, which can be queried by the \c <ENERGY command.
 
 \subsubsection send_name <NAME
 
