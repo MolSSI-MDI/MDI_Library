@@ -47,10 +47,19 @@ The coordinates for each atom are provided in sequentially ascending order of at
 
 The engine sends a set of atomic coordinates to the driver, in the same format as specified for the \c >COORDS command.
 
-\subsubsection recv_energy \c <ENERGY
+\subsubsection recv_energy <ENERGY
 
 The engine sends its most recently calculated energy to the driver.
 The \c MD_INIT, \c SCF, and \c TIMESTEP commands can be used to cause the engine to calculate a new energy.
+
+\subsubsection send_forces >FORCES
+
+The driver sends a set of forces to the engine, in the same format specified by the \c >COORDS command.
+If a \c TIMESTEP command is later sent to the engine, <b> after any normal calculation of forces and immediately prior to time integration</b>, the engine will replace its internal forces with the forces sent by the driver.
+
+subsubsection recv_forces <FORCES
+
+The engine calculates and sends a set of forces to the driver, in the same format specified by the \c >COORDS command.
 
 \subsubsection recv_masses <MASSES
 
@@ -88,3 +97,5 @@ The engine updates its energy, which can be queried with the \c <ENERGY command.
 **/
 
 // >CELL: Define whether the atomic coordinates are scaled.
+// <FORCES: Need to clarify when forces are recalculated.
+// <PRE-FORCES: Need to clarify when forces are recalculated.

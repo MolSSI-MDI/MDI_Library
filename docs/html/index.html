@@ -108,8 +108,13 @@ Command List</h2>
 &lt;COORDS</h3>
 <p>The engine sends a set of atomic coordinates to the driver, in the same format as specified for the <code>&gt;COORDS</code> command.</p>
 <h3><a class="anchor" id="recv_energy"></a>
-\c &lt;ENERGY</h3>
+&lt;ENERGY</h3>
 <p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>TIMESTEP</code> commands can be used to cause the engine to calculate a new energy.</p>
+<h3><a class="anchor" id="send_forces"></a>
+&gt;FORCES</h3>
+<p>The driver sends a set of forces to the engine, in the same format specified by the <code>&gt;COORDS</code> command. If a <code>TIMESTEP</code> command is later sent to the engine, <b> after any normal calculation of forces and immediately prior to time integration</b>, the engine will replace its internal forces with the forces sent by the driver.</p>
+<p>subsubsection recv_forces &lt;FORCES</p>
+<p>The engine calculates and sends a set of forces to the driver, in the same format specified by the <code>&gt;COORDS</code> command.</p>
 <h3><a class="anchor" id="recv_masses"></a>
 &lt;MASSES</h3>
 <p>The engine sends the driver the mass of each of the atom types. The masses are represented by double precision floats. The number of values sent is equal to response to the &lt;NTYPES command. The values are provided in sequentially ascending order of type index (see the <code>&lt;TYPES</code> command).</p>
