@@ -16,7 +16,7 @@ The following is a list of commands that are officially part of the MDI standard
 
 \subsection send_name <NAME
 
-The engine returns a string of length \c MDI_NAME_LENGTH that corresponds to the argument of \c -name in the MDI initialization options.
+The engine sends the driver a string of length \c MDI_NAME_LENGTH that corresponds to the argument of \c -name in the MDI initialization options.
 This argument allows a driver to identify the purpose of connected engine codes within the simulation.
 For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM".
 After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
@@ -24,6 +24,32 @@ After initializing MDI and accepting communicators to the engines, the driver ca
 \subsection md_init MD_INIT
 
 The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
+These initialization operations <b> may change the engine's nuclear coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
+
+\subsection recv_natoms <NATOMS
+
+The engine sends the driver a single integer corresponding to the number of nuclear centers in the engine's system.
+
+\subsection recv_types <NTYPES
+
+The engine sends the driver a single integer corresponding to the number of different types of nuclear centers (e.g. "H", "He", "C", "O", etc.) in the engine's system.
+
+\subsection recv_masses <MASSES
+
+The engine sends the driver a number of double precision floats that correspond to the mass of each of the nuclear center types.
+The number of double precision floats sent is equal to the value of the integer sent in response to the <NTYPES command.
+The values are provided in sequentially ascending order of type index (see the \c <TYPES command).
+
+\subsection set_cell >CELL
+
+The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell in response.
+In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
+
+\subsection recv_cell <CELL
+
+The engine sends a set of cell vectors, in the same format as specified for the \c >CELL command.
 
 
 **/
+
+// >CELL: Define whether the nuclear coordinates are scaled.
