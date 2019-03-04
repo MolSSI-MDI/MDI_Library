@@ -14,6 +14,26 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 The following is a list of commands that are officially part of the MDI standard.
 
+\subsubsection set_cell >CELL
+
+The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors.
+In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
+
+\subsubsection recv_cell <CELL
+
+The engine sends a set of cell vectors to the driver, in the same format as specified for the \c >CELL command.
+
+\subsubsection send_coords >COORDS
+
+The driver sends a set of atomic coordinates to the engine, which immediately changes its atomic coordinates to those sent by the driver.
+The coordinates are represented by double precision floats.
+The number of values sent is equal to three times the response to the <NATOMS command.
+The coordinates for each atom are provided in sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order.
+
+\subsubsection send_coords <COORDS
+
+The engine sends a set of atomic coordinates to the driver, in the same format as specified for the \c >COORDS command.
+
 \subsection send_name <NAME
 
 The engine sends the driver a string of length \c MDI_NAME_LENGTH that corresponds to the argument of \c -name in the MDI initialization options.
@@ -24,32 +44,23 @@ After initializing MDI and accepting communicators to the engines, the driver ca
 \subsection md_init MD_INIT
 
 The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
-These initialization operations <b> may change the engine's nuclear coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
+These initialization operations <b> may change the engine's atomic coordinates </b> under certain circumstances, such as if the SHAKE algorithm is used.
 
 \subsection recv_natoms <NATOMS
 
-The engine sends the driver a single integer corresponding to the number of nuclear centers in the engine's system.
+The engine sends the driver a single integer corresponding to the number of atoms in the engine's system.
 
 \subsection recv_types <NTYPES
 
-The engine sends the driver a single integer corresponding to the number of different types of nuclear centers (e.g. "H", "He", "C", "O", etc.) in the engine's system.
+The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
 
 \subsection recv_masses <MASSES
 
-The engine sends the driver a number of double precision floats that correspond to the mass of each of the nuclear center types.
-The number of double precision floats sent is equal to the value of the integer sent in response to the <NTYPES command.
+The engine sends the driver the mass of each of the atom types.
+The masses are represented by double precision floats.
+The number of values sent is equal to response to the <NTYPES command.
 The values are provided in sequentially ascending order of type index (see the \c <TYPES command).
-
-\subsection set_cell >CELL
-
-The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell in response.
-In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
-
-\subsection recv_cell <CELL
-
-The engine sends a set of cell vectors, in the same format as specified for the \c >CELL command.
-
 
 **/
 
-// >CELL: Define whether the nuclear coordinates are scaled.
+// >CELL: Define whether the atomic coordinates are scaled.
