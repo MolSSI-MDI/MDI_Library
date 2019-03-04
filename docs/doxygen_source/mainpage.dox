@@ -10,4 +10,20 @@ The MolSSI Driver Interface (MDI) library enables codes to interoperate via the 
 
 The source code of the MDI library is available at GitHub at https://github.com/MolSSI/molssi_driver_interface
 
+\section commands_sec Commands
+
+The following is a list of commands that are officially part of the MDI standard.
+
+\subsection send_name <NAME
+
+The engine returns a string of length \c MDI_NAME_LENGTH that corresponds to the argument of \c -name in the MDI initialization options.
+This argument allows a driver to identify the purpose of connected engine codes within the simulation.
+For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM".
+After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
+
+\subsection md_init MD_INIT
+
+The engine performs any initialization operations that are necessary before an MD simulation can be time propagated.
+
+
 **/
