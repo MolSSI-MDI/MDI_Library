@@ -54,12 +54,31 @@ The \c MD_INIT, \c SCF, and \c TIMESTEP commands can be used to cause the engine
 
 \subsubsection send_forces >FORCES
 
-The driver sends a set of forces to the engine, in the same format specified by the \c >COORDS command.
+The driver sends a set of atomic forces to the engine, in the same format specified by the \c >COORDS command.
 If a \c TIMESTEP command is later sent to the engine, <b> after any normal calculation of forces and immediately prior to time integration</b>, the engine will replace its internal forces with the forces sent by the driver.
 
-subsubsection recv_forces <FORCES
+\subsubsection send_forces >+FORCES
 
-The engine calculates and sends a set of forces to the driver, in the same format specified by the \c >COORDS command.
+As \c >FORCES, except that instead of replacing its internal forces with those sent by the driver, the engine adds the forces sent by the driver to its internal forces.
+
+\subsubsection recv_forces <FORCES
+
+The engine calculates and sends a set of atomic forces to the driver, in the same format specified by the \c >COORDS command.
+These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).
+
+\subsubsection send_forces >PRE-FORCES
+
+The driver sends a set of atomic forces to the engine, in the same format specified by the \c >COORDS command.
+If a \c TIMESTEP command is later sent to the engine, <b> after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms</b>, the engine will replace its internal forces with the forces sent by the driver.
+
+\subsubsection send_forces >+PRE-FORCES
+
+As \c >PRE-FORCES, except that instead of replacing its internal forces with those sent by the driver, the engine adds the forces sent by the driver to its internal forces.
+
+\subsubsection recv_forces <PRE-FORCES
+
+The engine calculates and sends a set of atomic forces to the driver, in the same format specified by the \c >COORDS command.
+These forces include all force contributions except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.).
 
 \subsubsection recv_masses <MASSES
 
