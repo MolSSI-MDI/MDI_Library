@@ -87,9 +87,9 @@ The driver sends a set of atomic coordinates to the engine, which replaces its a
 
 
 
-\subsubsection send_coords <COORDS
+\subsubsection recv_coords <COORDS
 
-The engine sends a set of atomic coordinates to the driver, in the same format as specified for the \c >COORDS command.
+The engine sends a set of atomic coordinates to the driver.
 
 \par
 <b> Datatype: </b> MDI_DOUBLE <br>
@@ -101,7 +101,7 @@ The engine sends a set of atomic coordinates to the driver, in the same format a
 \subsubsection recv_energy <ENERGY
 
 The engine sends its most recently calculated energy to the driver.
-The \c MD_INIT, \c SCF, and \c TIMESTEP commands can be used to cause the engine to calculate a new energy.
+The \c MD_INIT, \c SCF, and \c ATOM_STEP commands can be used to cause the engine to calculate a new energy.
 
 \par
 <b> Datatype: </b> MDI_DOUBLE <br>

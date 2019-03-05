@@ -117,15 +117,15 @@ Command List</h2>
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> Immediate</dd></dl>
-<h3><a class="anchor" id="send_coords"></a>
-&gt;COORDS</h3>
-<p>The engine sends a set of atomic coordinates to the driver, in the same format as specified for the <code>&gt;COORDS</code> command.</p>
+<h3><a class="anchor" id="recv_coords"></a>
+&lt;COORDS</h3>
+<p>The engine sends a set of atomic coordinates to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order</dd></dl>
 <h3><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h3>
-<p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>TIMESTEP</code> commands can be used to cause the engine to calculate a new energy.</p>
+<p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>ATOM_STEP</code> commands can be used to cause the engine to calculate a new energy.</p>
 <dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h3><a class="anchor" id="exit_command"></a>

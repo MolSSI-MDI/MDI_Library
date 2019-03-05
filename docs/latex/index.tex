@@ -55,8 +55,8 @@ The driver sends a set of atomic coordinates to the engine, which replaces its a
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order ~\newline
  {\bfseries{ Injection\+: }} Immediate
 \end{DoxyParagraph}
-\hypertarget{index_send_coords}{}\doxysubsubsection{$>$\+C\+O\+O\+R\+DS}\label{index_send_coords}
-The engine sends a set of atomic coordinates to the driver, in the same format as specified for the {\ttfamily $>$C\+O\+O\+R\+DS} command.
+\hypertarget{index_recv_coords}{}\doxysubsubsection{$<$\+C\+O\+O\+R\+DS}\label{index_recv_coords}
+The engine sends a set of atomic coordinates to the driver.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Datatype\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
@@ -64,7 +64,7 @@ The engine sends a set of atomic coordinates to the driver, in the same format a
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 \end{DoxyParagraph}
 \hypertarget{index_recv_energy}{}\doxysubsubsection{$<$\+E\+N\+E\+R\+GY}\label{index_recv_energy}
-The engine sends its most recently calculated energy to the driver. The {\ttfamily M\+D\+\_\+\+I\+N\+IT}, {\ttfamily S\+CF}, and {\ttfamily T\+I\+M\+E\+S\+T\+EP} commands can be used to cause the engine to calculate a new energy.
+The engine sends its most recently calculated energy to the driver. The {\ttfamily M\+D\+\_\+\+I\+N\+IT}, {\ttfamily S\+CF}, and {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} commands can be used to cause the engine to calculate a new energy.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Datatype\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
