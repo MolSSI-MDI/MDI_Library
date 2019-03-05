@@ -84,22 +84,25 @@ MDI Initialization Options</h2>
 Command List</h2>
 <p>The following is a list of commands that are officially part of the MDI standard.</p>
 <p>All physical quantities communicated through MDI must be expressed in atomic units.</p>
+<h3><a class="anchor" id="atomic_step"></a>
+ATOM_STEP</h3>
+<p>The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command.</p>
 <h3><a class="anchor" id="set_cell"></a>
 &gt;CELL</h3>
 <p>The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> 9 <br  />
  <b> Injection: </b> Immediate <br  />
  <b> Note: </b> In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-vectors either immediately or at the beginning of the next SCF command.</dd></dl>
 <h3><a class="anchor" id="recv_cell"></a>
 &lt;CELL</h3>
 <p>The engine sends a set of cell vectors to the driver, in the same format as specified for the <code>&gt;CELL</code> command.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> 9</dd></dl>
 <h3><a class="anchor" id="send_charges"></a>
 &gt;CHARGES</h3>
 <p>The driver sends a set of atomic charges to the engine, which replaces its atomic charges with those sent by the driver.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code>&lt;NATOMS</code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index <br  />
  <b> Injection: </b> Immediate <br  />
@@ -107,26 +110,26 @@ Command List</h2>
 <h3><a class="anchor" id="recv_charges"></a>
 &lt;CHARGES</h3>
 <p>The engine sends a set of atomic charges to the driver, in the same format as specified for the <code>&gt;CHARGES</code> command.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code>&lt;NATOMS</code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index</dd></dl>
 <h3><a class="anchor" id="send_coords"></a>
 &gt;COORDS</h3>
 <p>The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> Immediate</dd></dl>
 <h3><a class="anchor" id="recv_coords"></a>
 &lt;COORDS</h3>
 <p>The engine sends a set of atomic coordinates to the driver.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order</dd></dl>
 <h3><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h3>
 <p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>ATOM_STEP</code> commands can be used to cause the engine to calculate a new energy.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h3><a class="anchor" id="exit_command"></a>
 EXIT</h3>
@@ -134,27 +137,27 @@ EXIT</h3>
 <h3><a class="anchor" id="send_forces"></a>
 &gt;FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> In response to the <code>ATOM_STEP</code> command, after any normal calculation of forces and immediately prior to propagation of the atomic positions</dd></dl>
 <h3><a class="anchor" id="send_add_forces"></a>
 &gt;+FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> In response to the <code>ATOM_STEP</code> command, after any normal calculation of forces and immediately prior to propagation of the atomic positions</dd></dl>
 <h3><a class="anchor" id="recv_forces"></a>
 &lt;FORCES</h3>
 <p>The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order</dd></dl>
 <h3><a class="anchor" id="recv_masses"></a>
 &lt;MASSES</h3>
 <p>The engine sends the driver the mass of each of the atom types.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> &lt;NTYPES </code> <br  />
  <b> Format: </b> Sequentially ascending order of type index (see the <code>&lt;TYPES</code> command)</dd></dl>
 <h3><a class="anchor" id="md_init"></a>
@@ -164,39 +167,36 @@ MD_INIT</h3>
 <h3><a class="anchor" id="send_name"></a>
 &lt;NAME</h3>
 <p>The engine sends the driver a string that corresponds to the argument of <code>-name</code> in the MDI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM". After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_CHAR <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_CHAR <br  />
  <b> Quantity: </b> <code> MDI_NAME_LENGTH </code></dd></dl>
 <h3><a class="anchor" id="recv_natoms"></a>
 &lt;NATOMS</h3>
 <p>The engine sends the driver the number of atoms in the engine's system.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_INT <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_INT <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h3><a class="anchor" id="recv_types"></a>
 &lt;NTYPES</h3>
 <p>The engine sends the driver the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_INT <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_INT <br  />
  <b> Quantity: </b> 1</dd></dl>
-<h3><a class="anchor" id="atomic_step"></a>
-ATOM_STEP</h3>
-<p>The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command.</p>
 <h3><a class="anchor" id="send_preforces"></a>
 &gt;PRE-FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> In response to the <code>ATOM_STEP</code> command, after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms</dd></dl>
 <h3><a class="anchor" id="send_add_preforces"></a>
 &gt;+PRE-FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br  />
  <b> Injection: </b> In response to the <code>ATOM_STEP</code> command, after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms</dd></dl>
 <h3><a class="anchor" id="recv_preforces"></a>
 &lt;PRE-FORCES</h3>
 <p>The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions except those associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).</p>
-<dl class="section user"><dt></dt><dd><b> Datatype: </b> MDI_DOUBLE <br  />
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_DOUBLE <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order</dd></dl>
 <h3><a class="anchor" id="scf_command"></a>
