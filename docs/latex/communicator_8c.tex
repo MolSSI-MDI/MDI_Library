@@ -1,54 +1,54 @@
-\hypertarget{communicator_8c}{\section{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/communicator.c File Reference}
-\label{communicator_8c}\index{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/communicator.\-c@{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/communicator.\-c}}
-}
+\hypertarget{communicator_8c}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/molssi\+\_\+driver\+\_\+interface/molssi\+\_\+driver\+\_\+interface/communicator.c File Reference}
+\label{communicator_8c}\index{/Users/tbarnes/Documents/mdi/molssi\_driver\_interface/molssi\_driver\_interface/communicator.c@{/Users/tbarnes/Documents/mdi/molssi\_driver\_interface/molssi\_driver\_interface/communicator.c}}
 
 
 Class definition for handling communication between connect codes.  
 
 
-{\ttfamily \#include $<$mpi.\-h$>$}\\*
-{\ttfamily \#include $<$stdio.\-h$>$}\\*
-{\ttfamily \#include $<$stdlib.\-h$>$}\\*
-{\ttfamily \#include $<$unistd.\-h$>$}\\*
-{\ttfamily \#include \char`\"{}mdi.\-h\char`\"{}}\\*
-{\ttfamily \#include \char`\"{}communicator.\-h\char`\"{}}\\*
-\subsection*{Functions}
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}communicator.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{communicator_8c_a6c749e461a84e471bcab02d8115a1dfa}{int {\bfseries vector\-\_\-init} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, size\-\_\-t stride)}\label{communicator_8c_a6c749e461a84e471bcab02d8115a1dfa}
-
+\mbox{\Hypertarget{communicator_8c_a6c749e461a84e471bcab02d8115a1dfa}\label{communicator_8c_a6c749e461a84e471bcab02d8115a1dfa}} 
+int {\bfseries vector\+\_\+init} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, size\+\_\+t stride)
 \item 
-\hypertarget{communicator_8c_a53e2a90f50c539f8239225d6f39c0213}{int {\bfseries vector\-\_\-push\-\_\-back} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, void $\ast$element)}\label{communicator_8c_a53e2a90f50c539f8239225d6f39c0213}
-
+\mbox{\Hypertarget{communicator_8c_a53e2a90f50c539f8239225d6f39c0213}\label{communicator_8c_a53e2a90f50c539f8239225d6f39c0213}} 
+int {\bfseries vector\+\_\+push\+\_\+back} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$element)
 \item 
-\hypertarget{communicator_8c_a75ffb2ad4233613bd0c97d40b1c68611}{void $\ast$ {\bfseries vector\-\_\-get} (\hyperlink{structdynamic__array__struct}{vector} $\ast$v, int index)}\label{communicator_8c_a75ffb2ad4233613bd0c97d40b1c68611}
-
+\mbox{\Hypertarget{communicator_8c_a75ffb2ad4233613bd0c97d40b1c68611}\label{communicator_8c_a75ffb2ad4233613bd0c97d40b1c68611}} 
+void $\ast$ {\bfseries vector\+\_\+get} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
 \item 
-\hypertarget{communicator_8c_aa9dae0d84965b4f499f98e51c35d13b9}{int {\bfseries mpi\-\_\-send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, \hyperlink{structcommunicator__struct}{communicator} $\ast$this)}\label{communicator_8c_aa9dae0d84965b4f499f98e51c35d13b9}
-
+\mbox{\Hypertarget{communicator_8c_aa9dae0d84965b4f499f98e51c35d13b9}\label{communicator_8c_aa9dae0d84965b4f499f98e51c35d13b9}} 
+int {\bfseries mpi\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$this)
 \item 
-\hypertarget{communicator_8c_ac117c114ae18ae74a96f02b0502e49d1}{int {\bfseries mpi\-\_\-recv} (void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, \hyperlink{structcommunicator__struct}{communicator} $\ast$this)}\label{communicator_8c_ac117c114ae18ae74a96f02b0502e49d1}
-
+\mbox{\Hypertarget{communicator_8c_ac117c114ae18ae74a96f02b0502e49d1}\label{communicator_8c_ac117c114ae18ae74a96f02b0502e49d1}} 
+int {\bfseries mpi\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$this)
 \item 
-\hypertarget{communicator_8c_a430d793711c1d98dae164531be3afc1b}{int {\bfseries tcp\-\_\-send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, \hyperlink{structcommunicator__struct}{communicator} $\ast$this)}\label{communicator_8c_a430d793711c1d98dae164531be3afc1b}
-
+\mbox{\Hypertarget{communicator_8c_a430d793711c1d98dae164531be3afc1b}\label{communicator_8c_a430d793711c1d98dae164531be3afc1b}} 
+int {\bfseries tcp\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$this)
 \item 
-\hypertarget{communicator_8c_a664cdda3506cac0afd32bea1aab6fb19}{int {\bfseries tcp\-\_\-recv} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, \hyperlink{structcommunicator__struct}{communicator} $\ast$this)}\label{communicator_8c_a664cdda3506cac0afd32bea1aab6fb19}
-
+\mbox{\Hypertarget{communicator_8c_a664cdda3506cac0afd32bea1aab6fb19}\label{communicator_8c_a664cdda3506cac0afd32bea1aab6fb19}} 
+int {\bfseries tcp\+\_\+recv} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$this)
 \item 
-\hypertarget{communicator_8c_ad3c615060f602d600023a678acee7e28}{int {\bfseries communicator\-\_\-send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{communicator_8c_ad3c615060f602d600023a678acee7e28}
-
+\mbox{\Hypertarget{communicator_8c_ad3c615060f602d600023a678acee7e28}\label{communicator_8c_ad3c615060f602d600023a678acee7e28}} 
+int {\bfseries communicator\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
 \item 
-\hypertarget{communicator_8c_a309565fdcf2cdb4a779edef5787e6fa9}{int {\bfseries communicator\-\_\-recv} (void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)}\label{communicator_8c_a309565fdcf2cdb4a779edef5787e6fa9}
-
+\mbox{\Hypertarget{communicator_8c_a309565fdcf2cdb4a779edef5787e6fa9}\label{communicator_8c_a309565fdcf2cdb4a779edef5787e6fa9}} 
+int {\bfseries communicator\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
 \end{DoxyCompactItemize}
-\subsection*{Variables}
+\doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{communicator_8c_aae895626c3da244edb20b7ffcca7d05f}{\hyperlink{structdynamic__array__struct}{vector} {\bfseries communicators}}\label{communicator_8c_aae895626c3da244edb20b7ffcca7d05f}
-
+\mbox{\Hypertarget{communicator_8c_aae895626c3da244edb20b7ffcca7d05f}\label{communicator_8c_aae895626c3da244edb20b7ffcca7d05f}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} {\bfseries communicators}
 \end{DoxyCompactItemize}
 
 
-\subsection{Detailed Description}
+\doxysubsection{Detailed Description}
 Class definition for handling communication between connect codes. 
+

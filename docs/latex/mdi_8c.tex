@@ -1,273 +1,257 @@
-\hypertarget{mdi_8c}{\section{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/mdi.c File Reference}
-\label{mdi_8c}\index{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/mdi.\-c@{/home/tbarnes/mdi/molssi\-\_\-driver\-\_\-interface/molssi\-\_\-driver\-\_\-interface/mdi.\-c}}
-}
+\hypertarget{mdi_8c}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/molssi\+\_\+driver\+\_\+interface/molssi\+\_\+driver\+\_\+interface/mdi.c File Reference}
+\label{mdi_8c}\index{/Users/tbarnes/Documents/mdi/molssi\_driver\_interface/molssi\_driver\_interface/mdi.c@{/Users/tbarnes/Documents/mdi/molssi\_driver\_interface/molssi\_driver\_interface/mdi.c}}
 
 
-Functions callable by users of the Mol\-S\-S\-I Driver Interface.  
+Functions callable by users of the Mol\+S\+SI Driver Interface.  
 
 
-{\ttfamily \#include $<$signal.\-h$>$}\\*
-{\ttfamily \#include $<$netdb.\-h$>$}\\*
-{\ttfamily \#include $<$netinet/in.\-h$>$}\\*
-{\ttfamily \#include $<$stdio.\-h$>$}\\*
-{\ttfamily \#include $<$stdlib.\-h$>$}\\*
-{\ttfamily \#include $<$string.\-h$>$}\\*
-{\ttfamily \#include $<$sys/socket.\-h$>$}\\*
-{\ttfamily \#include $<$sys/types.\-h$>$}\\*
-{\ttfamily \#include $<$sys/un.\-h$>$}\\*
-{\ttfamily \#include $<$unistd.\-h$>$}\\*
-{\ttfamily \#include $<$errno.\-h$>$}\\*
-{\ttfamily \#include \char`\"{}mdi.\-h\char`\"{}}\\*
-{\ttfamily \#include \char`\"{}communicator.\-h\char`\"{}}\\*
-{\ttfamily \#include \char`\"{}mdi\-\_\-manager.\-h\char`\"{}}\\*
-{\ttfamily \#include \char`\"{}method.\-h\char`\"{}}\\*
-\subsection*{Functions}
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$netdb.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+{\ttfamily \#include $<$sys/un.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}communicator.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+manager.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}method.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}{void {\bfseries mdi\-\_\-error} (const char $\ast$message)}\label{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}
-
+\mbox{\Hypertarget{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}\label{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}} 
+void {\bfseries mdi\+\_\+error} (const char $\ast$message)
 \item 
-int \hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\-D\-I\-\_\-\-Init} (const char $\ast$options, void $\ast$world\-\_\-comm)
-\begin{DoxyCompactList}\small\item\em Initialize communication through the M\-D\-I library. \end{DoxyCompactList}\item 
-M\-D\-I\-\_\-\-Comm \hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator} ()
-\begin{DoxyCompactList}\small\item\em Accept a new M\-D\-I communicator. \end{DoxyCompactList}\item 
-int \hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\-D\-I\-\_\-\-Send} (const void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)
-\begin{DoxyCompactList}\small\item\em Send data through the M\-D\-I connection. \end{DoxyCompactList}\item 
-int \hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\-D\-I\-\_\-\-Recv} (void $\ast$buf, int count, M\-D\-I\-\_\-\-Datatype datatype, M\-D\-I\-\_\-\-Comm comm)
-\begin{DoxyCompactList}\small\item\em Receive data through the M\-D\-I connection. \end{DoxyCompactList}\item 
-int \hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\-D\-I\-\_\-\-Send\-\_\-\-Command} (const char $\ast$buf, M\-D\-I\-\_\-\-Comm comm)
-\begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} through the M\-D\-I connection. \end{DoxyCompactList}\item 
-int \hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\-D\-I\-\_\-\-Recv\-\_\-\-Command} (char $\ast$buf, M\-D\-I\-\_\-\-Comm comm)
-\begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} through the M\-D\-I connection. \end{DoxyCompactList}\item 
-double \hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor} (char $\ast$in\-\_\-unit, char $\ast$out\-\_\-unit)
+int \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init}} (const char $\ast$options, void $\ast$world\+\_\+comm)
+\begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
+M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator}} ()
+\begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send data through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Receive data through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\+D\+I\+\_\+\+Send\+\_\+\+Command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\+D\+I\+\_\+\+Recv\+\_\+\+Command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}} (char $\ast$in\+\_\+unit, char $\ast$out\+\_\+unit)
 \begin{DoxyCompactList}\small\item\em Return a conversion factor between two units. \end{DoxyCompactList}\item 
-\hypertarget{mdi_8c_a0accde4a79728e8eaab73632daba3c15}{int {\bfseries M\-D\-I\-\_\-\-Get\-\_\-\-M\-P\-I\-\_\-\-Code\-\_\-\-Rank} ()}\label{mdi_8c_a0accde4a79728e8eaab73632daba3c15}
-
+\mbox{\Hypertarget{mdi_8c_a0accde4a79728e8eaab73632daba3c15}\label{mdi_8c_a0accde4a79728e8eaab73632daba3c15}} 
+int {\bfseries M\+D\+I\+\_\+\+Get\+\_\+\+M\+P\+I\+\_\+\+Code\+\_\+\+Rank} ()
 \item 
-\hypertarget{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}{void {\bfseries M\-D\-I\-\_\-\-Set\-\_\-\-M\-P\-I\-\_\-\-Intra\-\_\-\-Rank} (int rank)}\label{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}
-
+\mbox{\Hypertarget{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}\label{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}} 
+void {\bfseries M\+D\+I\+\_\+\+Set\+\_\+\+M\+P\+I\+\_\+\+Intra\+\_\+\+Rank} (int rank)
 \end{DoxyCompactItemize}
-\subsection*{Variables}
+\doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}{const int {\bfseries M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} = 12}\label{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}
-
+\mbox{\Hypertarget{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}\label{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}} 
+const int {\bfseries M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} = 12
 \item 
-\hypertarget{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{const int {\bfseries M\-D\-I\-\_\-\-N\-A\-M\-E\-\_\-\-L\-E\-N\-G\-T\-H} = 12}\label{mdi_8c_a8ca47e903a62de4298767ef3d446901d}
-
+\mbox{\Hypertarget{mdi_8c_a8ca47e903a62de4298767ef3d446901d}\label{mdi_8c_a8ca47e903a62de4298767ef3d446901d}} 
+const int {\bfseries M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH} = 12
 \item 
-\hypertarget{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{const M\-D\-I\-\_\-\-Comm {\bfseries M\-D\-I\-\_\-\-N\-U\-L\-L\-\_\-\-C\-O\-M\-M} = 0}\label{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}
-
+\mbox{\Hypertarget{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}\label{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}} 
+const M\+D\+I\+\_\+\+Comm {\bfseries M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM} = 0
 \item 
-\hypertarget{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}{const int {\bfseries M\-D\-I\-\_\-\-I\-N\-T} = 0}\label{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}
-
+\mbox{\Hypertarget{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}\label{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}} 
+const int {\bfseries M\+D\+I\+\_\+\+I\+NT} = 0
 \item 
-\hypertarget{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{const int {\bfseries M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E} = 1}\label{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}
-
+\mbox{\Hypertarget{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}\label{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}} 
+const int {\bfseries M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} = 1
 \item 
-\hypertarget{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}{const int {\bfseries M\-D\-I\-\_\-\-C\-H\-A\-R} = 2}\label{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}
-
+\mbox{\Hypertarget{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}\label{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}} 
+const int {\bfseries M\+D\+I\+\_\+\+C\+H\+AR} = 2
 \item 
-\hypertarget{mdi_8c_a1be671d11b9e0779a06a79abeceadd39}{const int {\bfseries M\-D\-I\-\_\-\-I\-N\-T\-\_\-\-N\-U\-M\-P\-Y} = 3}\label{mdi_8c_a1be671d11b9e0779a06a79abeceadd39}
-
+\mbox{\Hypertarget{mdi_8c_a1be671d11b9e0779a06a79abeceadd39}\label{mdi_8c_a1be671d11b9e0779a06a79abeceadd39}} 
+const int {\bfseries M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY} = 3
 \item 
-\hypertarget{mdi_8c_aaf7153f9eda53a820f81f59ddb484ced}{const int {\bfseries M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E\-\_\-\-N\-U\-M\-P\-Y} = 4}\label{mdi_8c_aaf7153f9eda53a820f81f59ddb484ced}
-
+\mbox{\Hypertarget{mdi_8c_aaf7153f9eda53a820f81f59ddb484ced}\label{mdi_8c_aaf7153f9eda53a820f81f59ddb484ced}} 
+const int {\bfseries M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY} = 4
 \item 
-\hypertarget{mdi_8c_aa69d77aeaab908058636a4420b02ae90}{const int {\bfseries M\-D\-I\-\_\-\-T\-C\-P} = 1}\label{mdi_8c_aa69d77aeaab908058636a4420b02ae90}
-
+\mbox{\Hypertarget{mdi_8c_aa69d77aeaab908058636a4420b02ae90}\label{mdi_8c_aa69d77aeaab908058636a4420b02ae90}} 
+const int {\bfseries M\+D\+I\+\_\+\+T\+CP} = 1
 \item 
-\hypertarget{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}{const int {\bfseries M\-D\-I\-\_\-\-M\-P\-I} = 2}\label{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}
-
+\mbox{\Hypertarget{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}\label{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}} 
+const int {\bfseries M\+D\+I\+\_\+\+M\+PI} = 2
 \item 
-\hypertarget{mdi_8c_a323937b5877ef054dc40e584ef767070}{const double {\bfseries M\-D\-I\-\_\-\-M\-E\-T\-E\-R\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R} = 1.\-88972612546e10}\label{mdi_8c_a323937b5877ef054dc40e584ef767070}
-
+\mbox{\Hypertarget{mdi_8c_a323937b5877ef054dc40e584ef767070}\label{mdi_8c_a323937b5877ef054dc40e584ef767070}} 
+const double {\bfseries M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR} = 1.\+88972612546e10
 \item 
-\hypertarget{mdi_8c_ad7fb89aef0dfdc7caffe72d45b7d01d7}{const double {\bfseries M\-D\-I\-\_\-\-A\-N\-G\-S\-T\-R\-O\-M\-\_\-\-T\-O\-\_\-\-B\-O\-H\-R} = 1.\-88972612546}\label{mdi_8c_ad7fb89aef0dfdc7caffe72d45b7d01d7}
-
+\mbox{\Hypertarget{mdi_8c_ad7fb89aef0dfdc7caffe72d45b7d01d7}\label{mdi_8c_ad7fb89aef0dfdc7caffe72d45b7d01d7}} 
+const double {\bfseries M\+D\+I\+\_\+\+A\+N\+G\+S\+T\+R\+O\+M\+\_\+\+T\+O\+\_\+\+B\+O\+HR} = 1.\+88972612546
 \item 
-\hypertarget{mdi_8c_a9a119f46a44d6d6f594d44c8b897f9e8}{const double {\bfseries M\-D\-I\-\_\-\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T} = 4.\-1341374575751e16}\label{mdi_8c_a9a119f46a44d6d6f594d44c8b897f9e8}
-
+\mbox{\Hypertarget{mdi_8c_a9a119f46a44d6d6f594d44c8b897f9e8}\label{mdi_8c_a9a119f46a44d6d6f594d44c8b897f9e8}} 
+const double {\bfseries M\+D\+I\+\_\+\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT} = 4.\+1341374575751e16
 \item 
-\hypertarget{mdi_8c_a191439a37d783bcfd2c4e4989b5b2cde}{const double {\bfseries M\-D\-I\-\_\-\-P\-I\-C\-O\-S\-E\-C\-O\-N\-D\-\_\-\-T\-O\-\_\-\-A\-U\-T} = 4.\-1341374575751e4}\label{mdi_8c_a191439a37d783bcfd2c4e4989b5b2cde}
-
+\mbox{\Hypertarget{mdi_8c_a191439a37d783bcfd2c4e4989b5b2cde}\label{mdi_8c_a191439a37d783bcfd2c4e4989b5b2cde}} 
+const double {\bfseries M\+D\+I\+\_\+\+P\+I\+C\+O\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT} = 4.\+1341374575751e4
 \item 
-\hypertarget{mdi_8c_a3d051436cb3d2b9b9fb8528ecc70f1e6}{const double {\bfseries M\-D\-I\-\_\-\-N\-E\-W\-T\-O\-N\-\_\-\-T\-O\-\_\-\-A\-U\-F} = 1.\-213780478e7}\label{mdi_8c_a3d051436cb3d2b9b9fb8528ecc70f1e6}
-
+\mbox{\Hypertarget{mdi_8c_a3d051436cb3d2b9b9fb8528ecc70f1e6}\label{mdi_8c_a3d051436cb3d2b9b9fb8528ecc70f1e6}} 
+const double {\bfseries M\+D\+I\+\_\+\+N\+E\+W\+T\+O\+N\+\_\+\+T\+O\+\_\+\+A\+UF} = 1.\+213780478e7
 \item 
-\hypertarget{mdi_8c_ae40c10c77dccde242ad259fd26fd3619}{const double {\bfseries M\-D\-I\-\_\-\-J\-O\-U\-L\-E\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 2.\-29371265835792e17}\label{mdi_8c_ae40c10c77dccde242ad259fd26fd3619}
-
+\mbox{\Hypertarget{mdi_8c_ae40c10c77dccde242ad259fd26fd3619}\label{mdi_8c_ae40c10c77dccde242ad259fd26fd3619}} 
+const double {\bfseries M\+D\+I\+\_\+\+J\+O\+U\+L\+E\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 2.\+29371265835792e17
 \item 
-\hypertarget{mdi_8c_a61e9917a12f86564edf9ef812d92fa4a}{const double {\bfseries M\-D\-I\-\_\-\-K\-J\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 2.\-29371265835792e20}\label{mdi_8c_a61e9917a12f86564edf9ef812d92fa4a}
-
+\mbox{\Hypertarget{mdi_8c_a61e9917a12f86564edf9ef812d92fa4a}\label{mdi_8c_a61e9917a12f86564edf9ef812d92fa4a}} 
+const double {\bfseries M\+D\+I\+\_\+\+K\+J\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 2.\+29371265835792e20
 \item 
-\hypertarget{mdi_8c_a27ea253093fdfdad5592091fe1f62870}{const double {\bfseries M\-D\-I\-\_\-\-K\-J\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 3.\-80879947807451e-\/4}\label{mdi_8c_a27ea253093fdfdad5592091fe1f62870}
-
+\mbox{\Hypertarget{mdi_8c_a27ea253093fdfdad5592091fe1f62870}\label{mdi_8c_a27ea253093fdfdad5592091fe1f62870}} 
+const double {\bfseries M\+D\+I\+\_\+\+K\+J\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 3.\+80879947807451e-\/4
 \item 
-\hypertarget{mdi_8c_ae4f6e7e76d00e3222ec87ab235388435}{const double {\bfseries M\-D\-I\-\_\-\-K\-C\-A\-L\-P\-E\-R\-M\-O\-L\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 1.\-5941730215480900e-\/3}\label{mdi_8c_ae4f6e7e76d00e3222ec87ab235388435}
-
+\mbox{\Hypertarget{mdi_8c_ae4f6e7e76d00e3222ec87ab235388435}\label{mdi_8c_ae4f6e7e76d00e3222ec87ab235388435}} 
+const double {\bfseries M\+D\+I\+\_\+\+K\+C\+A\+L\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 1.\+5941730215480900e-\/3
 \item 
-\hypertarget{mdi_8c_ad50c706a104210c0c9d38ad2ee3b47dd}{const double {\bfseries M\-D\-I\-\_\-\-E\-V\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 3.\-67493266806491e-\/2}\label{mdi_8c_ad50c706a104210c0c9d38ad2ee3b47dd}
-
+\mbox{\Hypertarget{mdi_8c_ad50c706a104210c0c9d38ad2ee3b47dd}\label{mdi_8c_ad50c706a104210c0c9d38ad2ee3b47dd}} 
+const double {\bfseries M\+D\+I\+\_\+\+E\+V\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 3.\+67493266806491e-\/2
 \item 
-\hypertarget{mdi_8c_a87b24c6eb5745296de8723de5cb7208d}{const double {\bfseries M\-D\-I\-\_\-\-R\-Y\-D\-B\-E\-R\-G\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 0.\-5}\label{mdi_8c_a87b24c6eb5745296de8723de5cb7208d}
-
+\mbox{\Hypertarget{mdi_8c_a87b24c6eb5745296de8723de5cb7208d}\label{mdi_8c_a87b24c6eb5745296de8723de5cb7208d}} 
+const double {\bfseries M\+D\+I\+\_\+\+R\+Y\+D\+B\+E\+R\+G\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 0.\+5
 \item 
-\hypertarget{mdi_8c_a40cfa9151564f12c5a0ebbee1697381e}{const double {\bfseries M\-D\-I\-\_\-\-K\-E\-L\-V\-I\-N\-\_\-\-T\-O\-\_\-\-H\-A\-R\-T\-R\-E\-E} = 3.\-16681050847798e-\/6}\label{mdi_8c_a40cfa9151564f12c5a0ebbee1697381e}
-
+\mbox{\Hypertarget{mdi_8c_a40cfa9151564f12c5a0ebbee1697381e}\label{mdi_8c_a40cfa9151564f12c5a0ebbee1697381e}} 
+const double {\bfseries M\+D\+I\+\_\+\+K\+E\+L\+V\+I\+N\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = 3.\+16681050847798e-\/6
 \end{DoxyCompactItemize}
 
 
-\subsection{Detailed Description}
-Functions callable by users of the Mol\-S\-S\-I Driver Interface. 
-
-\subsection{Function Documentation}
-\hypertarget{mdi_8c_a570557fdd42049c5e285faf546037531}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator@{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator}}
-\index{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator@{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator}]{\setlength{\rightskip}{0pt plus 5cm}M\-D\-I\-\_\-\-Comm M\-D\-I\-\_\-\-Accept\-\_\-\-Communicator (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_a570557fdd42049c5e285faf546037531}
+\doxysubsection{Detailed Description}
+Functions callable by users of the Mol\+S\+SI Driver Interface. 
 
 
-Accept a new M\-D\-I communicator. 
 
-The function returns an M\-D\-I\-\_\-\-Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\-D\-I\-\_\-\-N\-U\-L\-L\-\_\-\-C\-O\-M\-M}. \hypertarget{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor@{M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor}}
-\index{M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor@{M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor}]{\setlength{\rightskip}{0pt plus 5cm}double M\-D\-I\-\_\-\-Conversion\-\_\-\-Factor (
-\begin{DoxyParamCaption}
-\item[{char $\ast$}]{in\-\_\-unit, }
-\item[{char $\ast$}]{out\-\_\-unit}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi_8c_a570557fdd42049c5e285faf546037531}\label{mdi_8c_a570557fdd42049c5e285faf546037531}} 
+\index{mdi.c@{mdi.c}!MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}}
+\index{MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Accept\_Communicator()}{MDI\_Accept\_Communicator()}}
+{\footnotesize\ttfamily M\+D\+I\+\_\+\+Comm M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Accept a new M\+DI communicator. 
+
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}\label{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}} 
+\index{mdi.c@{mdi.c}!MDI\_Conversion\_Factor@{MDI\_Conversion\_Factor}}
+\index{MDI\_Conversion\_Factor@{MDI\_Conversion\_Factor}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Conversion\_Factor()}{MDI\_Conversion\_Factor()}}
+{\footnotesize\ttfamily double M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor (\begin{DoxyParamCaption}\item[{char $\ast$}]{in\+\_\+unit,  }\item[{char $\ast$}]{out\+\_\+unit }\end{DoxyParamCaption})}
+
 
 
 Return a conversion factor between two units. 
 
-The function returns the conversion factor from {\ttfamily in\-\_\-unit} to {\ttfamily out\-\_\-unit}.
+The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em in\-\_\-unit} & Name of the unit to convert from. \\
+\mbox{\texttt{ in}}  & {\em in\+\_\+unit} & Name of the unit to convert from. \\
 \hline
-\mbox{\tt in}  & {\em out\-\_\-unit} & Name of the unit to convert to. \\
+\mbox{\texttt{ in}}  & {\em out\+\_\+unit} & Name of the unit to convert to. \\
 \hline
 \end{DoxyParams}
-\hypertarget{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Init@{M\-D\-I\-\_\-\-Init}}
-\index{M\-D\-I\-\_\-\-Init@{M\-D\-I\-\_\-\-Init}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Init}]{\setlength{\rightskip}{0pt plus 5cm}int M\-D\-I\-\_\-\-Init (
-\begin{DoxyParamCaption}
-\item[{const char $\ast$}]{options, }
-\item[{void $\ast$}]{world\-\_\-comm}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}
+\mbox{\Hypertarget{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}\label{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}} 
+\index{mdi.c@{mdi.c}!MDI\_Init@{MDI\_Init}}
+\index{MDI\_Init@{MDI\_Init}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Init()}{MDI\_Init()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Init (\begin{DoxyParamCaption}\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{world\+\_\+comm }\end{DoxyParamCaption})}
 
 
-Initialize communication through the M\-D\-I library. 
 
-If using the \char`\"{}-\/method M\-P\-I\char`\"{} option, this function must be called by all ranks. The function returns {\ttfamily 0} on a success.
+Initialize communication through the M\+DI library. 
+
+If using the \char`\"{}-\/method M\+P\+I\char`\"{} option, this function must be called by all ranks. The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em options} & Options describing the communication method used to connect to codes \\
+\mbox{\texttt{ in}}  & {\em options} & Options describing the communication method used to connect to codes \\
 \hline
-\mbox{\tt in,out}  & {\em world\-\_\-comm} & On input, the M\-P\-I communicator that spans all of the codes. On output, the M\-P\-I communicator that spans the single code corresponding to the calling rank. Only used if the \char`\"{}-\/method M\-P\-I\char`\"{} option is provided. \\
+\mbox{\texttt{ in,out}}  & {\em world\+\_\+comm} & On input, the M\+PI communicator that spans all of the codes. On output, the M\+PI communicator that spans the single code corresponding to the calling rank. Only used if the \char`\"{}-\/method M\+P\+I\char`\"{} option is provided. \\
 \hline
 \end{DoxyParams}
-\hypertarget{mdi_8c_ab73f32323a155011fcc184866215ba03}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Recv@{M\-D\-I\-\_\-\-Recv}}
-\index{M\-D\-I\-\_\-\-Recv@{M\-D\-I\-\_\-\-Recv}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Recv}]{\setlength{\rightskip}{0pt plus 5cm}int M\-D\-I\-\_\-\-Recv (
-\begin{DoxyParamCaption}
-\item[{void $\ast$}]{buf, }
-\item[{int}]{count, }
-\item[{M\-D\-I\-\_\-\-Datatype}]{datatype, }
-\item[{M\-D\-I\-\_\-\-Comm}]{comm}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_ab73f32323a155011fcc184866215ba03}
+\mbox{\Hypertarget{mdi_8c_ab73f32323a155011fcc184866215ba03}\label{mdi_8c_ab73f32323a155011fcc184866215ba03}} 
+\index{mdi.c@{mdi.c}!MDI\_Recv@{MDI\_Recv}}
+\index{MDI\_Recv@{MDI\_Recv}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Recv()}{MDI\_Recv()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
 
 
-Receive data through the M\-D\-I connection. 
 
-If running with M\-P\-I, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+Receive data through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
 \hline
-\mbox{\tt in}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
 \hline
-\mbox{\tt in}  & {\em datatype} & M\-D\-I handle (M\-D\-I\-\_\-\-I\-N\-T, M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E, M\-D\-I\-\_\-\-C\-H\-A\-R, etc.) corresponding to the type of data to be received. \\
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
 \hline
-\mbox{\tt in}  & {\em comm} & M\-D\-I communicator associated with the connection to the sending code. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
 \hline
 \end{DoxyParams}
-\hypertarget{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Recv\-\_\-\-Command@{M\-D\-I\-\_\-\-Recv\-\_\-\-Command}}
-\index{M\-D\-I\-\_\-\-Recv\-\_\-\-Command@{M\-D\-I\-\_\-\-Recv\-\_\-\-Command}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Recv\-\_\-\-Command}]{\setlength{\rightskip}{0pt plus 5cm}int M\-D\-I\-\_\-\-Recv\-\_\-\-Command (
-\begin{DoxyParamCaption}
-\item[{char $\ast$}]{buf, }
-\item[{M\-D\-I\-\_\-\-Comm}]{comm}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}
+\mbox{\Hypertarget{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}\label{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}} 
+\index{mdi.c@{mdi.c}!MDI\_Recv\_Command@{MDI\_Recv\_Command}}
+\index{MDI\_Recv\_Command@{MDI\_Recv\_Command}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Recv\_Command()}{MDI\_Recv\_Command()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Recv\+\_\+\+Command (\begin{DoxyParamCaption}\item[{char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
 
 
-Receive a command of length {\ttfamily M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} through the M\-D\-I connection. 
 
-If running with M\-P\-I, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
 \hline
-\mbox{\tt in}  & {\em comm} & M\-D\-I communicator associated with the connection to the sending code. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
 \hline
 \end{DoxyParams}
-\hypertarget{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Send@{M\-D\-I\-\_\-\-Send}}
-\index{M\-D\-I\-\_\-\-Send@{M\-D\-I\-\_\-\-Send}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Send}]{\setlength{\rightskip}{0pt plus 5cm}int M\-D\-I\-\_\-\-Send (
-\begin{DoxyParamCaption}
-\item[{const void $\ast$}]{buf, }
-\item[{int}]{count, }
-\item[{M\-D\-I\-\_\-\-Datatype}]{datatype, }
-\item[{M\-D\-I\-\_\-\-Comm}]{comm}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}
+\mbox{\Hypertarget{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}\label{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}} 
+\index{mdi.c@{mdi.c}!MDI\_Send@{MDI\_Send}}
+\index{MDI\_Send@{MDI\_Send}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Send()}{MDI\_Send()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
 
 
-Send data through the M\-D\-I connection. 
 
-If running with M\-P\-I, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+Send data through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em buf} & Pointer to the data to be sent. \\
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
 \hline
-\mbox{\tt in}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
 \hline
-\mbox{\tt in}  & {\em datatype} & M\-D\-I handle (M\-D\-I\-\_\-\-I\-N\-T, M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E, M\-D\-I\-\_\-\-C\-H\-A\-R, etc.) corresponding to the type of data to be sent. \\
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
 \hline
-\mbox{\tt in}  & {\em comm} & M\-D\-I communicator associated with the intended recipient code. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
 \hline
 \end{DoxyParams}
-\hypertarget{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{\index{mdi.\-c@{mdi.\-c}!M\-D\-I\-\_\-\-Send\-\_\-\-Command@{M\-D\-I\-\_\-\-Send\-\_\-\-Command}}
-\index{M\-D\-I\-\_\-\-Send\-\_\-\-Command@{M\-D\-I\-\_\-\-Send\-\_\-\-Command}!mdi.c@{mdi.\-c}}
-\subsubsection[{M\-D\-I\-\_\-\-Send\-\_\-\-Command}]{\setlength{\rightskip}{0pt plus 5cm}int M\-D\-I\-\_\-\-Send\-\_\-\-Command (
-\begin{DoxyParamCaption}
-\item[{const char $\ast$}]{buf, }
-\item[{M\-D\-I\-\_\-\-Comm}]{comm}
-\end{DoxyParamCaption}
-)}}\label{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}
+\mbox{\Hypertarget{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}\label{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}} 
+\index{mdi.c@{mdi.c}!MDI\_Send\_Command@{MDI\_Send\_Command}}
+\index{MDI\_Send\_Command@{MDI\_Send\_Command}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Send\_Command()}{MDI\_Send\_Command()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Send\+\_\+\+Command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
 
 
-Send a command of length {\ttfamily M\-D\-I\-\_\-\-C\-O\-M\-M\-A\-N\-D\-\_\-\-L\-E\-N\-G\-T\-H} through the M\-D\-I connection. 
 
-If running with M\-P\-I, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\tt in}  & {\em buf} & Pointer to the data to be sent. \\
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
 \hline
-\mbox{\tt in}  & {\em comm} & M\-D\-I communicator associated with the intended recipient code. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
 \hline
 \end{DoxyParams}
