@@ -3,7 +3,24 @@ The Mol\-S\-S\-I Driver Interface (M\-D\-I) library enables codes to interoperat
 The source code of the M\-D\-I library is available at Git\-Hub at \href{https://github.com/MolSSI/molssi_driver_interface}{\tt https\-://github.\-com/\-Mol\-S\-S\-I/molssi\-\_\-driver\-\_\-interface}\hypertarget{index_commands_sec}{}\section{M\-D\-I Standard}\label{index_commands_sec}
 \hypertarget{index_command_list}{}\subsection{Command List}\label{index_command_list}
 The following is a list of commands that are officially part of the M\-D\-I standard.\hypertarget{index_set_cell}{}\subsubsection{$>$\-C\-E\-L\-L}\label{index_set_cell}
-The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors. In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-\/vectors or schedule the g-\/vectors to be recalculated at the beginning of the next S\-C\-F command.\hypertarget{index_recv_cell}{}\subsubsection{$<$\-C\-E\-L\-L}\label{index_recv_cell}
+The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors. In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-\/vectors or schedule the g-\/vectors to be recalculated at the beginning of the next S\-C\-F command.
+
+\begin{DoxyParagraph}{{\bfseries Summary}\-: The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.}
+
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{{\bfseries Datatype}\-: M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E}
+
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{{\bfseries Quantity}\-: 9}
+
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{{\bfseries Injection}\-: Immediate}
+
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{{\bfseries Note}\-: In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-\/vectors either immediately or at the beginning of the next S\-C\-F command.}
+
+\end{DoxyParagraph}
+\hypertarget{index_recv_cell}{}\subsubsection{$<$\-C\-E\-L\-L}\label{index_recv_cell}
 The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\-E\-L\-L} command.\hypertarget{index_send_charges}{}\subsubsection{$>$\-C\-H\-A\-R\-G\-E\-S}\label{index_send_charges}
 The driver sends a set of atomic charges to the engine, which immediately changes its atomic charges to those sent by the driver. The charges are represented by double precision floats. The number of values sent is equal to the response to the $<$N\-A\-T\-O\-M\-S command. The charges are provided in sequentially ascending order of atomic index.\hypertarget{index_recv_charges}{}\subsubsection{$<$\-C\-H\-A\-R\-G\-E\-S}\label{index_recv_charges}
 The engine sends a set of atomic charges to the driver, in the same format as specified for the {\ttfamily $>$C\-H\-A\-R\-G\-E\-S} command.\hypertarget{index_send_coords}{}\subsubsection{$<$\-C\-O\-O\-R\-D\-S}\label{index_send_coords}
@@ -18,8 +35,8 @@ The engine sends the driver the mass of each of the atom types. The masses are r
 The engine performs any initialization operations that are necessary before an M\-D simulation can be time propagated. These initialization operations {\bfseries  may change the engine's atomic coordinates } under certain circumstances, such as if the S\-H\-A\-K\-E algorithm is used. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\-N\-E\-R\-G\-Y} command.\hypertarget{index_send_name}{}\subsubsection{$<$\-N\-A\-M\-E}\label{index_send_name}
 The engine sends the driver a string of length {\ttfamily M\-D\-I\-\_\-\-N\-A\-M\-E\-\_\-\-L\-E\-N\-G\-T\-H} that corresponds to the argument of {\ttfamily -\/name} in the M\-D\-I initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular Q\-M/\-M\-M driver might require a connection with a single M\-M code and a single Q\-M code, with the expected name of the M\-M code being \char`\"{}\-M\-M\char`\"{} and the expected name of the Q\-M code being \char`\"{}\-Q\-M\char`\"{}. After initializing M\-D\-I and accepting communicators to the engines, the driver can use this command to identify which of the engines is the M\-M code and which is the Q\-M code.\hypertarget{index_recv_natoms}{}\subsubsection{$<$\-N\-A\-T\-O\-M\-S}\label{index_recv_natoms}
 The engine sends the driver a single integer corresponding to the number of atoms in the engine's system.\hypertarget{index_recv_types}{}\subsubsection{$<$\-N\-T\-Y\-P\-E\-S}\label{index_recv_types}
-The engine sends the driver a single integer corresponding to the number of different types of atoms (e.\-g. \char`\"{}\-H\char`\"{}, \char`\"{}\-He\char`\"{}, \char`\"{}\-C\char`\"{}, \char`\"{}\-O\char`\"{}, etc.) in the engine's system.\hypertarget{index_nuclear_step}{}\subsubsection{A\-T\-O\-M\-I\-C\-\_\-\-S\-T\-E\-P}\label{index_nuclear_step}
-The engine performs a time propagation step for the nuclear coordinates.\hypertarget{index_send_preforces}{}\subsubsection{$>$\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_send_preforces}
+The engine sends the driver a single integer corresponding to the number of different types of atoms (e.\-g. \char`\"{}\-H\char`\"{}, \char`\"{}\-He\char`\"{}, \char`\"{}\-C\char`\"{}, \char`\"{}\-O\char`\"{}, etc.) in the engine's system.\hypertarget{index_atomic_step}{}\subsubsection{A\-T\-O\-M\-I\-C\-\_\-\-S\-T\-E\-P}\label{index_atomic_step}
+The engine performs a time propagation step for the atomic coordinates.\hypertarget{index_send_preforces}{}\subsubsection{$>$\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_send_preforces}
 The driver sends a set of atomic forces to the engine, in the same format specified by the {\ttfamily $>$C\-O\-O\-R\-D\-S} command. If a {\ttfamily T\-I\-M\-E\-S\-T\-E\-P} command is later sent to the engine, {\bfseries  after calculation of all forces except those related to constraint algorithms (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.) and prior to application of any constraint algorithms}, the engine will replace its internal forces with the forces sent by the driver.\hypertarget{index_send_add_preforces}{}\subsubsection{$>$+\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_send_add_preforces}
 As {\ttfamily $>$P\-R\-E-\/\-F\-O\-R\-C\-E\-S}, except that instead of replacing its internal forces with those sent by the driver, the engine adds the forces sent by the driver to its internal forces.\hypertarget{index_recv_preforces}{}\subsubsection{$<$\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_recv_preforces}
 The engine calculates and sends a set of atomic forces to the driver, in the same format specified by the {\ttfamily $>$C\-O\-O\-R\-D\-S} command. These forces include all force contributions except those related to constraint algorithms (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.).\hypertarget{index_scf_command}{}\subsubsection{S\-C\-F}\label{index_scf_command}

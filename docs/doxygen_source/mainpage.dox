@@ -21,6 +21,13 @@ The following is a list of commands that are officially part of the MDI standard
 The driver sends a set of cell vectors to the engine, which immediately resizes its simulation cell to the dimensions specified by the cell vectors.
 In the case of a quantum chemistry code that uses a plane wave basis set, the engine will either immediately recalculate the g-vectors or schedule the g-vectors to be recalculated at the beginning of the next SCF command.
 
+\par \b Summary: The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
+\par \b Datatype: MDI_DOUBLE
+\par \b Quantity: 9
+\par \b Injection: Immediate
+\par \b Note: In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-vectors either immediately or at the beginning of the next SCF command.
+
+
 \subsubsection recv_cell <CELL
 
 The engine sends a set of cell vectors to the driver, in the same format as specified for the \c >CELL command.
@@ -98,9 +105,9 @@ The engine sends the driver a single integer corresponding to the number of atom
 
 The engine sends the driver a single integer corresponding to the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
 
-\subsubsection nuclear_step ATOMIC_STEP
+\subsubsection atomic_step ATOMIC_STEP
 
-The engine performs a time propagation step for the nuclear coordinates.
+The engine performs a time propagation step for the atomic coordinates.
 
 \subsubsection send_preforces >PRE-FORCES
 
