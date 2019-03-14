@@ -1,8 +1,13 @@
-language: cpp
+language: c
+sudo: required
+
 os:
   - linux
 packages:
   - g++-4.9
+
+before_install:
+  - sudo apt-get install gfortran
 
 install:
   - mkdir build
