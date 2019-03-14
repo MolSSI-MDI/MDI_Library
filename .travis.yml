@@ -1,18 +1,16 @@
 language: c
 sudo: required
 
-compiler:
-  - clang
-  - gcc
-
 matrix:
   include:
     - os: linux
       before_install:
         - sudo apt-get install gfortran
+      compiler: gcc
     - osx: osx
       before_install:
         - conda install gcc
+      compiler: gcc
 
 install:
   - mkdir build
