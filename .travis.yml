@@ -7,6 +7,11 @@ matrix:
       before_install:
         - sudo apt-get install gfortran
       compiler: gcc
+    - os: linux
+      before_install:
+        - sudo apt-get install gfortran
+        - sudo apt-get install mpich2
+      compiler: gcc
     - os: osx
       before_install:
         - brew install gcc > /dev/null
