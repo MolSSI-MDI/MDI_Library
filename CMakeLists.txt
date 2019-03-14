@@ -30,4 +30,4 @@ endif()
 project(MDI
         LANGUAGES ${use_C} ${use_Fortran})
 
-add_subdirectory(molssi_driver_interface)
+add_subdirectory(MDI_Library)
