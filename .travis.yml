@@ -1,0 +1,14 @@
+language: cpp
+os:
+  - linux
+packages:
+  - g++-4.9
+
+install:
+  - mkdir build
+  - cd build
+  - cmake ../
+  - make
+
+script:
+  - ls
