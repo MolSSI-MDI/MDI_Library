@@ -7,7 +7,7 @@ matrix:
       before_install:
         - sudo apt-get install gfortran
       compiler: gcc
-    - osx: osx
+    - os: osx
       before_install:
         - conda install gcc
       compiler: gcc
