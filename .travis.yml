@@ -3,6 +3,9 @@ sudo: required
 
 os:
   - linux
+compiler:
+  - clang
+  - gcc
 packages:
   - g++-4.9
   - g++-5
