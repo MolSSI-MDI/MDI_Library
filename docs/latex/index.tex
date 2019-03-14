@@ -1,163 +1,163 @@
-\hypertarget{index_overview_sec}{}\doxysection{Overview}\label{index_overview_sec}
-The Mol\+S\+SI Driver Interface (M\+DI) library enables codes to interoperate via the M\+DI.\hypertarget{index_source_sec}{}\doxysection{Source Code}\label{index_source_sec}
-The source code of the M\+DI library is available at Git\+Hub at \href{https://github.com/MolSSI/molssi_driver_interface}{\texttt{ https\+://github.\+com/\+Mol\+S\+S\+I/molssi\+\_\+driver\+\_\+interface}}\hypertarget{index_commands_sec}{}\doxysection{M\+D\+I Standard}\label{index_commands_sec}
-\hypertarget{index_initialization_options}{}\doxysubsection{M\+D\+I Initialization Options}\label{index_initialization_options}
+\hypertarget{index_overview_sec}{}\section{Overview}\label{index_overview_sec}
+The Mol\-S\-S\-I Driver Interface (M\-D\-I) library enables codes to interoperate via the M\-D\-I.\hypertarget{index_source_sec}{}\section{Source Code}\label{index_source_sec}
+The source code of the M\-D\-I library is available at Git\-Hub at \href{https://github.com/MolSSI/molssi_driver_interface}{\tt https\-://github.\-com/\-Mol\-S\-S\-I/molssi\-\_\-driver\-\_\-interface}\hypertarget{index_commands_sec}{}\section{M\-D\-I Standard}\label{index_commands_sec}
+\hypertarget{index_initialization_options}{}\subsection{M\-D\-I Initialization Options}\label{index_initialization_options}
 \begin{DoxyParagraph}{}
-{\bfseries{ -\/role\+: }} The role of this code in the context of M\+DI communication. Valid arguments are D\+R\+I\+V\+ER and E\+N\+G\+I\+NE ~\newline
- {\bfseries{ -\/name\+: }} A short string that identifies this code. See the {\ttfamily $<$N\+A\+ME} command for more information. ~\newline
- {\bfseries{ -\/method\+: }} The method by which M\+DI will handle communication between the codes. Valid arguments are M\+PI and T\+CP. ~\newline
- {\bfseries{ -\/hostname\+: }} For E\+N\+G\+I\+N\+ES, when using the T\+CP communication method, specifies the hostname of the driver. ~\newline
- {\bfseries{ -\/port\+: }} When using the T\+CP communication method, specifies the port at which the driver will listen for incoming connections.
+{\bfseries  -\/role\-: } The role of this code in the context of M\-D\-I communication. Valid arguments are D\-R\-I\-V\-E\-R and E\-N\-G\-I\-N\-E \par
+ {\bfseries  -\/name\-: } A short string that identifies this code. See the {\ttfamily $<$N\-A\-M\-E} command for more information. \par
+ {\bfseries  -\/method\-: } The method by which M\-D\-I will handle communication between the codes. Valid arguments are M\-P\-I and T\-C\-P. \par
+ {\bfseries  -\/hostname\-: } For E\-N\-G\-I\-N\-E\-S, when using the T\-C\-P communication method, specifies the hostname of the driver. \par
+ {\bfseries  -\/port\-: } When using the T\-C\-P communication method, specifies the port at which the driver will listen for incoming connections.
 \end{DoxyParagraph}
-\hypertarget{index_command_list}{}\doxysubsection{Command List}\label{index_command_list}
-The following is a list of commands that are officially part of the M\+DI standard.
+\hypertarget{index_command_list}{}\subsection{Command List}\label{index_command_list}
+The following is a list of commands that are officially part of the M\-D\-I standard.
 
-All physical quantities communicated through M\+DI must be expressed in atomic units.\hypertarget{index_atomic_step}{}\doxysubsubsection{A\+T\+O\+M\+\_\+\+S\+T\+EP}\label{index_atomic_step}
-The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command.\hypertarget{index_set_cell}{}\doxysubsubsection{$>$\+C\+E\+LL}\label{index_set_cell}
+All physical quantities communicated through M\-D\-I must be expressed in atomic units.\hypertarget{index_atomic_step}{}\subsubsection{A\-T\-O\-M\-\_\-\-S\-T\-E\-P}\label{index_atomic_step}
+The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the {\ttfamily $<$E\-N\-E\-R\-G\-Y} command.\hypertarget{index_set_cell}{}\subsubsection{$>$\-C\-E\-L\-L}\label{index_set_cell}
 The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} 9 ~\newline
- {\bfseries{ Injection\+: }} Immediate ~\newline
- {\bfseries{ Note\+: }} In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-\/vectors either immediately or at the beginning of the next S\+CF command.
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } 9 \par
+ {\bfseries  Injection\-: } Immediate \par
+ {\bfseries  Note\-: } In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-\/vectors either immediately or at the beginning of the next S\-C\-F command.
 \end{DoxyParagraph}
-\hypertarget{index_recv_cell}{}\doxysubsubsection{$<$\+C\+E\+LL}\label{index_recv_cell}
-The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\+E\+LL} command.
+\hypertarget{index_recv_cell}{}\subsubsection{$<$\-C\-E\-L\-L}\label{index_recv_cell}
+The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\-E\-L\-L} command.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} 9
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } 9
 \end{DoxyParagraph}
-\hypertarget{index_send_charges}{}\doxysubsubsection{$>$\+C\+H\+A\+R\+G\+ES}\label{index_send_charges}
+\hypertarget{index_send_charges}{}\subsubsection{$>$\-C\-H\-A\-R\-G\-E\-S}\label{index_send_charges}
 The driver sends a set of atomic charges to the engine, which replaces its atomic charges with those sent by the driver.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily $<$N\+A\+T\+O\+MS} ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index ~\newline
- {\bfseries{ Injection\+: }} Immediate ~\newline
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily $<$N\-A\-T\-O\-M\-S} \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index \par
+ {\bfseries  Injection\-: } Immediate \par
 
 \end{DoxyParagraph}
-\hypertarget{index_recv_charges}{}\doxysubsubsection{$<$\+C\+H\+A\+R\+G\+ES}\label{index_recv_charges}
-The engine sends a set of atomic charges to the driver, in the same format as specified for the {\ttfamily $>$C\+H\+A\+R\+G\+ES} command.
+\hypertarget{index_recv_charges}{}\subsubsection{$<$\-C\-H\-A\-R\-G\-E\-S}\label{index_recv_charges}
+The engine sends a set of atomic charges to the driver, in the same format as specified for the {\ttfamily $>$C\-H\-A\-R\-G\-E\-S} command.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily $<$N\+A\+T\+O\+MS} ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily $<$N\-A\-T\-O\-M\-S} \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index
 \end{DoxyParagraph}
-\hypertarget{index_send_coords}{}\doxysubsubsection{$>$\+C\+O\+O\+R\+DS}\label{index_send_coords}
+\hypertarget{index_send_coords}{}\subsubsection{$>$\-C\-O\-O\-R\-D\-S}\label{index_send_coords}
 The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} Immediate
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order \par
+ {\bfseries  Injection\-: } Immediate
 \end{DoxyParagraph}
-\hypertarget{index_recv_coords}{}\doxysubsubsection{$<$\+C\+O\+O\+R\+DS}\label{index_recv_coords}
+\hypertarget{index_recv_coords}{}\subsubsection{$<$\-C\-O\-O\-R\-D\-S}\label{index_recv_coords}
 The engine sends a set of atomic coordinates to the driver.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 \end{DoxyParagraph}
-\hypertarget{index_recv_energy}{}\doxysubsubsection{$<$\+E\+N\+E\+R\+GY}\label{index_recv_energy}
-The engine sends its most recently calculated energy to the driver. The {\ttfamily M\+D\+\_\+\+I\+N\+IT}, {\ttfamily S\+CF}, and {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} commands can be used to cause the engine to calculate a new energy.
+\hypertarget{index_recv_energy}{}\subsubsection{$<$\-E\-N\-E\-R\-G\-Y}\label{index_recv_energy}
+The engine sends its most recently calculated energy to the driver. The {\ttfamily M\-D\-\_\-\-I\-N\-I\-T}, {\ttfamily S\-C\-F}, and {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} commands can be used to cause the engine to calculate a new energy.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} 1
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } 1
 \end{DoxyParagraph}
-\hypertarget{index_exit_command}{}\doxysubsubsection{E\+X\+IT}\label{index_exit_command}
-The engine terminates and can no longer be sent commands.\hypertarget{index_send_forces}{}\doxysubsubsection{$>$\+F\+O\+R\+C\+ES}\label{index_send_forces}
+\hypertarget{index_exit_command}{}\subsubsection{E\-X\-I\-T}\label{index_exit_command}
+The engine terminates and can no longer be sent commands.\hypertarget{index_send_forces}{}\subsubsection{$>$\-F\-O\-R\-C\-E\-S}\label{index_send_forces}
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order \par
+ {\bfseries  Injection\-: } In response to the {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
 \end{DoxyParagraph}
-\hypertarget{index_send_add_forces}{}\doxysubsubsection{$>$+\+F\+O\+R\+C\+ES}\label{index_send_add_forces}
+\hypertarget{index_send_add_forces}{}\subsubsection{$>$+\-F\-O\-R\-C\-E\-S}\label{index_send_add_forces}
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order \par
+ {\bfseries  Injection\-: } In response to the {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
 \end{DoxyParagraph}
-\hypertarget{index_recv_forces}{}\doxysubsubsection{$<$\+F\+O\+R\+C\+ES}\label{index_recv_forces}
-The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.).
+\hypertarget{index_recv_forces}{}\subsubsection{$<$\-F\-O\-R\-C\-E\-S}\label{index_recv_forces}
+The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.).
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
 \end{DoxyParagraph}
-\hypertarget{index_recv_masses}{}\doxysubsubsection{$<$\+M\+A\+S\+S\+ES}\label{index_recv_masses}
+\hypertarget{index_recv_masses}{}\subsubsection{$<$\-M\-A\-S\-S\-E\-S}\label{index_recv_masses}
 The engine sends the driver the mass of each of the atom types.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  $<$N\+T\+Y\+P\+ES } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of type index (see the {\ttfamily $<$T\+Y\+P\+ES} command)
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  $<$N\-T\-Y\-P\-E\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of type index (see the {\ttfamily $<$T\-Y\-P\-E\-S} command)
 \end{DoxyParagraph}
-\hypertarget{index_md_init}{}\doxysubsubsection{M\+D\+\_\+\+I\+N\+IT}\label{index_md_init}
-The engine performs any initialization operations that are necessary before an MD simulation can be time propagated through the use of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\+N\+E\+R\+GY} command.
+\hypertarget{index_md_init}{}\subsubsection{M\-D\-\_\-\-I\-N\-I\-T}\label{index_md_init}
+The engine performs any initialization operations that are necessary before an M\-D simulation can be time propagated through the use of the {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} command. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\-N\-E\-R\-G\-Y} command.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
+{\bfseries  Note\-: } This command may change the engine's atomic coordinates under certain circumstances, such as if the S\-H\-A\-K\-E algorithm is used.
 \end{DoxyParagraph}
-\hypertarget{index_send_name}{}\doxysubsubsection{$<$\+N\+A\+ME}\label{index_send_name}
-The engine sends the driver a string that corresponds to the argument of {\ttfamily -\/name} in the M\+DI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular Q\+M/\+MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being \char`\"{}\+M\+M\char`\"{} and the expected name of the QM code being \char`\"{}\+Q\+M\char`\"{}. After initializing M\+DI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
+\hypertarget{index_send_name}{}\subsubsection{$<$\-N\-A\-M\-E}\label{index_send_name}
+The engine sends the driver a string that corresponds to the argument of {\ttfamily -\/name} in the M\-D\-I initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular Q\-M/\-M\-M driver might require a connection with a single M\-M code and a single Q\-M code, with the expected name of the M\-M code being \char`\"{}\-M\-M\char`\"{} and the expected name of the Q\-M code being \char`\"{}\-Q\-M\char`\"{}. After initializing M\-D\-I and accepting communicators to the engines, the driver can use this command to identify which of the engines is the M\-M code and which is the Q\-M code.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+C\+H\+AR ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH }
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-C\-H\-A\-R \par
+ {\bfseries  Quantity\-: } {\ttfamily  M\-D\-I\-\_\-\-N\-A\-M\-E\-\_\-\-L\-E\-N\-G\-T\-H }
 \end{DoxyParagraph}
-\hypertarget{index_recv_natoms}{}\doxysubsubsection{$<$\+N\+A\+T\+O\+MS}\label{index_recv_natoms}
-The engine sends the driver the number of atoms in the engine\textquotesingle{}s system.
+\hypertarget{index_recv_natoms}{}\subsubsection{$<$\-N\-A\-T\-O\-M\-S}\label{index_recv_natoms}
+The engine sends the driver the number of atoms in the engine's system.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+I\+NT ~\newline
- {\bfseries{ Quantity\+: }} 1
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-I\-N\-T \par
+ {\bfseries  Quantity\-: } 1
 \end{DoxyParagraph}
-\hypertarget{index_recv_types}{}\doxysubsubsection{$<$\+N\+T\+Y\+P\+ES}\label{index_recv_types}
-The engine sends the driver the number of different types of atoms (e.\+g. \char`\"{}\+H\char`\"{}, \char`\"{}\+He\char`\"{}, \char`\"{}\+C\char`\"{}, \char`\"{}\+O\char`\"{}, etc.) in the engine\textquotesingle{}s system.
+\hypertarget{index_recv_types}{}\subsubsection{$<$\-N\-T\-Y\-P\-E\-S}\label{index_recv_types}
+The engine sends the driver the number of different types of atoms (e.\-g. \char`\"{}\-H\char`\"{}, \char`\"{}\-He\char`\"{}, \char`\"{}\-C\char`\"{}, \char`\"{}\-O\char`\"{}, etc.) in the engine's system.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+I\+NT ~\newline
- {\bfseries{ Quantity\+: }} 1
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-I\-N\-T \par
+ {\bfseries  Quantity\-: } 1
 \end{DoxyParagraph}
-\hypertarget{index_send_preforces}{}\doxysubsubsection{$>$\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{index_send_preforces}
+\hypertarget{index_send_preforces}{}\subsubsection{$>$\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_send_preforces}
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after calculation of all forces except those related to constraint algorithms (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.) and prior to application of any constraint algorithms
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order \par
+ {\bfseries  Injection\-: } In response to the {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} command, after calculation of all forces except those related to constraint algorithms (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.) and prior to application of any constraint algorithms
 \end{DoxyParagraph}
-\hypertarget{index_send_add_preforces}{}\doxysubsubsection{$>$+\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{index_send_add_preforces}
+\hypertarget{index_send_add_preforces}{}\subsubsection{$>$+\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_send_add_preforces}
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after calculation of all forces except those related to constraint algorithms (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.) and prior to application of any constraint algorithms
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order \par
+ {\bfseries  Injection\-: } In response to the {\ttfamily A\-T\-O\-M\-\_\-\-S\-T\-E\-P} command, after calculation of all forces except those related to constraint algorithms (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.) and prior to application of any constraint algorithms
 \end{DoxyParagraph}
-\hypertarget{index_recv_preforces}{}\doxysubsubsection{$<$\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{index_recv_preforces}
-The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions except those associated with any constraint algorithm (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.).
+\hypertarget{index_recv_preforces}{}\subsubsection{$<$\-P\-R\-E-\/\-F\-O\-R\-C\-E\-S}\label{index_recv_preforces}
+The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions except those associated with any constraint algorithm (e.\-g. S\-H\-A\-K\-E, R\-A\-T\-T\-L\-E, etc.).
 
 \begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
+{\bfseries  Data Type\-: } M\-D\-I\-\_\-\-D\-O\-U\-B\-L\-E \par
+ {\bfseries  Quantity\-: } {\ttfamily  3 $\ast$ $<$N\-A\-T\-O\-M\-S } \par
+ {\bfseries  Format\-: } Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
 \end{DoxyParagraph}
-\hypertarget{index_scf_command}{}\doxysubsubsection{S\+CF}\label{index_scf_command}
-The engine performs a full self-\/consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command. 
+\hypertarget{index_scf_command}{}\subsubsection{S\-C\-F}\label{index_scf_command}
+The engine performs a full self-\/consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the {\ttfamily $<$E\-N\-E\-R\-G\-Y} command. 
