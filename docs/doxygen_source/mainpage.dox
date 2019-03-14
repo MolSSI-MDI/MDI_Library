@@ -8,7 +8,7 @@ The MolSSI Driver Interface (MDI) library enables codes to interoperate via the 
 
 \section source_sec Source Code
 
-The source code of the MDI library is available at GitHub at https://github.com/MolSSI/molssi_driver_interface
+The source code of the MDI library is available at GitHub at https://github.com/MolSSI/MDI_Library
 
 \section commands_sec MDI Standard
 
