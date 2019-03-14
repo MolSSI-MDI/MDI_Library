@@ -9,7 +9,8 @@ matrix:
       compiler: gcc
     - os: osx
       before_install:
-        - conda install gcc
+        - brew install gcc > /dev/null
+        - export FC=gfortran
       compiler: gcc
 
 install:
