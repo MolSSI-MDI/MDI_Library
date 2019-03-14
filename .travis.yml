@@ -1,22 +1,27 @@
 language: c
 sudo: required
 
+compiler:
+  - gcc
+  - clang
+
 matrix:
   include:
     - os: linux
       before_install:
         - sudo apt-get install gfortran
-      compiler: gcc
     - os: linux
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install mpich2
-      compiler: gcc
+    - os: linux
+      before_install:
+        - sudo apt-get install gfortran
+        - sudo apt-get install openmpi-bin
     - os: osx
       before_install:
         - brew install gcc > /dev/null
         - export FC=gfortran
-      compiler: gcc
 
 install:
   - mkdir build
