@@ -5,6 +5,9 @@ os:
   - linux
 packages:
   - g++-4.9
+  - g++-5
+  - g++-6
+  - g++-7
 
 before_install:
   - sudo apt-get install gfortran
