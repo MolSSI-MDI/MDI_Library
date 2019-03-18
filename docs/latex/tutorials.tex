@@ -1,0 +1,288 @@
+\hypertarget{tutorials_aimd_tutorial}{}\doxysection{A\+I\+M\+D Driver Tutorial}\label{tutorials_aimd_tutorial}
+In this tutorial, we will set up a simple driver for running {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulations. We will use a quantum chemistry (QM) code to compute the forces, while using a molecular mechanics (MM) code to propagate the atomic coordinates each time step.\hypertarget{tutorials_requirements_sec}{}\doxysubsection{Creating a New Project}\label{tutorials_requirements_sec}
+The easiest way to start work on a new driver is to use the M\+DI Driver Cookiecutter, which will automatically do most of the preparatory work for you. Using the cookiecutter will require that you have Python and Cookiecutter on your machine. If you do not already have Python installed, follow the directions on the \href{https://www.python.org/}{\texttt{ Python Website}} and install both Python and the {\ttfamily pip} installer tool. To install Cookiecutter, type\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip install cookiecutter}
+\end{DoxyCode}
+
+
+If you are running on an external machine and do not have write permission to the system directories, you may need to add the {\ttfamily --user} option\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip install -\/-\/user cookiecutter}
+\end{DoxyCode}
+
+
+Now use Cookiecutter to create a new driver project\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cookiecutter git@github.com:MolSSI/MDI\_Driver\_Cookiecutter.git}
+\end{DoxyCode}
+
+
+When prompted for the {\ttfamily repo\+\_\+name}, type {\ttfamily aimd}. This will create a new directory called {\ttfamily aimd} and populate it with some of the things you will need for the driver, including a copy of the M\+DI Library. The overall directory structure is\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{.}
+\DoxyCodeLine{└── aimd}
+\DoxyCodeLine{    ├── CMakeLists.txt}
+\DoxyCodeLine{    ├── aimd}
+\DoxyCodeLine{    │   ├── CMakeLists.txt}
+\DoxyCodeLine{    │   ├── STUBS\_MPI}
+\DoxyCodeLine{    │   │   └── mpi.h}
+\DoxyCodeLine{    │   └── aimd.cpp}
+\DoxyCodeLine{    └── lib}
+\DoxyCodeLine{        └── mdi}
+\DoxyCodeLine{            ...}
+\end{DoxyCode}
+\hypertarget{tutorials_writing_sec}{}\doxysubsection{Writing the Driver}\label{tutorials_writing_sec}
+Open the file called {\ttfamily aimd.\+cpp}. It contains the following code\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <mpi.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <string.h>}}
+\DoxyCodeLine{\textcolor{keyword}{extern} \textcolor{stringliteral}{"C"} \{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "mdi.h"}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} **argv) \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Initialize the MPI environment}}
+\DoxyCodeLine{  MPI\_Comm world\_comm;}
+\DoxyCodeLine{  MPI\_Init(\&argc, \&argv);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Ensure the mdi argument has been provided }}
+\DoxyCodeLine{  \textcolor{comment}{// NOTE: Assumes that -\/mdi is the first option provided}}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} iarg = 1;}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( !( argc-\/iarg >= 2 \&\& strcmp(argv[iarg],\textcolor{stringliteral}{"-\/mdi"}) == 0) ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"The -\/mdi argument was not provided."});}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Initialize the MDI library}}
+\DoxyCodeLine{  world\_comm = MPI\_COMM\_WORLD;}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} ret = MDI\_Init(argv[iarg+1], \&world\_comm);}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( ret != 0 ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"The MDI library was not initialized correctly."});}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Connect to the engines}}
+\DoxyCodeLine{  \textcolor{comment}{// <YOUR CODE GOES HERE>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Perform the simulation}}
+\DoxyCodeLine{  \textcolor{comment}{// <YOUR CODE GOES HERE>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Send the "EXIT" command to each of the engines}}
+\DoxyCodeLine{  \textcolor{comment}{// <YOUR CODE GOES HERE>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Synchronize all MPI ranks}}
+\DoxyCodeLine{  MPI\_Barrier(world\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The first few lines of code simply initialize both M\+PI and and M\+DI. Don\textquotesingle{}t worry if you don\textquotesingle{}t have access to an M\+PI library -\/ the code will just fall back to a set of dummy M\+PI functions provided in {\ttfamily S\+T\+U\+B\+S\+\_\+\+M\+PI}. The code also checks for a {\ttfamily -\/mdi} command line argument, which is used in the call to {\ttfamily M\+D\+I\+\_\+\+Init}.
+
+After initializing M\+DI, we need to connect the driver to its engines. For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep. In the M\+DI standard, engines request a connection to a driver. The driver simply calls the {\ttfamily M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()} function to accept the connection, like this\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MDI\_Comm comm = MDI\_Accept\_Communicator();}
+\end{DoxyCode}
+
+
+The return value of {\ttfamily M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator} is an M\+DI communicator, which functions very similarly to an M\+PI communicator and is used in certain M\+DI function calls to identify which engine is expected to send/receive data to/from the driver. Our A\+I\+MD driver will connect to two different engines, so we will be calling {\ttfamily M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()} twice. We don\textquotesingle{}t know the order in which the engines will request a connection to the driver, so we will need some way to determine which engine is the QM code and which engine is the MM code.
+
+This can be accomplished through the use of the "{\ttfamily $<$N\+A\+ME"} command. The entire M\+DI standard is built around the idea that drivers can send \char`\"{}commands\char`\"{} to engines, each of which is defined by the M\+DI standard and has a specific outcome. The "{\ttfamily $<$N\+A\+ME"} command tells the engine to send the driver a string of length {\ttfamily M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH} that identifies the engine. The user indicates the name of each engine at runtime, using a command line argument that will be described later in \mbox{\hyperlink{tutorials_running_sec}{Using the Driver}}. As authors of a driver, we will need to decide what we expect any drivers to be named and clearly document that decision for any users. For the purpose of this tutorial, we will expect the quantum mechanics code to be called \char`\"{}\+Q\+M\char`\"{} and the molecular mechanics code to be named \char`\"{}\+M\+M\char`\"{}.
+
+Sending the "{\ttfamily $<$N\+A\+ME"} command to an engine and then receiving the engine\textquotesingle{}s name can be done as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{char}* code\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[MDI\_NAME\_LENGTH];}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"<NAME"}, comm);}
+\DoxyCodeLine{MDI\_Recv(code\_name, MDI\_NAME\_LENGTH, MDI\_CHAR, comm);}
+\end{DoxyCode}
+
+
+The following code accepts connections from two engines and assigns the communicator from the engine named \char`\"{}\+M\+M\char`\"{} to {\ttfamily mm\+\_\+comm} and assigns the communicator from the engine named \char`\"{}\+Q\+M\char`\"{} to {\ttfamily qm\+\_\+comm}. Place it immediately after the comment that reads "{\ttfamily Connect to the engines}".
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Connect to the engines}}
+\DoxyCodeLine{MDI\_Comm mm\_comm = MDI\_NULL\_COMM;}
+\DoxyCodeLine{MDI\_Comm qm\_comm = MDI\_NULL\_COMM;}
+\DoxyCodeLine{\textcolor{keywordtype}{int} nengines = 2;}
+\DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} iengine=0; iengine < nengines; iengine++) \{}
+\DoxyCodeLine{  MDI\_Comm comm = MDI\_Accept\_Communicator();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Determine the name of this engine}}
+\DoxyCodeLine{  \textcolor{keywordtype}{char}* engine\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[MDI\_NAME\_LENGTH];}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"<NAME"}, comm);}
+\DoxyCodeLine{  MDI\_Recv(engine\_name, MDI\_NAME\_LENGTH, MDI\_CHAR, comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  cout << \textcolor{stringliteral}{"Engine name: "} << engine\_name << endl;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"MM"}) == 0 ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != MDI\_NULL\_COMM ) \{}
+\DoxyCodeLine{      \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Accepted a communicator from a second MM engine."});}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    mm\_comm = comm;}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{  \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"QM"}) == 0 ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != MDI\_NULL\_COMM ) \{}
+\DoxyCodeLine{      \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Accepted a communicator from a second QM engine."});}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    qm\_comm = comm;}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{  \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Unrecognized engine name."});}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{keyword}{delete}[] engine\_name;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+We are now ready to use M\+DI to orchestrate an A\+I\+MD simulation. In broad terms, during each dynamics iteration we will send a set of atomic coordinates from the MM engine to the QM engine, order the QM system to compute the atomic forces, send those forces to the MM engine, and order the MM engine to perform a time step.
+
+Keep in mind that the driver doesn\textquotesingle{}t know anything about the simulated system beyond what it can query by sending M\+DI commands. M\+DI engines initialize basic information about the system using whatever input file format the engine\textquotesingle{}s developer chose. In particular, when run as engines L\+A\+M\+M\+PS and QE will read normal input files for L\+A\+M\+M\+PS and QE, respectively, initialize their system, and then request a connection to the driver. The driver can request information about the engine\textquotesingle{}s system by sending certain M\+DI commands. For example, to determine the number of atoms in the MM engine\textquotesingle{}s system, you could do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Receive the number of atoms from the MM engine}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} natoms;}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"<NATOMS"}, mm\_comm);}
+\DoxyCodeLine{MDI\_Recv(\&natoms, 1, MDI\_INT, mm\_comm);}
+\end{DoxyCode}
+
+
+Similarly, to learn the coordinates of the atoms in the MM engine\textquotesingle{}s system, you could do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Receive the coordinates from the MM engine}}
+\DoxyCodeLine{\textcolor{keywordtype}{double} coords[3*natoms];}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"<COORDS"}, mm\_comm);}
+\DoxyCodeLine{MDI\_Recv(\&coords, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\end{DoxyCode}
+
+
+You could then update the coordinates of the QM engine\textquotesingle{}s system\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Send the coordinates to the QM engine}}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{">COORDS"}, qm\_comm);}
+\DoxyCodeLine{MDI\_Send(\&coords, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\end{DoxyCode}
+
+
+\begin{DoxyNote}{Note}
+As we will discuss later in \mbox{\hyperlink{tutorials_running_sec}{Using the Driver}}, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.
+\end{DoxyNote}
+The following code will handle all of the work associated with driving an A\+I\+MD simulation. Place it immediately after the comment that reads "{\ttfamily Perform the simulation}".
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Perform the simulation}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} niterations = 10;  \textcolor{comment}{// Number of MD iterations}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} natoms;}
+\DoxyCodeLine{\textcolor{keywordtype}{double} qm\_energy;}
+\DoxyCodeLine{\textcolor{keywordtype}{double} mm\_energy;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// Receive the number of atoms from the MM engine}}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"<NATOMS"}, mm\_comm);}
+\DoxyCodeLine{MDI\_Recv(\&natoms, 1, MDI\_INT, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// Allocate the arrays for the coordinates and forces}}
+\DoxyCodeLine{\textcolor{keywordtype}{double} coords[3*natoms];}
+\DoxyCodeLine{\textcolor{keywordtype}{double} forces[3*natoms];}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// Have the MD engine initialize a new MD simulation}}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"MD\_INIT"}, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// Perform each iteration of the simulation}}
+\DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} iiteration = 0; iiteration < niterations; iiteration++) \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Receive the coordinates from the MM engine}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"<COORDS"}, mm\_comm);}
+\DoxyCodeLine{  MDI\_Recv(\&coords, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Send the coordinates to the QM engine}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{">COORDS"}, qm\_comm);}
+\DoxyCodeLine{  MDI\_Send(\&coords, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Have the QM engine perform an SCF calculation}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"SCF"}, qm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Get the QM energy}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"<ENERGY"}, qm\_comm);}
+\DoxyCodeLine{  MDI\_Recv(\&qm\_energy, 1, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Get the MM energy}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"<ENERGY"}, mm\_comm);}
+\DoxyCodeLine{  MDI\_Recv(\&mm\_energy, 1, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Receive the forces from the QM engine}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"<PRE-\/FORCES"}, qm\_comm);}
+\DoxyCodeLine{  MDI\_Recv(\&forces, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Send the forces to the MM engine}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{">PRE-\/FORCES"}, mm\_comm);}
+\DoxyCodeLine{  MDI\_Send(\&forces, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Do an MD timestep}}
+\DoxyCodeLine{  MDI\_Send\_Command(\textcolor{stringliteral}{"ATOM\_STEP"}, mm\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  cout << \textcolor{stringliteral}{"timestep: "} << iiteration << \textcolor{stringliteral}{" "} << mm\_energy << endl;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The above code does the following\+:
+\begin{DoxyEnumerate}
+\item Queries the number of atoms from the MM engine and allocates appropriately sized arrays for the coordinates and forces
+\item Orders the MM engine to initialize a new MD simulation
+\item Begins an iterative loop over MD iterations
+\begin{DoxyEnumerate}
+\item Receives the atomic coordinates from the MM engine and updates the QM engine with them
+\item Orders the QM engine to relax the electronic distribution of its system
+\item Receives the energy of the QM and MM systems
+\item Receives the atomic forces from the QM engine and sends them to the MM engine
+\item Orders the MM engine update the atomic coordinates
+\end{DoxyEnumerate}
+\end{DoxyEnumerate}
+
+Finally, we should send an M\+DI command to cause the engines to exit. Add the following immediately after the comment that reads "{\ttfamily Send the \char`\"{}\+E\+X\+I\+T\char`\"{} command to each of the engines}"\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// Send the "EXIT" command to each of the engines}}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"EXIT"}, mm\_comm);}
+\DoxyCodeLine{MDI\_Send\_Command(\textcolor{stringliteral}{"EXIT"}, qm\_comm);}
+\end{DoxyCode}
+\hypertarget{tutorials_compile_sec}{}\doxysubsection{Driver Compilation}\label{tutorials_compile_sec}
+The cookiecutter came with everything you need to build with C\+Make. To compile, simply navigate to the directory where you want the driver to be built, then do the following, replacing "$<${\ttfamily driver\+\_\+top\+\_\+directory$>$"} with the path to top directory of your driver repository.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake <driver\_top\_directory>}
+\DoxyCodeLine{make}
+\end{DoxyCode}
+\hypertarget{tutorials_engine_sec}{}\doxysubsection{Engine Compilation}\label{tutorials_engine_sec}
+You are now the proud owner of an M\+DI driver, but without a QM engine and an MM engine your driver can\textquotesingle{}t actually do anything. We will now install the L\+A\+M\+M\+PS and QE codes, which can be used as M\+DI engines.\hypertarget{tutorials_running_sec}{}\doxysubsection{Using the Driver}\label{tutorials_running_sec}
+We will now run an A\+I\+MD simulation with the driver.\hypertarget{tutorials_final_notes}{}\doxysubsection{Final Notes}\label{tutorials_final_notes}
+Note that although we used QE as the QM code and L\+A\+M\+M\+PS as the MM code, we swap out QE for any QM engine with M\+DI support or L\+A\+M\+M\+PS for any MM engine with M\+DI support. Furthermore, nothing about our A\+I\+MD driver strictly requires that the code named \char`\"{}\+Q\+M\char`\"{} actually corresponds to a quantum mechanics code. You could, for example, use L\+A\+M\+M\+PS as the QM code, while another instance of L\+A\+M\+M\+PS serves as the MM code. This would look like\+:
+
+The above script allows you to run a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of L\+A\+M\+M\+PS. Although not generally useful for production runs, this can be a good way to benchmark the cost of the computational overhead introduced by using our driver as a middleman between two codes.
+
+In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code. The only requirement on the engines is that the \char`\"{}\+Q\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+Q\+M\char`\"{} engine, and that the \char`\"{}\+M\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+M\+M\char`\"{} engine. 
