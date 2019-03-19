@@ -53,3 +53,6 @@ dkms.conf
 
 # Emacs temporary files
 *~
+
+# MacOS
+.DS_Store
