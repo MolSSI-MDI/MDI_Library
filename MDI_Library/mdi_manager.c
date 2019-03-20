@@ -16,6 +16,9 @@
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
 static int returned_comms = 0;
 
+//name of the driver/engine
+static char* name;
+
 int manager_init(const char* options, void* world_comm) {
   returned_comms = 0;
   vector_init(&communicators, sizeof(communicator));
@@ -28,7 +31,7 @@ int manager_init(const char* options, void* world_comm) {
   // values acquired from the input options
   char* role;
   char* method;
-  char* name;
+  name = malloc(MDI_NAME_LENGTH+1);
   char* hostname;
   int port;
   char* language = ((char*)"");
@@ -61,7 +64,6 @@ int manager_init(const char* options, void* world_comm) {
 
   // calculate argv
   char* argv[argc];
-  //char** argv = new char*[argc];
   argv_line = strdup(options);
   token = strtok(argv_line, " ");
   for (i=0; i<argc; i++) {
@@ -96,7 +98,10 @@ int manager_init(const char* options, void* world_comm) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -name option");
       }
-      name = argv[iarg+1];
+      if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
+	mdi_error("Name argument length exceeds MDI_NAME_LENGTH");
+      }
+      strcpy(name, argv[iarg+1]);
       has_name = 1;
       iarg += 2;
     }
@@ -241,8 +246,6 @@ int manager_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     mdi_error("Called MDI_Send with incorrect rank");
   }
 
-  //Communicator* send_comm = communicators[comm-1];
-  //send_comm->send(buf, count, datatype);
   communicator_send(buf, count, datatype, comm);
 
   return 0;
@@ -254,8 +257,6 @@ int manager_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     mdi_error("Called MDI_Recv with incorrect rank");
   }
 
-  //Communicator* recv_comm = communicators[comm-1];
-  //recv_comm->recv(buf, count, datatype);
   communicator_recv(buf, count, datatype, comm);
 
   return 0;
@@ -268,11 +269,9 @@ int manager_send_command(const char* buf, MDI_Comm comm) {
   }
   int count = MDI_COMMAND_LENGTH;
   char command[MDI_COMMAND_LENGTH];
-  //char* command = new char[MDI_COMMAND_LENGTH];
 
   strcpy(command, buf);
   int ret = manager_send( command, count, MDI_CHAR, comm );
-  //delete[] command;
   return ret;
 }
 
@@ -284,5 +283,14 @@ int manager_recv_command(char* buf, MDI_Comm comm) {
   int count = MDI_COMMAND_LENGTH;
   int datatype = MDI_CHAR;
 
-  return manager_recv( buf, count, datatype, comm );
+  //return manager_recv( buf, count, datatype, comm );
+  int ret = manager_recv( buf, count, datatype, comm );
+
+  // check if this command corresponds to one of MDI's standard built-in commands
+  if ( strcmp( buf, "<NAME" ) == 0 ) {
+    MDI_Send(name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+    return manager_recv_command(buf, comm);
+  }
+
+  return ret;
 }
