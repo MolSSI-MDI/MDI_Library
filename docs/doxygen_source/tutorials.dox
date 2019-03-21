@@ -1,8 +1,174 @@
 /** \page tutorials Tutorials
 
-\section aimd_tutorial AIMD Driver Tutorial
+\section user_tutorial User Tutorial
 
-In this tutorial, we will set up a simple driver for running <em> Ab Initio </em> Molecular Dynamics (AIMD) simulations.
+In this tutorial we will use an MDI driver to perform a simple <em> Ab Initio </em> Molecular Dynamics (AIMD) simulation, using Quantum ESPRESSO (QE) to calculate forces and LAMMPS to update the atomic coordinates each time step.
+
+\subsection qe_compile Compiling QE
+
+We will now download and compile a fork of QE that is capable of running as an MDI engine.  To download an MDI-capable fork of QE, do:
+
+\code
+git clone --branch mdi git@github.com:MolSSI/q-e.git
+\endcode
+
+You may now compile the code in the normal manner.
+For example:
+
+\code
+cd q-e
+./configure
+make pw
+\endcode
+
+\subsection lammps_compile Compiling LAMMPS
+
+We will now download and compile a fork of LAMMPS that is capable of running as an MDI engine.
+To download an MDI-capable fork of LAMMPS, do:
+
+\code
+git clone --branch mdi git@github.com:MolSSI/lammps.git
+\endcode
+
+Compile the repository's internal MDI distribution by doing:
+
+\code
+cd lammps/lib/mdi
+python Install.py -m gcc
+\endcode
+
+Then activate the \c USER-MDI package:
+
+\code
+cd ../../src
+make yes-user-mdi
+\endcode
+
+From this point, you can compile LAMMPS however you normally would.
+For example, on a machine that does not have MPI or FFTW libraries installed and is running the Mac OS, you could first edit \c lammps/src/MAKE/MACHINES/Makefile.mac to set the \"<c>FFT_INC =       -DFFT_FFTW2</c>\" and \"<c>FFT_LIB =       -lfftw</c>\" lines to \"<c>FFT_INC = </c>\" and \"<c>FFT_LIB = </c>\", respectively.
+Then do:
+
+\code
+make yes-standard
+make no-gpu
+make no-kim
+make no-kokkos
+make no-latte
+make no-meam
+make no-mscg
+make no-poems
+make no-python
+make no-voronoi
+make no-mpiio
+make no-reax
+make mpi-stubs
+make mac
+\endcode
+
+\subsection driver_compile Compiling the AIMD Driver
+
+The MDI Standard supports the creation of many different types of drivers for a broad variety of applications.
+For this tutorial, we will download a simple AIMD driver:
+
+\code
+git clone git@github.com:MolSSI/MDI_AIMD_Driver.git
+\endcode
+
+First, navigate to the directory where you want the driver to be compiled.
+For this tutorial, we will do:
+
+\code
+mkdir MDI_AIMD_Driver/build
+cd MDI_AIMD_Driver/build
+\endcode
+
+Then compile using CMake:
+
+\code
+cmake ..
+make
+\endcode
+
+\subsection user_run Running the Simulation
+
+We will now run a simple AIMD simulation.
+
+In \c MDI_AIMD_Driver/tests/locations there are three single-line text files, each of which is intended to indicate the location of one of the codes you installed above.
+Edit each of them so that they provide the absolute path to the corresponding code's executable.
+
+There is a simple test calculation in \c MDI_AIMD_Driver/tests/water.
+Within this directory, the \c data subdirectory contains standard input files for LAMMPS and QE.
+The input files correspond to a small water box of 8 water molecule.
+They are exactly like any non-MDI input files for their respective codes, except for \c data/lammps.in.
+Near the end of \c data/lammps.in is an mdi fix, followed by an mdi command:
+
+\code
+fix             1 all mdi
+...
+mdi
+\endcode
+
+These two lines are required in any LAMMPS input file that is intended to be used in conjuction with MDI.
+The mdi fix allows LAMMPS to communicate with the driver at the appropriate points throughout the simulation, while the mdi LAMMPS command indicates the point when LAMMPS begins listening for MDI commands from the driver.
+
+There are two scripts associated with the water test: \c tcp.sh and \mpi.sh.
+The \c tcp.sh script will run the simulation using the TCP/IP method for communicating between the driver and the engines.
+It consists of the following code:
+
+\code
+#location of required codes
+DRIVER_LOC=$(cat ../locations/MDI_AIMD_Driver)
+LAMMPS_LOC=$(cat ../locations/LAMMPS)
+QE_LOC=$(cat ../locations/QE)
+
+#remove old files
+if [ -d work ]; then
+  rm -r work
+fi
+
+#create work directory
+cp -r data work
+cd work
+
+cd work
+${QE_LOC} -mdi "-role ENGINE -name QM -method TCP -port 8021 -hostname localhost" -in qe.in > qe.out &
+
+#launch LAMMPS
+${LAMMPS_LOC} -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" -in lammps.in > lammps.out &
+
+#launch driver
+${DRIVER_LOC} -mdi "-role DRIVER -name driver -method TCP -port 8021" &
+
+wait
+\endcode
+
+The first few lines simply read the location of the codes from the files in MDI_AIMD_Driver/tests/locations and copy the LAMMPS and QE input files into a subdirectory called \c work.
+Then the script launches QE.
+The QE launch command is exactly the same as a normal run of QE, except for the addition of a \c -mdi option.
+All MDI engines and drivers require the presence of this option, which provides information to the MDI Library regarding how the codes will communicate with one another.
+Its argument is a string, which itself provides a series of options that are read by the MDI Library.
+In this case, it provides the following options:
+
+  - role: Either \c ENGINE or \c DRIVER.
+  - name: Identification of the purpose of this engine.  Each MDI driver will expect its engines to be named according to a particular standard.  The MDI_AIMD_Driver engine expects one of the engines to be named "QM" and the other to be named "MM".
+  - method: The communication method used to transfer information between the driver and the engines.
+  - port: The port number that the driver will be listening over.  Only used if the method is \c TCP.
+  - hostname: The host name of the driver.  Only used by engines and if the method is \c TCP.
+
+Note the presence of an ampersand ("&") at the end of each run command, which causes the codes to run in the background.
+Without doing this, the script would launch QE and would wait until QE terminated before ever launching LAMMPS and the driver, leading to an indefinite hang.
+Finally, the wait command at the end ensures that the driver and the engines are permitted to terminate before the script terminates.
+
+You can now execute the \c tcp.sh script, which should print out the energies of LAMMPS and QE for several timesteps of a short AIMD simulation.
+
+If you compiled everything (QE, LAMMPS, MDI_AIMD_Driver, and the internal copies of the MDI Library) with MPI, you can also execute the \c mpi.sh script, which will run the same simulation using MPI for the inter-code communication.
+All of the output from this run can be found in \c work/qe.out.
+
+\section aimd_tutorial Driver Development Tutorial
+
+Please complete the \ref user_tutorial before starting this tutorial.
+
+In this tutorial we will set up a simple driver for running <em> Ab Initio </em> Molecular Dynamics (AIMD) simulations.
 We will use a quantum chemistry (QM) code to compute the forces, while using a molecular mechanics (MM) code to propagate the atomic coordinates each time step.
 
 \subsection requirements_sec Creating a New Project
@@ -116,7 +282,7 @@ We don't know the order in which the engines will request a connection to the dr
 This can be accomplished through the use of the \"\c <NAME\" command.
 The entire MDI standard is built around the idea that drivers can send "commands" to engines, each of which is defined by the MDI standard and has a specific outcome.
 The \"\c <NAME\" command tells the engine to send the driver a string of length \c MDI_NAME_LENGTH that identifies the engine.
-The user indicates the name of each engine at runtime, using a command line argument that will be described later in \ref running_sec.
+The user indicates the name of each engine at runtime, using the \c -name command line argument that was described in the \ref user_tutorial.
 As authors of a driver, we will need to decide what we expect any drivers to be named and clearly document that decision for any users.
 For the purpose of this tutorial, we will expect the quantum mechanics code to be called "QM" and the molecular mechanics code to be named "MM".
 
@@ -292,14 +458,14 @@ cmake <driver_top_directory>
 make
 \endcode
 
-\subsection engine_sec Engine Compilation
-
-You are now the proud owner of an MDI driver, but without a QM engine and an MM engine your driver can't actually do anything.
-We will now install the LAMMPS and QE codes, which can be used as MDI engines.
-
 \subsection running_sec Using the Driver
 
-We will now run an AIMD simulation with the driver.
+To test the driver, you will need access to a QM engine and an MM engine.
+The \ref user_tutorial describes how to compile QE and LAMMPS for this purpose.
+
+You will also need to appropriate input files for a test simulation.
+The test files in the MDI_AIMD_Driver repository (see the \ref user_tutorial) will work fine, as will the scripts.
+You can simply edit MDI_AIMD_Driver/tests/locations/MDI_AIMD_Driver to point to your new repository and run the scripts in the manner described in the \ref user_tutorial.
 
 \subsection final_notes Final Notes
 
@@ -313,5 +479,6 @@ Although not generally useful for production runs, this can be a good way to ben
 
 In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code.
 The only requirement on the engines is that the "QM" code supports all of the MDI commands sent by the AIMD driver to the "QM" engine, and that the "MM" code supports all of the MDI commands sent by the AIMD driver to the "MM" engine.
+The "SCF" MDI command in your driver will not be supported by most MM engines, but by simply removing it you can run your driver with two MM engines.
 
 **/

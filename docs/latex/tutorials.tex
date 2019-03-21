@@ -1,5 +1,159 @@
-\hypertarget{tutorials_aimd_tutorial}{}\doxysection{A\+I\+M\+D Driver Tutorial}\label{tutorials_aimd_tutorial}
-In this tutorial, we will set up a simple driver for running {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulations. We will use a quantum chemistry (QM) code to compute the forces, while using a molecular mechanics (MM) code to propagate the atomic coordinates each time step.\hypertarget{tutorials_requirements_sec}{}\doxysubsection{Creating a New Project}\label{tutorials_requirements_sec}
+\hypertarget{tutorials_user_tutorial}{}\doxysection{User Tutorial}\label{tutorials_user_tutorial}
+In this tutorial we will use an M\+DI driver to perform a simple {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulation, using Quantum E\+S\+P\+R\+E\+S\+SO (QE) to calculate forces and L\+A\+M\+M\+PS to update the atomic coordinates each time step.\hypertarget{tutorials_qe_compile}{}\doxysubsection{Compiling QE}\label{tutorials_qe_compile}
+We will now download and compile a fork of QE that is capable of running as an M\+DI engine. To download an M\+D\+I-\/capable fork of QE, do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone -\/-\/branch mdi git@github.com:MolSSI/q-\/e.git}
+\end{DoxyCode}
+
+
+You may now compile the code in the normal manner. For example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd q-\/e}
+\DoxyCodeLine{./configure}
+\DoxyCodeLine{make pw}
+\end{DoxyCode}
+\hypertarget{tutorials_lammps_compile}{}\doxysubsection{Compiling L\+A\+M\+M\+PS}\label{tutorials_lammps_compile}
+We will now download and compile a fork of L\+A\+M\+M\+PS that is capable of running as an M\+DI engine. To download an M\+D\+I-\/capable fork of L\+A\+M\+M\+PS, do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone -\/-\/branch mdi git@github.com:MolSSI/lammps.git}
+\end{DoxyCode}
+
+
+Compile the repository\textquotesingle{}s internal M\+DI distribution by doing\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd lammps/lib/mdi}
+\DoxyCodeLine{python Install.py -\/m gcc}
+\end{DoxyCode}
+
+
+Then activate the {\ttfamily U\+S\+E\+R-\/\+M\+DI} package\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd ../../src}
+\DoxyCodeLine{make yes-\/user-\/mdi}
+\end{DoxyCode}
+
+
+From this point, you can compile L\+A\+M\+M\+PS however you normally would. For example, on a machine that does not have M\+PI or F\+F\+TW libraries installed and is running the Mac OS, you could first edit {\ttfamily lammps/src/\+M\+A\+K\+E/\+M\+A\+C\+H\+I\+N\+E\+S/\+Makefile.\+mac} to set the "{\ttfamily F\+F\+T\+\_\+\+I\+NC = -\/D\+F\+F\+T\+\_\+\+F\+F\+T\+W2}" and "{\ttfamily F\+F\+T\+\_\+\+L\+IB = -\/lfftw}" lines to "{\ttfamily F\+F\+T\+\_\+\+I\+NC = }" and "{\ttfamily F\+F\+T\+\_\+\+L\+IB = }", respectively. Then do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make yes-\/standard}
+\DoxyCodeLine{make no-\/gpu}
+\DoxyCodeLine{make no-\/kim}
+\DoxyCodeLine{make no-\/kokkos}
+\DoxyCodeLine{make no-\/latte}
+\DoxyCodeLine{make no-\/meam}
+\DoxyCodeLine{make no-\/mscg}
+\DoxyCodeLine{make no-\/poems}
+\DoxyCodeLine{make no-\/python}
+\DoxyCodeLine{make no-\/voronoi}
+\DoxyCodeLine{make no-\/mpiio}
+\DoxyCodeLine{make no-\/reax}
+\DoxyCodeLine{make mpi-\/stubs}
+\DoxyCodeLine{make mac}
+\end{DoxyCode}
+\hypertarget{tutorials_driver_compile}{}\doxysubsection{Compiling the A\+I\+M\+D Driver}\label{tutorials_driver_compile}
+The M\+DI Standard supports the creation of many different types of drivers for a broad variety of applications. For this tutorial, we will download a simple A\+I\+MD driver\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone git@github.com:MolSSI/MDI\_AIMD\_Driver.git}
+\end{DoxyCode}
+
+
+First, navigate to the directory where you want the driver to be compiled. For this tutorial, we will do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir MDI\_AIMD\_Driver/build}
+\DoxyCodeLine{cd MDI\_AIMD\_Driver/build}
+\end{DoxyCode}
+
+
+Then compile using C\+Make\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake ..}
+\DoxyCodeLine{make}
+\end{DoxyCode}
+\hypertarget{tutorials_user_run}{}\doxysubsection{Running the Simulation}\label{tutorials_user_run}
+We will now run a simple A\+I\+MD simulation.
+
+In {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/locations} there are three single-\/line text files, each of which is intended to indicate the location of one of the codes you installed above. Edit each of them so that they provide the absolute path to the corresponding code\textquotesingle{}s executable.
+
+There is a simple test calculation in {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/water}. Within this directory, the {\ttfamily data} subdirectory contains standard input files for L\+A\+M\+M\+PS and QE. The input files correspond to a small water box of 8 water molecule. They are exactly like any non-\/\+M\+DI input files for their respective codes, except for {\ttfamily data/lammps.\+in}. Near the end of {\ttfamily data/lammps.\+in} is an mdi fix, followed by an mdi command\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{fix             1 all mdi}
+\DoxyCodeLine{...}
+\DoxyCodeLine{mdi}
+\end{DoxyCode}
+
+
+These two lines are required in any L\+A\+M\+M\+PS input file that is intended to be used in conjuction with M\+DI. The mdi fix allows L\+A\+M\+M\+PS to communicate with the driver at the appropriate points throughout the simulation, while the mdi L\+A\+M\+M\+PS command indicates the point when L\+A\+M\+M\+PS begins listening for M\+DI commands from the driver.
+
+There are two scripts associated with the water test\+: {\ttfamily tcp.\+sh} and \textbackslash{}mpi.sh. The {\ttfamily tcp.\+sh} script will run the simulation using the T\+C\+P/\+IP method for communicating between the driver and the engines. It consists of the following code\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#location of required codes}}
+\DoxyCodeLine{DRIVER\_LOC=\$(cat ../locations/MDI\_AIMD\_Driver)}
+\DoxyCodeLine{LAMMPS\_LOC=\$(cat ../locations/LAMMPS)}
+\DoxyCodeLine{QE\_LOC=\$(cat ../locations/QE)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#remove old files}
+\DoxyCodeLine{\textcolor{keywordflow}{if} [ -\/d work ]; then}
+\DoxyCodeLine{  rm -\/r work}
+\DoxyCodeLine{fi}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#create work directory}}
+\DoxyCodeLine{cp -\/r data work}
+\DoxyCodeLine{cd work}
+\DoxyCodeLine{}
+\DoxyCodeLine{cd work}
+\DoxyCodeLine{\$\{QE\_LOC\} -\/mdi \textcolor{stringliteral}{"-\/role ENGINE -\/name QM -\/method TCP -\/port 8021 -\/hostname localhost"} -\/in qe.in > qe.out \&}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#launch LAMMPS}}
+\DoxyCodeLine{\$\{LAMMPS\_LOC\} -\/mdi \textcolor{stringliteral}{"-\/role ENGINE -\/name MM -\/method TCP -\/port 8021 -\/hostname localhost"} -\/in lammps.in > lammps.out \&}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#launch driver}}
+\DoxyCodeLine{\$\{DRIVER\_LOC\} -\/mdi \textcolor{stringliteral}{"-\/role DRIVER -\/name driver -\/method TCP -\/port 8021"} \&}
+\DoxyCodeLine{}
+\DoxyCodeLine{wait}
+\end{DoxyCode}
+
+
+The first few lines simply read the location of the codes from the files in M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/locations and copy the L\+A\+M\+M\+PS and QE input files into a subdirectory called {\ttfamily work}. Then the script launches QE. The QE launch command is exactly the same as a normal run of QE, except for the addition of a {\ttfamily -\/mdi} option. All M\+DI engines and drivers require the presence of this option, which provides information to the M\+DI Library regarding how the codes will communicate with one another. Its argument is a string, which itself provides a series of options that are read by the M\+DI Library. In this case, it provides the following options\+:
+
+
+\begin{DoxyItemize}
+\item role\+: Either {\ttfamily E\+N\+G\+I\+NE} or {\ttfamily D\+R\+I\+V\+ER}.
+\item name\+: Identification of the purpose of this engine. Each M\+DI driver will expect its engines to be named according to a particular standard. The M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver engine expects one of the engines to be named \char`\"{}\+Q\+M\char`\"{} and the other to be named \char`\"{}\+M\+M\char`\"{}.
+\item method\+: The communication method used to transfer information between the driver and the engines.
+\item port\+: The port number that the driver will be listening over. Only used if the method is {\ttfamily T\+CP}.
+\item hostname\+: The host name of the driver. Only used by engines and if the method is {\ttfamily T\+CP}.
+\end{DoxyItemize}
+
+Note the presence of an ampersand (\char`\"{}\&\char`\"{}) at the end of each run command, which causes the codes to run in the background. Without doing this, the script would launch QE and would wait until QE terminated before ever launching L\+A\+M\+M\+PS and the driver, leading to an indefinite hang. Finally, the wait command at the end ensures that the driver and the engines are permitted to terminate before the script terminates.
+
+You can now execute the {\ttfamily tcp.\+sh} script, which should print out the energies of L\+A\+M\+M\+PS and QE for several timesteps of a short A\+I\+MD simulation.
+
+If you compiled everything (QE, L\+A\+M\+M\+PS, M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver, and the internal copies of the M\+DI Library) with M\+PI, you can also execute the {\ttfamily mpi.\+sh} script, which will run the same simulation using M\+PI for the inter-\/code communication. All of the output from this run can be found in {\ttfamily work/qe.\+out}.\hypertarget{tutorials_aimd_tutorial}{}\doxysection{Driver Development Tutorial}\label{tutorials_aimd_tutorial}
+Please complete the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}} before starting this tutorial.
+
+In this tutorial we will set up a simple driver for running {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulations. We will use a quantum chemistry (QM) code to compute the forces, while using a molecular mechanics (MM) code to propagate the atomic coordinates each time step.\hypertarget{tutorials_requirements_sec}{}\doxysubsection{Creating a New Project}\label{tutorials_requirements_sec}
 The easiest way to start work on a new driver is to use the M\+DI Driver Cookiecutter, which will automatically do most of the preparatory work for you. Using the cookiecutter will require that you have Python and Cookiecutter on your machine. If you do not already have Python installed, follow the directions on the \href{https://www.python.org/}{\texttt{ Python Website}} and install both Python and the {\ttfamily pip} installer tool. To install Cookiecutter, type\+:
 
 
@@ -101,7 +255,7 @@ After initializing M\+DI, we need to connect the driver to its engines. For this
 
 The return value of {\ttfamily M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator} is an M\+DI communicator, which functions very similarly to an M\+PI communicator and is used in certain M\+DI function calls to identify which engine is expected to send/receive data to/from the driver. Our A\+I\+MD driver will connect to two different engines, so we will be calling {\ttfamily M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()} twice. We don\textquotesingle{}t know the order in which the engines will request a connection to the driver, so we will need some way to determine which engine is the QM code and which engine is the MM code.
 
-This can be accomplished through the use of the "{\ttfamily $<$N\+A\+ME"} command. The entire M\+DI standard is built around the idea that drivers can send \char`\"{}commands\char`\"{} to engines, each of which is defined by the M\+DI standard and has a specific outcome. The "{\ttfamily $<$N\+A\+ME"} command tells the engine to send the driver a string of length {\ttfamily M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH} that identifies the engine. The user indicates the name of each engine at runtime, using a command line argument that will be described later in \mbox{\hyperlink{tutorials_running_sec}{Using the Driver}}. As authors of a driver, we will need to decide what we expect any drivers to be named and clearly document that decision for any users. For the purpose of this tutorial, we will expect the quantum mechanics code to be called \char`\"{}\+Q\+M\char`\"{} and the molecular mechanics code to be named \char`\"{}\+M\+M\char`\"{}.
+This can be accomplished through the use of the "{\ttfamily $<$N\+A\+ME"} command. The entire M\+DI standard is built around the idea that drivers can send \char`\"{}commands\char`\"{} to engines, each of which is defined by the M\+DI standard and has a specific outcome. The "{\ttfamily $<$N\+A\+ME"} command tells the engine to send the driver a string of length {\ttfamily M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH} that identifies the engine. The user indicates the name of each engine at runtime, using the {\ttfamily -\/name} command line argument that was described in the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}}. As authors of a driver, we will need to decide what we expect any drivers to be named and clearly document that decision for any users. For the purpose of this tutorial, we will expect the quantum mechanics code to be called \char`\"{}\+Q\+M\char`\"{} and the molecular mechanics code to be named \char`\"{}\+M\+M\char`\"{}.
 
 Sending the "{\ttfamily $<$N\+A\+ME"} command to an engine and then receiving the engine\textquotesingle{}s name can be done as follows\+:
 
@@ -278,11 +432,12 @@ The cookiecutter came with everything you need to build with C\+Make. To compile
 \DoxyCodeLine{cmake <driver\_top\_directory>}
 \DoxyCodeLine{make}
 \end{DoxyCode}
-\hypertarget{tutorials_engine_sec}{}\doxysubsection{Engine Compilation}\label{tutorials_engine_sec}
-You are now the proud owner of an M\+DI driver, but without a QM engine and an MM engine your driver can\textquotesingle{}t actually do anything. We will now install the L\+A\+M\+M\+PS and QE codes, which can be used as M\+DI engines.\hypertarget{tutorials_running_sec}{}\doxysubsection{Using the Driver}\label{tutorials_running_sec}
-We will now run an A\+I\+MD simulation with the driver.\hypertarget{tutorials_final_notes}{}\doxysubsection{Final Notes}\label{tutorials_final_notes}
+\hypertarget{tutorials_running_sec}{}\doxysubsection{Using the Driver}\label{tutorials_running_sec}
+To test the driver, you will need access to a QM engine and an MM engine. The \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}} describes how to compile QE and L\+A\+M\+M\+PS for this purpose.
+
+You will also need to appropriate input files for a test simulation. The test files in the M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver repository (see the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}}) will work fine, as will the scripts. You can simply edit M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/locations/\+M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver to point to your new repository and run the scripts in the manner described in the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}}.\hypertarget{tutorials_final_notes}{}\doxysubsection{Final Notes}\label{tutorials_final_notes}
 Note that although we used QE as the QM code and L\+A\+M\+M\+PS as the MM code, we swap out QE for any QM engine with M\+DI support or L\+A\+M\+M\+PS for any MM engine with M\+DI support. Furthermore, nothing about our A\+I\+MD driver strictly requires that the code named \char`\"{}\+Q\+M\char`\"{} actually corresponds to a quantum mechanics code. You could, for example, use L\+A\+M\+M\+PS as the QM code, while another instance of L\+A\+M\+M\+PS serves as the MM code. This would look like\+:
 
 The above script allows you to run a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of L\+A\+M\+M\+PS. Although not generally useful for production runs, this can be a good way to benchmark the cost of the computational overhead introduced by using our driver as a middleman between two codes.
 
-In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code. The only requirement on the engines is that the \char`\"{}\+Q\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+Q\+M\char`\"{} engine, and that the \char`\"{}\+M\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+M\+M\char`\"{} engine. 
+In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code. The only requirement on the engines is that the \char`\"{}\+Q\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+Q\+M\char`\"{} engine, and that the \char`\"{}\+M\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+M\+M\char`\"{} engine. The \char`\"{}\+S\+C\+F\char`\"{} M\+DI command in your driver will not be supported by most MM engines, but by simply removing it you can run your driver with two MM engines. 
