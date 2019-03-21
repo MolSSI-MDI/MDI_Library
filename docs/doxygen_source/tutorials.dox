@@ -217,8 +217,6 @@ Open the file called \c aimd.cpp.
 It contains the following code:
 
 \code
-#include <iostream>
-#include <mpi.h>
 #include <string.h>
 extern "C" {
 #include "mdi.h"
@@ -232,18 +230,35 @@ int main(int argc, char **argv) {
   MPI_Comm world_comm;
   MPI_Init(&argc, &argv);
 
-  // Ensure the mdi argument has been provided 
-  // NOTE: Assumes that -mdi is the first option provided
+  // Read through all the command line options
   int iarg = 1;
-  if ( !( argc-iarg >= 2 && strcmp(argv[iarg],"-mdi") == 0) ) {
-    throw string("The -mdi argument was not provided.");
-  }
+  bool initialized_mdi = false;
+  while ( iarg < argc ) {
 
-  // Initialize the MDI library
-  world_comm = MPI_COMM_WORLD;
-  int ret = MDI_Init(argv[iarg+1], &world_comm);
-  if ( ret != 0 ) {
-    throw string("The MDI library was not initialized correctly.");
+    if ( strcmp(argv[iarg],"-mdi") == 0 ) {
+
+      // Ensure that the argument to the -mdi option was provided
+      if ( argc-iarg < 2 ) {
+	throw runtime_error("The -mdi argument was not provided.");
+      }
+
+      // Initialize the MDI Library
+      world_comm = MPI_COMM_WORLD;
+      int ret = MDI_Init(argv[iarg+1], &world_comm);
+      if ( ret != 0 ) {
+	throw runtime_error("The MDI library was not initialized correctly.");
+      }
+      initialized_mdi = true;
+      iarg += 2;
+
+    }
+    else {
+      throw runtime_error("Unrecognized option.");
+    }
+
+  }
+  if ( not initialized_mdi ) {
+    throw runtime_error("The -mdi command line option was not provided.");
   }
 
   // Connect to the engines
@@ -316,18 +331,18 @@ Place it immediately after the comment that reads \"<c>Connect to the engines</c
 
     if ( strcmp(engine_name, "MM") == 0 ) {
       if ( mm_comm != MDI_NULL_COMM ) {
-        throw string("Accepted a communicator from a second MM engine.");
+        throw runtime_error("Accepted a communicator from a second MM engine.");
       }
       mm_comm = comm;
     }
     else if ( strcmp(engine_name, "QM") == 0 ) {
       if ( qm_comm != MDI_NULL_COMM ) {
-        throw string("Accepted a communicator from a second QM engine.");
+        throw runtime_error("Accepted a communicator from a second QM engine.");
       }
       qm_comm = comm;
     }
     else {
-      throw string("Unrecognized engine name.");
+      throw runtime_error("Unrecognized engine name.");
     }
 
     delete[] engine_name;
