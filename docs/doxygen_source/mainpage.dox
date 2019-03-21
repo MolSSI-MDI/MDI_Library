@@ -4,7 +4,7 @@
 
 \section overview_sec Overview
 
-The MolSSI Driver Interface (MDI) library enables codes to interoperate via the MDI.
+The MolSSI Driver Interface (MDI) Library enables codes to interoperate in compliance with the MDI Standard.
 
 \section source_sec Source Code
 
@@ -12,9 +12,37 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 \section main_doc_sec Main Documentation
 
-\ref tutorials
+  - \ref tutorials
+    - \ref user_tutorial
+    - \ref aimd_tutorial
 
-\ref mdi_standard
+  - \ref mdi_standard
+
+\section main_doc_engines_sec Engines
+
+  - <a href="https://github.com/MolSSI/lammps/tree/mdi">LAMMPS</a>
+
+  - <a href="https://github.com/MolSSI/q-e/tree/mdi">Quantum ESPRESSO</a>
+
+\section main_doc_drivers_sec Drivers
+
+  - <a href="https://github.com/MolSSI/MDI_AIMD_Driver">MDI AIMD Driver</a>
+
+\section main_doc_bugs_sec Reporting Bugs, Issues, and Improvements
+
+Bugs and suggestions for improvements can be reported via <a href="https://github.com/MolSSI/MDI_Library/issues">GitHub Issues</a> or by emailing the main author directly.
+
+\section main_doc_author_sec Authors
+
+The MDI Library is primarily written by Taylor Barnes \<tbarnes1@vt.edu\>, a Software Scientist at MolSSI.
+
+\section main_doc_license_sec License
+
+The MDI Library is released under the 3-Clause BSD License. See the LICENSE file for more details.
+
+\section main_doc_ack_sec Acknowledgements
+
+This work was supported by the Molecular Sciences Software Institute under U.S. National Science Foundation grant ACI-1547580.
 
 **/
 
