@@ -197,8 +197,6 @@ Open the file called {\ttfamily aimd.\+cpp}. It contains the following code\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include <iostream>}}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include <mpi.h>}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include <string.h>}}
 \DoxyCodeLine{\textcolor{keyword}{extern} \textcolor{stringliteral}{"C"} \{}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include "mdi.h"}}
@@ -212,18 +210,35 @@ Open the file called {\ttfamily aimd.\+cpp}. It contains the following code\+:
 \DoxyCodeLine{  MPI\_Comm world\_comm;}
 \DoxyCodeLine{  MPI\_Init(\&argc, \&argv);}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Ensure the mdi argument has been provided }}
-\DoxyCodeLine{  \textcolor{comment}{// NOTE: Assumes that -\/mdi is the first option provided}}
+\DoxyCodeLine{  \textcolor{comment}{// Read through all the command line options}}
 \DoxyCodeLine{  \textcolor{keywordtype}{int} iarg = 1;}
-\DoxyCodeLine{  \textcolor{keywordflow}{if} ( !( argc-\/iarg >= 2 \&\& strcmp(argv[iarg],\textcolor{stringliteral}{"-\/mdi"}) == 0) ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"The -\/mdi argument was not provided."});}
-\DoxyCodeLine{  \}}
+\DoxyCodeLine{  \textcolor{keywordtype}{bool} initialized\_mdi = \textcolor{keyword}{false};}
+\DoxyCodeLine{  \textcolor{keywordflow}{while} ( iarg < argc ) \{}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Initialize the MDI library}}
-\DoxyCodeLine{  world\_comm = MPI\_COMM\_WORLD;}
-\DoxyCodeLine{  \textcolor{keywordtype}{int} ret = MDI\_Init(argv[iarg+1], \&world\_comm);}
-\DoxyCodeLine{  \textcolor{keywordflow}{if} ( ret != 0 ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"The MDI library was not initialized correctly."});}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( strcmp(argv[iarg],\textcolor{stringliteral}{"-\/mdi"}) == 0 ) \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{      \textcolor{comment}{// Ensure that the argument to the -\/mdi option was provided}}
+\DoxyCodeLine{      \textcolor{keywordflow}{if} ( argc-\/iarg < 2 ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The -\/mdi argument was not provided."});}
+\DoxyCodeLine{      \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{      \textcolor{comment}{// Initialize the MDI Library}}
+\DoxyCodeLine{      world\_comm = MPI\_COMM\_WORLD;}
+\DoxyCodeLine{      \textcolor{keywordtype}{int} ret = MDI\_Init(argv[iarg+1], \&world\_comm);}
+\DoxyCodeLine{      \textcolor{keywordflow}{if} ( ret != 0 ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The MDI library was not initialized correctly."});}
+\DoxyCodeLine{      \}}
+\DoxyCodeLine{      initialized\_mdi = \textcolor{keyword}{true};}
+\DoxyCodeLine{      iarg += 2;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Unrecognized option."});}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( not initialized\_mdi ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The -\/mdi command line option was not provided."});}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Connect to the engines}}
@@ -287,18 +302,18 @@ The following code accepts connections from two engines and assigns the communic
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"MM"}) == 0 ) \{}
 \DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != MDI\_NULL\_COMM ) \{}
-\DoxyCodeLine{      \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Accepted a communicator from a second MM engine."});}
+\DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second MM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    mm\_comm = comm;}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{  \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"QM"}) == 0 ) \{}
 \DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != MDI\_NULL\_COMM ) \{}
-\DoxyCodeLine{      \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Accepted a communicator from a second QM engine."});}
+\DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second QM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    qm\_comm = comm;}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{  \textcolor{keywordflow}{else} \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{throw} string(\textcolor{stringliteral}{"Unrecognized engine name."});}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Unrecognized engine name."});}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keyword}{delete}[] engine\_name;}

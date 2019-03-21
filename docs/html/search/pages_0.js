@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tutorials',['Tutorials',['../tutorials.html',1,'']]]
+  ['mdi_20standard',['MDI Standard',['../mdi_standard.html',1,'']]]
 ];
