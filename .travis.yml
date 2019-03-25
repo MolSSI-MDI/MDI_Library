@@ -22,6 +22,8 @@ matrix:
       before_install:
         - brew install gcc > /dev/null
         - export FC=gfortran
+    - os: windows
+      compiler: gcc
 
 install:
   - mkdir build
