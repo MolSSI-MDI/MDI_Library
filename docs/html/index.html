@@ -67,7 +67,61 @@ $(function() {
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="overview_sec"></a>
 Overview</h1>
-<p>The MolSSI Driver Interface (MDI) Library enables codes to interoperate in compliance with the MDI Standard.</p>
+<p>The MolSSI Driver Interface (MDI) Library is a component of the MDI Project, which seeks to simplify the process of interoperating computational molecular sciences codes. The MDI Project uses a Driver-Engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The MDI Library provides a simple set of functions for communicating commands and other data between codes.</p>
+<p>In total, the MDI Project consists of the following components:</p>
+<ul>
+<li><a class="el" href="index.html#main_doc_drivers_sec">Drivers</a>, which are codes that control the high-level program flow of one or more other codes by sending commands through the MDI.</li>
+<li><a class="el" href="index.html#main_doc_engines_sec">Engines</a>, which are codes capable of responding to commands from an external driver.</li>
+<li><a class="el" href="mdi_standard.html">The MDI Standard</a>, which is an API-like definition of a set of commands that can be sent from a driver to an engine, and that cause the engine to respond in a clearly defined way.</li>
+<li><a class="el" href="index.html#overview_sec">The MDI Library</a>, which is a library that enables inter-code communication in compliance with the MDI Standard.</li>
+</ul>
+<p>The MDI Library currently supports communication via TCP and MPI. MDI function calls are made in a similar style to that of MPI, with MDI_Send and MDI_Recv functions being conceptually analagous to MPI_Send and MPI_Recv, respectively. The key functions are:</p>
+<ul>
+<li><a class="el" href="mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a" title="Initialize communication through the MDI library.">MDI_Init()</a>: Initialize the MDI Library</li>
+<li><a class="el" href="mdi_8c.html#a570557fdd42049c5e285faf546037531" title="Accept a new MDI communicator.">MDI_Accept_Communicator()</a>: Accept a new MDI communicator</li>
+<li><a class="el" href="mdi_8c.html#a7bebce6d5fa91ee99a34fdcc5dcaedea" title="Send data through the MDI connection.">MDI_Send()</a>: Send data through the MDI Library</li>
+<li><a class="el" href="mdi_8c.html#ab73f32323a155011fcc184866215ba03" title="Receive data through the MDI connection.">MDI_Recv()</a>: Receive data through the MDI Library</li>
+<li><a class="el" href="mdi_8c.html#a77e579331a36c3f0eb7f7ff9668e789d" title="Send a command of length MDI_COMMAND_LENGTH through the MDI connection.">MDI_Send_Command()</a>: Send a command through the MDI Library</li>
+<li><a class="el" href="mdi_8c.html#ab03c0ea8beda690d6f796d3089cbfe15" title="Receive a command of length MDI_COMMAND_LENGTH through the MDI connection.">MDI_Recv_Command()</a>: Receive a command through the MDI Library</li>
+<li><a class="el" href="mdi_8c.html#a886c1af1124f55d869a6f2b80a68c5a7" title="Return a conversion factor between two units.">MDI_Conversion_Factor()</a>: Obtain a conversion factor between two units (not currently implemented)</li>
+</ul>
+<p>Whenever a code is launched as a driver or engine, it must be provided the "<code>-mdi"</code> runtime option. The argument for the "<code>-mdi"</code> option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library. The following options are available:</p>
+<ul>
+<li><code>-role</code> <ul>
+<li><b>required:</b> always</li>
+<li><b>argument:</b> keyword<ul>
+<li><code>DRIVER</code> - The code will run as a driver</li>
+<li><code>ENGINE</code> - The code will run as an engine</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>-name</code> <ul>
+<li><b>required:</b> always</li>
+<li><b>argument:</b> keyword, with possible values defined in the documentation of each individual driver</li>
+</ul>
+</li>
+<li><code>-method</code> <ul>
+<li><b>required:</b> always</li>
+<li><b>argument:</b> keyword<ul>
+<li><code>TCP</code> - The codes will communicate via the TCP/IP protocol</li>
+<li><code>MPI</code> - The codes will communicate via MPI using a Multiple Programs, Multiple Data (MPMD) approach</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>-hostname</code> <ul>
+<li><b>required:</b> Only if <code>method=TCP</code> and <code>role=ENGINE</code> </li>
+<li><b>argument:</b> The hostname of the driver</li>
+</ul>
+</li>
+<li><code>-port</code> <ul>
+<li><b>required:</b> Only if <code>method=TCP</code> </li>
+<li><b>argument:</b> The port number over which the driver will listen for connections from the engine(s)</li>
+</ul>
+</li>
+</ul>
+<p>For more information about running or developing codes that use the MDI Library, please see the <a class="el" href="tutorials.html">tutorials</a>.</p>
 <h1><a class="anchor" id="source_sec"></a>
 Source Code</h1>
 <p>The source code of the MDI library is available at GitHub at <a href="https://github.com/MolSSI/MDI_Library">https://github.com/MolSSI/MDI_Library</a></p>

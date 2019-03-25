@@ -26,8 +26,12 @@ The following is a list of commands that are officially part of the MDI standard
 
 \subsubsection atomic_step ATOM_STEP
 
-The engine performs a time propagation step for the atomic coordinates.
-The engine updates its energy, which can be queried with the \c <ENERGY command.
+The engine updates the atomic coordinates for either an MD simulation or a geometry optimization.
+This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
+The behavior of the \c ATOM_STEP command depends upon which of the \c MD_INIT or \c OPTG_INIT commands was most recently executed.
+If a \c MD_INIT command was more recently executed than any \c OPTG_INIT commands, \c ATOM_STEP will perform one time integration step of an MD simulation.
+If a \c OPTG_INIT command was more recently executed than any \c MD_INIT commands, \c ATOM_STEP will perform one iteration of a geometry optimization.
+After either of the above behavors, the engine updates its energy, which can be queried with the \c <ENERGY command.
 
 
 
@@ -202,6 +206,16 @@ The engine sends the driver the number of different types of atoms (e.g. "H", "H
 \par
 <b> Data Type: </b> MDI_INT <br>
 <b> Quantity: </b> 1
+
+
+
+\subsubsection optg_init OPTG_INIT
+
+The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the \c ATOM_STEP command.
+This engine calculates the energy of the system, which can be queried by the \c <ENERGY command.
+
+\par
+<b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.
 
 
 

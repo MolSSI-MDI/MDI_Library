@@ -82,7 +82,7 @@ Command List</h2>
 <p>The following is a list of commands that are officially part of the MDI standard.</p>
 <h3><a class="anchor" id="atomic_step"></a>
 ATOM_STEP</h3>
-<p>The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command.</p>
+<p>The engine updates the atomic coordinates for either an MD simulation or a geometry optimization. This command requires that either the <code>MD_INIT</code> command or the <code>OPTG_INIT</code> command was previously executed. The behavior of the <code>ATOM_STEP</code> command depends upon which of the <code>MD_INIT</code> or <code>OPTG_INIT</code> commands was most recently executed. If a <code>MD_INIT</code> command was more recently executed than any <code>OPTG_INIT</code> commands, <code>ATOM_STEP</code> will perform one time integration step of an MD simulation. If a <code>OPTG_INIT</code> command was more recently executed than any <code>MD_INIT</code> commands, <code>ATOM_STEP</code> will perform one iteration of a geometry optimization. After either of the above behavors, the engine updates its energy, which can be queried with the <code>&lt;ENERGY</code> command.</p>
 <h3><a class="anchor" id="set_cell"></a>
 &gt;CELL</h3>
 <p>The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.</p>
@@ -175,6 +175,10 @@ MD_INIT</h3>
 <p>The engine sends the driver the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> MDI_INT <br  />
  <b> Quantity: </b> 1</dd></dl>
+<h3><a class="anchor" id="optg_init"></a>
+OPTG_INIT</h3>
+<p>The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the <code>ATOM_STEP</code> command. This engine calculates the energy of the system, which can be queried by the <code>&lt;ENERGY</code> command.</p>
+<dl class="section user"><dt></dt><dd><b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.</dd></dl>
 <h3><a class="anchor" id="send_preforces"></a>
 &gt;PRE-FORCES</h3>
 <p>The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.</p>

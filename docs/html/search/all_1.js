@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tutorials',['Tutorials',['../tutorials.html',1,'']]]
+  ['dynamic_5farray_5fstruct',['dynamic_array_struct',['../structdynamic__array__struct.html',1,'']]]
 ];

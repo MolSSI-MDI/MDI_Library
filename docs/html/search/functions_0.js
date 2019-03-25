@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['mdi_5faccept_5fcommunicator',['MDI_Accept_Communicator',['../mdi_8c.html#a570557fdd42049c5e285faf546037531',1,'MDI_Accept_Communicator():&#160;mdi.c'],['../namespacemolssi__driver__interface_1_1mdi.html#ab81f0bee8f7e5264402a96b8009a7cc6',1,'molssi_driver_interface.mdi.MDI_Accept_Communicator()']]],
+  ['mdi_5faccept_5fcommunicator',['MDI_Accept_Communicator',['../mdi_8c.html#a570557fdd42049c5e285faf546037531',1,'MDI_Accept_Communicator():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ad06021baed63e4db218cb4435f1af556',1,'MDI_Library.mdi.MDI_Accept_Communicator()']]],
   ['mdi_5fconversion_5ffactor',['MDI_Conversion_Factor',['../mdi_8c.html#a886c1af1124f55d869a6f2b80a68c5a7',1,'mdi.c']]],
   ['mdi_5finit',['MDI_Init',['../mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a',1,'mdi.c']]],
   ['mdi_5frecv',['MDI_Recv',['../mdi_8c.html#ab73f32323a155011fcc184866215ba03',1,'mdi.c']]],

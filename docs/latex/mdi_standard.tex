@@ -10,7 +10,7 @@
 \hypertarget{mdi_standard_standard_units}{}\doxysubsection{Units}\label{mdi_standard_standard_units}
 All physical quantities communicated through M\+DI must be expressed in atomic units.\hypertarget{mdi_standard_command_list}{}\doxysubsection{Command List}\label{mdi_standard_command_list}
 The following is a list of commands that are officially part of the M\+DI standard.\hypertarget{mdi_standard_atomic_step}{}\doxysubsubsection{A\+T\+O\+M\+\_\+\+S\+T\+EP}\label{mdi_standard_atomic_step}
-The engine performs a time propagation step for the atomic coordinates. The engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command.\hypertarget{mdi_standard_set_cell}{}\doxysubsubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
+The engine updates the atomic coordinates for either an MD simulation or a geometry optimization. This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed. The behavior of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command depends upon which of the {\ttfamily M\+D\+\_\+\+I\+N\+IT} or {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} commands was most recently executed. If a {\ttfamily M\+D\+\_\+\+I\+N\+IT} command was more recently executed than any {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} commands, {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} will perform one time integration step of an MD simulation. If a {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was more recently executed than any {\ttfamily M\+D\+\_\+\+I\+N\+IT} commands, {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} will perform one iteration of a geometry optimization. After either of the above behavors, the engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command.\hypertarget{mdi_standard_set_cell}{}\doxysubsubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
 The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
 
 \begin{DoxyParagraph}{}
@@ -129,6 +129,12 @@ The engine sends the driver the number of different types of atoms (e.\+g. \char
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+I\+NT ~\newline
  {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_optg_init}{}\doxysubsubsection{O\+P\+T\+G\+\_\+\+I\+N\+IT}\label{mdi_standard_optg_init}
+The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\+N\+E\+R\+GY} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_preforces}{}\doxysubsubsection{$>$\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_send_preforces}
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.

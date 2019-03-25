@@ -1,0 +1,142 @@
+\hypertarget{namespaceMDI__Library_1_1mdi}{}\doxysection{M\+D\+I\+\_\+\+Library.\+mdi Namespace Reference}
+\label{namespaceMDI__Library_1_1mdi}\index{MDI\_Library.mdi@{MDI\_Library.mdi}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a0275b71ce0883c694edfed585cc0a09b}\label{namespaceMDI__Library_1_1mdi_a0275b71ce0883c694edfed585cc0a09b}} 
+def {\bfseries M\+D\+I\+\_\+\+Init} (arg1, comm)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a12df45d2ec808c21a504cd3362f8f217}\label{namespaceMDI__Library_1_1mdi_a12df45d2ec808c21a504cd3362f8f217}} 
+def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+\+Intra\+\_\+\+Code\+\_\+\+M\+P\+I\+\_\+\+Comm} ()
+\item 
+def \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_ad06021baed63e4db218cb4435f1af556}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator}} ()
+\begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a5c920ec54a5e8e4728ef70d6c9d7a354}\label{namespaceMDI__Library_1_1mdi_a5c920ec54a5e8e4728ef70d6c9d7a354}} 
+def {\bfseries M\+D\+I\+\_\+\+Send} (arg1, arg2, arg3, arg4)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ac0803b589ad3f718cfdba3ccbd801de3}\label{namespaceMDI__Library_1_1mdi_ac0803b589ad3f718cfdba3ccbd801de3}} 
+def {\bfseries M\+D\+I\+\_\+\+Recv} (arg2, arg3, arg4)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad1be6d2a1a677eadfe3f1053dad88c64}\label{namespaceMDI__Library_1_1mdi_ad1be6d2a1a677eadfe3f1053dad88c64}} 
+def {\bfseries M\+D\+I\+\_\+\+Send\+\_\+\+Command} (arg1, arg2)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a4732b87744d4d315e02faf4c6e67adb9}\label{namespaceMDI__Library_1_1mdi_a4732b87744d4d315e02faf4c6e67adb9}} 
+def {\bfseries M\+D\+I\+\_\+\+Recv\+\_\+\+Command} (arg2)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aac438fa8f3de4eed7b89306a99c521e8}\label{namespaceMDI__Library_1_1mdi_aac438fa8f3de4eed7b89306a99c521e8}} 
+def {\bfseries M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor} (arg1, arg2)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a36e64a9de02d5098f49724b61adaa043}\label{namespaceMDI__Library_1_1mdi_a36e64a9de02d5098f49724b61adaa043}} 
+{\bfseries dir\+\_\+path} = os.\+path.\+dirname(os.\+path.\+realpath(\+\_\+\+\_\+file\+\_\+\+\_\+))
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a32d68579cb0eff9b01a7f20fe58a3157}\label{namespaceMDI__Library_1_1mdi_a32d68579cb0eff9b01a7f20fe58a3157}} 
+bool {\bfseries use\+\_\+numpy} = True
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a9e4a0eca806b846248c7ce679b5e6d0a}\label{namespaceMDI__Library_1_1mdi_a9e4a0eca806b846248c7ce679b5e6d0a}} 
+bool {\bfseries use\+\_\+mpi4py} = True
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad6259c063555b036982db5308ed19bbc}\label{namespaceMDI__Library_1_1mdi_ad6259c063555b036982db5308ed19bbc}} 
+{\bfseries mdi\+\_\+name\+\_\+file} = open(dir\+\_\+path + \char`\"{}/mdi\+\_\+name\char`\"{},\char`\"{}r\char`\"{})
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a699d640ade0ef06a2e869938d0f967cf}\label{namespaceMDI__Library_1_1mdi_a699d640ade0ef06a2e869938d0f967cf}} 
+{\bfseries mdi\+\_\+name} = mdi\+\_\+name\+\_\+file.\+read()
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}\label{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}} 
+{\bfseries mdi} = ctypes.\+C\+D\+LL(dir\+\_\+path + \char`\"{}/\char`\"{} + mdi\+\_\+name)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}\label{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}} 
+{\bfseries M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ae231959ce59ce1e0090a0d1089777d09}\label{namespaceMDI__Library_1_1mdi_ae231959ce59ce1e0090a0d1089777d09}} 
+{\bfseries M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6ba0c61c87ecb582304e92198e6bd8f6}\label{namespaceMDI__Library_1_1mdi_a6ba0c61c87ecb582304e92198e6bd8f6}} 
+{\bfseries M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a8c682f798ce039e84e455631e708f695}\label{namespaceMDI__Library_1_1mdi_a8c682f798ce039e84e455631e708f695}} 
+{\bfseries M\+D\+I\+\_\+\+I\+NT} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+I\+NT\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a264ef5cd57131f826535cce779aee061}\label{namespaceMDI__Library_1_1mdi_a264ef5cd57131f826535cce779aee061}} 
+{\bfseries M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+D\+O\+U\+B\+LE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa2cd3ffb7429608e6a1c6a6210c66458}\label{namespaceMDI__Library_1_1mdi_aa2cd3ffb7429608e6a1c6a6210c66458}} 
+{\bfseries M\+D\+I\+\_\+\+C\+H\+AR} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+H\+AR\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a1129249c7328d5dc89054573da7c41d7}\label{namespaceMDI__Library_1_1mdi_a1129249c7328d5dc89054573da7c41d7}} 
+{\bfseries M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa75b6ec252a05fb48b6660f73eebc3e6}\label{namespaceMDI__Library_1_1mdi_aa75b6ec252a05fb48b6660f73eebc3e6}} 
+{\bfseries M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a11d827fa270b741392e65eb88b22242f}\label{namespaceMDI__Library_1_1mdi_a11d827fa270b741392e65eb88b22242f}} 
+{\bfseries M\+D\+I\+\_\+\+T\+CP} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+T\+CP\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_af04c7fd0d5579c49735c7c7f0fce4f19}\label{namespaceMDI__Library_1_1mdi_af04c7fd0d5579c49735c7c7f0fce4f19}} 
+{\bfseries M\+D\+I\+\_\+\+M\+PI} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+M\+PI\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_add378ddd22eb9412f713b10b96fa5874}\label{namespaceMDI__Library_1_1mdi_add378ddd22eb9412f713b10b96fa5874}} 
+{\bfseries M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a366cbd389013cb725961a9502465ac09}\label{namespaceMDI__Library_1_1mdi_a366cbd389013cb725961a9502465ac09}} 
+{\bfseries M\+D\+I\+\_\+\+A\+N\+G\+S\+T\+R\+O\+M\+\_\+\+T\+O\+\_\+\+B\+O\+HR} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+A\+N\+G\+S\+T\+R\+O\+M\+\_\+\+T\+O\+\_\+\+B\+O\+HR\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_af28a62957e20cfd64a13f9613321a14d}\label{namespaceMDI__Library_1_1mdi_af28a62957e20cfd64a13f9613321a14d}} 
+{\bfseries M\+D\+I\+\_\+\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a62ed13fca9436785e099eeff7ac2a332}\label{namespaceMDI__Library_1_1mdi_a62ed13fca9436785e099eeff7ac2a332}} 
+{\bfseries M\+D\+I\+\_\+\+P\+I\+C\+O\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+P\+I\+C\+O\+S\+E\+C\+O\+N\+D\+\_\+\+T\+O\+\_\+\+A\+UT\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a59b75f9c43491714ca64795aa5ba1097}\label{namespaceMDI__Library_1_1mdi_a59b75f9c43491714ca64795aa5ba1097}} 
+{\bfseries M\+D\+I\+\_\+\+N\+E\+W\+T\+O\+N\+\_\+\+T\+O\+\_\+\+A\+UF} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+N\+E\+W\+T\+O\+N\+\_\+\+T\+O\+\_\+\+A\+UF\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a73039bfb5e9a99473155fa209de31ce3}\label{namespaceMDI__Library_1_1mdi_a73039bfb5e9a99473155fa209de31ce3}} 
+{\bfseries M\+D\+I\+\_\+\+J\+O\+U\+L\+E\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+J\+O\+U\+L\+E\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acd3309546907a3e4e3c6674ef0a34c96}\label{namespaceMDI__Library_1_1mdi_acd3309546907a3e4e3c6674ef0a34c96}} 
+{\bfseries M\+D\+I\+\_\+\+K\+J\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+K\+J\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad2b0c2616cb21320315fbd0a6579288b}\label{namespaceMDI__Library_1_1mdi_ad2b0c2616cb21320315fbd0a6579288b}} 
+{\bfseries M\+D\+I\+\_\+\+K\+J\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+K\+J\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a18b5edd46cba0325c48bdb197a18186c}\label{namespaceMDI__Library_1_1mdi_a18b5edd46cba0325c48bdb197a18186c}} 
+{\bfseries M\+D\+I\+\_\+\+K\+C\+A\+L\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+K\+C\+A\+L\+P\+E\+R\+M\+O\+L\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a379b5a7c7103ab39be88e2cc6a33d4ca}\label{namespaceMDI__Library_1_1mdi_a379b5a7c7103ab39be88e2cc6a33d4ca}} 
+{\bfseries M\+D\+I\+\_\+\+E\+V\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+E\+V\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a13587db2ee95e9800ed3e3a7a1f7154e}\label{namespaceMDI__Library_1_1mdi_a13587db2ee95e9800ed3e3a7a1f7154e}} 
+{\bfseries M\+D\+I\+\_\+\+R\+Y\+D\+B\+E\+R\+G\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+R\+Y\+D\+B\+E\+R\+G\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad17105c13c9992e0094f99a0767d036b}\label{namespaceMDI__Library_1_1mdi_ad17105c13c9992e0094f99a0767d036b}} 
+{\bfseries M\+D\+I\+\_\+\+K\+E\+L\+V\+I\+N\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+K\+E\+L\+V\+I\+N\+\_\+\+T\+O\+\_\+\+H\+A\+R\+T\+R\+EE\char`\"{}).value
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aaf0b36caa270483ddad68a6f49e6715d}\label{namespaceMDI__Library_1_1mdi_aaf0b36caa270483ddad68a6f49e6715d}} 
+{\bfseries intra\+\_\+code\+\_\+comm} = None
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_adf6086861f386d0ab85484d36b25fdc4}\label{namespaceMDI__Library_1_1mdi_adf6086861f386d0ab85484d36b25fdc4}} 
+{\bfseries argtypes}
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a7fe946f899462701d839d4073fcbef4f}\label{namespaceMDI__Library_1_1mdi_a7fe946f899462701d839d4073fcbef4f}} 
+{\bfseries restype}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Pyrhon wrapper for MDI. \end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad06021baed63e4db218cb4435f1af556}\label{namespaceMDI__Library_1_1mdi_ad06021baed63e4db218cb4435f1af556}} 
+\index{MDI\_Library.mdi@{MDI\_Library.mdi}!MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}}
+\index{MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}!MDI\_Library.mdi@{MDI\_Library.mdi}}
+\doxysubsubsection{\texorpdfstring{MDI\_Accept\_Communicator()}{MDI\_Accept\_Communicator()}}
+{\footnotesize\ttfamily def M\+D\+I\+\_\+\+Library.\+mdi.\+M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Accept a new M\+DI communicator. 
+
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. 

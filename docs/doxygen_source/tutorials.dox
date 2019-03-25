@@ -111,7 +111,7 @@ mdi
 These two lines are required in any LAMMPS input file that is intended to be used in conjuction with MDI.
 The mdi fix allows LAMMPS to communicate with the driver at the appropriate points throughout the simulation, while the mdi LAMMPS command indicates the point when LAMMPS begins listening for MDI commands from the driver.
 
-There are two scripts associated with the water test: \c tcp.sh and \mpi.sh.
+There are two scripts associated with the water test: \c tcp.sh and \c mpi.sh.
 The \c tcp.sh script will run the simulation using the TCP/IP method for communicating between the driver and the engines.
 It consists of the following code:
 
