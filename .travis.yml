@@ -24,6 +24,8 @@ matrix:
         - export FC=gfortran
     - os: windows
       compiler: gcc
+        - powershell (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe')
+        - C:\setup-x86_64.exe
 
 install:
   - mkdir build
