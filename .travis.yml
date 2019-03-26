@@ -41,7 +41,8 @@ matrix:
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
 #         - cmake -Dlanguage=Python ../
          - dir
-         - choco install jom
+#         - vcvarsall.bat amd64_arm uwp -vcvars_ver=14.10
+         - vcvars32.bat
          - nmake
 #         - mingw32-make
 #         - 
