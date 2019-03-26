@@ -25,14 +25,19 @@ matrix:
     - os: windows
       compiler: gcc
       before_install:
-         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
          - dir
-         - setup-x86_64.exe
-#        - cd
-#        - mkdir testdir
-#        - echo echo Hello World > testdir\test.ps1
-#        - dir
-#        - type .\testdir\test.ps1
+      install:
+#         - mkdir build
+#         - cd build
+#         - 
+#         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
+#         - dir
+#         - ./setup-x86_64.exe
+        - cd
+        - mkdir testdir
+        - echo echo Hello World > ./testdir/test.ps1
+        - dir
+        - type ./testdir/test.ps1
 #        - powershell \test.ps1
 #        - echo (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe') > cygwin_download.ps1
 #        - powershell cygwin_download.ps1
