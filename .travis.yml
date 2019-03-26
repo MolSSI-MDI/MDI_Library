@@ -31,19 +31,18 @@ matrix:
       install:
          - ls
          - echo $PATH
-         - echo %PATH%
-         - echo %MAKEFLAGS%
+         - echo $MAKEFLAGS
 #         - setx MAKEFLAGS "SHELL=cmd"
          - set MAKEFLAGS=SHELL=cmd
-         - echo %MAKEFLAGS%
+         - echo $MAKEFLAGS
          - mkdir build
          - cd build
+         - cmake -G "Visual Studio 15 2017" -Dlanguage=Python ../
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
-         - cmake -Dlanguage=Python ../
+#         - cmake -Dlanguage=Python ../
          - dir
-         - powershell -command "cat MDI.sln"
-         - powershell -command "make"
-         - mingw32-make
+         - nmake
+#         - mingw32-make
 #         - 
 #         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
 #         - dir
