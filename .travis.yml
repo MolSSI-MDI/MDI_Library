@@ -36,6 +36,8 @@ matrix:
          - echo "%sh_loc%"
          - echo %sh_loc%
 #         - rm %sh_loc%
+         - ls
+         - powershell -command "cat sh_loc.txt"
          - powershell -command "rm 'C:/Program Files/Git/usr/bin/sh.exe'"
 #         - rm "C:/Program Files/Git/usr/bin/sh.exe"
 #         - echo $PATH
