@@ -25,7 +25,7 @@ matrix:
     - os: windows
       compiler: gcc
       before_install:
-         - powershell -command (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe')
+         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe')"
          - dir
 #        - cd
 #        - mkdir testdir
