@@ -5,52 +5,40 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      env:
-         - CMAKE=""
-         - MAKE="make"
       before_install:
         - sudo apt-get install gfortran
     - os: linux
       compiler: gcc
-      env:
-         - CMAKE=""
-         - MAKE="make"
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install mpich2
     - os: linux
       compiler: gcc
-      env:
-         - CMAKE=""
-         - MAKE="make"
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
     - os: osx
       compiler: gcc
-      env:
-         - CMAKE=""
-         - MAKE="make"
       before_install:
         - brew install gcc > /dev/null
         - export FC=gfortran
     - os: windows
       compiler: gcc
-      env:
-         - CMAKE="-G 'MinGW Makefiles' -Dlanguage=Python"
-         - MAKE="mingw32-make"
       before_install:
            # remove the sh.exe file, which prevents MinGW from working
          - where sh > sh_loc.txt
          - powershell -command "cat sh_loc.txt | rm"
+      install:
+         - mkdir build
+         - cd build
+         - cmake -G 'MinGW Makefiles' -Dlanguage=Python ../
+         - mingw32-make
 
 install:
-  - echo $CMAKE
-  - echo $MAKE
   - mkdir build
   - cd build
-  - cmake $CMAKE ../
-  - $MAKE
+  - cmake ../
+  - make
 
 script:
   - ls
