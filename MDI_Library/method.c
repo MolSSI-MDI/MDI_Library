@@ -9,7 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 //#include <netinet/in.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #include <signal.h>
 #include <errno.h>
 #include <netdb.h>
