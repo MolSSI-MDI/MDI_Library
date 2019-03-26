@@ -31,7 +31,7 @@ matrix:
       install:
          - ls
          - where sh
-         - where sh | rm
+         - powershell -command "where sh | rm"
          - echo $PATH
          - echo $MAKEFLAGS
 #         - setx MAKEFLAGS "SHELL=cmd"
