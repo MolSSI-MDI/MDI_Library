@@ -29,6 +29,7 @@ matrix:
       before_install:
          - dir
       install:
+         - ls
          - echo $PATH
          - echo %PATH%
          - echo %MAKEFLAGS%
@@ -40,7 +41,8 @@ matrix:
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
          - cmake -Dlanguage=Python ../
          - dir
-         - powershell -command "cat Makefile"
+         - powershell -command "cat MDI.sln"
+         - powershell -command "make"
          - mingw32-make
 #         - 
 #         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
