@@ -25,10 +25,9 @@ matrix:
     - os: windows
       compiler: gcc
       before_install:
-        - cd
-        - echo echo Hello World > test.ps1
+        - echo echo Hello World > C:\test.ps1
         - dir
-        - powershell "& ""test.ps1"""
+        - powershell "& ""C:\test.ps1"""
 #        - echo (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe') > cygwin_download.ps1
 #        - powershell cygwin_download.ps1
 #        - C:\setup-x86_64.exe
