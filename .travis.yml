@@ -29,6 +29,9 @@ matrix:
       before_install:
          - dir
       install:
+         - echo %MAKEFLAGS%
+         - setx MAKEFLAGS "SHELL=cmd"
+         - echo %MAKEFLAGS%
          - mkdir build
          - cd build
          - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
