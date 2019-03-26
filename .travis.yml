@@ -29,8 +29,10 @@ matrix:
       before_install:
          - dir
       install:
+           # remove the sh.exe file, which prevents MinGW from working
          - where sh > sh_loc.txt
          - powershell -command "cat sh_loc.txt | rm"
+           # build the code
          - mkdir build
          - cd build
          - cmake -G "MinGW Makefiles" -Dlanguage=Python ../

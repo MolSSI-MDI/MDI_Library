@@ -12,7 +12,7 @@
 //#include <sys/socket.h>
 #include <signal.h>
 #include <errno.h>
-#include <netdb.h>
+//#include <netdb.h>
 #include "mdi.h"
 #include "method.h"
 #include "communicator.h"
