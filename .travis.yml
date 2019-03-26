@@ -35,7 +35,8 @@ matrix:
          - set sh_loc=C:/Program Files/Git/usr/bin/sh.exe
          - echo "%sh_loc%"
          - echo %sh_loc%
-         - rm %sh_loc%
+#         - rm %sh_loc%
+         - powershell -command "rm 'C:/Program Files/Git/usr/bin/sh.exe'"
 #         - rm "C:/Program Files/Git/usr/bin/sh.exe"
 #         - echo $PATH
 #         - echo $MAKEFLAGS
