@@ -3,6 +3,7 @@
  * \brief Class definition for top-level manager of MDI operations
  */
 #ifdef _WIN32
+  #include <windows.h>
   #include <winsock2.h>
 #else
   #include <netinet/in.h>
