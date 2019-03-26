@@ -31,7 +31,9 @@ matrix:
       install:
          - ls
          - where sh
+         - rm "C:/Program Files/Git/usr/bin/sh.exe"
          - powershell -command "where sh | rm"
+         - where sh
          - echo $PATH
          - echo $MAKEFLAGS
 #         - setx MAKEFLAGS "SHELL=cmd"
