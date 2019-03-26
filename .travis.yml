@@ -37,7 +37,7 @@ matrix:
          - mkdir build
          - cd build
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
-         - cmake ../
+         - cmake -Dlanguage ../
          - dir
          - powershell -command "cat Makefile"
          - mingw32-make
