@@ -30,6 +30,8 @@ matrix:
          - dir
       install:
          - ls
+         - where sh
+         - del sh
          - echo $PATH
          - echo $MAKEFLAGS
 #         - setx MAKEFLAGS "SHELL=cmd"
@@ -37,14 +39,14 @@ matrix:
          - echo $MAKEFLAGS
          - mkdir build
          - cd build
-         - cmake -G "Visual Studio 15 2017" -Dlanguage=Python ../
-#         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
+#         - cmake -G "Visual Studio 15 2017" -Dlanguage=Python ../
+         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
 #         - cmake -Dlanguage=Python ../
          - dir
 #         - vcvarsall.bat amd64_arm uwp -vcvars_ver=14.10
-         - vcvars32.bat
-         - nmake
-#         - mingw32-make
+#         - vcvars32.bat
+#         - nmake
+         - mingw32-make
 #         - 
 #         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
 #         - dir
