@@ -29,13 +29,17 @@ matrix:
       before_install:
          - dir
       install:
+         - echo %PATH%
          - echo %MAKEFLAGS%
 #         - setx MAKEFLAGS "SHELL=cmd"
          - set MAKEFLAGS=SHELL=cmd
          - echo %MAKEFLAGS%
          - mkdir build
          - cd build
-         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
+#         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
+         - cmake ../
+         - dir
+         - powershell -command "cat Makefile"
          - mingw32-make
 #         - 
 #         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
