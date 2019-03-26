@@ -41,6 +41,7 @@ matrix:
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
 #         - cmake -Dlanguage=Python ../
          - dir
+         - choco install jom
          - nmake
 #         - mingw32-make
 #         - 
