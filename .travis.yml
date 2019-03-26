@@ -3,28 +3,30 @@ sudo: required
 
 matrix:
   include:
-    - os: linux
-      compiler: gcc
-      before_install:
-        - sudo apt-get install gfortran
-    - os: linux
-      compiler: gcc
-      before_install:
-        - sudo apt-get install gfortran
-        - sudo apt-get install mpich2
-    - os: linux
-      compiler: gcc
-      before_install:
-        - sudo apt-get install gfortran
-        - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
-    - os: osx
-      compiler: gcc
-      before_install:
-        - brew install gcc > /dev/null
-        - export FC=gfortran
+#    - os: linux
+#      compiler: gcc
+#      before_install:
+#        - sudo apt-get install gfortran
+#    - os: linux
+#      compiler: gcc
+#      before_install:
+#        - sudo apt-get install gfortran
+#        - sudo apt-get install mpich2
+#    - os: linux
+#      compiler: gcc
+#      before_install:
+#        - sudo apt-get install gfortran
+#        - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
+#    - os: osx
+#      compiler: gcc
+#      before_install:
+#        - brew install gcc > /dev/null
+#        - export FC=gfortran
     - os: windows
       compiler: gcc
       before_install:
+        - echo echo Hello World > test.ps1
+        - powershell test.ps1
         - echo (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe') > cygwin_download.ps1
         - powershell cygwin_download.ps1
         - C:\setup-x86_64.exe
