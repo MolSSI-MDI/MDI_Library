@@ -29,38 +29,12 @@ matrix:
       before_install:
          - dir
       install:
-         - where sh
          - where sh > sh_loc.txt
-#         - set /p sh_loc= < sh_loc.txt
-         - set sh_loc=C:/Program Files/Git/usr/bin/sh.exe
-         - echo "%sh_loc%"
-         - echo %sh_loc%
-#         - rm %sh_loc%
-         - ls
-         - powershell -command "cat sh_loc.txt"
-#         - powershell -command "rm 'C:/Program Files/Git/usr/bin/sh.exe'"
          - powershell -command "cat sh_loc.txt | rm"
-#         - rm "C:/Program Files/Git/usr/bin/sh.exe"
-#         - echo $PATH
-#         - echo $MAKEFLAGS
-#         - set MAKEFLAGS=SHELL=cmd
-#         - echo $MAKEFLAGS
          - mkdir build
          - cd build
          - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
          - mingw32-make
-#         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
-#         - dir
-#         - ./setup-x86_64.exe
-#        - cd
-#        - mkdir testdir
-#        - echo echo Hello World > ./testdir/test.ps1
-#        - dir
-#        - type ./testdir/test.ps1
-#        - powershell \test.ps1
-#        - echo (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe') > cygwin_download.ps1
-#        - powershell cygwin_download.ps1
-#        - C:\setup-x86_64.exe
 
 install:
   - mkdir build
