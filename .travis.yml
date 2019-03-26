@@ -29,6 +29,7 @@ matrix:
       before_install:
          - dir
       install:
+         - echo $PATH
          - echo %PATH%
          - echo %MAKEFLAGS%
 #         - setx MAKEFLAGS "SHELL=cmd"
@@ -37,7 +38,7 @@ matrix:
          - mkdir build
          - cd build
 #         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
-         - cmake -Dlanguage ../
+         - cmake -Dlanguage=Python ../
          - dir
          - powershell -command "cat Makefile"
          - mingw32-make
