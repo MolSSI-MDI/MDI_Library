@@ -24,13 +24,15 @@ matrix:
 #        - export FC=gfortran
     - os: windows
       compiler: gcc
+      env:
+         - CMAKE="-Dlanguage=Python"
       before_install:
          - dir
       install:
          - mkdir build
          - cd build
          - cmake -Dlanguage=Python ../
-         - make
+         - nmake
 #         - 
 #         - powershell -command "(new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','setup-x86_64.exe')"
 #         - dir
