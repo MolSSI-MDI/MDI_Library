@@ -34,8 +34,10 @@ matrix:
       install:
          - mkdir build
          - cd build
-         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
-         - mingw32-make
+         - cmake env(CMAKE) ../
+         - env(MAKE)
+#         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
+#         - mingw32-make
 
 install:
   - mkdir build
