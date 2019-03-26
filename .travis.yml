@@ -3,31 +3,27 @@ sudo: required
 
 matrix:
   include:
-#    - os: linux
-#      compiler: gcc
-#      before_install:
-#        - sudo apt-get install gfortran
-#    - os: linux
-#      compiler: gcc
-#      before_install:
-#        - sudo apt-get install gfortran
-#        - sudo apt-get install mpich2
-#    - os: linux
-#      compiler: gcc
-#      before_install:
-#        - sudo apt-get install gfortran
-#        - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
-#    - os: osx
-#      compiler: gcc
-#      before_install:
-#        - brew install gcc > /dev/null
-#        - export FC=gfortran
+    - os: linux
+      compiler: gcc
+      before_install:
+        - sudo apt-get install gfortran
+    - os: linux
+      compiler: gcc
+      before_install:
+        - sudo apt-get install gfortran
+        - sudo apt-get install mpich2
+    - os: linux
+      compiler: gcc
+      before_install:
+        - sudo apt-get install gfortran
+        - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
+    - os: osx
+      compiler: gcc
+      before_install:
+        - brew install gcc > /dev/null
+        - export FC=gfortran
     - os: windows
       compiler: gcc
-      env:
-         - CMAKE="-Dlanguage=Python"
-      before_install:
-         - dir
       install:
            # remove the sh.exe file, which prevents MinGW from working
          - where sh > sh_loc.txt
