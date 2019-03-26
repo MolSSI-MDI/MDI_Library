@@ -22,12 +22,6 @@ matrix:
       before_install:
         - brew install gcc > /dev/null
         - export FC=gfortran
-    - os: windows
-      compiler: gcc
-      before_install:
-        - echo (new-object System.Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe','C:\setup-x86_64.exe') > cygwin_download.ps1
-        - powershell cygwin_download.ps1
-        - C:\setup-x86_64.exe
 
 install:
   - mkdir build
