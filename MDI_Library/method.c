@@ -2,17 +2,21 @@
  *
  * \brief Class definition for top-level manager of MDI operations
  */
-
+#ifdef _WIN32
+  #include <winsock2.h>
+  #include <windows.h>
+#else
+  #include <netinet/in.h>
+  #include <sys/socket.h>
+  #include <netdb.h>
+#endif
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <signal.h>
 #include <errno.h>
-#include <netdb.h>
 #include "mdi.h"
 #include "method.h"
 #include "communicator.h"

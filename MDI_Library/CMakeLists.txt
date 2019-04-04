@@ -37,6 +37,11 @@ endif()
 add_library(mdi ${libtype}
                 ${sources})
 
+#if this is a Windows build, link to ws2_32
+if(WIN32)
+  target_link_libraries(mdi wsock32 ws2_32)
+endif()
+
 #include and link to MPI
 if( mpi STREQUAL "ON" )
 

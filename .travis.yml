@@ -22,6 +22,17 @@ matrix:
       before_install:
         - brew install gcc > /dev/null
         - export FC=gfortran
+    - os: windows
+      compiler: gcc
+      before_install:
+           # remove the sh.exe file, which prevents MinGW from working
+         - where sh > sh_loc.txt
+         - powershell -command "cat sh_loc.txt | rm"
+      install:
+         - mkdir build
+         - cd build
+         - cmake -G "MinGW Makefiles" -Dlanguage=Python ../
+         - mingw32-make
 
 install:
   - mkdir build
