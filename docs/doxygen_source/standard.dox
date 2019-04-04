@@ -18,20 +18,51 @@ All physical quantities communicated through MDI must be expressed in atomic uni
 
 
 
+\subsection standard_nodes_sec Nodes
+
+One of the powerful features of the MDI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in MDI engines.
+In particular, the \ref md_init and \ref optg_init commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively.
+Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain "nodes" and listen for new commands.
+
+The MDI Standard defines several nodes.
+Their names and when they occur are as follows:
+
+\par
+<b> @PRE-FORCES </b> - After calculating all contributions to the atomic forces, \b except those associated with a constraint algorithm like SHAKE or RATTLE. <br>
+<b> @FORCES </b> - After calculating all contributions to the atomic forces. <br>
+<b> @COORDS </b> - After updating the atomic coordinates.
+
+Several MDI commands are only relevant when an engine is paused at a node.
+The \ref send_node command instructs the engine to send the name of its node, while the \ref next_node command instructs the engine to proceed in its simulation until it reaches the next node.
+In addition, there are commands associated with each type of node (\ref pre-forces_node, \ref forces_node, \ref coords_node) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.
+
+A typical MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is \b not guaranteed.
+Engines are permitted to pass through nodes in whatever order the implementation dictates.
+When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.
+
+
+
 \subsection command_list Command List
 
 The following is a list of commands that are officially part of the MDI standard.
 
 
 
-\subsubsection atomic_step ATOM_STEP
 
-The engine updates the atomic coordinates for either an MD simulation or a geometry optimization.
+\subsubsection next_node @
+
+The engine proceeds to the next node (see \ref standard_nodes_sec).
 This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
-The behavior of the \c ATOM_STEP command depends upon which of the \c MD_INIT or \c OPTG_INIT commands was most recently executed.
-If a \c MD_INIT command was more recently executed than any \c OPTG_INIT commands, \c ATOM_STEP will perform one time integration step of an MD simulation.
-If a \c OPTG_INIT command was more recently executed than any \c MD_INIT commands, \c ATOM_STEP will perform one iteration of a geometry optimization.
-After either of the above behavors, the engine updates its energy, which can be queried with the \c <ENERGY command.
+
+
+
+\subsubsection send_node <@
+
+The engine sends the driver a string that corresponds to the name of its current node (see \ref standard_nodes_sec).
+
+\par
+<b> Data Type: </b> MDI_CHAR <br>
+<b> Quantity: </b> <c> MDI_NAME_LENGTH </c>
 
 
 
@@ -79,6 +110,13 @@ The engine sends a set of atomic charges to the driver, in the same format as sp
 
 
 
+\subsubsection coords_node @COORDS
+
+The engine proceeds to the next @COORDS node (see \ref standard_nodes_sec).
+This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
+
+
+
 \subsubsection send_coords >COORDS
 
 The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.
@@ -119,6 +157,13 @@ The engine terminates and can no longer be sent commands.
 
 
 
+\subsubsection forces_node @FORCES
+
+The engine proceeds to the next @FORCES node (see \ref standard_nodes_sec).
+This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
+
+
+
 \subsubsection send_forces >FORCES
 
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
@@ -131,7 +176,7 @@ The driver sends a set of atomic forces to the engine, which replaces its intern
 
 
 
-\subsubsection send_add_forces >+FORCES
+\subsubsection send_add_forces +FORCES
 
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
@@ -219,39 +264,10 @@ This engine calculates the energy of the system, which can be queried by the \c 
 
 
 
-\subsubsection send_preforces >PRE-FORCES
+\subsubsection pre-forces_node @PRE-FORCES
 
-The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
-
-\par
-<b> Data Type: </b> MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
-<b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
-<b> Injection: </b> In response to the \c ATOM_STEP command, after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms
-
-
-
-\subsubsection send_add_preforces >+PRE-FORCES
-
-The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
-
-\par
-<b> Data Type: </b> MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
-<b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
-<b> Injection: </b> In response to the \c ATOM_STEP command, after calculation of all forces except those related to constraint algorithms (e.g. SHAKE, RATTLE, etc.) and prior to application of any constraint algorithms
-
-
-
-\subsubsection recv_preforces <PRE-FORCES
-
-The engine calculates and sends a set of atomic forces to the driver.
-These forces include all force contributions except those associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).
-
-\par
-<b> Data Type: </b> MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
-<b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
+The engine proceeds to the next @PRE-FORCES node (see \ref standard_nodes_sec).
+This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
 
 
 

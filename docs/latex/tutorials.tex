@@ -393,6 +393,9 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{  \textcolor{comment}{// Have the QM engine perform an SCF calculation}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"SCF"}, qm\_comm);}
 \DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Have the MM engine proceed to the @FORCES node}}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"@PRE-\/FORCES"}, mm\_comm);}
+\DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Get the QM energy}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<ENERGY"}, qm\_comm);}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&qm\_energy, 1, MDI\_DOUBLE, qm\_comm);}
@@ -402,15 +405,15 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&mm\_energy, 1, MDI\_DOUBLE, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Receive the forces from the QM engine}}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<PRE-\/FORCES"}, qm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<FORCES"}, qm\_comm);}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&forces, 3*natoms, MDI\_DOUBLE, qm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Send the forces to the MM engine}}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">PRE-\/FORCES"}, mm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">FORCES"}, mm\_comm);}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&forces, 3*natoms, MDI\_DOUBLE, mm\_comm);}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Do an MD timestep}}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"ATOM\_STEP"}, mm\_comm);}
+\DoxyCodeLine{  \textcolor{comment}{// Have the MM engine proceed to the @COORDS node, which completes the timestep}}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"@COORDS"}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  cout << \textcolor{stringliteral}{"timestep: "} << iiteration << \textcolor{stringliteral}{" "} << mm\_energy << endl;}
 \DoxyCodeLine{\}}

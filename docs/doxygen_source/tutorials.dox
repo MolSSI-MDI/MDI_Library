@@ -420,6 +420,9 @@ Place it immediately after the comment that reads \"<c>Perform the simulation</c
     // Have the QM engine perform an SCF calculation
     MDI_Send_Command("SCF", qm_comm);
 
+    // Have the MM engine proceed to the @FORCES node
+    MDI_Send_Command("@PRE-FORCES", mm_comm);
+
     // Get the QM energy
     MDI_Send_Command("<ENERGY", qm_comm);
     MDI_Recv(&qm_energy, 1, MDI_DOUBLE, qm_comm);
@@ -429,15 +432,15 @@ Place it immediately after the comment that reads \"<c>Perform the simulation</c
     MDI_Recv(&mm_energy, 1, MDI_DOUBLE, mm_comm);
 
     // Receive the forces from the QM engine
-    MDI_Send_Command("<PRE-FORCES", qm_comm);
+    MDI_Send_Command("<FORCES", qm_comm);
     MDI_Recv(&forces, 3*natoms, MDI_DOUBLE, qm_comm);
 
     // Send the forces to the MM engine
-    MDI_Send_Command(">PRE-FORCES", mm_comm);
+    MDI_Send_Command(">FORCES", mm_comm);
     MDI_Send(&forces, 3*natoms, MDI_DOUBLE, mm_comm);
 
-    // Do an MD timestep
-    MDI_Send_Command("ATOM_STEP", mm_comm);
+    // Have the MM engine proceed to the @COORDS node, which completes the timestep
+    MDI_Send_Command("@COORDS", mm_comm);
 
     cout << "timestep: " << iiteration << " " << mm_energy << endl;
   }

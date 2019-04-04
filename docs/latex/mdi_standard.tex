@@ -8,9 +8,28 @@
  {\bfseries{ -\/port\+: }} When using the T\+CP communication method, specifies the port at which the driver will listen for incoming connections.
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_standard_units}{}\doxysubsection{Units}\label{mdi_standard_standard_units}
-All physical quantities communicated through M\+DI must be expressed in atomic units.\hypertarget{mdi_standard_command_list}{}\doxysubsection{Command List}\label{mdi_standard_command_list}
-The following is a list of commands that are officially part of the M\+DI standard.\hypertarget{mdi_standard_atomic_step}{}\doxysubsubsection{A\+T\+O\+M\+\_\+\+S\+T\+EP}\label{mdi_standard_atomic_step}
-The engine updates the atomic coordinates for either an MD simulation or a geometry optimization. This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed. The behavior of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command depends upon which of the {\ttfamily M\+D\+\_\+\+I\+N\+IT} or {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} commands was most recently executed. If a {\ttfamily M\+D\+\_\+\+I\+N\+IT} command was more recently executed than any {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} commands, {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} will perform one time integration step of an MD simulation. If a {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was more recently executed than any {\ttfamily M\+D\+\_\+\+I\+N\+IT} commands, {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} will perform one iteration of a geometry optimization. After either of the above behavors, the engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command.\hypertarget{mdi_standard_set_cell}{}\doxysubsubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
+All physical quantities communicated through M\+DI must be expressed in atomic units.\hypertarget{mdi_standard_standard_nodes_sec}{}\doxysubsection{Nodes}\label{mdi_standard_standard_nodes_sec}
+One of the powerful features of the M\+DI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in M\+DI engines. In particular, the \mbox{\hyperlink{mdi_standard_md_init}{M\+D\+\_\+\+I\+N\+IT}} and \mbox{\hyperlink{mdi_standard_optg_init}{O\+P\+T\+G\+\_\+\+I\+N\+IT}} commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain \char`\"{}nodes\char`\"{} and listen for new commands.
+
+The M\+DI Standard defines several nodes. Their names and when they occur are as follows\+:
+
+\begin{DoxyParagraph}{}
+{\bfseries{ @\+P\+RE-\/F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces, {\bfseries{except}} those associated with a constraint algorithm like S\+H\+A\+KE or R\+A\+T\+T\+LE. ~\newline
+ {\bfseries{ @\+F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces. ~\newline
+ {\bfseries{ @\+C\+O\+O\+R\+DS }} -\/ After updating the atomic coordinates.
+\end{DoxyParagraph}
+Several M\+DI commands are only relevant when an engine is paused at a node. The \mbox{\hyperlink{mdi_standard_send_node}{$<$@}} command instructs the engine to send the name of its node, while the \mbox{\hyperlink{mdi_standard_next_node}{@}} command instructs the engine to proceed in its simulation until it reaches the next node. In addition, there are commands associated with each type of node (\mbox{\hyperlink{mdi_standard_pre-forces_node}{@\+P\+RE-\/F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_forces_node}{@\+F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_coords_node}{@\+C\+O\+O\+R\+DS}}) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.
+
+A typical MD implementation might progress from a @\+P\+RE-\/F\+O\+R\+C\+ES node, to the @\+F\+O\+R\+C\+ES node, to the @\+C\+O\+O\+R\+DS node, and then repeat the cycle; however, this behavior is {\bfseries{not}} guaranteed. Engines are permitted to pass through nodes in whatever order the implementation dictates. When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.\hypertarget{mdi_standard_command_list}{}\doxysubsection{Command List}\label{mdi_standard_command_list}
+The following is a list of commands that are officially part of the M\+DI standard.\hypertarget{mdi_standard_next_node}{}\doxysubsubsection{@}\label{mdi_standard_next_node}
+The engine proceeds to the next node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_node}{}\doxysubsubsection{$<$@}\label{mdi_standard_send_node}
+The engine sends the driver a string that corresponds to the name of its current node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}).
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+C\+H\+AR ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH }
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_set_cell}{}\doxysubsubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
 The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
 
 \begin{DoxyParagraph}{}
@@ -44,7 +63,8 @@ The engine sends a set of atomic charges to the driver, in the same format as sp
  {\bfseries{ Quantity\+: }} {\ttfamily $<$N\+A\+T\+O\+MS} ~\newline
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_send_coords}{}\doxysubsubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
+\hypertarget{mdi_standard_coords_node}{}\doxysubsubsection{@\+C\+O\+O\+R\+DS}\label{mdi_standard_coords_node}
+The engine proceeds to the next @\+C\+O\+O\+R\+DS node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_coords}{}\doxysubsubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
 The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.
 
 \begin{DoxyParagraph}{}
@@ -69,7 +89,8 @@ The engine sends its most recently calculated energy to the driver. The {\ttfami
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_exit_command}{}\doxysubsubsection{E\+X\+IT}\label{mdi_standard_exit_command}
-The engine terminates and can no longer be sent commands.\hypertarget{mdi_standard_send_forces}{}\doxysubsubsection{$>$\+F\+O\+R\+C\+ES}\label{mdi_standard_send_forces}
+The engine terminates and can no longer be sent commands.\hypertarget{mdi_standard_forces_node}{}\doxysubsubsection{@\+F\+O\+R\+C\+ES}\label{mdi_standard_forces_node}
+The engine proceeds to the next @\+F\+O\+R\+C\+ES node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_forces}{}\doxysubsubsection{$>$\+F\+O\+R\+C\+ES}\label{mdi_standard_send_forces}
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
 
 \begin{DoxyParagraph}{}
@@ -78,7 +99,7 @@ The driver sends a set of atomic forces to the engine, which replaces its intern
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
  {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_send_add_forces}{}\doxysubsubsection{$>$+\+F\+O\+R\+C\+ES}\label{mdi_standard_send_add_forces}
+\hypertarget{mdi_standard_send_add_forces}{}\doxysubsubsection{+\+F\+O\+R\+C\+ES}\label{mdi_standard_send_add_forces}
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
 \begin{DoxyParagraph}{}
@@ -136,31 +157,6 @@ The engine performs any initialization operations that are necessary before a ge
 \begin{DoxyParagraph}{}
 {\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_send_preforces}{}\doxysubsubsection{$>$\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_send_preforces}
-The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after calculation of all forces except those related to constraint algorithms (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.) and prior to application of any constraint algorithms
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_send_add_preforces}{}\doxysubsubsection{$>$+\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_send_add_preforces}
-The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
- {\bfseries{ Injection\+: }} In response to the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command, after calculation of all forces except those related to constraint algorithms (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.) and prior to application of any constraint algorithms
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_recv_preforces}{}\doxysubsubsection{$<$\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_recv_preforces}
-The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions except those associated with any constraint algorithm (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.).
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} M\+D\+I\+\_\+\+D\+O\+U\+B\+LE ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_scf_command}{}\doxysubsubsection{S\+CF}\label{mdi_standard_scf_command}
+\hypertarget{mdi_standard_pre-forces_node}{}\doxysubsubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
+The engine proceeds to the next @\+P\+RE-\/F\+O\+R\+C\+ES node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_scf_command}{}\doxysubsubsection{S\+CF}\label{mdi_standard_scf_command}
 The engine performs a full self-\/consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command. 
