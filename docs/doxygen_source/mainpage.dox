@@ -6,11 +6,11 @@
 
 \subsection what_is_sec What is MDI?
 
-The MolSSI Driver Interface (MDI) Library is a component of the MDI Ecosystem, which seeks to simplify the process of interoperating computational molecular sciences codes.
-The MDI Ecosystem uses a Driver-Engine paradigm in which \ref main_doc_drivers_sec "drivers" orchestrate complex simulations by controlling \ref main_doc_engines_sec "engines" through the use of an API-like command set that is defined by the \ref mdi_standard "MDI Standard".
-The process of communicating commands and other data between codes is handled by the MDI Library.
+The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes.
+MDI uses a driver/engine paradigm in which \ref main_doc_drivers_sec "drivers" orchestrate complex simulations by controlling \ref main_doc_engines_sec "engines" through the use of an API-like command set that is defined by the \ref mdi_standard "MDI Standard".
+The process of communicating commands and other data between codes is handled by the \ref overview_sec "MDI Library".
 
-In total, the MDI Ecosystem consists of the following components:
+In total, MDI consists of the following components:
 
   - \ref main_doc_drivers_sec "Drivers", which are codes that control the high-level program flow of one or more other codes by sending commands through the MDI.
 
@@ -99,6 +99,51 @@ The following options are available:
     - \b argument: The port number over which the driver will listen for connections from the engine(s)
 
 For more information about running or developing codes that use the MDI Library, please see the \ref tutorials "tutorials".
+
+
+
+\section compiliation_sec Compiling
+
+The MDI Library uses CMake to compile.
+If you do not already have CMake installed on your machine, please follow the instructions on the <a href="https://cmake.org/">official website</a> to do so.
+
+With CMake installed, you can build the MDI Library as follows:
+
+\code
+git clone git@github.com:MolSSI/MDI_Library.git
+mkdir MDI_Library/build
+cd MDI_Library/build
+cmake ..
+make
+\endcode
+
+By default, the CMake build will compile all necessary wrappers to support linking to C/C++, Fortran, and Python codes.
+The build can be restricted to only support a subset of these languages by using the \c -Dlanguage option.
+For example, doing the following will compile a build that only supports linking to C/C++ codes:
+
+\code
+cmake -Dlanguage=C ..
+\endcode
+
+The following is a full list of CMake options:
+
+  - \c -Dlanguage
+
+    - \b argument: keyword
+
+       - \c C - The build will only support C/C++
+
+       - \c Fortran - The build will only support C/C++ and Fortran
+
+       - \c Python - The build will only support C/C++ and Python
+
+  - \c -Dlibtype
+
+    - \b argument: keyword
+
+      - \c SHARED - The build will be compiled as a static library (default)
+
+      - \c STATIC - The build will be compiled as a shared library (NOTE: this option prevents Python codes from using the library)
 
 
 

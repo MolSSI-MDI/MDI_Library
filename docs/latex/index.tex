@@ -1,8 +1,8 @@
 \hypertarget{index_overview_sec}{}\doxysection{Overview}\label{index_overview_sec}
 \hypertarget{index_what_is_sec}{}\doxysubsection{What is M\+D\+I?}\label{index_what_is_sec}
-The Mol\+S\+SI Driver Interface (M\+DI) Library is a component of the M\+DI Ecosystem, which seeks to simplify the process of interoperating computational molecular sciences codes. The M\+DI Ecosystem uses a Driver-\/\+Engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. The process of communicating commands and other data between codes is handled by the M\+DI Library.
+The Mol\+S\+SI Driver Interface (M\+DI) seeks to simplify the process of interoperating computational molecular sciences codes. M\+DI uses a driver/engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. The process of communicating commands and other data between codes is handled by the \mbox{\hyperlink{index_overview_sec}{M\+DI Library}}.
 
-In total, the M\+DI Ecosystem consists of the following components\+:
+In total, M\+DI consists of the following components\+:
 
 
 \begin{DoxyItemize}
@@ -69,7 +69,51 @@ Whenever a code is launched as a driver or engine, it must be provided the "{\tt
 \end{DoxyItemize}
 \end{DoxyItemize}
 
-For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{index_functions_sec}{}\doxysection{Library Functions}\label{index_functions_sec}
+For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{index_compiliation_sec}{}\doxysection{Compiling}\label{index_compiliation_sec}
+The M\+DI Library uses C\+Make to compile. If you do not already have C\+Make installed on your machine, please follow the instructions on the \href{https://cmake.org/}{\texttt{ official website}} to do so.
+
+With C\+Make installed, you can build the M\+DI Library as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone git@github.com:MolSSI/MDI\_Library.git}
+\DoxyCodeLine{mkdir MDI\_Library/build}
+\DoxyCodeLine{cd MDI\_Library/build}
+\DoxyCodeLine{cmake ..}
+\DoxyCodeLine{make}
+\end{DoxyCode}
+
+
+By default, the C\+Make build will compile all necessary wrappers to support linking to C/\+C++, Fortran, and Python codes. The build can be restricted to only support a subset of these languages by using the {\ttfamily -\/Dlanguage} option. For example, doing the following will compile a build that only supports linking to C/\+C++ codes\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake -\/Dlanguage=C ..}
+\end{DoxyCode}
+
+
+The following is a full list of C\+Make options\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily -\/Dlanguage} 
+\begin{DoxyItemize}
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily C} -\/ The build will only support C/\+C++
+\item {\ttfamily Fortran} -\/ The build will only support C/\+C++ and Fortran
+\item {\ttfamily Python} -\/ The build will only support C/\+C++ and Python
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\ttfamily -\/Dlibtype} 
+\begin{DoxyItemize}
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily S\+H\+A\+R\+ED} -\/ The build will be compiled as a static library (default)
+\item {\ttfamily S\+T\+A\+T\+IC} -\/ The build will be compiled as a shared library (N\+O\+TE\+: this option prevents Python codes from using the library)
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{index_functions_sec}{}\doxysection{Library Functions}\label{index_functions_sec}
 M\+DI function calls are made in a similar style to that of M\+PI, with M\+D\+I\+\_\+\+Send and M\+D\+I\+\_\+\+Recv functions being conceptually analagous to M\+P\+I\+\_\+\+Send and M\+P\+I\+\_\+\+Recv, respectively. The key functions are\+:
 
 

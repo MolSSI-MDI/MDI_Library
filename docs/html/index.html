@@ -69,8 +69,8 @@ $(function() {
 Overview</h1>
 <h2><a class="anchor" id="what_is_sec"></a>
 What is MDI?</h2>
-<p>The MolSSI Driver Interface (MDI) Library is a component of the MDI Ecosystem, which seeks to simplify the process of interoperating computational molecular sciences codes. The MDI Ecosystem uses a Driver-Engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The process of communicating commands and other data between codes is handled by the MDI Library.</p>
-<p>In total, the MDI Ecosystem consists of the following components:</p>
+<p>The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes. MDI uses a driver/engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The process of communicating commands and other data between codes is handled by the <a class="el" href="index.html#overview_sec">MDI Library</a>.</p>
+<p>In total, MDI consists of the following components:</p>
 <ul>
 <li><a class="el" href="index.html#main_doc_drivers_sec">Drivers</a>, which are codes that control the high-level program flow of one or more other codes by sending commands through the MDI.</li>
 <li><a class="el" href="index.html#main_doc_engines_sec">Engines</a>, which are codes capable of responding to commands from an external driver.</li>
@@ -133,6 +133,31 @@ Running With MDI</h1>
 </li>
 </ul>
 <p>For more information about running or developing codes that use the MDI Library, please see the <a class="el" href="tutorials.html">tutorials</a>.</p>
+<h1><a class="anchor" id="compiliation_sec"></a>
+Compiling</h1>
+<p>The MDI Library uses CMake to compile. If you do not already have CMake installed on your machine, please follow the instructions on the <a href="https://cmake.org/">official website</a> to do so.</p>
+<p>With CMake installed, you can build the MDI Library as follows:</p>
+<div class="fragment"><div class="line">git clone git@github.com:MolSSI/MDI_Library.git</div><div class="line">mkdir MDI_Library/build</div><div class="line">cd MDI_Library/build</div><div class="line">cmake ..</div><div class="line">make</div></div><!-- fragment --><p>By default, the CMake build will compile all necessary wrappers to support linking to C/C++, Fortran, and Python codes. The build can be restricted to only support a subset of these languages by using the <code>-Dlanguage</code> option. For example, doing the following will compile a build that only supports linking to C/C++ codes:</p>
+<div class="fragment"><div class="line">cmake -Dlanguage=C ..</div></div><!-- fragment --><p>The following is a full list of CMake options:</p>
+<ul>
+<li><code>-Dlanguage</code> <ul>
+<li><b>argument:</b> keyword<ul>
+<li><code>C</code> - The build will only support C/C++</li>
+<li><code>Fortran</code> - The build will only support C/C++ and Fortran</li>
+<li><code>Python</code> - The build will only support C/C++ and Python</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>-Dlibtype</code> <ul>
+<li><b>argument:</b> keyword<ul>
+<li><code>SHARED</code> - The build will be compiled as a static library (default)</li>
+<li><code>STATIC</code> - The build will be compiled as a shared library (NOTE: this option prevents Python codes from using the library)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h1><a class="anchor" id="functions_sec"></a>
 Library Functions</h1>
 <p>MDI function calls are made in a similar style to that of MPI, with MDI_Send and MDI_Recv functions being conceptually analagous to MPI_Send and MPI_Recv, respectively. The key functions are:</p>
