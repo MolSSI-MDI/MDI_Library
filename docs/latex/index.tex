@@ -1,7 +1,8 @@
 \hypertarget{index_overview_sec}{}\doxysection{Overview}\label{index_overview_sec}
-The Mol\+S\+SI Driver Interface (M\+DI) Library is a component of the M\+DI Project, which seeks to simplify the process of interoperating computational molecular sciences codes. The M\+DI Project uses a Driver-\/\+Engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. The M\+DI Library provides a simple set of functions for communicating commands and other data between codes.
+\hypertarget{index_what_is_sec}{}\doxysubsection{What is M\+D\+I?}\label{index_what_is_sec}
+The Mol\+S\+SI Driver Interface (M\+DI) Library is a component of the M\+DI Ecosystem, which seeks to simplify the process of interoperating computational molecular sciences codes. The M\+DI Ecosystem uses a Driver-\/\+Engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. The process of communicating commands and other data between codes is handled by the M\+DI Library.
 
-In total, the M\+DI Project consists of the following components\+:
+In total, the M\+DI Ecosystem consists of the following components\+:
 
 
 \begin{DoxyItemize}
@@ -9,20 +10,25 @@ In total, the M\+DI Project consists of the following components\+:
 \item \mbox{\hyperlink{index_main_doc_engines_sec}{Engines}}, which are codes capable of responding to commands from an external driver.
 \item \mbox{\hyperlink{mdi_standard}{The M\+DI Standard}}, which is an A\+P\+I-\/like definition of a set of commands that can be sent from a driver to an engine, and that cause the engine to respond in a clearly defined way.
 \item \mbox{\hyperlink{index_overview_sec}{The M\+DI Library}}, which is a library that enables inter-\/code communication in compliance with the M\+DI Standard.
-\end{DoxyItemize}
-
-The M\+DI Library currently supports communication via T\+CP and M\+PI. M\+DI function calls are made in a similar style to that of M\+PI, with M\+D\+I\+\_\+\+Send and M\+D\+I\+\_\+\+Recv functions being conceptually analagous to M\+P\+I\+\_\+\+Send and M\+P\+I\+\_\+\+Recv, respectively. The key functions are\+:
+\end{DoxyItemize}\hypertarget{index_what_can_do_sec}{}\doxysubsection{What can M\+D\+I do?}\label{index_what_can_do_sec}
+M\+DI is designed to support a wide variety of different calculation types, with the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}} defining a variety of simple commands that can be used to develop many drivers for many purposes. Potential application areas for M\+DI include {\itshape  ab initio} molecular dynamics (A\+I\+MD), path integral molecular dynamics (P\+I\+MD), advanced sampling, forcefield development, and Q\+M/\+MM. More specifically, here are some examples of what can be accomplished using M\+DI\+:
 
 
 \begin{DoxyItemize}
-\item \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}\+: Initialize the M\+DI Library
-\item \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}\+: Accept a new M\+DI communicator
-\item \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}\+: Send data through the M\+DI Library
-\item \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}\+: Receive data through the M\+DI Library
-\item \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\+D\+I\+\_\+\+Send\+\_\+\+Command()}}\+: Send a command through the M\+DI Library
-\item \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\+D\+I\+\_\+\+Recv\+\_\+\+Command()}}\+: Receive a command through the M\+DI Library
-\item \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor()}}\+: Obtain a conversion factor between two units (not currently implemented)
+\item Run an {\itshape  ab initio} molecular dynamics (A\+I\+MD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.
+\item Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
+\item Implement an advanced sampling technique ({\itshape i.\+e.} metadynamics, replica exchange, etc.) in a self-\/contained driver that can use other codes to compute forces.
+\item Implement a new forcefield in a self-\/contained engine that is compatible with multiple MM codes.
+\item Run Q\+M/\+MM simulations. ({\itshape not fully supported -\/ coming soon!})
 \end{DoxyItemize}
+
+Creation of unofficial extensions to the M\+DI Standard is straightforward. Feel free to contact us if your use case requires additions to the M\+DI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the M\+DI Standard.\hypertarget{index_how_start_sec}{}\doxysubsection{How do I get started?}\label{index_how_start_sec}
+For guidance on running simulations using M\+D\+I-\/based drivers and engines, please first complete the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}}. Afterwards, please read \mbox{\hyperlink{index_running_sec}{Running With M\+DI}}.
+
+If you intend to develop an M\+D\+I-\/based driver or engine, first do the above. Then, complete the \mbox{\hyperlink{tutorials_aimd_tutorial}{Driver Development Tutorial}} and read \mbox{\hyperlink{index_functions_sec}{Library Functions}}.
+
+For lists of available M\+D\+I-\/based drivers and engines, see \mbox{\hyperlink{index_main_doc_drivers_sec}{Drivers}} and \mbox{\hyperlink{index_main_doc_engines_sec}{Engines}}.\hypertarget{index_running_sec}{}\doxysection{Running With M\+DI}\label{index_running_sec}
+The M\+DI Library currently supports communication via T\+CP and M\+PI.
 
 Whenever a code is launched as a driver or engine, it must be provided the "{\ttfamily -\/mdi"} runtime option. The argument for the "{\ttfamily -\/mdi"} option is a string, {\bfseries{ in quotes}}, consisting of a sequence of options used by the M\+DI Library. The following options are available\+:
 
@@ -63,7 +69,19 @@ Whenever a code is launched as a driver or engine, it must be provided the "{\tt
 \end{DoxyItemize}
 \end{DoxyItemize}
 
-For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{index_source_sec}{}\doxysection{Source Code}\label{index_source_sec}
+For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{index_functions_sec}{}\doxysection{Library Functions}\label{index_functions_sec}
+M\+DI function calls are made in a similar style to that of M\+PI, with M\+D\+I\+\_\+\+Send and M\+D\+I\+\_\+\+Recv functions being conceptually analagous to M\+P\+I\+\_\+\+Send and M\+P\+I\+\_\+\+Recv, respectively. The key functions are\+:
+
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}\+: Initialize the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}\+: Accept a new M\+DI communicator
+\item \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}\+: Send data through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}\+: Receive data through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\+D\+I\+\_\+\+Send\+\_\+\+Command()}}\+: Send a command through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\+D\+I\+\_\+\+Recv\+\_\+\+Command()}}\+: Receive a command through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor()}}\+: Obtain a conversion factor between two units (not currently implemented)
+\end{DoxyItemize}\hypertarget{index_source_sec}{}\doxysection{Source Code}\label{index_source_sec}
 The source code of the M\+DI library is available at Git\+Hub at \href{https://github.com/MolSSI/MDI_Library}{\texttt{ https\+://github.\+com/\+Mol\+S\+S\+I/\+M\+D\+I\+\_\+\+Library}}\hypertarget{index_main_doc_sec}{}\doxysection{Main Documentation}\label{index_main_doc_sec}
 
 \begin{DoxyItemize}

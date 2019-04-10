@@ -4,11 +4,13 @@
 
 \section overview_sec Overview
 
-The MolSSI Driver Interface (MDI) Library is a component of the MDI Project, which seeks to simplify the process of interoperating computational molecular sciences codes.
-The MDI Project uses a Driver-Engine paradigm in which \ref main_doc_drivers_sec "drivers" orchestrate complex simulations by controlling \ref main_doc_engines_sec "engines" through the use of an API-like command set that is defined by the \ref mdi_standard "MDI Standard".
-The MDI Library provides a simple set of functions for communicating commands and other data between codes.
+\subsection what_is_sec What is MDI?
 
-In total, the MDI Project consists of the following components:
+The MolSSI Driver Interface (MDI) Library is a component of the MDI Ecosystem, which seeks to simplify the process of interoperating computational molecular sciences codes.
+The MDI Ecosystem uses a Driver-Engine paradigm in which \ref main_doc_drivers_sec "drivers" orchestrate complex simulations by controlling \ref main_doc_engines_sec "engines" through the use of an API-like command set that is defined by the \ref mdi_standard "MDI Standard".
+The process of communicating commands and other data between codes is handled by the MDI Library.
+
+In total, the MDI Ecosystem consists of the following components:
 
   - \ref main_doc_drivers_sec "Drivers", which are codes that control the high-level program flow of one or more other codes by sending commands through the MDI.
 
@@ -18,23 +20,41 @@ In total, the MDI Project consists of the following components:
 
   - \ref overview_sec "The MDI Library", which is a library that enables inter-code communication in compliance with the MDI Standard.
 
+
+
+\subsection what_can_do_sec What can MDI do?
+
+MDI is designed to support a wide variety of different calculation types, with the \ref mdi_standard "MDI Standard" defining a variety of simple commands that can be used to develop many drivers for many purposes.
+Potential application areas for MDI include <em> ab initio</em> molecular dynamics (AIMD), path integral molecular dynamics (PIMD), advanced sampling, forcefield development, and QM/MM.
+More specifically, here are some examples of what can be accomplished using MDI:
+
+  - Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.
+  - Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
+  - Implement an advanced sampling technique (<em>i.e.</em> metadynamics, replica exchange, etc.) in a self-contained driver that can use other codes to compute forces.
+  - Implement a new forcefield in a self-contained engine that is compatible with multiple MM codes.
+  - Run QM/MM simulations. (<em>not fully supported - coming soon!</em>)
+
+Creation of unofficial extensions to the MDI Standard is straightforward.
+Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process.
+Extensions that prove useful to the broader community may be considered for official incorporation into the MDI Standard.
+
+
+
+\subsection how_start_sec How do I get started?
+
+For guidance on running simulations using MDI-based drivers and engines, please first complete the \ref user_tutorial.
+Afterwards, please read \ref running_sec.
+
+If you intend to develop an MDI-based driver or engine, first do the above.
+Then, complete the \ref aimd_tutorial and read \ref functions_sec.
+
+For lists of available MDI-based drivers and engines, see \ref main_doc_drivers_sec and \ref main_doc_engines_sec.
+
+
+
+\section running_sec Running With MDI
+
 The MDI Library currently supports communication via TCP and MPI.
-MDI function calls are made in a similar style to that of MPI, with MDI_Send and MDI_Recv functions being conceptually analagous to MPI_Send and MPI_Recv, respectively.
-The key functions are:
-
-  - MDI_Init(): Initialize the MDI Library
-
-  - MDI_Accept_Communicator(): Accept a new MDI communicator
-
-  - MDI_Send(): Send data through the MDI Library
-
-  - MDI_Recv(): Receive data through the MDI Library
-
-  - MDI_Send_Command(): Send a command through the MDI Library
-
-  - MDI_Recv_Command(): Receive a command through the MDI Library
-
-  - MDI_Conversion_Factor(): Obtain a conversion factor between two units (not currently implemented)
 
 Whenever a code is launched as a driver or engine, it must be provided the \"\c -mdi\" runtime option.
 The argument for the \"\c -mdi\" option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library.
@@ -80,6 +100,29 @@ The following options are available:
 
 For more information about running or developing codes that use the MDI Library, please see the \ref tutorials "tutorials".
 
+
+
+\section functions_sec Library Functions
+
+MDI function calls are made in a similar style to that of MPI, with MDI_Send and MDI_Recv functions being conceptually analagous to MPI_Send and MPI_Recv, respectively.
+The key functions are:
+
+  - MDI_Init(): Initialize the MDI Library
+
+  - MDI_Accept_Communicator(): Accept a new MDI communicator
+
+  - MDI_Send(): Send data through the MDI Library
+
+  - MDI_Recv(): Receive data through the MDI Library
+
+  - MDI_Send_Command(): Send a command through the MDI Library
+
+  - MDI_Recv_Command(): Receive a command through the MDI Library
+
+  - MDI_Conversion_Factor(): Obtain a conversion factor between two units (not currently implemented)
+
+
+
 \section source_sec Source Code
 
 The source code of the MDI library is available at GitHub at https://github.com/MolSSI/MDI_Library
@@ -92,27 +135,39 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
   - \ref mdi_standard
 
+
+
 \section main_doc_engines_sec Engines
 
   - <a href="https://github.com/MolSSI/lammps/tree/mdi">LAMMPS</a>
 
   - <a href="https://github.com/MolSSI/q-e/tree/mdi">Quantum ESPRESSO</a>
 
+
+
 \section main_doc_drivers_sec Drivers
 
   - <a href="https://github.com/MolSSI/MDI_AIMD_Driver">MDI AIMD Driver</a>
+
+
 
 \section main_doc_bugs_sec Reporting Bugs, Issues, and Improvements
 
 Bugs and suggestions for improvements can be reported via <a href="https://github.com/MolSSI/MDI_Library/issues">GitHub Issues</a> or by emailing the main author directly.
 
+
+
 \section main_doc_author_sec Authors
 
 The MDI Library is primarily written by Taylor Barnes \<tbarnes1@vt.edu\>, a Software Scientist at MolSSI.
 
+
+
 \section main_doc_license_sec License
 
 The MDI Library is released under the 3-Clause BSD License. See the LICENSE file for more details.
+
+
 
 \section main_doc_ack_sec Acknowledgements
 
