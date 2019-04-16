@@ -2,23 +2,22 @@
 
 \section standard_overview Overview
 
+The MDI Standard provides a straightforward, API-like method for enabling interoperability among computational molecular sciences codes.
+It uses a driver/engine model in which a driver code controls the high-level program flow of one or more engine codes.
+The driver exercises this control through the use of \ref command_list "commands" that are defined by the MDI Standard.
+Commands are available that correspond to a variety of tasks, such as "receive a new set of nuclear coordinates from me" (\ref send_coords), "run a self-consistent field calculation" (\ref scf_command) and "send me the forces on the nuclei" (\ref recv_forces).
+The MDI standard defines the \ref standard_units "units", data types, and formatting of any data communicated between codes in response to a command.
 
-\subsection initialization_options MDI Initialization Options
 
-\par
-<b> -role: </b> The role of this code in the context of MDI communication.  Valid arguments are DRIVER and ENGINE <br>
-<b> -name: </b> A short string that identifies this code.  See the \c <NAME command for more information. <br>
-<b> -method: </b> The method by which MDI will handle communication between the codes.  Valid arguments are MPI and TCP. <br>
-<b> -hostname: </b> For ENGINES, when using the TCP communication method, specifies the hostname of the driver. <br>
-<b> -port: </b> When using the TCP communication method, specifies the port at which the driver will listen for incoming connections.
 
-\subsection standard_units Units
+
+\section standard_units Units
 
 All physical quantities communicated through MDI must be expressed in atomic units.
 
 
 
-\subsection standard_nodes_sec Nodes
+\section standard_nodes_sec Nodes
 
 One of the powerful features of the MDI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in MDI engines.
 In particular, the \ref md_init and \ref optg_init commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively.
@@ -42,176 +41,184 @@ When writing drivers, it is a best practice to avoid assumptions about the order
 
 
 
-\subsection command_list Command List
+\section standard_constants_sec Constants
+
+The following constants are defined by the MDI Standard and are accessible through the \ref library_page "MDI Library":
+
+  - \c MDI_INT - Data type identifier for integers
+  - \c MDI_DOUBLE - Data type identifier for double precision floats
+  - \c MDI_CHAR - Data type identifier for characters
+  - \c MDI_NAME_LENGTH - Maximum number of characters in the name of an MDI code (see \ref library_launching_sec) or node (see \ref standard_nodes_sec)
+  - \c MDI_COMMAND_LENGTH - Maximum number of characters in an MDI command (see \ref command_list)
+
+
+
+
+\section command_list Command List
 
 The following is a list of commands that are officially part of the MDI standard.
 
 
 
 
-\subsubsection next_node @
+\subsection next_node @
 
 The engine proceeds to the next node (see \ref standard_nodes_sec).
 This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
 
 
 
-\subsubsection send_node <@
+\subsection send_node <@
 
 The engine sends the driver a string that corresponds to the name of its current node (see \ref standard_nodes_sec).
 
 \par
-<b> Data Type: </b> MDI_CHAR <br>
+<b> Data Type: </b> \c MDI_CHAR <br>
 <b> Quantity: </b> <c> MDI_NAME_LENGTH </c>
 
 
 
-\subsubsection set_cell >CELL
+\subsection set_cell >CELL
 
 The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> 9 <br>
-<b> Injection: </b> Immediate <br>
 <b> Note: </b> In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-vectors either immediately or at the beginning of the next SCF command.
 
 
 
-\subsubsection recv_cell <CELL
+\subsection recv_cell <CELL
 
 The engine sends a set of cell vectors to the driver, in the same format as specified for the \c >CELL command.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> 9
 
 
-\subsubsection send_charges >CHARGES
+\subsection send_charges >CHARGES
 
 The driver sends a set of atomic charges to the engine, which replaces its atomic charges with those sent by the driver.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> \c <NATOMS <br>
 <b> Format: </b> Sequentially ascending order of atomic index <br>
-<b> Injection: </b> Immediate <br>
 
 
 
-\subsubsection recv_charges <CHARGES
+\subsection recv_charges <CHARGES
 
 The engine sends a set of atomic charges to the driver, in the same format as specified for the \c >CHARGES command.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> \c <NATOMS <br>
 <b> Format: </b> Sequentially ascending order of atomic index
 
 
 
-\subsubsection coords_node @COORDS
+\subsection coords_node @COORDS
 
 The engine proceeds to the next @COORDS node (see \ref standard_nodes_sec).
 This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
 
 
 
-\subsubsection send_coords >COORDS
+\subsection send_coords >COORDS
 
 The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order <br>
-<b> Injection: </b> Immediate
 
 
 
-\subsubsection recv_coords <COORDS
+\subsection recv_coords <COORDS
 
 The engine sends a set of atomic coordinates to the driver.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 
 
 
-\subsubsection recv_energy <ENERGY
+\subsection recv_energy <ENERGY
 
 The engine sends its most recently calculated energy to the driver.
 The \c MD_INIT, \c SCF, and \c ATOM_STEP commands can be used to cause the engine to calculate a new energy.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> 1
 
 
 
-\subsubsection exit_command EXIT
+\subsection exit_command EXIT
 
 The engine terminates and can no longer be sent commands.
 
 
 
-\subsubsection forces_node @FORCES
+\subsection forces_node @FORCES
 
 The engine proceeds to the next @FORCES node (see \ref standard_nodes_sec).
 This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
 
 
 
-\subsubsection send_forces >FORCES
+\subsection send_forces >FORCES
 
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
-<b> Injection: </b> In response to the \c ATOM_STEP command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
 
 
 
-\subsubsection send_add_forces +FORCES
+\subsection send_add_forces +FORCES
 
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
-<b> Injection: </b> In response to the \c ATOM_STEP command, after any normal calculation of forces and immediately prior to propagation of the atomic positions
 
 
 
-\subsubsection recv_forces <FORCES
+\subsection recv_forces <FORCES
 
 The engine calculates and sends a set of atomic forces to the driver.
 These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
 
 
 
-\subsubsection recv_masses <MASSES
+\subsection recv_masses <MASSES
 
 The engine sends the driver the mass of each of the atom types.
 
 \par
-<b> Data Type: </b> MDI_DOUBLE <br>
+<b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> <NTYPES </c> <br>
 <b> Format: </b> Sequentially ascending order of type index (see the \c <TYPES command)
 
 
 
-\subsubsection md_init MD_INIT
+\subsection md_init MD_INIT
 
 The engine performs any initialization operations that are necessary before an MD simulation can be time propagated through the use of the \c ATOM_STEP command.
 This engine calculates the energy of the system, which can be queried by the \c <ENERGY command.
@@ -221,7 +228,7 @@ This engine calculates the energy of the system, which can be queried by the \c 
 
 
 
-\subsubsection send_name <NAME
+\subsection send_name <NAME
 
 The engine sends the driver a string that corresponds to the argument of \c -name in the MDI initialization options.
 This argument allows a driver to identify the purpose of connected engine codes within the simulation.
@@ -229,32 +236,32 @@ For example, a particular QM/MM driver might require a connection with a single 
 After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
 
 \par
-<b> Data Type: </b> MDI_CHAR <br>
+<b> Data Type: </b> \c MDI_CHAR <br>
 <b> Quantity: </b> <c> MDI_NAME_LENGTH </c>
 
 
 
-\subsubsection recv_natoms <NATOMS
+\subsection recv_natoms <NATOMS
 
 The engine sends the driver the number of atoms in the engine's system.
 
 \par
-<b> Data Type: </b> MDI_INT <br>
+<b> Data Type: </b> \c MDI_INT <br>
 <b> Quantity: </b> 1
 
 
 
-\subsubsection recv_types <NTYPES
+\subsection recv_types <NTYPES
 
 The engine sends the driver the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
 
 \par
-<b> Data Type: </b> MDI_INT <br>
+<b> Data Type: </b> \c MDI_INT <br>
 <b> Quantity: </b> 1
 
 
 
-\subsubsection optg_init OPTG_INIT
+\subsection optg_init OPTG_INIT
 
 The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the \c ATOM_STEP command.
 This engine calculates the energy of the system, which can be queried by the \c <ENERGY command.
@@ -264,14 +271,14 @@ This engine calculates the energy of the system, which can be queried by the \c 
 
 
 
-\subsubsection pre-forces_node @PRE-FORCES
+\subsection pre-forces_node @PRE-FORCES
 
 The engine proceeds to the next @PRE-FORCES node (see \ref standard_nodes_sec).
 This command requires that either the \c MD_INIT command or the \c OPTG_INIT command was previously executed.
 
 
 
-\subsubsection scf_command SCF
+\subsection scf_command SCF
 
 The engine performs a full self-consistent field calculation in order to relax the electronic density distribution.
 The engine updates its energy, which can be queried with the \c <ENERGY command.

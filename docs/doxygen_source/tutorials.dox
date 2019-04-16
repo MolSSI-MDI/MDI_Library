@@ -383,7 +383,7 @@ You could then update the coordinates of the QM engine's system:
 \endcode
 
 \note
-As we will discuss later in \ref running_sec, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.
+As we will discuss later in \ref tutorials_using_sec, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.
 
 The following code will handle all of the work associated with driving an AIMD simulation.
 Place it immediately after the comment that reads \"<c>Perform the simulation</c>\".
@@ -476,7 +476,7 @@ cmake <driver_top_directory>
 make
 \endcode
 
-\subsection running_sec Using the Driver
+\subsection tutorials_using_sec Using the Driver
 
 To test the driver, you will need access to a QM engine and an MM engine.
 The \ref user_tutorial describes how to compile QE and LAMMPS for this purpose.

@@ -65,20 +65,18 @@ $(function() {
 <div class="title">Molssi Driver Interface Library Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="overview_sec"></a>
+<div class="textblock"><h1><a class="anchor" id="mainpage_overview_sec"></a>
 Overview</h1>
-<h2><a class="anchor" id="what_is_sec"></a>
-What is MDI?</h2>
-<p>The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes. MDI uses a driver/engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The process of communicating commands and other data between codes is handled by the <a class="el" href="index.html#overview_sec">MDI Library</a>.</p>
+<p>The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes. MDI uses a driver/engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The process of communicating commands and other data between codes is handled by the MDI Library.</p>
 <p>In total, MDI consists of the following components:</p>
 <ul>
-<li><a class="el" href="index.html#main_doc_drivers_sec">Drivers</a>, which are codes that control the high-level program flow of one or more other codes by sending commands through the MDI.</li>
+<li><a class="el" href="index.html#main_doc_drivers_sec">Drivers</a>, which are codes that control the high-level program flow of one or more other codes.</li>
 <li><a class="el" href="index.html#main_doc_engines_sec">Engines</a>, which are codes capable of responding to commands from an external driver.</li>
 <li><a class="el" href="mdi_standard.html">The MDI Standard</a>, which is an API-like definition of a set of commands that can be sent from a driver to an engine, and that cause the engine to respond in a clearly defined way.</li>
-<li><a class="el" href="index.html#overview_sec">The MDI Library</a>, which is a library that enables inter-code communication in compliance with the MDI Standard.</li>
+<li><a class="el" href="library_page.html">The MDI Library</a>, which is a library that enables inter-code communication in compliance with the MDI Standard.</li>
 </ul>
-<h2><a class="anchor" id="what_can_do_sec"></a>
-What can MDI do?</h2>
+<h1><a class="anchor" id="mainpage_capabilities_sec"></a>
+Capabilities</h1>
 <p>MDI is designed to support a wide variety of different calculation types, with the <a class="el" href="mdi_standard.html">MDI Standard</a> defining a variety of simple commands that can be used to develop many drivers for many purposes. Potential application areas for MDI include <em> ab initio</em> molecular dynamics (AIMD), path integral molecular dynamics (PIMD), advanced sampling, forcefield development, and QM/MM. More specifically, here are some examples of what can be accomplished using MDI:</p>
 <ul>
 <li>Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.</li>
@@ -88,88 +86,11 @@ What can MDI do?</h2>
 <li>Run QM/MM simulations. (<em>not fully supported - coming soon!</em>)</li>
 </ul>
 <p>Creation of unofficial extensions to the MDI Standard is straightforward. Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the MDI Standard.</p>
-<h2><a class="anchor" id="how_start_sec"></a>
-How do I get started?</h2>
-<p>For guidance on running simulations using MDI-based drivers and engines, please first complete the <a class="el" href="tutorials.html#user_tutorial">User Tutorial</a>. Afterwards, please read <a class="el" href="index.html#running_sec">Running With MDI</a>.</p>
-<p>If you intend to develop an MDI-based driver or engine, first do the above. Then, complete the <a class="el" href="tutorials.html#aimd_tutorial">Driver Development Tutorial</a> and read <a class="el" href="index.html#functions_sec">Library Functions</a>.</p>
+<h1><a class="anchor" id="mainpage_getting_started_sec"></a>
+Getting Started</h1>
+<p>For guidance on running simulations using MDI-based drivers and engines, please first complete the <a class="el" href="tutorials.html#user_tutorial">User Tutorial</a>. Afterwards, please read <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>.</p>
+<p>If you intend to develop an MDI-based driver or engine, first do the above. Then, complete the <a class="el" href="tutorials.html#aimd_tutorial">Driver Development Tutorial</a> and familiarize yourself with the <a class="el" href="library_page.html#functions_sec">MDI Library Functions</a>.</p>
 <p>For lists of available MDI-based drivers and engines, see <a class="el" href="index.html#main_doc_drivers_sec">Drivers</a> and <a class="el" href="index.html#main_doc_engines_sec">Engines</a>.</p>
-<h1><a class="anchor" id="running_sec"></a>
-Running With MDI</h1>
-<p>The MDI Library currently supports communication via TCP and MPI.</p>
-<p>Whenever a code is launched as a driver or engine, it must be provided the "<code>-mdi"</code> runtime option. The argument for the "<code>-mdi"</code> option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library. The following options are available:</p>
-<ul>
-<li><code>-role</code> <ul>
-<li><b>required:</b> always</li>
-<li><b>argument:</b> keyword<ul>
-<li><code>DRIVER</code> - The code will run as a driver</li>
-<li><code>ENGINE</code> - The code will run as an engine</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>-name</code> <ul>
-<li><b>required:</b> always</li>
-<li><b>argument:</b> keyword, with possible values defined in the documentation of each individual driver</li>
-</ul>
-</li>
-<li><code>-method</code> <ul>
-<li><b>required:</b> always</li>
-<li><b>argument:</b> keyword<ul>
-<li><code>TCP</code> - The codes will communicate via the TCP/IP protocol</li>
-<li><code>MPI</code> - The codes will communicate via MPI using a Multiple Programs, Multiple Data (MPMD) approach</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>-hostname</code> <ul>
-<li><b>required:</b> Only if <code>method=TCP</code> and <code>role=ENGINE</code> </li>
-<li><b>argument:</b> The hostname of the driver</li>
-</ul>
-</li>
-<li><code>-port</code> <ul>
-<li><b>required:</b> Only if <code>method=TCP</code> </li>
-<li><b>argument:</b> The port number over which the driver will listen for connections from the engine(s)</li>
-</ul>
-</li>
-</ul>
-<p>For more information about running or developing codes that use the MDI Library, please see the <a class="el" href="tutorials.html">tutorials</a>.</p>
-<h1><a class="anchor" id="compiliation_sec"></a>
-Compiling</h1>
-<p>The MDI Library uses CMake to compile. If you do not already have CMake installed on your machine, please follow the instructions on the <a href="https://cmake.org/">official website</a> to do so.</p>
-<p>With CMake installed, you can build the MDI Library as follows:</p>
-<div class="fragment"><div class="line">git clone git@github.com:MolSSI/MDI_Library.git</div><div class="line">mkdir MDI_Library/build</div><div class="line">cd MDI_Library/build</div><div class="line">cmake ..</div><div class="line">make</div></div><!-- fragment --><p>By default, the CMake build will compile all necessary wrappers to support linking to C/C++, Fortran, and Python codes. The build can be restricted to only support a subset of these languages by using the <code>-Dlanguage</code> option. For example, doing the following will compile a build that only supports linking to C/C++ codes:</p>
-<div class="fragment"><div class="line">cmake -Dlanguage=C ..</div></div><!-- fragment --><p>The following is a full list of CMake options:</p>
-<ul>
-<li><code>-Dlanguage</code> <ul>
-<li><b>argument:</b> keyword<ul>
-<li><code>C</code> - The build will only support C/C++</li>
-<li><code>Fortran</code> - The build will only support C/C++ and Fortran</li>
-<li><code>Python</code> - The build will only support C/C++ and Python</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>-Dlibtype</code> <ul>
-<li><b>argument:</b> keyword<ul>
-<li><code>SHARED</code> - The build will be compiled as a static library (default)</li>
-<li><code>STATIC</code> - The build will be compiled as a shared library (NOTE: this option prevents Python codes from using the library)</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1><a class="anchor" id="functions_sec"></a>
-Library Functions</h1>
-<p>MDI function calls are made in a similar style to that of MPI, with MDI_Send and MDI_Recv functions being conceptually analagous to MPI_Send and MPI_Recv, respectively. The key functions are:</p>
-<ul>
-<li><a class="el" href="mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a" title="Initialize communication through the MDI library.">MDI_Init()</a>: Initialize the MDI Library</li>
-<li><a class="el" href="mdi_8c.html#a570557fdd42049c5e285faf546037531" title="Accept a new MDI communicator.">MDI_Accept_Communicator()</a>: Accept a new MDI communicator</li>
-<li><a class="el" href="mdi_8c.html#a7bebce6d5fa91ee99a34fdcc5dcaedea" title="Send data through the MDI connection.">MDI_Send()</a>: Send data through the MDI Library</li>
-<li><a class="el" href="mdi_8c.html#ab73f32323a155011fcc184866215ba03" title="Receive data through the MDI connection.">MDI_Recv()</a>: Receive data through the MDI Library</li>
-<li><a class="el" href="mdi_8c.html#a77e579331a36c3f0eb7f7ff9668e789d" title="Send a command of length MDI_COMMAND_LENGTH through the MDI connection.">MDI_Send_Command()</a>: Send a command through the MDI Library</li>
-<li><a class="el" href="mdi_8c.html#ab03c0ea8beda690d6f796d3089cbfe15" title="Receive a command of length MDI_COMMAND_LENGTH through the MDI connection.">MDI_Recv_Command()</a>: Receive a command through the MDI Library</li>
-<li><a class="el" href="mdi_8c.html#a886c1af1124f55d869a6f2b80a68c5a7" title="Return a conversion factor between two units.">MDI_Conversion_Factor()</a>: Obtain a conversion factor between two units (not currently implemented)</li>
-</ul>
 <h1><a class="anchor" id="source_sec"></a>
 Source Code</h1>
 <p>The source code of the MDI library is available at GitHub at <a href="https://github.com/MolSSI/MDI_Library">https://github.com/MolSSI/MDI_Library</a></p>
@@ -182,6 +103,7 @@ Main Documentation</h1>
 </ul>
 </li>
 <li><a class="el" href="mdi_standard.html">MDI Standard</a></li>
+<li><a class="el" href="library_page.html">MDI Library</a></li>
 </ul>
 <h1><a class="anchor" id="main_doc_engines_sec"></a>
 Engines</h1>

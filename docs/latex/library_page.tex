@@ -1,0 +1,106 @@
+\hypertarget{library_page_library_overview_sec}{}\doxysection{Overview}\label{library_page_library_overview_sec}
+The M\+DI Library enables inter-\/code communication in a manner compliant with the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}.
+
+The M\+DI Library currently supports the following communication methods\+:
+
+
+\begin{DoxyItemize}
+\item T\+CP
+\item M\+PI
+\end{DoxyItemize}\hypertarget{library_page_library_launching_sec}{}\doxysection{Launching Codes with the M\+D\+I Library}\label{library_page_library_launching_sec}
+Whenever a code is launched as a driver or engine, it must be provided the "{\ttfamily -\/mdi"} runtime option. The argument for the "{\ttfamily -\/mdi"} option is a string, {\bfseries{ in quotes}}, consisting of a sequence of options used by the M\+DI Library. The following options are available\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily -\/role} 
+\begin{DoxyItemize}
+\item {\bfseries{required\+:}} always
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily D\+R\+I\+V\+ER} -\/ The code will run as a driver
+\item {\ttfamily E\+N\+G\+I\+NE} -\/ The code will run as an engine
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\ttfamily -\/name} 
+\begin{DoxyItemize}
+\item {\bfseries{required\+:}} always
+\item {\bfseries{argument\+:}} keyword, with possible values defined in the documentation of each individual driver
+\end{DoxyItemize}
+\item {\ttfamily -\/method} 
+\begin{DoxyItemize}
+\item {\bfseries{required\+:}} always
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily T\+CP} -\/ The codes will communicate via the T\+C\+P/\+IP protocol
+\item {\ttfamily M\+PI} -\/ The codes will communicate via M\+PI using a Multiple Programs, Multiple Data (M\+P\+MD) approach
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\ttfamily -\/hostname} 
+\begin{DoxyItemize}
+\item {\bfseries{required\+:}} Only if {\ttfamily method=T\+CP} and {\ttfamily role=E\+N\+G\+I\+NE} 
+\item {\bfseries{argument\+:}} The hostname of the driver
+\end{DoxyItemize}
+\item {\ttfamily -\/port} 
+\begin{DoxyItemize}
+\item {\bfseries{required\+:}} Only if {\ttfamily method=T\+CP} 
+\item {\bfseries{argument\+:}} The port number over which the driver will listen for connections from the engine(s)
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{library_page_compiliation_sec}{}\doxysection{Compiling the M\+D\+I Library}\label{library_page_compiliation_sec}
+The M\+DI Library uses C\+Make to compile. If you do not already have C\+Make installed on your machine, please follow the instructions on the \href{https://cmake.org/}{\texttt{ official website}} to do so.
+
+With C\+Make installed, you can build the M\+DI Library as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone git@github.com:MolSSI/MDI\_Library.git}
+\DoxyCodeLine{mkdir MDI\_Library/build}
+\DoxyCodeLine{cd MDI\_Library/build}
+\DoxyCodeLine{cmake ..}
+\DoxyCodeLine{make}
+\end{DoxyCode}
+
+
+By default, the C\+Make build will compile all necessary wrappers to support linking to C/\+C++, Fortran, and Python codes. The build can be restricted to only support a subset of these languages by using the {\ttfamily -\/Dlanguage} option. For example, doing the following will compile a build that only supports linking to C/\+C++ codes\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake -\/Dlanguage=C ..}
+\end{DoxyCode}
+
+
+The following is a full list of C\+Make options\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily -\/Dlanguage} 
+\begin{DoxyItemize}
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily C} -\/ The build will only support C/\+C++
+\item {\ttfamily Fortran} -\/ The build will only support C/\+C++ and Fortran
+\item {\ttfamily Python} -\/ The build will only support C/\+C++ and Python
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\ttfamily -\/Dlibtype} 
+\begin{DoxyItemize}
+\item {\bfseries{argument\+:}} keyword
+\begin{DoxyItemize}
+\item {\ttfamily S\+H\+A\+R\+ED} -\/ The build will be compiled as a shared library (default)
+\item {\ttfamily S\+T\+A\+T\+IC} -\/ The build will be compiled as a static library (N\+O\+TE\+: this option prevents Python codes from using the library)
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{library_page_functions_sec}{}\doxysection{M\+D\+I Library Functions}\label{library_page_functions_sec}
+M\+DI function calls are made in a similar style to that of M\+PI, with M\+D\+I\+\_\+\+Send and M\+D\+I\+\_\+\+Recv functions being conceptually analagous to M\+P\+I\+\_\+\+Send and M\+P\+I\+\_\+\+Recv, respectively. The key functions are\+:
+
+
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}\+: Initialize the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}\+: Accept a new M\+DI communicator
+\item \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}\+: Send data through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}\+: Receive data through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\+D\+I\+\_\+\+Send\+\_\+\+Command()}}\+: Send a command through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\+D\+I\+\_\+\+Recv\+\_\+\+Command()}}\+: Receive a command through the M\+DI Library
+\item \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor()}}\+: Obtain a conversion factor between two units (not currently implemented) 
+\end{DoxyItemize}
