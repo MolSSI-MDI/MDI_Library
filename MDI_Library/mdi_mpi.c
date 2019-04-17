@@ -17,7 +17,7 @@ MPI_Comm intra_MPI_comm = 0;
 int intra_rank = 0;
 int mpi_code_rank = 0;
 
-int gather_names(const char* hostname_ptr, int do_split) {
+int mpi_identify_codes(const char* hostname_ptr, int do_split) {
 
    int i, j;
    int driver_rank;
@@ -136,7 +136,7 @@ int gather_names(const char* hostname_ptr, int do_split) {
 }
 
 
-int split_mpi_communicator(void* world_comm) {
+int mpi_update_world_comm(void* world_comm) {
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
   *world_comm_ptr = intra_MPI_comm;
   return 0;

@@ -28,7 +28,7 @@ void sigint_handler(int dummy) {
 // TCP Method
 int tcp_socket = -1;
 
-int MDI_Listen_TCP(int port) {
+int tcp_listen(int port) {
   int ret;
   int sockfd;
   struct sockaddr_in serv_addr;
@@ -79,7 +79,7 @@ int MDI_Listen_TCP(int port) {
 }
 
 
-int MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
+int tcp_request_connection(int port, char* hostname_ptr) {
   int ret, sockfd;
 
   struct sockaddr_in driver_address;
@@ -144,7 +144,6 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
     }
   }
 
-  //Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, sockfd );
   communicator new_comm;
   new_comm.method = MDI_TCP;
   new_comm.sockfd = sockfd;
@@ -154,7 +153,7 @@ int MDI_Request_Connection_TCP(int port, char* hostname_ptr) {
 }
 
 
-int On_Accept_Communicator() {
+int tcp_accept_connection() {
   int connection;
 
   connection = accept(tcp_socket, NULL, NULL);
@@ -163,7 +162,6 @@ int On_Accept_Communicator() {
     exit(-1);
   }
 
-  //Communicator* new_communicator = new CommunicatorTCP( MDI_TCP, connection );
   communicator new_comm;
   new_comm.method = MDI_TCP;
   new_comm.sockfd = connection;
@@ -203,7 +201,6 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
    int n, nr;
    communicator* this = vector_get(&communicators, comm-1);
-   //char* buf_char = (char*)(buf);
 
    // determine the byte size of the data type being sent
    int datasize;

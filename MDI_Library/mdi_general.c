@@ -152,7 +152,7 @@ int manager_init(const char* options, void* world_comm) {
     mdi_error("Error in MDI_Init: -method option not provided");
   }
 
-  // determine whether the intra-code MPI communicator should be split by gather_names
+  // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
   int do_split = 1;
   if ( strcmp(language, "Python") == 0 ) {
     do_split = 0;
@@ -162,7 +162,7 @@ int manager_init(const char* options, void* world_comm) {
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names("", do_split);
+      mpi_identify_codes("", do_split);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -170,7 +170,7 @@ int manager_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
       }
       if ( mpi_rank == 0 ) {
-	MDI_Listen_TCP(port);
+	tcp_listen(port);
       }
     }
     else {
@@ -182,7 +182,7 @@ int manager_init(const char* options, void* world_comm) {
     // initialize this code as an engine
 
     if ( strcmp(method, "MPI") == 0 ) {
-      gather_names(name, do_split);
+      mpi_identify_codes(name, do_split);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -193,7 +193,7 @@ int manager_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
       }
       if ( mpi_rank == 0 ) {
-	MDI_Request_Connection_TCP(port, hostname);
+	tcp_request_connection(port, hostname);
       }
     }
     
@@ -205,7 +205,7 @@ int manager_init(const char* options, void* world_comm) {
   // set the MPI communicator correctly
   if ( mpi_initialized == 1 ) {
     if ( do_split == 1 ) {
-      split_mpi_communicator(world_comm);
+      mpi_update_world_comm(world_comm);
     }
   }
 
@@ -227,7 +227,7 @@ int manager_accept_communicator() {
   if ( tcp_socket > 0 ) {
 
     //accept a connection via TCP
-    On_Accept_Communicator();
+    tcp_accept_connection();
 
     // if MDI hasn't returned some connections, do that now
     if ( returned_comms < communicators.size ) {
