@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "mdi.h"
+#include "mdi_global.h"
 #include "communicator.h"
 
 /*
@@ -30,6 +31,7 @@ typedef struct dynamic_array_struct {
 } vector;
 */
 
+/*
 int vector_init(vector* v, size_t stride) {
   //initialize the vector with the given stride
   v->data = malloc(0);
@@ -78,7 +80,7 @@ void* vector_get(vector* v, int index) {
 
 
 vector communicators;
-
+*/
 
 
 

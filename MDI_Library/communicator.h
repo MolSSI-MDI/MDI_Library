@@ -9,6 +9,7 @@
 #include <mpi.h>
 #include "mdi.h"
 
+/*
 typedef struct communicator_struct {
   int method; // the type of communicator
   int sockfd; // for TCP, the socket descriptor
@@ -29,6 +30,7 @@ extern vector communicators;
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
 void* vector_get(vector* v, int index);
+*/
 
 int communicator_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int communicator_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);

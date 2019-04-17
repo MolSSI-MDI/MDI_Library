@@ -27,9 +27,7 @@ Contents:
 #include <string.h>
 #include <errno.h>
 #include "mdi.h"
-#include "communicator.h"
-#include "mdi_manager.h"
-#include "method.h"
+#include "mdi_general.h"
 
 // MDI version number
 const double MDI_VERSION = 0.5;

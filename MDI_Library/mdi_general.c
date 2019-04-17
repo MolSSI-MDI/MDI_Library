@@ -9,7 +9,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "mdi.h"
-#include "mdi_manager.h"
+#include "mdi_general.h"
+#include "mdi_global.h"
 #include "communicator.h"
 #include "method.h"
 

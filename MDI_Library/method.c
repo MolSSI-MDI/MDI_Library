@@ -20,6 +20,7 @@
 #include "mdi.h"
 #include "method.h"
 #include "communicator.h"
+#include "mdi_global.h"
 
 static int sigint_sockfd;
 void sigint_handler(int dummy) {
