@@ -291,6 +291,10 @@ int manager_recv_command(char* buf, MDI_Comm comm) {
     MDI_Send(name, MDI_NAME_LENGTH, MDI_CHAR, comm);
     return manager_recv_command(buf, comm);
   }
+  else if ( strcmp( buf, "<VERSION" ) == 0 ) {
+    MDI_Send(&MDI_VERSION, 1, MDI_DOUBLE, comm);
+    return manager_recv_command(buf, comm);
+  }
 
   return ret;
 }

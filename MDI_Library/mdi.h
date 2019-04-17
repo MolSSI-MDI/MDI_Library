@@ -31,6 +31,9 @@ typedef int MDI_Comm;
 // type of an MDI datatype handle
 typedef int MDI_Datatype;
 
+// MDI version number
+extern const double MDI_VERSION;
+
 // length of an MDI command in characters
 extern const int MDI_COMMAND_LENGTH;
 

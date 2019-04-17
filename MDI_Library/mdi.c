@@ -31,6 +31,9 @@ Contents:
 #include "mdi_manager.h"
 #include "method.h"
 
+// MDI version number
+const double MDI_VERSION = 0.5;
+
 // length of an MDI command in characters
 const int MDI_COMMAND_LENGTH = 12;
 
@@ -210,6 +213,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
 /*! \brief Return a conversion factor between two units
  *
  * The function returns the conversion factor from \p in_unit to \p out_unit.
+ * NOTE: This function is currently a placeholder.
  *
  * \param [in]       in_unit
  *                   Name of the unit to convert from.

@@ -14,6 +14,7 @@ typedef struct communicator_struct {
   int sockfd; // for TCP, the socket descriptor
   MPI_Comm mpi_comm;
   int mpi_rank;
+  double mdi_version;
 } communicator;
 
 typedef struct dynamic_array_struct {
