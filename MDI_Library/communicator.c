@@ -100,13 +100,13 @@ Communicator::Communicator(int type_) {
 int mpi_send(const void* buf, int count, MDI_Datatype datatype, communicator* this) {
 
   if (datatype == MDI_INT) {
-    MPI_Send(buf, count, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+    MPI_Send((void*)buf, count, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm);
   }
   else if (datatype == MDI_DOUBLE) {
-    MPI_Send(buf, count, MPI_DOUBLE, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+    MPI_Send((void*)buf, count, MPI_DOUBLE, (this->mpi_rank+1)%2, 0, this->mpi_comm);
   }
   else if (datatype == MDI_CHAR) {
-    MPI_Send(buf, count, MPI_CHAR, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+    MPI_Send((void*)buf, count, MPI_CHAR, (this->mpi_rank+1)%2, 0, this->mpi_comm);
   }
   else {
     mdi_error("MDI data type not recognized in mpi_send");
