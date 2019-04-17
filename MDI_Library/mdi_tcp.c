@@ -18,7 +18,6 @@
 #include <errno.h>
 #include "mdi.h"
 #include "mdi_tcp.h"
-#include "communicator.h"
 #include "mdi_global.h"
 
 static int sigint_sockfd;
@@ -171,4 +170,62 @@ int On_Accept_Communicator() {
   vector_push_back( &communicators, &new_comm );
 
   return 0;
+}
+
+
+
+int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+   int n;
+   communicator* this = vector_get(&communicators, comm-1);
+
+   // determine the byte size of the data type being sent
+   int datasize;
+   if (datatype == MDI_INT) {
+     datasize = sizeof(int);
+   }
+   else if (datatype == MDI_DOUBLE) {
+     datasize = sizeof(double);
+   }
+   else if (datatype == MDI_CHAR) {
+     datasize = sizeof(char);
+   }
+   else {
+     mdi_error("MDI data type not recognized in tcp_send");
+   }
+
+   n = write(this->sockfd,buf,count*datasize);
+   if (n < 0) { mdi_error("Error writing to socket: server has quit or connection broke"); }
+
+   return 0;
+}
+
+
+int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+   int n, nr;
+   communicator* this = vector_get(&communicators, comm-1);
+   //char* buf_char = (char*)(buf);
+
+   // determine the byte size of the data type being sent
+   int datasize;
+   if (datatype == MDI_INT) {
+     datasize = sizeof(int);
+   }
+   else if (datatype == MDI_DOUBLE) {
+     datasize = sizeof(double);
+   }
+   else if (datatype == MDI_CHAR) {
+     datasize = sizeof(char);
+   }
+   else {
+     perror("MDI data type not recognized in tcp_recv");
+   }
+
+   n = nr = read(this->sockfd,buf,count*datasize);
+
+   while (nr>0 && n<count*datasize )
+     {  nr=read(this->sockfd,buf+n,count-n); n+=nr; }
+
+   if (n == 0) { mdi_error("Error reading from socket: server has quit or connection broke"); }
+
+   return 0;
 }

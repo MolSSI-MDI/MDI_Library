@@ -13,7 +13,6 @@
 #include "mdi_global.h"
 #include "mdi_mpi.h"
 #include "mdi_tcp.h"
-#include "communicator.h"
 
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
 static int returned_comms = 0;
@@ -248,7 +247,20 @@ int manager_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     mdi_error("Called MDI_Send with incorrect rank");
   }
 
-  communicator_send(buf, count, datatype, comm);
+  //communicator_send(buf, count, datatype, comm);
+
+  communicator* this = vector_get(&communicators, comm-1);
+
+  if ( this->method == MDI_MPI ) {
+    mpi_send(buf, count, datatype, comm);
+  }
+  else if ( this->method == MDI_TCP ) {
+    tcp_send(buf, count, datatype, comm);
+  }
+  else {
+    mdi_error("MDI method not recognized in communicator_send");
+  }
+
 
   return 0;
 }
@@ -259,7 +271,20 @@ int manager_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     mdi_error("Called MDI_Recv with incorrect rank");
   }
 
-  communicator_recv(buf, count, datatype, comm);
+  //communicator_recv(buf, count, datatype, comm);
+
+  communicator* this = vector_get(&communicators, comm-1);
+
+  if ( this->method == MDI_MPI ) {
+    mpi_recv(buf, count, datatype, comm);
+  }
+  else if ( this->method == MDI_TCP ) {
+    tcp_recv(buf, count, datatype, comm);
+  }
+  else {
+    mdi_error("MDI method not recognized in communicator_send");
+  }
+
 
   return 0;
 }

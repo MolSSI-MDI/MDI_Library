@@ -11,7 +11,6 @@
 #include <errno.h>
 #include "mdi.h"
 #include "mdi_mpi.h"
-#include "communicator.h"
 #include "mdi_global.h"
 
 MPI_Comm intra_MPI_comm = 0;
@@ -140,5 +139,48 @@ int gather_names(const char* hostname_ptr, int do_split) {
 int split_mpi_communicator(void* world_comm) {
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
   *world_comm_ptr = intra_MPI_comm;
+  return 0;
+}
+
+
+
+
+
+int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  communicator* this = vector_get(&communicators, comm-1);
+
+  if (datatype == MDI_INT) {
+    MPI_Send((void*)buf, count, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+  }
+  else if (datatype == MDI_DOUBLE) {
+    MPI_Send((void*)buf, count, MPI_DOUBLE, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+  }
+  else if (datatype == MDI_CHAR) {
+    MPI_Send((void*)buf, count, MPI_CHAR, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+  }
+  else {
+    mdi_error("MDI data type not recognized in mpi_send");
+  }
+
+  return 0;
+}
+
+
+int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  communicator* this = vector_get(&communicators, comm-1);
+
+  if (datatype == MDI_INT) {
+    MPI_Recv(buf, count, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
+  }
+  else if (datatype == MDI_DOUBLE) {
+    MPI_Recv(buf, count, MPI_DOUBLE, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
+  }
+  else if (datatype == MDI_CHAR) {
+    MPI_Recv(buf, count, MPI_CHAR, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
+  }
+  else {
+    mdi_error("MDI data type not recognized in mpi_recv");
+  }
+
   return 0;
 }
