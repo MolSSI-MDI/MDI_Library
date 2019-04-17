@@ -4,12 +4,9 @@
  */
 
 #include <stdio.h>
-//#include <string.h>
-//#include <stdlib.h>
-//#include <unistd.h>
 #include "mdi_global.h"
 
-static vector communicators;
+vector communicators;
 
 int vector_init(vector* v, size_t stride) {
   //initialize the vector with the given stride

@@ -35,6 +35,11 @@ void* vector_get(vector* v, int index);
 int communicator_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int communicator_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 
+int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+
 /*
 class Communicator
 {

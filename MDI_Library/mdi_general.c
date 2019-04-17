@@ -1,6 +1,6 @@
 /*! \file
  *
- * \brief Class definition for top-level manager of MDI operations
+ * \brief Generic MDI function calls
  */
 
 #include <mpi.h>
@@ -11,8 +11,9 @@
 #include "mdi.h"
 #include "mdi_general.h"
 #include "mdi_global.h"
+#include "mdi_mpi.h"
+#include "mdi_tcp.h"
 #include "communicator.h"
-#include "method.h"
 
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
 static int returned_comms = 0;

@@ -28,6 +28,7 @@ Contents:
 #include <errno.h>
 #include "mdi.h"
 #include "mdi_general.h"
+#include "mdi_mpi.h"
 
 // MDI version number
 const double MDI_VERSION = 0.5;

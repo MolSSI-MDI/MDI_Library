@@ -1,13 +1,12 @@
 /*! \file
  *
- * \brief Class declaration for top-level manager of MDI operations
+ * \brief Generic MDI function calls
  */
 
 #ifndef MDI_GENERAL
 #define MDI_GENERAL
 
 #include "mdi.h"
-#include "method.h"
 
 int manager_init(const char* options, void* world_comm);
 int manager_accept_communicator();
