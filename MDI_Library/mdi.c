@@ -104,7 +104,7 @@ int MDI_Init(const char* options, void* world_comm)
   if ( is_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
   }
-  manager_init(options, world_comm);
+  general_init(options, world_comm);
   is_initialized = 1;
   return 0;
 }
@@ -121,7 +121,7 @@ MDI_Comm MDI_Accept_Communicator()
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
   }
-  return manager_accept_communicator();
+  return general_accept_communicator();
 }
 
 
@@ -144,7 +144,7 @@ int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
   }
-  return manager_send(buf, count, datatype, comm);
+  return general_send(buf, count, datatype, comm);
 }
 
 
@@ -167,7 +167,7 @@ int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");
   }
-  return manager_recv(buf, count, datatype, comm);
+  return general_recv(buf, count, datatype, comm);
 }
 
 
@@ -186,7 +186,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
   }
-  return manager_send_command(buf, comm);
+  return general_send_command(buf, comm);
 }
 
 
@@ -205,7 +205,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
   }
-  return manager_recv_command(buf, comm);
+  return general_recv_command(buf, comm);
 }
 
 

@@ -20,7 +20,7 @@ static int returned_comms = 0;
 //name of the driver/engine
 static char* name;
 
-int manager_init(const char* options, void* world_comm) {
+int general_init(const char* options, void* world_comm) {
   returned_comms = 0;
   vector_init(&communicators, sizeof(communicator));
 
@@ -216,7 +216,7 @@ int manager_init(const char* options, void* world_comm) {
 }
 
 
-int manager_accept_communicator() {
+int general_accept_communicator() {
   // if MDI hasn't returned some connections, do that now
   if ( returned_comms < communicators.size ) {
     returned_comms++;
@@ -242,7 +242,7 @@ int manager_accept_communicator() {
 }
 
 
-int manager_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Send with incorrect rank");
   }
@@ -266,7 +266,7 @@ int manager_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 }
 
 
-int manager_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Recv with incorrect rank");
   }
@@ -290,7 +290,7 @@ int manager_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 }
 
 
-int manager_send_command(const char* buf, MDI_Comm comm) {
+int general_send_command(const char* buf, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Send_Command with incorrect rank");
   }
@@ -298,29 +298,28 @@ int manager_send_command(const char* buf, MDI_Comm comm) {
   char command[MDI_COMMAND_LENGTH];
 
   strcpy(command, buf);
-  int ret = manager_send( command, count, MDI_CHAR, comm );
+  int ret = general_send( command, count, MDI_CHAR, comm );
   return ret;
 }
 
 
-int manager_recv_command(char* buf, MDI_Comm comm) {
+int general_recv_command(char* buf, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Recv_Command with incorrect rank");
   }
   int count = MDI_COMMAND_LENGTH;
   int datatype = MDI_CHAR;
 
-  //return manager_recv( buf, count, datatype, comm );
-  int ret = manager_recv( buf, count, datatype, comm );
+  int ret = general_recv( buf, count, datatype, comm );
 
   // check if this command corresponds to one of MDI's standard built-in commands
   if ( strcmp( buf, "<NAME" ) == 0 ) {
     MDI_Send(name, MDI_NAME_LENGTH, MDI_CHAR, comm);
-    return manager_recv_command(buf, comm);
+    return general_recv_command(buf, comm);
   }
   else if ( strcmp( buf, "<VERSION" ) == 0 ) {
     MDI_Send(&MDI_VERSION, 1, MDI_DOUBLE, comm);
-    return manager_recv_command(buf, comm);
+    return general_recv_command(buf, comm);
   }
 
   return ret;
