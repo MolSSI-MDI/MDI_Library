@@ -8,7 +8,6 @@ import ctypes
 # attempt to import numpy
 try:
     import numpy as np
-    import numpy.ctypeslib as npct
     use_numpy = True
 except ImportError:
     use_numpy = False
@@ -188,6 +187,8 @@ def MDI_Recv(arg2, arg3, arg4):
         arg_size = ctypes.sizeof(arg_type)
         arg1 = (ctypes.c_char*(arg2*arg_size))()
     ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(mdi_type), arg4)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Recv failed")
 
     if (arg3 == MDI_INT_NUMPY):
         return arg1
@@ -223,6 +224,8 @@ def MDI_Recv_Command(arg2):
     arg1 = (ctypes.c_char*(MDI_COMMAND_LENGTH*arg_size))()
 
     ret = mdi.MDI_Recv_Command(arg1, arg2)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Recv_Command failed")
 
     result = ctypes.cast(arg1, ctypes.POINTER(ctypes.c_char*MDI_COMMAND_LENGTH)).contents
     presult = ctypes.cast(result, ctypes.c_char_p).value
