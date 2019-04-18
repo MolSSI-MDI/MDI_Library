@@ -68,18 +68,15 @@ int mpi_identify_codes(const char* hostname_ptr, int do_split) {
      //create communicators
      for (i=0; i<world_size; i++) {
        char name[MDI_NAME_LENGTH];
-       //char* name = new char[MDI_NAME_LENGTH];
        memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
        int found = 0;
        for (j=0; j<i; j++) {
 	 char prev_name[MDI_NAME_LENGTH];
-	 //char* prev_name = new char[MDI_NAME_LENGTH];
 	 memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(name, prev_name) == 0 ) {
 	   found = 1;
 	 }
-	 //delete[] prev_name;
        }
 
        // check if this rank is the first instance of a new production code
@@ -88,14 +85,12 @@ int mpi_identify_codes(const char* hostname_ptr, int do_split) {
 	 memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
 	 nunique_names++;
 	 char my_name[MDI_NAME_LENGTH];
-	 //char* my_name = new char[MDI_NAME_LENGTH];
 	 memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 	 if ( strcmp(my_name, name) == 0 ) {
 	   mpi_code_rank = nunique_names;
 	 }
-	 //delete[] my_name;
 
-         // create a communicator to handle communication with this production code
+         // create an MPI communicator for inter-code communication
 	 MPI_Comm new_mpi_comm;
 	 int color = 0;
 	 int key = 0;
@@ -108,17 +103,21 @@ int mpi_identify_codes(const char* hostname_ptr, int do_split) {
 	 }
          MPI_Comm_split(MPI_COMM_WORLD, color, key, &new_mpi_comm);
 
+	 // create an MDI communicator for communication between the driver and engine
 	 if ( world_rank == driver_rank || world_rank == i ) {
-	   //Communicator* new_communicator = new CommunicatorMPI( MDI_MPI, new_mpi_comm, key );
 	   communicator new_comm;
 	   new_comm.method = MDI_MPI;
 	   new_comm.mpi_comm = new_mpi_comm;
 	   new_comm.mpi_rank = key;
 	   vector_push_back( &communicators, &new_comm );
+
+	   // communicate the version number between codes
+	   communicator* comm = vector_get(&communicators, communicators.size-1);
+	   mpi_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
+	   mpi_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
 	 }
        }
 
-       //delete[] name;
      }
 
      if ( do_split == 1 ) {

@@ -149,6 +149,11 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   new_comm.sockfd = sockfd;
   vector_push_back( &communicators, &new_comm );
 
+  // communicate the version number between codes
+  communicator* comm = vector_get(&communicators, communicators.size-1);
+  tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
+  tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
+
   return 0;
 }
 
@@ -166,6 +171,11 @@ int tcp_accept_connection() {
   new_comm.method = MDI_TCP;
   new_comm.sockfd = connection;
   vector_push_back( &communicators, &new_comm );
+
+  // communicate the version number between codes
+  communicator* comm = vector_get(&communicators, communicators.size-1);
+  tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
+  tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
 
   return 0;
 }
