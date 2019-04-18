@@ -1,6 +1,8 @@
 MolSSI Driver Interface (MDI) Library
 =====================================
 
+[![Build Status](https://travis-ci.org/MolSSI/MDI_Library.svg?branch=master)](https://travis-ci.org/MolSSI/MDI_Library)
+
 ## Overview
 
 A library that enables code interoperability via the MolSSI Driver Interface.
