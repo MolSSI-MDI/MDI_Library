@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi.c File Reference</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,49 +66,54 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">mdi.c File Reference</div>  </div>
+<div class="title">mdi.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p>Functions callable by users of the MolSSI Driver Interface.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
-<code>#include &lt;stdlib.h&gt;</code><br />
-<code>#include &lt;string.h&gt;</code><br />
-<code>#include &lt;errno.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="mdi_8h_source.html">mdi.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="mdi__general_8h_source.html">mdi_general.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="mdi__mpi_8h_source.html">mdi_mpi.h</a>&quot;</code><br />
-</div><table class="memberdecls">
+
+<p><a href="mdi_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a1e32e59600ec28db26d2030ed1f07405"><td class="memItemLeft" align="right" valign="top"><a id="a1e32e59600ec28db26d2030ed1f07405"></a>
+typedef int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Comm</b></td></tr>
+<tr class="separator:a1e32e59600ec28db26d2030ed1f07405"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac21e92dac26281afcfb69edfa19691b2"><td class="memItemLeft" align="right" valign="top"><a id="ac21e92dac26281afcfb69edfa19691b2"></a>
+typedef int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Datatype</b></td></tr>
+<tr class="separator:ac21e92dac26281afcfb69edfa19691b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ae05ae377fa8de592f62c696c041b7d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a> (const char *options, void *world_comm)</td></tr>
+<tr class="memdesc:ae05ae377fa8de592f62c696c041b7d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="#ae05ae377fa8de592f62c696c041b7d0a">More...</a><br /></td></tr>
+<tr class="separator:ae05ae377fa8de592f62c696c041b7d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af13ac32549acde2f176447663449ae8d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#af13ac32549acde2f176447663449ae8d">MDI_Accept_Communicator</a> ()</td></tr>
+<tr class="memdesc:af13ac32549acde2f176447663449ae8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a new MDI communicator.  <a href="#af13ac32549acde2f176447663449ae8d">More...</a><br /></td></tr>
+<tr class="separator:af13ac32549acde2f176447663449ae8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#a7bebce6d5fa91ee99a34fdcc5dcaedea">MDI_Send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
+<tr class="memdesc:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through the MDI connection.  <a href="#a7bebce6d5fa91ee99a34fdcc5dcaedea">More...</a><br /></td></tr>
+<tr class="separator:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab73f32323a155011fcc184866215ba03"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#ab73f32323a155011fcc184866215ba03">MDI_Recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
+<tr class="memdesc:ab73f32323a155011fcc184866215ba03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through the MDI connection.  <a href="#ab73f32323a155011fcc184866215ba03">More...</a><br /></td></tr>
+<tr class="separator:ab73f32323a155011fcc184866215ba03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77e579331a36c3f0eb7f7ff9668e789d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#a77e579331a36c3f0eb7f7ff9668e789d">MDI_Send_Command</a> (const char *buf, MDI_Comm comm)</td></tr>
+<tr class="memdesc:a77e579331a36c3f0eb7f7ff9668e789d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#a77e579331a36c3f0eb7f7ff9668e789d">More...</a><br /></td></tr>
+<tr class="separator:a77e579331a36c3f0eb7f7ff9668e789d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab03c0ea8beda690d6f796d3089cbfe15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#ab03c0ea8beda690d6f796d3089cbfe15">MDI_Recv_Command</a> (char *buf, MDI_Comm comm)</td></tr>
+<tr class="memdesc:ab03c0ea8beda690d6f796d3089cbfe15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#ab03c0ea8beda690d6f796d3089cbfe15">More...</a><br /></td></tr>
+<tr class="separator:ab03c0ea8beda690d6f796d3089cbfe15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a886c1af1124f55d869a6f2b80a68c5a7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8h.html#a886c1af1124f55d869a6f2b80a68c5a7">MDI_Conversion_Factor</a> (char *in_unit, char *out_unit)</td></tr>
+<tr class="memdesc:a886c1af1124f55d869a6f2b80a68c5a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a conversion factor between two units.  <a href="#a886c1af1124f55d869a6f2b80a68c5a7">More...</a><br /></td></tr>
+<tr class="separator:a886c1af1124f55d869a6f2b80a68c5a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memItemLeft" align="right" valign="top"><a id="a10ceefc902b8eb71e2383d7ac95de2c7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_error</b> (const char *message)</td></tr>
 <tr class="separator:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae05ae377fa8de592f62c696c041b7d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a> (const char *options, void *world_comm)</td></tr>
-<tr class="memdesc:ae05ae377fa8de592f62c696c041b7d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="#ae05ae377fa8de592f62c696c041b7d0a">More...</a><br /></td></tr>
-<tr class="separator:ae05ae377fa8de592f62c696c041b7d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a570557fdd42049c5e285faf546037531"><td class="memItemLeft" align="right" valign="top">MDI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a570557fdd42049c5e285faf546037531">MDI_Accept_Communicator</a> ()</td></tr>
-<tr class="memdesc:a570557fdd42049c5e285faf546037531"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a new MDI communicator.  <a href="#a570557fdd42049c5e285faf546037531">More...</a><br /></td></tr>
-<tr class="separator:a570557fdd42049c5e285faf546037531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a7bebce6d5fa91ee99a34fdcc5dcaedea">MDI_Send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through the MDI connection.  <a href="#a7bebce6d5fa91ee99a34fdcc5dcaedea">More...</a><br /></td></tr>
-<tr class="separator:a7bebce6d5fa91ee99a34fdcc5dcaedea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab73f32323a155011fcc184866215ba03"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ab73f32323a155011fcc184866215ba03">MDI_Recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:ab73f32323a155011fcc184866215ba03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through the MDI connection.  <a href="#ab73f32323a155011fcc184866215ba03">More...</a><br /></td></tr>
-<tr class="separator:ab73f32323a155011fcc184866215ba03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77e579331a36c3f0eb7f7ff9668e789d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a77e579331a36c3f0eb7f7ff9668e789d">MDI_Send_Command</a> (const char *buf, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a77e579331a36c3f0eb7f7ff9668e789d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#a77e579331a36c3f0eb7f7ff9668e789d">More...</a><br /></td></tr>
-<tr class="separator:a77e579331a36c3f0eb7f7ff9668e789d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab03c0ea8beda690d6f796d3089cbfe15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ab03c0ea8beda690d6f796d3089cbfe15">MDI_Recv_Command</a> (char *buf, MDI_Comm comm)</td></tr>
-<tr class="memdesc:ab03c0ea8beda690d6f796d3089cbfe15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#ab03c0ea8beda690d6f796d3089cbfe15">More...</a><br /></td></tr>
-<tr class="separator:ab03c0ea8beda690d6f796d3089cbfe15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a886c1af1124f55d869a6f2b80a68c5a7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a886c1af1124f55d869a6f2b80a68c5a7">MDI_Conversion_Factor</a> (char *in_unit, char *out_unit)</td></tr>
-<tr class="memdesc:a886c1af1124f55d869a6f2b80a68c5a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a conversion factor between two units.  <a href="#a886c1af1124f55d869a6f2b80a68c5a7">More...</a><br /></td></tr>
-<tr class="separator:a886c1af1124f55d869a6f2b80a68c5a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0accde4a79728e8eaab73632daba3c15"><td class="memItemLeft" align="right" valign="top"><a id="a0accde4a79728e8eaab73632daba3c15"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Get_MPI_Code_Rank</b> ()</td></tr>
 <tr class="separator:a0accde4a79728e8eaab73632daba3c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,86 +124,86 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Set_MPI_Intra_Ran
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a46ca4941c9a9f8948fdbc24f5e15ba68"><td class="memItemLeft" align="right" valign="top"><a id="a46ca4941c9a9f8948fdbc24f5e15ba68"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_VERSION</b> = 0.5</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_VERSION</b></td></tr>
 <tr class="separator:a46ca4941c9a9f8948fdbc24f5e15ba68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5fcebdb64c7844358e07e880bcb15c2"><td class="memItemLeft" align="right" valign="top"><a id="ae5fcebdb64c7844358e07e880bcb15c2"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_COMMAND_LENGTH</b> = 12</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_COMMAND_LENGTH</b></td></tr>
 <tr class="separator:ae5fcebdb64c7844358e07e880bcb15c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ca47e903a62de4298767ef3d446901d"><td class="memItemLeft" align="right" valign="top"><a id="a8ca47e903a62de4298767ef3d446901d"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NAME_LENGTH</b> = 12</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NAME_LENGTH</b></td></tr>
 <tr class="separator:a8ca47e903a62de4298767ef3d446901d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96172c3cbab16d7b9e80288a7c94f241"><td class="memItemLeft" align="right" valign="top"><a id="a96172c3cbab16d7b9e80288a7c94f241"></a>
-const MDI_Comm&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NULL_COMM</b> = 0</td></tr>
+const MDI_Comm&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NULL_COMM</b></td></tr>
 <tr class="separator:a96172c3cbab16d7b9e80288a7c94f241"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab88e0bb1563ba9fa73ffc49a704e43ad"><td class="memItemLeft" align="right" valign="top"><a id="ab88e0bb1563ba9fa73ffc49a704e43ad"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_INT</b> = 0</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_INT</b></td></tr>
 <tr class="separator:ab88e0bb1563ba9fa73ffc49a704e43ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d0c16831c941e5b870461394bfe5c82"><td class="memItemLeft" align="right" valign="top"><a id="a3d0c16831c941e5b870461394bfe5c82"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_DOUBLE</b> = 1</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_DOUBLE</b></td></tr>
 <tr class="separator:a3d0c16831c941e5b870461394bfe5c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a508f568d6a6cba24d6015347d6c1469e"><td class="memItemLeft" align="right" valign="top"><a id="a508f568d6a6cba24d6015347d6c1469e"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_CHAR</b> = 2</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_CHAR</b></td></tr>
 <tr class="separator:a508f568d6a6cba24d6015347d6c1469e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1be671d11b9e0779a06a79abeceadd39"><td class="memItemLeft" align="right" valign="top"><a id="a1be671d11b9e0779a06a79abeceadd39"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_INT_NUMPY</b> = 3</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_INT_NUMPY</b></td></tr>
 <tr class="separator:a1be671d11b9e0779a06a79abeceadd39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7153f9eda53a820f81f59ddb484ced"><td class="memItemLeft" align="right" valign="top"><a id="aaf7153f9eda53a820f81f59ddb484ced"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_DOUBLE_NUMPY</b> = 4</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_DOUBLE_NUMPY</b></td></tr>
 <tr class="separator:aaf7153f9eda53a820f81f59ddb484ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa69d77aeaab908058636a4420b02ae90"><td class="memItemLeft" align="right" valign="top"><a id="aa69d77aeaab908058636a4420b02ae90"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_TCP</b> = 1</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_TCP</b></td></tr>
 <tr class="separator:aa69d77aeaab908058636a4420b02ae90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9eaa23189e2bf8a92c2136ee0112a87"><td class="memItemLeft" align="right" valign="top"><a id="ac9eaa23189e2bf8a92c2136ee0112a87"></a>
-const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_MPI</b> = 2</td></tr>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_MPI</b></td></tr>
 <tr class="separator:ac9eaa23189e2bf8a92c2136ee0112a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a323937b5877ef054dc40e584ef767070"><td class="memItemLeft" align="right" valign="top"><a id="a323937b5877ef054dc40e584ef767070"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_METER_TO_BOHR</b> = 1.88972612546e10</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_METER_TO_BOHR</b></td></tr>
 <tr class="separator:a323937b5877ef054dc40e584ef767070"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7fb89aef0dfdc7caffe72d45b7d01d7"><td class="memItemLeft" align="right" valign="top"><a id="ad7fb89aef0dfdc7caffe72d45b7d01d7"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_ANGSTROM_TO_BOHR</b> = 1.88972612546</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_ANGSTROM_TO_BOHR</b></td></tr>
 <tr class="separator:ad7fb89aef0dfdc7caffe72d45b7d01d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a119f46a44d6d6f594d44c8b897f9e8"><td class="memItemLeft" align="right" valign="top"><a id="a9a119f46a44d6d6f594d44c8b897f9e8"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_SECOND_TO_AUT</b> = 4.1341374575751e16</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_SECOND_TO_AUT</b></td></tr>
 <tr class="separator:a9a119f46a44d6d6f594d44c8b897f9e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a191439a37d783bcfd2c4e4989b5b2cde"><td class="memItemLeft" align="right" valign="top"><a id="a191439a37d783bcfd2c4e4989b5b2cde"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_PICOSECOND_TO_AUT</b> = 4.1341374575751e4</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_PICOSECOND_TO_AUT</b></td></tr>
 <tr class="separator:a191439a37d783bcfd2c4e4989b5b2cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d051436cb3d2b9b9fb8528ecc70f1e6"><td class="memItemLeft" align="right" valign="top"><a id="a3d051436cb3d2b9b9fb8528ecc70f1e6"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NEWTON_TO_AUF</b> = 1.213780478e7</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_NEWTON_TO_AUF</b></td></tr>
 <tr class="separator:a3d051436cb3d2b9b9fb8528ecc70f1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae40c10c77dccde242ad259fd26fd3619"><td class="memItemLeft" align="right" valign="top"><a id="ae40c10c77dccde242ad259fd26fd3619"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_JOULE_TO_HARTREE</b> = 2.29371265835792e17</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_JOULE_TO_HARTREE</b></td></tr>
 <tr class="separator:ae40c10c77dccde242ad259fd26fd3619"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61e9917a12f86564edf9ef812d92fa4a"><td class="memItemLeft" align="right" valign="top"><a id="a61e9917a12f86564edf9ef812d92fa4a"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KJ_TO_HARTREE</b> = 2.29371265835792e20</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KJ_TO_HARTREE</b></td></tr>
 <tr class="separator:a61e9917a12f86564edf9ef812d92fa4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27ea253093fdfdad5592091fe1f62870"><td class="memItemLeft" align="right" valign="top"><a id="a27ea253093fdfdad5592091fe1f62870"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KJPERMOL_TO_HARTREE</b> = 3.80879947807451e-4</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KJPERMOL_TO_HARTREE</b></td></tr>
 <tr class="separator:a27ea253093fdfdad5592091fe1f62870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4f6e7e76d00e3222ec87ab235388435"><td class="memItemLeft" align="right" valign="top"><a id="ae4f6e7e76d00e3222ec87ab235388435"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KCALPERMOL_TO_HARTREE</b> = 1.5941730215480900e-3</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KCALPERMOL_TO_HARTREE</b></td></tr>
 <tr class="separator:ae4f6e7e76d00e3222ec87ab235388435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad50c706a104210c0c9d38ad2ee3b47dd"><td class="memItemLeft" align="right" valign="top"><a id="ad50c706a104210c0c9d38ad2ee3b47dd"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_EV_TO_HARTREE</b> = 3.67493266806491e-2</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_EV_TO_HARTREE</b></td></tr>
 <tr class="separator:ad50c706a104210c0c9d38ad2ee3b47dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87b24c6eb5745296de8723de5cb7208d"><td class="memItemLeft" align="right" valign="top"><a id="a87b24c6eb5745296de8723de5cb7208d"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_RYDBERG_TO_HARTREE</b> = 0.5</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_RYDBERG_TO_HARTREE</b></td></tr>
 <tr class="separator:a87b24c6eb5745296de8723de5cb7208d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40cfa9151564f12c5a0ebbee1697381e"><td class="memItemLeft" align="right" valign="top"><a id="a40cfa9151564f12c5a0ebbee1697381e"></a>
-const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KELVIN_TO_HARTREE</b> = 3.16681050847798e-6</td></tr>
+const double&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_KELVIN_TO_HARTREE</b></td></tr>
 <tr class="separator:a40cfa9151564f12c5a0ebbee1697381e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions callable by users of the MolSSI Driver Interface. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a570557fdd42049c5e285faf546037531"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a570557fdd42049c5e285faf546037531">&#9670;&nbsp;</a></span>MDI_Accept_Communicator()</h2>
+<a id="af13ac32549acde2f176447663449ae8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af13ac32549acde2f176447663449ae8d">&#9670;&nbsp;</a></span>MDI_Accept_Communicator()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">MDI_Comm MDI_Accept_Communicator </td>
+          <td class="memname">int MDI_Accept_Communicator </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

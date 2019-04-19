@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "cdmt",
   1: "cdm",
   2: "m",
-  3: "cm",
+  3: "m",
   4: "m",
   5: "mt"
 };

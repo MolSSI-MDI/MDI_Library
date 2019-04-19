@@ -10,9 +10,8 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$errno.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}communicator.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}mdi\+\_\+manager.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}method.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+general.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+mpi.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -41,6 +40,9 @@ void {\bfseries M\+D\+I\+\_\+\+Set\+\_\+\+M\+P\+I\+\_\+\+Intra\+\_\+\+Rank} (int
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mdi_8c_a46ca4941c9a9f8948fdbc24f5e15ba68}\label{mdi_8c_a46ca4941c9a9f8948fdbc24f5e15ba68}} 
+const double {\bfseries M\+D\+I\+\_\+\+V\+E\+R\+S\+I\+ON} = 0.\+5
 \item 
 \mbox{\Hypertarget{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}\label{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}} 
 const int {\bfseries M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} = 12
@@ -136,7 +138,7 @@ The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between 
 
 Return a conversion factor between two units. 
 
-The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}.
+The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}. N\+O\+TE\+: This function is currently a placeholder.
 
 
 \begin{DoxyParams}[1]{Parameters}

@@ -1,3 +1,8 @@
+/*! \file
+ *
+ * \brief Functions callable by users of the MolSSI Driver Interface
+ */
+
 /* ----------------------------------------------------------------------
    MDI - MolSSI Driver Interface
    https://molssi.org/, Molecular Sciences Software Institute

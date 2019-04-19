@@ -1,0 +1,40 @@
+\hypertarget{mdi__tcp_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.h File Reference}
+\label{mdi__tcp_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.h}}
+
+
+T\+CP communication implementation.  
+
+
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}\label{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}} 
+void {\bfseries sigint\+\_\+handler} (int dummy)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}\label{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}} 
+int {\bfseries tcp\+\_\+listen} (int port)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}} 
+int {\bfseries tcp\+\_\+request\+\_\+connection} (int port, char $\ast$hostname\+\_\+ptr)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}\label{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}} 
+int {\bfseries tcp\+\_\+accept\+\_\+connection} ()
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}\label{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}} 
+int {\bfseries tcp\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}\label{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}} 
+int {\bfseries tcp\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}\label{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}} 
+int {\bfseries tcp\+\_\+socket}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+T\+CP communication implementation. 
+

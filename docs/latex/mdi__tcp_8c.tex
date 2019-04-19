@@ -1,0 +1,51 @@
+\hypertarget{mdi__tcp_8c}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.c File Reference}
+\label{mdi__tcp_8c}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.c@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.c}}
+
+
+T\+CP communication implementation.  
+
+
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$netdb.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+tcp.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a47630f8f823b92ad9333c3c5f130cf90}\label{mdi__tcp_8c_a47630f8f823b92ad9333c3c5f130cf90}} 
+void {\bfseries sigint\+\_\+handler} (int dummy)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a87d3f43c944c0e9a5d67c9a4157afe71}\label{mdi__tcp_8c_a87d3f43c944c0e9a5d67c9a4157afe71}} 
+int {\bfseries tcp\+\_\+listen} (int port)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8c_a4db9ca27b7a981a696957689cd35b20d}} 
+int {\bfseries tcp\+\_\+request\+\_\+connection} (int port, char $\ast$hostname\+\_\+ptr)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_ad9d6ed32787d7fb6cd0a555fd8b63b91}\label{mdi__tcp_8c_ad9d6ed32787d7fb6cd0a555fd8b63b91}} 
+int {\bfseries tcp\+\_\+accept\+\_\+connection} ()
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a9a12e10900350ba498b9ac152371fc42}\label{mdi__tcp_8c_a9a12e10900350ba498b9ac152371fc42}} 
+int {\bfseries tcp\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_ac808d4f5841695e1ea60cbbf23ef77f7}\label{mdi__tcp_8c_ac808d4f5841695e1ea60cbbf23ef77f7}} 
+int {\bfseries tcp\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a58bcdde21e0687d1b5634b673451357a}\label{mdi__tcp_8c_a58bcdde21e0687d1b5634b673451357a}} 
+int {\bfseries tcp\+\_\+socket} = -\/1
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+T\+CP communication implementation. 
+
