@@ -183,7 +183,7 @@ int tcp_accept_connection() {
 
 
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-   size_t n;
+   int n;
    communicator* this = vector_get(&communicators, comm-1);
    size_t count_t = count;
 
