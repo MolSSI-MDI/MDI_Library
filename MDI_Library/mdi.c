@@ -30,27 +30,34 @@ Contents:
 #include "mdi_general.h"
 #include "mdi_mpi.h"
 
-// MDI version number
+/*! \brief MDI version number */
 const double MDI_VERSION = 0.5;
 
-// length of an MDI command in characters
+/*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;
 
-// length of an MDI name in characters
+/*! \brief length of an MDI name in characters */
 const int MDI_NAME_LENGTH = 12;
 
-// value of a null communicator
+/*! \brief value of a null communicator */
 const MDI_Comm MDI_NULL_COMM = 0;
 
 // MDI data types
+/*! \brief integer data type */
 const int MDI_INT          = 0;
+/*! \brief double precision float data type */
 const int MDI_DOUBLE       = 1;
+/*! \brief character data type */
 const int MDI_CHAR         = 2;
+/*! \brief NumPy integer data type */
 const int MDI_INT_NUMPY    = 3;
+/*! \brief NumPy double precision float data type */
 const int MDI_DOUBLE_NUMPY = 4;
 
 // MDI communication types
+/*! \brief TCP/IP communication method */
 const int MDI_TCP    = 1;
+/*! \brief MPI communication method */
 const int MDI_MPI    = 2;
 
 /*----------------------*/
@@ -58,29 +65,46 @@ const int MDI_MPI    = 2;
 /*----------------------*/
 
 // length
+/*! \brief conversion factor between meters and bohr */
 const double MDI_METER_TO_BOHR = 1.88972612546e10;
+/*! \brief conversion factor between Angstroms and bohr */
 const double MDI_ANGSTROM_TO_BOHR = 1.88972612546;
 
 // time
+/*! \brief conversion factor between seconds and atomic units of time */
 const double MDI_SECOND_TO_AUT = 4.1341374575751e16;
+/*! \brief conversion factor between picoseconds and atomic units of time */
 const double MDI_PICOSECOND_TO_AUT = 4.1341374575751e4;
 
 // force
+/*! \brief conversion factor between newtons and atomic units of force */
 const double MDI_NEWTON_TO_AUF = 1.213780478e7;
 
 // energy
+/*! \brief conversion factor between joules and hartrees */
 const double MDI_JOULE_TO_HARTREE = 2.29371265835792e17;
+/*! \brief conversion factor between kilojoules and hartrees */
 const double MDI_KJ_TO_HARTREE = 2.29371265835792e20;
+/*! \brief conversion factor between kilojoules/mol and hartrees */
 const double MDI_KJPERMOL_TO_HARTREE = 3.80879947807451e-4;
+/*! \brief conversion factor between kcal/mol and hartrees */
 const double MDI_KCALPERMOL_TO_HARTREE = 1.5941730215480900e-3;
+/*! \brief conversion factor between eV and hartrees */
 const double MDI_EV_TO_HARTREE = 3.67493266806491e-2;
+/*! \brief conversion factor between rydbergs and hartrees */
 const double MDI_RYDBERG_TO_HARTREE = 0.5;
+/*! \brief conversion factor between Kelvin and hartrees */
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
 static int is_initialized = 0;
 
 
+/*! \brief Print error message and exit
+ *
+ * \param [in]       message
+ *                   Message printed before exiting.
+ */
 void mdi_error(const char* message) {
   perror(message);
   exit(1);
@@ -93,7 +117,7 @@ void mdi_error(const char* message) {
  * The function returns \p 0 on a success.
  *
  * \param [in]       options
- *                   Options describing the communication method used to connect to codes
+ *                   Options describing the communication method used to connect to codes.
  * \param [in, out]  world_comm
  *                   On input, the MPI communicator that spans all of the codes.
  *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
@@ -231,11 +255,27 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 }
 
 
+/*! \brief Return order of this code within all codes represented in MPI_COMM_WORLD
+ *
+ * When using the MPI communication method, all processes across all codes are spawned 
+ * as part of the same MPI_COMM_WORLD.
+ * This funciton returns the order of the code associated with the calling process 
+ * within MPI_COMM_WORLD.
+ *
+ */
 int MDI_Get_MPI_Code_Rank()
 {
   return mpi_code_rank;
 }
 
+/*! \brief Return the rank of the calling process within its associated code
+ *
+ * When using the MPI communication method, all processes across all codes are spawned 
+ * as part of the same MPI_COMM_WORLD.
+ * This funciton returns the rank of the calling process within the subset of processes
+ * associated with the same code.
+ *
+ */
 void MDI_Set_MPI_Intra_Rank(int rank)
 {
   intra_rank = rank;

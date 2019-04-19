@@ -10,23 +10,74 @@ Global structures used by M\+DI.
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}\label{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}} 
-int {\bfseries vector\+\_\+init} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, size\+\_\+t stride)
-\item 
-\mbox{\Hypertarget{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}\label{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}} 
-int {\bfseries vector\+\_\+push\+\_\+back} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$element)
-\item 
-\mbox{\Hypertarget{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}\label{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}} 
-void $\ast$ {\bfseries vector\+\_\+get} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
-\end{DoxyCompactItemize}
+int \mbox{\hyperlink{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}{vector\+\_\+init}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, size\+\_\+t stride)
+\begin{DoxyCompactList}\small\item\em Initialize memory allocation for a vector structure. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}{vector\+\_\+push\+\_\+back}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$element)
+\begin{DoxyCompactList}\small\item\em Append a new element to the end of the vector. \end{DoxyCompactList}\item 
+void $\ast$ \mbox{\hyperlink{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
+\begin{DoxyCompactList}\small\item\em Return a pointer to an element of a vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}\label{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}} 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} {\bfseries communicators}
-\end{DoxyCompactItemize}
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}{communicators}}
+\begin{DoxyCompactList}\small\item\em Vector containing all M\+DI communicators. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 Global structures used by M\+DI. 
 
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}\label{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}} 
+\index{mdi\_global.c@{mdi\_global.c}!vector\_get@{vector\_get}}
+\index{vector\_get@{vector\_get}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{vector\_get()}{vector\_get()}}
+{\footnotesize\ttfamily void$\ast$ vector\+\_\+get (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v,  }\item[{int}]{index }\end{DoxyParamCaption})}
+
+
+
+Return a pointer to an element of a vector. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector \\
+\hline
+\mbox{\texttt{ in}}  & {\em index} & Index of the element within the vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}\label{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}} 
+\index{mdi\_global.c@{mdi\_global.c}!vector\_init@{vector\_init}}
+\index{vector\_init@{vector\_init}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{vector\_init()}{vector\_init()}}
+{\footnotesize\ttfamily int vector\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v,  }\item[{size\+\_\+t}]{stride }\end{DoxyParamCaption})}
+
+
+
+Initialize memory allocation for a vector structure. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector structure for which the memory will be allocated \\
+\hline
+\mbox{\texttt{ in}}  & {\em stride} & Stride of the vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}\label{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}} 
+\index{mdi\_global.c@{mdi\_global.c}!vector\_push\_back@{vector\_push\_back}}
+\index{vector\_push\_back@{vector\_push\_back}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{vector\_push\_back()}{vector\_push\_back()}}
+{\footnotesize\ttfamily int vector\+\_\+push\+\_\+back (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v,  }\item[{void $\ast$}]{element }\end{DoxyParamCaption})}
+
+
+
+Append a new element to the end of the vector. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector to which the element will be appended \\
+\hline
+\mbox{\texttt{ in}}  & {\em element} & Pointer to the element that will be appended to the vector \\
+\hline
+\end{DoxyParams}

@@ -9,26 +9,136 @@ Generic M\+DI function calls.
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}\label{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}} 
-int {\bfseries general\+\_\+init} (const char $\ast$options, void $\ast$world\+\_\+comm)
-\item 
-\mbox{\Hypertarget{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}\label{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}} 
-int {\bfseries general\+\_\+accept\+\_\+communicator} ()
-\item 
-\mbox{\Hypertarget{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}\label{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}} 
-int {\bfseries general\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\item 
-\mbox{\Hypertarget{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}\label{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}} 
-int {\bfseries general\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\item 
-\mbox{\Hypertarget{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}\label{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}} 
-int {\bfseries general\+\_\+send\+\_\+command} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
-\item 
-\mbox{\Hypertarget{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}\label{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}} 
-int {\bfseries general\+\_\+recv\+\_\+command} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
-\end{DoxyCompactItemize}
+int \mbox{\hyperlink{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}{general\+\_\+init}} (const char $\ast$options, void $\ast$world\+\_\+comm)
+\begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}{general\+\_\+accept\+\_\+communicator}} ()
+\begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}{general\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send data through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}{general\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Receive data through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}{general\+\_\+send\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}{general\+\_\+recv\+\_\+command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 Generic M\+DI function calls. 
 
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}\label{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_accept\_communicator@{general\_accept\_communicator}}
+\index{general\_accept\_communicator@{general\_accept\_communicator}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_accept\_communicator()}{general\_accept\_communicator()}}
+{\footnotesize\ttfamily int general\+\_\+accept\+\_\+communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Accept a new M\+DI communicator. 
+
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}\label{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_init@{general\_init}}
+\index{general\_init@{general\_init}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_init()}{general\_init()}}
+{\footnotesize\ttfamily int general\+\_\+init (\begin{DoxyParamCaption}\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{world\+\_\+comm }\end{DoxyParamCaption})}
+
+
+
+Initialize communication through the M\+DI library. 
+
+If using the \char`\"{}-\/method M\+P\+I\char`\"{} option, this function must be called by all ranks. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em options} & Options describing the communication method used to connect to codes. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em world\+\_\+comm} & On input, the M\+PI communicator that spans all of the codes. On output, the M\+PI communicator that spans the single code corresponding to the calling rank. Only used if the \char`\"{}-\/method M\+P\+I\char`\"{} option is provided. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}\label{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_recv@{general\_recv}}
+\index{general\_recv@{general\_recv}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_recv()}{general\_recv()}}
+{\footnotesize\ttfamily int general\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Receive data through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}\label{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_recv\_command@{general\_recv\_command}}
+\index{general\_recv\_command@{general\_recv\_command}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_recv\_command()}{general\_recv\_command()}}
+{\footnotesize\ttfamily int general\+\_\+recv\+\_\+command (\begin{DoxyParamCaption}\item[{char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}\label{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_send@{general\_send}}
+\index{general\_send@{general\_send}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_send()}{general\_send()}}
+{\footnotesize\ttfamily int general\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send data through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}\label{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_send\_command@{general\_send\_command}}
+\index{general\_send\_command@{general\_send\_command}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_send\_command()}{general\_send\_command()}}
+{\footnotesize\ttfamily int general\+\_\+send\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}

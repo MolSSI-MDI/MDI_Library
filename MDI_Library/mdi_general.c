@@ -20,6 +20,18 @@ static int returned_comms = 0;
 //name of the driver/engine
 static char* name;
 
+/*! \brief Initialize communication through the MDI library
+ *
+ * If using the "-method MPI" option, this function must be called by all ranks.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       options
+ *                   Options describing the communication method used to connect to codes.
+ * \param [in, out]  world_comm
+ *                   On input, the MPI communicator that spans all of the codes.
+ *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
+ *                   Only used if the "-method MPI" option is provided.
+ */
 int general_init(const char* options, void* world_comm) {
   returned_comms = 0;
   vector_init(&communicators, sizeof(communicator));
@@ -216,6 +228,12 @@ int general_init(const char* options, void* world_comm) {
 }
 
 
+/*! \brief Accept a new MDI communicator
+ *
+ * The function returns an MDI_Comm that describes a connection between two codes.
+ * If no new communicators are available, the function returns \p MDI_NULL_COMM.
+ *
+ */
 int general_accept_communicator() {
   // if MDI hasn't returned some connections, do that now
   if ( returned_comms < communicators.size ) {
@@ -242,6 +260,20 @@ int general_accept_communicator() {
 }
 
 
+/*! \brief Send data through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
 int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Send with incorrect rank");
@@ -266,6 +298,20 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 }
 
 
+/*! \brief Receive data through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
 int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Recv with incorrect rank");
@@ -290,6 +336,16 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 }
 
 
+/*! \brief Send a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
 int general_send_command(const char* buf, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Send_Command with incorrect rank");
@@ -303,6 +359,16 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 }
 
 
+/*! \brief Receive a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
 int general_recv_command(char* buf, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Recv_Command with incorrect rank");

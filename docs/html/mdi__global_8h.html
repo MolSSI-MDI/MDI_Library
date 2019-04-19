@@ -99,25 +99,138 @@ typedef struct <a class="el" href="structdynamic__array__struct.html">dynamic_ar
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6c749e461a84e471bcab02d8115a1dfa"><td class="memItemLeft" align="right" valign="top"><a id="a6c749e461a84e471bcab02d8115a1dfa"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>vector_init</b> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, size_t stride)</td></tr>
+<tr class="memitem:a6c749e461a84e471bcab02d8115a1dfa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a6c749e461a84e471bcab02d8115a1dfa">vector_init</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, size_t stride)</td></tr>
+<tr class="memdesc:a6c749e461a84e471bcab02d8115a1dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize memory allocation for a vector structure.  <a href="#a6c749e461a84e471bcab02d8115a1dfa">More...</a><br /></td></tr>
 <tr class="separator:a6c749e461a84e471bcab02d8115a1dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53e2a90f50c539f8239225d6f39c0213"><td class="memItemLeft" align="right" valign="top"><a id="a53e2a90f50c539f8239225d6f39c0213"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>vector_push_back</b> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, void *element)</td></tr>
+<tr class="memitem:a53e2a90f50c539f8239225d6f39c0213"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a53e2a90f50c539f8239225d6f39c0213">vector_push_back</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, void *element)</td></tr>
+<tr class="memdesc:a53e2a90f50c539f8239225d6f39c0213"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a new element to the end of the vector.  <a href="#a53e2a90f50c539f8239225d6f39c0213">More...</a><br /></td></tr>
 <tr class="separator:a53e2a90f50c539f8239225d6f39c0213"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memItemLeft" align="right" valign="top"><a id="a75ffb2ad4233613bd0c97d40b1c68611"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>vector_get</b> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
+<tr class="memitem:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a75ffb2ad4233613bd0c97d40b1c68611">vector_get</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
+<tr class="memdesc:a75ffb2ad4233613bd0c97d40b1c68611"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to an element of a vector.  <a href="#a75ffb2ad4233613bd0c97d40b1c68611">More...</a><br /></td></tr>
 <tr class="separator:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:aae895626c3da244edb20b7ffcca7d05f"><td class="memItemLeft" align="right" valign="top"><a id="aae895626c3da244edb20b7ffcca7d05f"></a>
-<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><b>communicators</b></td></tr>
+<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#aae895626c3da244edb20b7ffcca7d05f">communicators</a></td></tr>
+<tr class="memdesc:aae895626c3da244edb20b7ffcca7d05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all MDI communicators. <br /></td></tr>
 <tr class="separator:aae895626c3da244edb20b7ffcca7d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Global structures used by MDI. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a75ffb2ad4233613bd0c97d40b1c68611"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75ffb2ad4233613bd0c97d40b1c68611">&#9670;&nbsp;</a></span>vector_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* vector_get </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a pointer to an element of a vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>Index of the element within the vector </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6c749e461a84e471bcab02d8115a1dfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c749e461a84e471bcab02d8115a1dfa">&#9670;&nbsp;</a></span>vector_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vector_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>stride</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize memory allocation for a vector structure. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector structure for which the memory will be allocated </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">stride</td><td>Stride of the vector </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a53e2a90f50c539f8239225d6f39c0213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53e2a90f50c539f8239225d6f39c0213">&#9670;&nbsp;</a></span>vector_push_back()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vector_push_back </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>element</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Append a new element to the end of the vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector to which the element will be appended </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">element</td><td>Pointer to the element that will be appended to the vector </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

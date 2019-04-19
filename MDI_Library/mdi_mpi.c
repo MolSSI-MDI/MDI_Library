@@ -13,11 +13,30 @@
 #include "mdi_mpi.h"
 #include "mdi_global.h"
 
+/*! \brief MPI communicator corresponding to all processes created by the same code as this process */
 MPI_Comm intra_MPI_comm = 0;
+
+/*! \brief Rank of this process within its associated code */
 int intra_rank = 0;
+
+/*! \brief Order of this code within all codes represented by MPI_COMM_WORLD */
 int mpi_code_rank = 0;
 
-int mpi_identify_codes(const char* hostname_ptr, int do_split) {
+/*! \brief Identify groups of processes belonging to the same codes
+ *
+ * If do_split == 1, this function will call MPI_Comm_split to create an intra-code communicator for each code.
+ *
+ * \param [in]       code_name
+ *                   MDI name of the code associated with this process, indicated by the user with the -name 
+ *                   runtime option.
+ * \param [in]       do_split
+ *                   Flag to indicate whether MPI_Comm_split should be called in order to create an intra-code
+ *                   communicator for each code.
+ *                   The intra-code communicators are created only if do_split == 1.
+ *                   Should normally be set to 1, unless the code associated with this process is a Python code.
+ *                   In that case, the Python wrapper code will do the split instead.
+ */
+int mpi_identify_codes(const char* code_name, int do_split) {
 
    int i, j;
    int driver_rank;
@@ -34,7 +53,7 @@ int mpi_identify_codes(const char* hostname_ptr, int do_split) {
    //create the name of this process
    char buffer[MDI_NAME_LENGTH];
    //char* buffer = new char[MDI_NAME_LENGTH];
-   strcpy(buffer, hostname_ptr);
+   strcpy(buffer, code_name);
 
    char* names = NULL;
    names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
@@ -135,6 +154,12 @@ int mpi_identify_codes(const char* hostname_ptr, int do_split) {
 }
 
 
+/*! \brief Update a pointer to MPI_COMM_WORLD to instead point to the intra-code MPI communicator
+ *
+ * \param [in, out]  world_comm
+ *                   On input, the MPI communicator that spans all of the codes.
+ *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
+ */
 int mpi_update_world_comm(void* world_comm) {
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
   *world_comm_ptr = intra_MPI_comm;
@@ -145,6 +170,17 @@ int mpi_update_world_comm(void* world_comm) {
 
 
 
+/*! \brief Send data through an MDI connection, using MPI
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
 int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   communicator* this = vector_get(&communicators, comm-1);
 
@@ -165,6 +201,17 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 }
 
 
+/*! \brief Receive data through an MDI connection, using MPI
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
 int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   communicator* this = vector_get(&communicators, comm-1);
 

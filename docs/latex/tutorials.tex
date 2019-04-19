@@ -276,9 +276,9 @@ Sending the "{\ttfamily $<$N\+A\+ME"} command to an engine and then receiving th
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keywordtype}{char}* code\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[MDI\_NAME\_LENGTH];}
+\DoxyCodeLine{\textcolor{keywordtype}{char}* code\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[\mbox{\hyperlink{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{MDI\_NAME\_LENGTH}}];}
 \DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<NAME"}, comm);}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(code\_name, MDI\_NAME\_LENGTH, MDI\_CHAR, comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(code\_name, \mbox{\hyperlink{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{MDI\_NAME\_LENGTH}}, \mbox{\hyperlink{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}{MDI\_CHAR}}, comm);}
 \end{DoxyCode}
 
 
@@ -287,27 +287,27 @@ The following code accepts connections from two engines and assigns the communic
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// Connect to the engines}}
-\DoxyCodeLine{MDI\_Comm mm\_comm = MDI\_NULL\_COMM;}
-\DoxyCodeLine{MDI\_Comm qm\_comm = MDI\_NULL\_COMM;}
+\DoxyCodeLine{MDI\_Comm mm\_comm = \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}};}
+\DoxyCodeLine{MDI\_Comm qm\_comm = \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}};}
 \DoxyCodeLine{\textcolor{keywordtype}{int} nengines = 2;}
 \DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} iengine=0; iengine < nengines; iengine++) \{}
 \DoxyCodeLine{  MDI\_Comm comm = \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{MDI\_Accept\_Communicator}}();}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Determine the name of this engine}}
-\DoxyCodeLine{  \textcolor{keywordtype}{char}* engine\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[MDI\_NAME\_LENGTH];}
+\DoxyCodeLine{  \textcolor{keywordtype}{char}* engine\_name = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[\mbox{\hyperlink{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{MDI\_NAME\_LENGTH}}];}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<NAME"}, comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(engine\_name, MDI\_NAME\_LENGTH, MDI\_CHAR, comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(engine\_name, \mbox{\hyperlink{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{MDI\_NAME\_LENGTH}}, \mbox{\hyperlink{mdi_8c_a508f568d6a6cba24d6015347d6c1469e}{MDI\_CHAR}}, comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  cout << \textcolor{stringliteral}{"Engine name: "} << engine\_name << endl;}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"MM"}) == 0 ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != MDI\_NULL\_COMM ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}} ) \{}
 \DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second MM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    mm\_comm = comm;}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{  \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"QM"}) == 0 ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != MDI\_NULL\_COMM ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}} ) \{}
 \DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second QM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    qm\_comm = comm;}
@@ -330,7 +330,7 @@ Keep in mind that the driver doesn\textquotesingle{}t know anything about the si
 \DoxyCodeLine{\textcolor{comment}{// Receive the number of atoms from the MM engine}}
 \DoxyCodeLine{\textcolor{keywordtype}{int} natoms;}
 \DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<NATOMS"}, mm\_comm);}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&natoms, 1, MDI\_INT, mm\_comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&natoms, 1, \mbox{\hyperlink{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}{MDI\_INT}}, mm\_comm);}
 \end{DoxyCode}
 
 
@@ -341,7 +341,7 @@ Similarly, to learn the coordinates of the atoms in the MM engine\textquotesingl
 \DoxyCodeLine{\textcolor{comment}{// Receive the coordinates from the MM engine}}
 \DoxyCodeLine{\textcolor{keywordtype}{double} coords[3*natoms];}
 \DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<COORDS"}, mm\_comm);}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&coords, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&coords, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, mm\_comm);}
 \end{DoxyCode}
 
 
@@ -351,7 +351,7 @@ You could then update the coordinates of the QM engine\textquotesingle{}s system
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// Send the coordinates to the QM engine}}
 \DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">COORDS"}, qm\_comm);}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&coords, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&coords, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, qm\_comm);}
 \end{DoxyCode}
 
 
@@ -370,7 +370,7 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// Receive the number of atoms from the MM engine}}
 \DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<NATOMS"}, mm\_comm);}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&natoms, 1, MDI\_INT, mm\_comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&natoms, 1, \mbox{\hyperlink{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}{MDI\_INT}}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// Allocate the arrays for the coordinates and forces}}
 \DoxyCodeLine{\textcolor{keywordtype}{double} coords[3*natoms];}
@@ -384,11 +384,11 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Receive the coordinates from the MM engine}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<COORDS"}, mm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&coords, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&coords, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Send the coordinates to the QM engine}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">COORDS"}, qm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&coords, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&coords, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, qm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Have the QM engine perform an SCF calculation}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"SCF"}, qm\_comm);}
@@ -398,19 +398,19 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Get the QM energy}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<ENERGY"}, qm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&qm\_energy, 1, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&qm\_energy, 1, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, qm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Get the MM energy}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<ENERGY"}, mm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&mm\_energy, 1, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&mm\_energy, 1, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Receive the forces from the QM engine}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"<FORCES"}, qm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&forces, 3*natoms, MDI\_DOUBLE, qm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{MDI\_Recv}}(\&forces, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, qm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Send the forces to the MM engine}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">FORCES"}, mm\_comm);}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&forces, 3*natoms, MDI\_DOUBLE, mm\_comm);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&forces, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Have the MM engine proceed to the @COORDS node, which completes the timestep}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"@COORDS"}, mm\_comm);}

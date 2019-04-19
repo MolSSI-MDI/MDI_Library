@@ -9,32 +9,119 @@ T\+CP communication implementation.
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}\label{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}} 
-void {\bfseries sigint\+\_\+handler} (int dummy)
-\item 
-\mbox{\Hypertarget{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}\label{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}} 
-int {\bfseries tcp\+\_\+listen} (int port)
-\item 
-\mbox{\Hypertarget{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}} 
-int {\bfseries tcp\+\_\+request\+\_\+connection} (int port, char $\ast$hostname\+\_\+ptr)
-\item 
+void \mbox{\hyperlink{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}{sigint\+\_\+handler}} (int dummy)
+\begin{DoxyCompactList}\small\item\em S\+I\+G\+I\+NT handler to ensure the socket is closed on termination. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}{tcp\+\_\+listen}} (int port)
+\begin{DoxyCompactList}\small\item\em Begin listening for incoming T\+CP connections. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}{tcp\+\_\+request\+\_\+connection}} (int port, char $\ast$hostname\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Request a connection over T\+CP. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}\label{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}} 
-int {\bfseries tcp\+\_\+accept\+\_\+connection} ()
-\item 
-\mbox{\Hypertarget{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}\label{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}} 
-int {\bfseries tcp\+\_\+send} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\item 
-\mbox{\Hypertarget{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}\label{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}} 
-int {\bfseries tcp\+\_\+recv} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\end{DoxyCompactItemize}
+int \mbox{\hyperlink{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}{tcp\+\_\+accept\+\_\+connection}} ()
+\begin{DoxyCompactList}\small\item\em Accept a T\+CP connection request. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}{tcp\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}{tcp\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Receive data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\Hypertarget{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}\label{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}} 
-int {\bfseries tcp\+\_\+socket}
-\end{DoxyCompactItemize}
+int \mbox{\hyperlink{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}{tcp\+\_\+socket}}
+\begin{DoxyCompactList}\small\item\em Socket over which a driver will listen for incoming connections. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 T\+CP communication implementation. 
 
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}\label{mdi__tcp_8h_a47630f8f823b92ad9333c3c5f130cf90}} 
+\index{mdi\_tcp.h@{mdi\_tcp.h}!sigint\_handler@{sigint\_handler}}
+\index{sigint\_handler@{sigint\_handler}!mdi\_tcp.h@{mdi\_tcp.h}}
+\doxysubsubsection{\texorpdfstring{sigint\_handler()}{sigint\_handler()}}
+{\footnotesize\ttfamily void sigint\+\_\+handler (\begin{DoxyParamCaption}\item[{int}]{dummy }\end{DoxyParamCaption})}
+
+
+
+S\+I\+G\+I\+NT handler to ensure the socket is closed on termination. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dummy} & Dummy argument. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}\label{mdi__tcp_8h_a87d3f43c944c0e9a5d67c9a4157afe71}} 
+\index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_listen@{tcp\_listen}}
+\index{tcp\_listen@{tcp\_listen}!mdi\_tcp.h@{mdi\_tcp.h}}
+\doxysubsubsection{\texorpdfstring{tcp\_listen()}{tcp\_listen()}}
+{\footnotesize\ttfamily int tcp\+\_\+listen (\begin{DoxyParamCaption}\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Begin listening for incoming T\+CP connections. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em port} & Port to listen over \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}\label{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}} 
+\index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_recv@{tcp\_recv}}
+\index{tcp\_recv@{tcp\_recv}!mdi\_tcp.h@{mdi\_tcp.h}}
+\doxysubsubsection{\texorpdfstring{tcp\_recv()}{tcp\_recv()}}
+{\footnotesize\ttfamily int tcp\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Receive data through an M\+DI connection, using T\+CP. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}} 
+\index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_request\_connection@{tcp\_request\_connection}}
+\index{tcp\_request\_connection@{tcp\_request\_connection}!mdi\_tcp.h@{mdi\_tcp.h}}
+\doxysubsubsection{\texorpdfstring{tcp\_request\_connection()}{tcp\_request\_connection()}}
+{\footnotesize\ttfamily int tcp\+\_\+request\+\_\+connection (\begin{DoxyParamCaption}\item[{int}]{port,  }\item[{char $\ast$}]{hostname\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Request a connection over T\+CP. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em port} & Port over which the driver is listening \\
+\hline
+\mbox{\texttt{ in}}  & {\em hostname\+\_\+ptr} & Hostname of the driver \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}\label{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}} 
+\index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_send@{tcp\_send}}
+\index{tcp\_send@{tcp\_send}!mdi\_tcp.h@{mdi\_tcp.h}}
+\doxysubsubsection{\texorpdfstring{tcp\_send()}{tcp\_send()}}
+{\footnotesize\ttfamily int tcp\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send data through an M\+DI connection, using T\+CP. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}

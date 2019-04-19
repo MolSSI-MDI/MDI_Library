@@ -21,13 +21,23 @@
 #include "mdi_global.h"
 
 static int sigint_sockfd;
+/*! \brief SIGINT handler to ensure the socket is closed on termination
+ *
+ * \param [in]       dummy
+ *                   Dummy argument.
+ */
 void sigint_handler(int dummy) {
   close(sigint_sockfd);
 }
 
-// TCP Method
+/*! \brief Socket over which a driver will listen for incoming connections */
 int tcp_socket = -1;
 
+/*! \brief Begin listening for incoming TCP connections
+ *
+ * \param [in]       port
+ *                   Port to listen over
+ */
 int tcp_listen(int port) {
   int ret;
   int sockfd;
@@ -79,6 +89,13 @@ int tcp_listen(int port) {
 }
 
 
+/*! \brief Request a connection over TCP
+ *
+ * \param [in]       port
+ *                   Port over which the driver is listening
+ * \param [in]       hostname_ptr
+ *                   Hostname of the driver
+ */
 int tcp_request_connection(int port, char* hostname_ptr) {
   int ret, sockfd;
 
@@ -158,6 +175,8 @@ int tcp_request_connection(int port, char* hostname_ptr) {
 }
 
 
+/*! \brief Accept a TCP connection request
+ */
 int tcp_accept_connection() {
   int connection;
 
@@ -182,6 +201,17 @@ int tcp_accept_connection() {
 
 
 
+/*! \brief Send data through an MDI connection, using TCP
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
    int n;
    communicator* this = vector_get(&communicators, comm-1);
@@ -209,6 +239,17 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 }
 
 
+/*! \brief Receive data through an MDI connection, using TCP
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
    size_t n, nr;
    communicator* this = vector_get(&communicators, comm-1);

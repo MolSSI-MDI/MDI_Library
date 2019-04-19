@@ -1,11 +1,12 @@
 var indexSectionsWithContent =
 {
-  0: "cdmt",
+  0: "cdgimstv",
   1: "cdm",
   2: "m",
   3: "m",
-  4: "m",
-  5: "mt"
+  4: "gmstv",
+  5: "cdimst",
+  6: "mt"
 };
 
 var indexSectionNames =
@@ -15,7 +16,8 @@ var indexSectionNames =
   2: "namespaces",
   3: "files",
   4: "functions",
-  5: "pages"
+  5: "variables",
+  6: "pages"
 };
 
 var indexSectionLabels =
@@ -25,6 +27,7 @@ var indexSectionLabels =
   2: "Namespaces",
   3: "Files",
   4: "Functions",
-  5: "Pages"
+  5: "Variables",
+  6: "Pages"
 };
 
