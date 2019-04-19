@@ -76,3 +76,14 @@ void* vector_get(vector* v, int index) {
   }
   return ( void* )( v->data + (index * v->stride) );
 }
+
+
+/*! \brief Print error message and exit
+ *
+ * \param [in]       message
+ *                   Message printed before exiting.
+ */
+void mdi_error(const char* message) {
+  perror(message);
+  exit(1);
+}

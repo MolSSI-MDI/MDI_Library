@@ -10,13 +10,12 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$errno.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+general.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+mpi.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}{mdi\+\_\+error}} (const char $\ast$message)
-\begin{DoxyCompactList}\small\item\em Print error message and exit. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init}} (const char $\ast$options, void $\ast$world\+\_\+comm)
 \begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
 M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator}} ()
@@ -142,21 +141,6 @@ The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\tt
 \mbox{\texttt{ in}}  & {\em in\+\_\+unit} & Name of the unit to convert from. \\
 \hline
 \mbox{\texttt{ in}}  & {\em out\+\_\+unit} & Name of the unit to convert to. \\
-\hline
-\end{DoxyParams}
-\mbox{\Hypertarget{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}\label{mdi_8c_a10ceefc902b8eb71e2383d7ac95de2c7}} 
-\index{mdi.c@{mdi.c}!mdi\_error@{mdi\_error}}
-\index{mdi\_error@{mdi\_error}!mdi.c@{mdi.c}}
-\doxysubsubsection{\texorpdfstring{mdi\_error()}{mdi\_error()}}
-{\footnotesize\ttfamily void mdi\+\_\+error (\begin{DoxyParamCaption}\item[{const char $\ast$}]{message }\end{DoxyParamCaption})}
-
-
-
-Print error message and exit. 
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em message} & Message printed before exiting. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi_8c_a0accde4a79728e8eaab73632daba3c15}\label{mdi_8c_a0accde4a79728e8eaab73632daba3c15}} 

@@ -40,4 +40,6 @@ int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
 void* vector_get(vector* v, int index);
 
+void mdi_error(const char* message);
+
 #endif

@@ -47,8 +47,7 @@ int tcp_listen(int port) {
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
-    perror("Could not create socket");
-    return -1;
+    mdi_error("Could not create socket");
   }
 
   // ensure that the socket is closed on sigint
@@ -64,22 +63,19 @@ int tcp_listen(int port) {
   // enable reuse of the socket
   ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse_value, sizeof(int));
   if (ret < 0) {
-    perror("Could not reuse socket");
-    return -1;
+    mdi_error("Could not reuse socket");
   }
 
   // bind the socket
   ret = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
   if (ret < 0) {
-    perror("Could not bind socket");
-    return -1;
+    mdi_error("Could not bind socket");
   }
 
   // start listening (the second argument is the backlog size)
   ret = listen(sockfd, 20);
   if (ret < 0) {
-    perror("Could not listen");
-    return -1;
+    mdi_error("Could not listen");
   }
 
   //return sockfd;
@@ -105,12 +101,10 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   // get the address of the host
   host_ptr = gethostbyname((char*) hostname_ptr);
   if (host_ptr == NULL) {
-    perror("Error in gethostbyname");
-    return -1;
+    mdi_error("Error in gethostbyname");
   }
   if (host_ptr->h_addrtype != AF_INET) {
-    perror("Unkown address type");
-    return -1;
+    mdi_error("Unkown address type");
   }
 
   bzero((char *) &driver_address, sizeof(driver_address));
@@ -122,8 +116,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
-    perror("Could not create socket");
-    return -1;
+    mdi_error("Could not create socket");
   }
 
   // connect to the driver
@@ -138,21 +131,18 @@ int tcp_request_connection(int port, char* hostname_ptr) {
 	// close the socket, so that a new one can be created
 	ret = close(sockfd);
 	if (ret < 0) {
-	  perror("Could not close socket");
-	  return -1;
+	  mdi_error("Could not close socket");
 	}
 
 	// create the socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0) {
-	  perror("Could not create socket");
-	  return -1;
+	  mdi_error("Could not create socket");
 	}
 
       }
       else { // only error out for errors other than "connection refused"
-	perror("Could not connect to the driver");
-	return -1;
+	mdi_error("Could not connect to the driver");
       }
 
     }
@@ -182,8 +172,7 @@ int tcp_accept_connection() {
 
   connection = accept(tcp_socket, NULL, NULL);
   if (connection < 0) {
-    perror("Could not accept connection");
-    exit(-1);
+    mdi_error("Could not accept connection");
   }
 
   communicator new_comm;
@@ -213,29 +202,29 @@ int tcp_accept_connection() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-   int n;
-   communicator* this = vector_get(&communicators, comm-1);
-   size_t count_t = count;
+  int n;
+  communicator* this = vector_get(&communicators, comm-1);
+  size_t count_t = count;
 
-   // determine the byte size of the data type being sent
-   size_t datasize;
-   if (datatype == MDI_INT) {
-     datasize = sizeof(int);
-   }
-   else if (datatype == MDI_DOUBLE) {
-     datasize = sizeof(double);
-   }
-   else if (datatype == MDI_CHAR) {
-     datasize = sizeof(char);
-   }
-   else {
-     mdi_error("MDI data type not recognized in tcp_send");
-   }
+  // determine the byte size of the data type being sent
+  size_t datasize;
+  if (datatype == MDI_INT) {
+    datasize = sizeof(int);
+  }
+  else if (datatype == MDI_DOUBLE) {
+    datasize = sizeof(double);
+  }
+  else if (datatype == MDI_CHAR) {
+    datasize = sizeof(char);
+  }
+  else {
+    mdi_error("MDI data type not recognized in tcp_send");
+  }
 
-   n = write(this->sockfd,buf,count_t*datasize);
-   if (n < 0) { mdi_error("Error writing to socket: server has quit or connection broke"); }
+  n = write(this->sockfd,buf,count_t*datasize);
+  if (n < 0) { mdi_error("Error writing to socket: server has quit or connection broke"); }
 
-   return 0;
+  return 0;
 }
 
 
@@ -251,31 +240,31 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-   size_t n, nr;
-   communicator* this = vector_get(&communicators, comm-1);
-   size_t count_t = count;
+  size_t n, nr;
+  communicator* this = vector_get(&communicators, comm-1);
+  size_t count_t = count;
 
-   // determine the byte size of the data type being sent
-   size_t datasize;
-   if (datatype == MDI_INT) {
-     datasize = sizeof(int);
-   }
-   else if (datatype == MDI_DOUBLE) {
-     datasize = sizeof(double);
-   }
-   else if (datatype == MDI_CHAR) {
-     datasize = sizeof(char);
-   }
-   else {
-     perror("MDI data type not recognized in tcp_recv");
-   }
+  // determine the byte size of the data type being sent
+  size_t datasize;
+  if (datatype == MDI_INT) {
+    datasize = sizeof(int);
+  }
+  else if (datatype == MDI_DOUBLE) {
+    datasize = sizeof(double);
+  }
+  else if (datatype == MDI_CHAR) {
+    datasize = sizeof(char);
+  }
+  else {
+    mdi_error("MDI data type not recognized in tcp_recv");
+  }
 
-   n = nr = read(this->sockfd,buf,count_t*datasize);
+  n = nr = read(this->sockfd,buf,count_t*datasize);
 
-   while (nr>0 && n<count_t*datasize )
-     {  nr=read(this->sockfd,buf+n,count_t-n); n+=nr; }
+  while (nr>0 && n<count_t*datasize )
+    {  nr=read(this->sockfd,buf+n,count_t-n); n+=nr; }
 
-   if (n == 0) { mdi_error("Error reading from socket: server has quit or connection broke"); }
+  if (n == 0) { mdi_error("Error reading from socket: server has quit or connection broke"); }
 
-   return 0;
+  return 0;
 }

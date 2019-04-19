@@ -80,14 +80,12 @@ $(function() {
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="mdi_8h_source.html">mdi.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mdi__general_8h_source.html">mdi_general.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mdi__mpi_8h_source.html">mdi_mpi.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a10ceefc902b8eb71e2383d7ac95de2c7">mdi_error</a> (const char *message)</td></tr>
-<tr class="memdesc:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message and exit.  <a href="#a10ceefc902b8eb71e2383d7ac95de2c7">More...</a><br /></td></tr>
-<tr class="separator:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae05ae377fa8de592f62c696c041b7d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a">MDI_Init</a> (const char *options, void *world_comm)</td></tr>
 <tr class="memdesc:ae05ae377fa8de592f62c696c041b7d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="#ae05ae377fa8de592f62c696c041b7d0a">More...</a><br /></td></tr>
 <tr class="separator:ae05ae377fa8de592f62c696c041b7d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -266,32 +264,6 @@ const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">in_unit</td><td>Name of the unit to convert from. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">out_unit</td><td>Name of the unit to convert to. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a10ceefc902b8eb71e2383d7ac95de2c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10ceefc902b8eb71e2383d7ac95de2c7">&#9670;&nbsp;</a></span>mdi_error()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mdi_error </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>message</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Print error message and exit. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">message</td><td>Message printed before exiting. </td></tr>
   </table>
   </dd>
 </dl>

@@ -27,6 +27,7 @@ Contents:
 #include <string.h>
 #include <errno.h>
 #include "mdi.h"
+#include "mdi_global.h"
 #include "mdi_general.h"
 #include "mdi_mpi.h"
 
@@ -98,17 +99,6 @@ const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
 static int is_initialized = 0;
-
-
-/*! \brief Print error message and exit
- *
- * \param [in]       message
- *                   Message printed before exiting.
- */
-void mdi_error(const char* message) {
-  perror(message);
-  exit(1);
-}
 
 
 /*! \brief Initialize communication through the MDI library
