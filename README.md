@@ -2,6 +2,8 @@ MolSSI Driver Interface (MDI) Library
 =====================================
 
 [![Build Status](https://travis-ci.org/MolSSI/MDI_Library.svg?branch=master)](https://travis-ci.org/MolSSI/MDI_Library)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MolSSI/MDI_Library.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MolSSI/MDI_Library/context:python)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/MolSSI/MDI_Library.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MolSSI/MDI_Library/context:cpp)
 
 ## Overview
 
