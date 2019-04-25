@@ -202,9 +202,10 @@ int tcp_accept_connection() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-  int n;
+  int n = 0;
   communicator* this = vector_get(&communicators, comm-1);
   size_t count_t = count;
+  size_t total_sent = 0;
 
   // determine the byte size of the data type being sent
   size_t datasize;
@@ -221,7 +222,10 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     mdi_error("MDI data type not recognized in tcp_send");
   }
 
-  n = write(this->sockfd,buf,count_t*datasize);
+  while ( n >= 0 && total_sent < count_t*datasize ) {
+    n = write(this->sockfd, buf+total_sent, count_t*datasize-total_sent);
+    total_sent += n;
+  }
   if (n < 0) { mdi_error("Error writing to socket: server has quit or connection broke"); }
 
   return 0;
@@ -262,7 +266,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   n = nr = read(this->sockfd,buf,count_t*datasize);
 
   while (nr>0 && n<count_t*datasize )
-    {  nr=read(this->sockfd,buf+n,count_t-n); n+=nr; }
+    {  nr=read(this->sockfd,buf+n,count_t*datasize-n); n+=nr; }
 
   if (n == 0) { mdi_error("Error reading from socket: server has quit or connection broke"); }
 
