@@ -1,8 +1,3 @@
-/*! \file
- *
- * \brief Functions callable by users of the MolSSI Driver Interface
- */
-
 /* ----------------------------------------------------------------------
    MDI - MolSSI Driver Interface
    https://molssi.org/, Molecular Sciences Software Institute
@@ -22,6 +17,11 @@ Contents:
 
 #ifndef MDI_LIBRARY
 #define MDI_LIBRARY
+
+#ifdef __cplusplus
+//namespace MDI_STUBS { }
+extern "C" {
+#endif
 
 // type of an MDI communicator handle
 typedef int MDI_Comm;
@@ -85,7 +85,12 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm);
 double MDI_Conversion_Factor(char* in_unit, char* out_unit);
 
 // only used internally by MDI
+void mdi_error(const char* message);
 int MDI_Get_MPI_Code_Rank();
 void MDI_Set_MPI_Intra_Rank(int rank);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
