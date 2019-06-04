@@ -134,7 +134,62 @@ The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between 
 
 Return a conversion factor between two units. 
 
-The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}. N\+O\+TE\+: This function is currently a placeholder.
+The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}. The function requires that {\ttfamily in\+\_\+unit} and {\ttfamily out\+\_\+unit} be members of the same category of unit ({\itshape i.\+e}. charge, energy, force, etc.). For example, calling {\ttfamily M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}({\ttfamily \char`\"{}kilojoule\+\_\+per\+\_\+mol\char`\"{}},{\ttfamily \char`\"{}atomic\+\_\+unit\+\_\+of\+\_\+energy\char`\"{}}) will return the conversion factor from kilojoule/mol to hartrees.
+
+All quantities communicated through M\+DI must be represented using atomic units. When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-\/consistent across codes. Use of conversion factors that are not self-\/consistent can result in numerical instabilities.
+
+The following is a list of the unit categories, along with the names of the units associated with each category\+:
+
+
+\begin{DoxyItemize}
+\item charge
+\begin{DoxyItemize}
+\item atomic\+\_\+unit\+\_\+of\+\_\+charge
+\item coulomb
+\end{DoxyItemize}
+\item energy
+\begin{DoxyItemize}
+\item atomic\+\_\+unit\+\_\+of\+\_\+energy
+\item calorie
+\item electron\+\_\+volt
+\item hartree
+\item inverse\+\_\+meter\+\_\+energy
+\item joule
+\item kelvin\+\_\+energy
+\item kilocalorie
+\item kilocalorie\+\_\+per\+\_\+mol
+\item kilojoule
+\item kilojoule\+\_\+per\+\_\+mol
+\item rydberg
+\end{DoxyItemize}
+\item force
+\begin{DoxyItemize}
+\item atomic\+\_\+unit\+\_\+of\+\_\+force
+\item newton
+\end{DoxyItemize}
+\item length
+\begin{DoxyItemize}
+\item angstrom
+\item atomic\+\_\+unit\+\_\+of\+\_\+length
+\item bohr
+\item meter
+\end{DoxyItemize}
+\item mass
+\begin{DoxyItemize}
+\item atomic\+\_\+mass\+\_\+unit
+\item atomic\+\_\+unit\+\_\+of\+\_\+mass
+\item gram
+\item kilogram
+\end{DoxyItemize}
+\item time
+\begin{DoxyItemize}
+\item atomic\+\_\+unit\+\_\+of\+\_\+time
+\item picosecond
+\item second
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+All conversion factors were acquired from the \href{https://physics.nist.gov/cuu/Constants/Table/allascii.txt}{\texttt{ N\+I\+ST C\+O\+D\+A\+TA}}, except the conversion factors for calorie, kilocalorie, and kilocalorie\+\_\+per\+\_\+mol, which were obtained from the \href{https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science}{\texttt{ N\+I\+ST Guide to the SI}}.
 
 
 \begin{DoxyParams}[1]{Parameters}

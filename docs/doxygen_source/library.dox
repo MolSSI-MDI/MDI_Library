@@ -122,7 +122,7 @@ The key functions are:
 
   - MDI_Recv_Command(): Receive a command through the MDI Library
 
-  - MDI_Conversion_Factor(): Obtain a conversion factor between two units (not currently implemented)
+  - MDI_Conversion_Factor(): Obtain a conversion factor between two units
 
 
 

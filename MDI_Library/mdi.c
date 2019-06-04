@@ -226,7 +226,51 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
 /*! \brief Return a conversion factor between two units
  *
  * The function returns the conversion factor from \p in_unit to \p out_unit.
- * NOTE: This function is currently a placeholder.
+ * The function requires that \p in_unit and \p out_unit be members of the same category of unit (\em i.e. charge, energy, force, etc.).
+ * For example, calling \p MDI_Conversion_Factor(\p "kilojoule_per_mol",\p "atomic_unit_of_energy") will return the conversion factor from kilojoule/mol to hartrees.
+ *
+ * All quantities communicated through MDI must be represented using atomic units.
+ * When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-consistent across codes.
+ * Use of conversion factors that are not self-consistent can result in numerical instabilities.
+ *
+ * The following is a list of the unit categories, along with the names of the units associated with each category:
+ *
+ * - charge
+ *    - atomic_unit_of_charge
+ *    - coulomb
+ * - energy
+ *    - atomic_unit_of_energy
+ *    - calorie
+ *    - electron_volt
+ *    - hartree
+ *    - inverse_meter_energy
+ *    - joule
+ *    - kelvin_energy
+ *    - kilocalorie
+ *    - kilocalorie_per_mol
+ *    - kilojoule
+ *    - kilojoule_per_mol
+ *    - rydberg
+ * - force
+ *    - atomic_unit_of_force
+ *    - newton
+ * - length
+ *    - angstrom
+ *    - atomic_unit_of_length
+ *    - bohr
+ *    - meter
+ * - mass
+ *    - atomic_mass_unit
+ *    - atomic_unit_of_mass
+ *    - gram
+ *    - kilogram
+ * - time
+ *    - atomic_unit_of_time
+ *    - picosecond
+ *    - second
+ *
+ * All conversion factors were acquired from the <a href="https://physics.nist.gov/cuu/Constants/Table/allascii.txt">NIST CODATA</a>, 
+ * except the conversion factors for calorie, kilocalorie, and kilocalorie_per_mol, which were obtained from the <a href="https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science"> NIST Guide to the SI</a>.
  *
  * \param [in]       in_unit
  *                   Name of the unit to convert from.
@@ -240,7 +284,6 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 
   // mass
   double atomic_unit_of_mass = 1.0;
-  double natural_unit_of_mass = 1.0;
   double kilogram = 1.09776910575776e30;
   double gram = 1.09776910575776e27;
   double atomic_mass_unit = 1822.88848621731;

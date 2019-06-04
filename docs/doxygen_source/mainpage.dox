@@ -6,7 +6,7 @@
 
 The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes.
 MDI uses a driver/engine paradigm in which \ref main_doc_drivers_sec "drivers" orchestrate complex simulations by controlling \ref main_doc_engines_sec "engines" through the use of an API-like command set that is defined by the \ref mdi_standard "MDI Standard".
-The process of communicating commands and other data between codes is handled by the \ref overview_sec "MDI Library".
+The process of communicating commands and other data between codes is handled by the \ref mainpage_overview_sec "MDI Library".
 
 In total, MDI consists of the following components:
 
@@ -30,7 +30,7 @@ More specifically, here are some examples of what can be accomplished using MDI:
   - Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
   - Implement an advanced sampling technique (<em>i.e.</em> metadynamics, replica exchange, etc.) in a self-contained driver that can use other codes to compute forces.
   - Implement a new forcefield in a self-contained engine that is compatible with multiple MM codes.
-  - Run QM/MM simulations. (<em>not fully supported - coming soon!</em>)
+  - Run QM/MM simulations.
 
 Creation of unofficial extensions to the MDI Standard is straightforward.
 Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process.

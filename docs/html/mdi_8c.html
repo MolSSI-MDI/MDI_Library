@@ -79,7 +79,7 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="mdi_8h_source.html">mdi.h</a>&quot;</code><br />
+<code>#include &quot;mdi.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mdi__general_8h_source.html">mdi_general.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="mdi__mpi_8h_source.html">mdi_mpi.h</a>&quot;</code><br />
@@ -259,7 +259,57 @@ const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><div class="memdoc">
 
 <p>Return a conversion factor between two units. </p>
-<p>The function returns the conversion factor from <code>in_unit</code> to <code>out_unit</code>. NOTE: This function is currently a placeholder.</p>
+<p>The function returns the conversion factor from <code>in_unit</code> to <code>out_unit</code>. The function requires that <code>in_unit</code> and <code>out_unit</code> be members of the same category of unit (<em>i.e</em>. charge, energy, force, etc.). For example, calling <code>MDI_Conversion_Factor</code>(<code>"kilojoule_per_mol"</code>,<code>"atomic_unit_of_energy"</code>) will return the conversion factor from kilojoule/mol to hartrees.</p>
+<p>All quantities communicated through MDI must be represented using atomic units. When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-consistent across codes. Use of conversion factors that are not self-consistent can result in numerical instabilities.</p>
+<p>The following is a list of the unit categories, along with the names of the units associated with each category:</p>
+<ul>
+<li>charge<ul>
+<li>atomic_unit_of_charge</li>
+<li>coulomb</li>
+</ul>
+</li>
+<li>energy<ul>
+<li>atomic_unit_of_energy</li>
+<li>calorie</li>
+<li>electron_volt</li>
+<li>hartree</li>
+<li>inverse_meter_energy</li>
+<li>joule</li>
+<li>kelvin_energy</li>
+<li>kilocalorie</li>
+<li>kilocalorie_per_mol</li>
+<li>kilojoule</li>
+<li>kilojoule_per_mol</li>
+<li>rydberg</li>
+</ul>
+</li>
+<li>force<ul>
+<li>atomic_unit_of_force</li>
+<li>newton</li>
+</ul>
+</li>
+<li>length<ul>
+<li>angstrom</li>
+<li>atomic_unit_of_length</li>
+<li>bohr</li>
+<li>meter</li>
+</ul>
+</li>
+<li>mass<ul>
+<li>atomic_mass_unit</li>
+<li>atomic_unit_of_mass</li>
+<li>gram</li>
+<li>kilogram</li>
+</ul>
+</li>
+<li>time<ul>
+<li>atomic_unit_of_time</li>
+<li>picosecond</li>
+<li>second</li>
+</ul>
+</li>
+</ul>
+<p>All conversion factors were acquired from the <a href="https://physics.nist.gov/cuu/Constants/Table/allascii.txt">NIST CODATA</a>, except the conversion factors for calorie, kilocalorie, and kilocalorie_per_mol, which were obtained from the <a href="https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science">NIST Guide to the SI</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">in_unit</td><td>Name of the unit to convert from. </td></tr>
