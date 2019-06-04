@@ -235,13 +235,299 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  */
 double MDI_Conversion_Factor(char* in_unit, char* out_unit)
 {
-  if ( strcmp(in_unit,"Angstrom") == 0 && strcmp(out_unit,"Bohr") == 0 ) {
-    return MDI_ANGSTROM_TO_BOHR;
+  // Except where otherwise noted, all values are from:
+  //   - https://physics.nist.gov/cuu/Constants/Table/allascii.txt
+
+  // mass
+  double atomic_unit_of_mass = 1.0;
+  double natural_unit_of_mass = 1.0;
+  double kilogram = 1.09776910575776e30;
+  double gram = 1.09776910575776e27;
+  double atomic_mass_unit = 1822.88848621731;
+
+  // charge
+  double atomic_unit_of_charge = 1.0;
+  double coulomb = 6.24150907446076e18;
+
+  // energy
+  double atomic_unit_of_energy = 1.0;
+  double hartree = 1.0;
+  double joule = 2.29371227839632e17;
+  double kilojoule = 2.29371227839632e20;
+  double kilojoule_per_mol = 3.80879884713342e-4;
+  double calorie = 9.5968921728102e17;
+     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
+  double kilocalorie = 9.5968921728102e20;
+     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
+  double kilocalorie_per_mol = 1.59360143764062e-3;
+     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
+  double electron_volt = 3.67493221756549e-2;
+  double rydberg = 0.5;
+  double kelvin_energy = 3.16681156345558e-6;
+  double inverse_meter_energy = 4.55633525291194e-8;
+
+  // force
+  double atomic_unit_of_force = 1.0;
+  double newton = 1.21378026608897e7;
+
+  // length
+  double atomic_unit_of_length = 1.0;
+  double bohr = 1.0;
+  double meter = 1.88972612462577e10;
+  double angstrom = 1.88975437603133;
+
+  // time
+  double atomic_unit_of_time = 1.0;
+  double second = 4.13413733351821e16;
+  double picosecond = 4.13413733351821e4;
+
+  // categories of input and output units (i.e. length, force, time, etc.)
+  //    0 - none
+  //    1 - mass
+  //    2 - charge
+  //    3 - energy
+  //    4 - force
+  //    5 - length
+  //    6 - time
+  int in_category = 0;
+  int out_category = 0;
+
+  // conversion factors for input and output units
+  double in_conv = 1.0;
+  double out_conv = 1.0;
+
+  // identify the input unit
+  if ( strcmp( in_unit, "atomic unit of mass" ) == 0 ) {
+    in_category = 1;
+    in_conv = atomic_unit_of_mass;
+  }
+  else if ( strcmp( in_unit, "kilogram" ) == 0 ) {
+    in_category = 1;
+    in_conv = kilogram;
+  }
+  else if ( strcmp( in_unit, "gram" ) == 0 ) {
+    in_category = 1;
+    in_conv = gram;
+  }
+  else if ( strcmp( in_unit, "atomic mass unit" ) == 0 ) {
+    in_category = 1;
+    in_conv = atomic_mass_unit;
+  }
+  else if ( strcmp( in_unit, "atomic unit of charge" ) == 0 ) {
+    in_category = 2;
+    in_conv = atomic_unit_of_charge;
+  }
+  else if ( strcmp( in_unit, "coulomb" ) == 0 ) {
+    in_category = 2;
+    in_conv = coulomb;
+  }
+  else if ( strcmp( in_unit, "atomic unit of energy" ) == 0 ) {
+    in_category = 3;
+    in_conv = atomic_unit_of_energy;
+  }
+  else if ( strcmp( in_unit, "hartree" ) == 0 ) {
+    in_category = 3;
+    in_conv = hartree;
+  }
+  else if ( strcmp( in_unit, "joule" ) == 0 ) {
+    in_category = 3;
+    in_conv = joule;
+  }
+  else if ( strcmp( in_unit, "kilojoule" ) == 0 ) {
+    in_category = 3;
+    in_conv = kilojoule;
+  }
+  else if ( strcmp( in_unit, "kilojoule per mol" ) == 0 ) {
+    in_category = 3;
+    in_conv = kilojoule_per_mol;
+  }
+  else if ( strcmp( in_unit, "calorie" ) == 0 ) {
+    in_category = 3;
+    in_conv = calorie;
+  }
+  else if ( strcmp( in_unit, "kilocalorie" ) == 0 ) {
+    in_category = 3;
+    in_conv = kilocalorie;
+  }
+  else if ( strcmp( in_unit, "kilocalorie per mol" ) == 0 ) {
+    in_category = 3;
+    in_conv = kilocalorie_per_mol;
+  }
+  else if ( strcmp( in_unit, "electron volt" ) == 0 ) {
+    in_category = 3;
+    in_conv = electron_volt;
+  }
+  else if ( strcmp( in_unit, "rydberg" ) == 0 ) {
+    in_category = 3;
+    in_conv = rydberg;
+  }
+  else if ( strcmp( in_unit, "kelvin energy" ) == 0 ) {
+    in_category = 3;
+    in_conv = kelvin_energy;
+  }
+  else if ( strcmp( in_unit, "inverse meter energy" ) == 0 ) {
+    in_category = 3;
+    in_conv = inverse_meter_energy;
+  }
+  else if ( strcmp( in_unit, "atomic unit of force" ) == 0 ) {
+    in_category = 4;
+    in_conv = inverse_meter_energy;
+  }
+  else if ( strcmp( in_unit, "newton" ) == 0 ) {
+    in_category = 4;
+    in_conv = newton;
+  }
+  else if ( strcmp( in_unit, "atomic unit of length" ) == 0 ) {
+    in_category = 5;
+    in_conv = atomic_unit_of_length;
+  }
+  else if ( strcmp( in_unit, "bohr" ) == 0 ) {
+    in_category = 5;
+    in_conv = bohr;
+  }
+  else if ( strcmp( in_unit, "meter" ) == 0 ) {
+    in_category = 5;
+    in_conv = meter;
+  }
+  else if ( strcmp( in_unit, "angstrom" ) == 0 ) {
+    in_category = 5;
+    in_conv = angstrom;
+  }
+  else if ( strcmp( in_unit, "atomic unit of time" ) == 0 ) {
+    in_category = 6;
+    in_conv = atomic_unit_of_time;
+  }
+  else if ( strcmp( in_unit, "second" ) == 0 ) {
+    in_category = 6;
+    in_conv = second;
+  }
+  else if ( strcmp( in_unit, "picosecond" ) == 0 ) {
+    in_category = 6;
+    in_conv = picosecond;
   }
   else {
-    mdi_error("Unrecognized conversion requested in MDI_Conversion_Factor");
+    mdi_error("Unit name not recognized");
   }
-  return 0.0;
+
+  // identify the output unit
+  if ( strcmp( out_unit, "atomic unit of mass" ) == 0 ) {
+    out_category = 1;
+    out_conv = atomic_unit_of_mass;
+  }
+  else if ( strcmp( out_unit, "kilogram" ) == 0 ) {
+    out_category = 1;
+    out_conv = kilogram;
+  }
+  else if ( strcmp( out_unit, "gram" ) == 0 ) {
+    out_category = 1;
+    out_conv = gram;
+  }
+  else if ( strcmp( out_unit, "atomic mass unit" ) == 0 ) {
+    out_category = 1;
+    out_conv = atomic_mass_unit;
+  }
+  else if ( strcmp( out_unit, "atomic unit of charge" ) == 0 ) {
+    out_category = 2;
+    out_conv = atomic_unit_of_charge;
+  }
+  else if ( strcmp( out_unit, "coulomb" ) == 0 ) {
+    out_category = 2;
+    out_conv = coulomb;
+  }
+  else if ( strcmp( out_unit, "atomic unit of energy" ) == 0 ) {
+    out_category = 3;
+    out_conv = atomic_unit_of_energy;
+  }
+  else if ( strcmp( out_unit, "hartree" ) == 0 ) {
+    out_category = 3;
+    out_conv = hartree;
+  }
+  else if ( strcmp( out_unit, "joule" ) == 0 ) {
+    out_category = 3;
+    out_conv = joule;
+  }
+  else if ( strcmp( out_unit, "kilojoule" ) == 0 ) {
+    out_category = 3;
+    out_conv = kilojoule;
+  }
+  else if ( strcmp( out_unit, "kilojoule per mol" ) == 0 ) {
+    out_category = 3;
+    out_conv = kilojoule_per_mol;
+  }
+  else if ( strcmp( out_unit, "calorie" ) == 0 ) {
+    out_category = 3;
+    out_conv = calorie;
+  }
+  else if ( strcmp( out_unit, "kilocalorie" ) == 0 ) {
+    out_category = 3;
+    out_conv = kilocalorie;
+  }
+  else if ( strcmp( out_unit, "kilocalorie per mol" ) == 0 ) {
+    out_category = 3;
+    out_conv = kilocalorie_per_mol;
+  }
+  else if ( strcmp( out_unit, "electron volt" ) == 0 ) {
+    out_category = 3;
+    out_conv = electron_volt;
+  }
+  else if ( strcmp( out_unit, "rydberg" ) == 0 ) {
+    out_category = 3;
+    out_conv = rydberg;
+  }
+  else if ( strcmp( out_unit, "kelvin energy" ) == 0 ) {
+    out_category = 3;
+    out_conv = kelvin_energy;
+  }
+  else if ( strcmp( out_unit, "inverse meter energy" ) == 0 ) {
+    out_category = 3;
+    out_conv = inverse_meter_energy;
+  }
+  else if ( strcmp( out_unit, "atomic unit of force" ) == 0 ) {
+    out_category = 4;
+    out_conv = inverse_meter_energy;
+  }
+  else if ( strcmp( out_unit, "newton" ) == 0 ) {
+    out_category = 4;
+    out_conv = newton;
+  }
+  else if ( strcmp( out_unit, "atomic unit of length" ) == 0 ) {
+    out_category = 5;
+    out_conv = atomic_unit_of_length;
+  }
+  else if ( strcmp( out_unit, "bohr" ) == 0 ) {
+    out_category = 5;
+    out_conv = bohr;
+  }
+  else if ( strcmp( out_unit, "meter" ) == 0 ) {
+    out_category = 5;
+    out_conv = meter;
+  }
+  else if ( strcmp( out_unit, "angstrom" ) == 0 ) {
+    out_category = 5;
+    out_conv = angstrom;
+  }
+  else if ( strcmp( out_unit, "atomic unit of time" ) == 0 ) {
+    out_category = 6;
+    out_conv = atomic_unit_of_time;
+  }
+  else if ( strcmp( out_unit, "second" ) == 0 ) {
+    out_category = 6;
+    out_conv = second;
+  }
+  else if ( strcmp( out_unit, "picosecond" ) == 0 ) {
+    out_category = 6;
+    out_conv = picosecond;
+  }
+  else {
+    mdi_error("Unit name not recognized");
+  }
+
+  // confirm that the two units belong to the same category (i.e. mass, energy, time, etc.)
+  if ( in_category != out_category ) {
+    mdi_error("The units are of two different types, and conversion is not possible.");
+  }
+
+  return in_conv / out_conv;
 }
 
 
