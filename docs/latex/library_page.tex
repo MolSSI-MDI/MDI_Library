@@ -45,6 +45,12 @@ Whenever a code is launched as a driver or engine, it must be provided the "{\tt
 \item {\bfseries{required\+:}} Only if {\ttfamily method=T\+CP} 
 \item {\bfseries{argument\+:}} The port number over which the driver will listen for connections from the engine(s)
 \end{DoxyItemize}
+\item {\ttfamily -\/ipi} 
+\begin{DoxyItemize}
+\item This option turns on compatibility mode for i-\/\+PI, allowing codes that use M\+DI for communication to communicate with codes that use i-\/\+PI for communication. If none of the drivers or engines is using i-\/\+PI for communication, this option should not be used, as it disables some of the M\+DI Library\textquotesingle{}s error checking.
+\item {\bfseries{required\+:}} Only if one of the engines or drivers is using i-\/\+PI for communication.
+\item {\bfseries{argument\+:}} None
+\end{DoxyItemize}
 \end{DoxyItemize}
 
 For more information about running or developing codes that use the M\+DI Library, please see the \mbox{\hyperlink{tutorials}{tutorials}}.\hypertarget{library_page_compiliation_sec}{}\doxysection{Compiling the M\+D\+I Library}\label{library_page_compiliation_sec}

@@ -68,10 +68,27 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 \section main_doc_engines_sec Engines
 
+The following codes support MDI:
+
   - <a href="https://github.com/MolSSI/lammps/tree/mdi">LAMMPS</a>
 
   - <a href="https://github.com/MolSSI/q-e/tree/mdi">Quantum ESPRESSO</a>
 
+The following codes support i-PI, with which MDI is compatible (see the \ref library_launching_sec "-ipi" option):
+
+  - <a href="https://www.cp2k.org/">CP2K</a>
+
+  - <a href="http://www.dftbplus.org/">DFTB+</a>
+
+  - <a href="https://departments.icmab.es/leem/siesta/">Siesta</a>
+
+  - <a href="https://aimsclub.fhi-berlin.mpg.de/">FHI-aims</a>
+
+  - <a href="http://molmod.github.io/yaff/">Yaff</a>
+
+  - <a href="http://demon-nano.ups-tlse.fr/">deMonNano</a>
+
+  - <a href="https://www.questaal.org/">TBE</a>
 
 
 \section main_doc_drivers_sec Drivers

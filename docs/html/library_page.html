@@ -110,6 +110,12 @@ Launching Codes with the MDI Library</h1>
 <li><b>argument:</b> The port number over which the driver will listen for connections from the engine(s)</li>
 </ul>
 </li>
+<li><code>-ipi</code> <ul>
+<li>This option turns on compatibility mode for i-PI, allowing codes that use MDI for communication to communicate with codes that use i-PI for communication. If none of the drivers or engines is using i-PI for communication, this option should not be used, as it disables some of the MDI Library's error checking.</li>
+<li><b>required:</b> Only if one of the engines or drivers is using i-PI for communication.</li>
+<li><b>argument:</b> None</li>
+</ul>
+</li>
 </ul>
 <p>For more information about running or developing codes that use the MDI Library, please see the <a class="el" href="tutorials.html">tutorials</a>.</p>
 <h1><a class="anchor" id="compiliation_sec"></a>
