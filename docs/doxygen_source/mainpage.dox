@@ -74,7 +74,7 @@ The following codes support MDI:
 
   - <a href="https://github.com/MolSSI/q-e/tree/mdi">Quantum ESPRESSO</a>
 
-The following codes support i-PI, with which MDI is compatible (see the \ref library_launching_sec "-ipi" option):
+The following codes support <a href="http://ipi-code.org/">i-PI</a>, with which MDI is compatible (see the \ref library_launching_sec "-ipi" option).  Note that the i-PI command set is different from that of the MDI Standard.
 
   - <a href="https://www.cp2k.org/">CP2K</a>
 
