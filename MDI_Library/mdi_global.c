@@ -8,6 +8,8 @@
 #include <string.h>
 #include "mdi_global.h"
 
+/*! \brief Whether MDI is running in i-PI compatibility mode */
+int ipi_compatibility = 0;
 
 /*! \brief Vector containing all MDI communicators */
 vector communicators;

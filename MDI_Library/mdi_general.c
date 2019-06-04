@@ -136,6 +136,11 @@ int general_init(const char* options, void* world_comm) {
       has_port = 1;
       iarg += 2;
     }
+    //-ipi
+    else if (strcmp(argv[iarg],"-ipi") == 0) {
+      ipi_compatibility = 1;
+      iarg += 1;
+    }
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {

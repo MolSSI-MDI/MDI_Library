@@ -36,6 +36,10 @@ typedef struct dynamic_array_struct {
 
 extern vector communicators;
 
+/*! \brief Whether MDI is running in i-PI compatibility mode */
+extern int ipi_compatibility;
+
+
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
 void* vector_get(vector* v, int index);

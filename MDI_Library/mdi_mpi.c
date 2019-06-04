@@ -124,9 +124,12 @@ int mpi_identify_codes(const char* code_name, int do_split) {
 	vector_push_back( &communicators, &new_comm );
 
 	// communicate the version number between codes
-	communicator* comm = vector_get(&communicators, communicators.size-1);
-	mpi_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
-	mpi_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
+	// only do this if not using i-PI compatibility mode
+	if ( ipi_compatibility != 1 ) {
+	  communicator* comm = vector_get(&communicators, communicators.size-1);
+	  mpi_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
+	  mpi_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
+	}
       }
     }
 
