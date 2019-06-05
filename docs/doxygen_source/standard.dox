@@ -50,6 +50,8 @@ The following constants are defined by the MDI Standard and are accessible throu
   - \c MDI_INT - Data type identifier for integers
   - \c MDI_DOUBLE - Data type identifier for double precision floats
   - \c MDI_CHAR - Data type identifier for characters
+  - \c MDI_INT_NUMPY - Data type identifier for Python NumPy integer arrays
+  - \c MDI_DOUBLE_NUMPY - Data type identifier for Python NumPy double arrays
   - \c MDI_NAME_LENGTH - Maximum number of characters in the name of an MDI code (see \ref library_launching_sec) or node (see \ref standard_nodes_sec)
   - \c MDI_COMMAND_LENGTH - Maximum number of characters in an MDI command (see \ref command_list)
 
