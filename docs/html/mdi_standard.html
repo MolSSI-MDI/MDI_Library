@@ -143,6 +143,12 @@ Command List</h1>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> 3 * &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order</dd></dl>
+<h2><a class="anchor" id="send_cpotential"></a>
+&gt;CPOTENTIAL</h2>
+<p>The driver sends the Cartesian coordinates of a set of grid points. This command is intended to be used in conjuction with the <a class="el" href="mdi_standard.html#send_npotential">&gt;NPOTENTIAL</a> and <a class="el" href="mdi_standard.html#send_potential">&gt;POTENTIAL</a> commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent <a class="el" href="mdi_standard.html#scf_command">SCF</a> command. See the <a class="el" href="mdi_standard.html#send_potential">&gt;POTENTIAL</a> command for more details.</p>
+<p>Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the <a class="el" href="mdi_standard.html#send_npotential">&gt;NPOTENTIAL</a> command. It is also necessary that the driver send the values of the grid points via the <a class="el" href="mdi_standard.html#send_cpotential">&gt;CPOTENTIAL</a> command prior to any subsequent <a class="el" href="mdi_standard.html#scf_command">SCF</a> command.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> <code>3</code> * NPOTENTIAL</dd></dl>
 <h2><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h2>
 <p>The engine sends its most recently calculated energy to the driver. The <code>MD_INIT</code>, <code>SCF</code>, and <code>ATOM_STEP</code> commands can be used to cause the engine to calculate a new energy.</p>
@@ -194,6 +200,11 @@ MD_INIT</h2>
 <p>The engine sends the driver the number of atoms in the engine's system.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
+<h2><a class="anchor" id="send_npotential"></a>
+&gt;NPOTENTIAL</h2>
+<p>The driver sends the number of grid points it is using to represent a potential on a grid. This command is intended to be used in conjuction with the <a class="el" href="mdi_standard.html#send_cpotential">&gt;CPOTENTIAL</a> and <a class="el" href="mdi_standard.html#send_potential">&gt;POTENTIAL</a> commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent <a class="el" href="mdi_standard.html#scf_command">SCF</a> command. See the <a class="el" href="mdi_standard.html#send_potential">&gt;POTENTIAL</a> command for more details.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
+ <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_types"></a>
 &lt;NTYPES</h2>
 <p>The engine sends the driver the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.</p>
@@ -203,6 +214,12 @@ MD_INIT</h2>
 OPTG_INIT</h2>
 <p>The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the <code>ATOM_STEP</code> command. This engine calculates the energy of the system, which can be queried by the <code>&lt;ENERGY</code> command.</p>
 <dl class="section user"><dt></dt><dd><b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.</dd></dl>
+<h2><a class="anchor" id="send_potential"></a>
+&gt;POTENTIAL</h2>
+<p>The driver sends an set of values to the engine that correspond to a potential on a grid. If an <a class="el" href="mdi_standard.html#scf_command">SCF</a> command is later issued, this potential will be incorporated into the SCF calculation as an external potential.</p>
+<p>Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the <a class="el" href="mdi_standard.html#send_npotential">&gt;NPOTENTIAL</a> command. It is also necessary that the driver send the Cartesian coordinates of the grid points via the <a class="el" href="mdi_standard.html#send_cpotential">&gt;CPOTENTIAL</a> command prior to any subsequent <a class="el" href="mdi_standard.html#scf_command">SCF</a> command.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> <code>NPOTENTIAL</code> </dd></dl>
 <h2><a class="anchor" id="pre-forces_node"></a>
 @PRE-FORCES</h2>
 <p>The engine proceeds to the next @PRE-FORCES node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command requires that either the <code>MD_INIT</code> command or the <code>OPTG_INIT</code> command was previously executed.</p>

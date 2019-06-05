@@ -153,6 +153,21 @@ The engine sends a set of atomic coordinates to the driver.
 
 
 
+\subsection send_cpotential >CPOTENTIAL
+
+The driver sends the Cartesian coordinates of a set of grid points.
+This command is intended to be used in conjuction with the \ref send_npotential and \ref send_potential commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \ref scf_command command.
+See the \ref send_potential command for more details.
+
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \ref send_npotential command.
+It is also necessary that the driver send the values of the grid points via the \ref send_cpotential command prior to any subsequent \ref scf_command command.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> \c 3 * NPOTENTIAL
+
+
+
 \subsection recv_energy <ENERGY
 
 The engine sends its most recently calculated energy to the driver.
@@ -255,6 +270,18 @@ The engine sends the driver the number of atoms in the engine's system.
 
 
 
+\subsection send_npotential >NPOTENTIAL
+
+The driver sends the number of grid points it is using to represent a potential on a grid.
+This command is intended to be used in conjuction with the \ref send_cpotential and \ref send_potential commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \ref scf_command command.
+See the \ref send_potential command for more details.
+
+\par
+<b> Data Type: </b> \c MDI_INT <br>
+<b> Quantity: </b> 1
+
+
+
 \subsection recv_types <NTYPES
 
 The engine sends the driver the number of different types of atoms (e.g. "H", "He", "C", "O", etc.) in the engine's system.
@@ -272,6 +299,20 @@ This engine calculates the energy of the system, which can be queried by the \c 
 
 \par
 <b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.
+
+
+
+\subsection send_potential >POTENTIAL
+
+The driver sends an set of values to the engine that correspond to a potential on a grid.
+If an \ref scf_command command is later issued, this potential will be incorporated into the SCF calculation as an external potential.
+
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \ref send_npotential command.
+It is also necessary that the driver send the Cartesian coordinates of the grid points via the \ref send_cpotential command prior to any subsequent \ref scf_command command.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> \c NPOTENTIAL
 
 
 

@@ -83,6 +83,15 @@ The engine sends a set of atomic coordinates to the driver.
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ $<$N\+A\+T\+O\+MS } ~\newline
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_send_cpotential}{}\doxysubsection{$>$\+C\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_cpotential}
+The driver sends the Cartesian coordinates of a set of grid points. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
+
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the values of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily 3} $\ast$ N\+P\+O\+T\+E\+N\+T\+I\+AL
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_energy}{}\doxysubsection{$<$\+E\+N\+E\+R\+GY}\label{mdi_standard_recv_energy}
 The engine sends its most recently calculated energy to the driver. The {\ttfamily M\+D\+\_\+\+I\+N\+IT}, {\ttfamily S\+CF}, and {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} commands can be used to cause the engine to calculate a new energy.
 
@@ -146,6 +155,13 @@ The engine sends the driver the number of atoms in the engine\textquotesingle{}s
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_send_npotential}{}\doxysubsection{$>$\+N\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_npotential}
+The driver sends the number of grid points it is using to represent a potential on a grid. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_types}{}\doxysubsection{$<$\+N\+T\+Y\+P\+ES}\label{mdi_standard_recv_types}
 The engine sends the driver the number of different types of atoms (e.\+g. \char`\"{}\+H\char`\"{}, \char`\"{}\+He\char`\"{}, \char`\"{}\+C\char`\"{}, \char`\"{}\+O\char`\"{}, etc.) in the engine\textquotesingle{}s system.
 
@@ -158,6 +174,15 @@ The engine performs any initialization operations that are necessary before a ge
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_potential}{}\doxysubsection{$>$\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_potential}
+The driver sends an set of values to the engine that correspond to a potential on a grid. If an \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command is later issued, this potential will be incorporated into the S\+CF calculation as an external potential.
+
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the Cartesian coordinates of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily N\+P\+O\+T\+E\+N\+T\+I\+AL} 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_pre-forces_node}{}\doxysubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
 The engine proceeds to the next @\+P\+RE-\/F\+O\+R\+C\+ES node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_scf_command}{}\doxysubsection{S\+CF}\label{mdi_standard_scf_command}
