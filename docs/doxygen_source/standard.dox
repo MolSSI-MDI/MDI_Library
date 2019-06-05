@@ -82,6 +82,18 @@ The engine sends the driver a string that corresponds to the name of its current
 
 
 
+\subsection recv_cdensity <CDENSITY
+
+The engine sends the Cartesian coordinates of a set of grid points.
+This command is intended to be used in conjuction with the \ref recv_ndensity and \ref recv_density commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation.
+See the \ref recv_density command for more details.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> <c> 3 * NDENSITY </c>
+
+
+
 \subsection set_cell >CELL
 
 The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
@@ -108,7 +120,7 @@ The driver sends a set of atomic charges to the engine, which replaces its atomi
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> \c <NATOMS <br>
+<b> Quantity: </b> \c NATOMS <br>
 <b> Format: </b> Sequentially ascending order of atomic index <br>
 
 
@@ -119,7 +131,7 @@ The engine sends a set of atomic charges to the driver, in the same format as sp
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> \c <NATOMS <br>
+<b> Quantity: </b> \c NATOMS <br>
 <b> Format: </b> Sequentially ascending order of atomic index
 
 
@@ -137,7 +149,7 @@ The driver sends a set of atomic coordinates to the engine, which replaces its a
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
+<b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order <br>
 
 
@@ -148,7 +160,7 @@ The engine sends a set of atomic coordinates to the driver.
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
+<b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 
 
@@ -164,7 +176,18 @@ It is also necessary that the driver send the values of the grid points via the 
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> \c 3 * NPOTENTIAL
+<b> Quantity: </b> <c> 3 * NPOTENTIAL </c>
+
+
+
+\subsection recv_density <DENSITY
+
+The engine sends the value of its electronic density on a set of grid points.
+This command is intended to be used in conjuction with the \ref recv_ndensity and \ref recv_cdensity commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> \c NDENSITY
 
 
 
@@ -198,7 +221,7 @@ The driver sends a set of atomic forces to the engine, which replaces its intern
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
+<b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
 
 
@@ -209,7 +232,7 @@ The driver sends a set of atomic forces to the engine, which adds the forces sen
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
+<b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order <br>
 
 
@@ -221,7 +244,7 @@ These forces include all force contributions, including the force contributions 
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
-<b> Quantity: </b> <c> 3 * <NATOMS </c> <br>
+<b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
 
 
@@ -263,6 +286,18 @@ After initializing MDI and accepting communicators to the engines, the driver ca
 \subsection recv_natoms <NATOMS
 
 The engine sends the driver the number of atoms in the engine's system.
+
+\par
+<b> Data Type: </b> \c MDI_INT <br>
+<b> Quantity: </b> 1
+
+
+
+\subsection recv_ndensity <NDENSITY
+
+The engine sends the number of grid points it is using to represent its electronic density on a grid.
+This command is intended to be used in conjuction with the \ref recv_cdensity and \ref recv_density commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation.
+See the \ref recv_density command for more details.
 
 \par
 <b> Data Type: </b> \c MDI_INT <br>
