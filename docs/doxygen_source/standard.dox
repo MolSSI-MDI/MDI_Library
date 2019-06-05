@@ -14,6 +14,8 @@ The MDI standard defines the \ref standard_units "units", data types, and format
 \section standard_units Units
 
 All physical quantities communicated through MDI must be expressed in atomic units.
+Whenever it is necessary to perform a unit conversion on data communicated through MDI, the conversion factor should be obtained through the MDI_Conversion_Factor() function.
+Use of this function ensures self-consistency in unit conversions between codes, which is important for avoiding numerical instabilities.
 
 
 
