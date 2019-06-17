@@ -143,7 +143,11 @@ def MDI_Send(arg1, arg2, arg3, arg4):
     if ( arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR ):
         arg_size = ctypes.sizeof(arg_type)
         if arg2 == 1:
-            data = (ctypes.c_char*(arg2*arg_size))(arg1)
+            if ( arg3 == MDI_DOUBLE ):
+                data_temp = ctypes.pointer((ctypes.c_double)(arg1))
+                data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
+            else:
+                data = (ctypes.c_char*(arg2*arg_size))(arg1)
         else:
             data_temp = (arg_type*arg2)(*arg1)
             data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
