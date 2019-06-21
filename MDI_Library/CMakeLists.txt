@@ -93,11 +93,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.h ${CMAKE_CURRENT_BINARY_DIR}/mdi
 # Install
 install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
-if( use_Python )
+if( (NOT language) OR (language STREQUAL "Python") )
   install(FILES ${CMAKE_BINARY_DIR}/mdi.py ${CMAKE_BINARY_DIR}/mdi_name ${CMAKE_BINARY_DIR}/__init__.py
-          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
+          DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
 endif()
 install(TARGETS mdi
         EXPORT "${PN}Targets"
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
