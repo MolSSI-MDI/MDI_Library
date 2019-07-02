@@ -122,63 +122,10 @@ def MDI_Init(arg1, comm):
 
         return 0
 
-#        # determine the name of the code associated with this MPI rank
-#        my_name = None
-#        for i in range(len(args)):
-#            print("ARGUMENT: " + str(i) + " " + str(args[i]))
-#            if args[i] == "-name" and i < len(args) - 1:
-#                my_name = args[i+1]
-#        if not my_name:
-#            raise Exception("MDI Error: Unable to find -name option")
-#
-#        # obtain basic information about MPI configuration
-#        mpi_rank = comm.Get_rank()
-#        print("my_rank: " + str(mpi_rank))
-#        mdi.set_world_rank(mpi_rank)
-#        mpi_world_size = comm.Get_size()
-#        print("world_size: " + str(mpi_world_size))
-#        mdi.set_world_size(mpi_world_size)
-#
-#        #sendbuf = np.empty(MDI_NAME_LENGTH, dtype=np.byte)
-#        namebuf = [ 0 for i in range(MDI_NAME_LENGTH) ]
-#        for i in range(len(my_name)):
-#            namebuf[i] = ord(my_name[i])
-#        print("namebuf: " + str(namebuf))
-#        sendbuf = np.array(namebuf, dtype=np.uint8)
-#        recvbuf = np.empty([mpi_world_size,MDI_NAME_LENGTH], dtype=np.uint8)
-#        #sendbuf = np.zeros(MDI_NAME_LENGTH, dtype='i') + mpi_rank
-#        #recvbuf = np.zeros([mpi_world_size, MDI_NAME_LENGTH], dtype='i') - 1
-#        print("sendbuf: " + str(sendbuf))
-#####        comm.Gather(sendbuf, recvbuf, root=0)
-#        comm.Allgather([sendbuf, MPI.CHAR], [recvbuf, MPI.CHAR])
-#        print("all_names1: " + str(recvbuf))
-#        name_conv = ''
-#        for i in range(mpi_world_size):
-#            #name_conv = chr( recvbuf[i][0] )
-#            #print('CHR: ' + str(i) + ' ' + str(name_conv))
-#            found_zero = False
-#            for j in range(MDI_NAME_LENGTH):
-#                if recvbuf[i][j] == 0:
-#                    found_zero = True
-#                if found_zero:
-#                    name_conv += chr( 0 )
-#                else:
-#                    name_conv += chr( recvbuf[i][j] )
-#        print("Conversion: " + str(len(name_conv)) + " " + str( name_conv ))
-#        code_names_c = name_conv.encode('utf-8')
-#        mdi.set_code_names(ctypes.c_char_p(code_names_c))
-
     else:
 
         # call MDI_Init
         ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
-
-    # split the intra-code communicator
-#    if do_mpi_split:
-#        mpi_color = mdi.MDI_Get_MPI_Code_Rank()
-#        intra_code_comm = comm.Split(mpi_color, comm.Get_rank())
-#        mdi.MDI_Set_MPI_Intra_Rank( intra_code_comm.Get_rank() )
-#        comm.Barrier()
 
     return ret
 
@@ -234,10 +181,20 @@ def MDI_Send(arg1, arg2, arg3, arg4):
             data = data.ctypes.data_as(ctypes.c_char_p)
             mdi_type = MDI_DOUBLE
 
-        if ( arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR ):
-            arg_size = ctypes.sizeof(arg_type)
-            if arg2 == 1:
-                data = (ctypes.c_char*(arg2*arg_size))(arg1)
+        if arg3 == MDI_CHAR:
+            data_temp = (arg_type*arg2)(*arg1)
+            data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
+
+        elif arg3 == MDI_INT or arg3 == MDI_DOUBLE:
+            if not isinstance(arg1, list):
+                if arg2 == 1:
+                    if arg3 == MDI_DOUBLE:
+                        data_temp = ctypes.pointer((ctypes.c_double)(arg1))
+                    elif arg3 == MDI_INT:
+                        data_temp = ctypes.pointer((ctypes.c_int)(arg1))
+                    data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
+                else:
+                    raise Exception("MDI Error: MDI_Send requires a list if length != 1 and datatype = MDI_INT or MDI_DOUBLE")
             else:
                 data_temp = (arg_type*arg2)(*arg1)
                 data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
