@@ -1,9 +1,3 @@
-################################# MDI Project ##################################
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-set(PN ${PROJECT_NAME})
-
-
 #check for MPI
 find_package(MPI)
 if( NOT MPI_FOUND )
@@ -77,6 +71,7 @@ if( (NOT language) OR (language STREQUAL "Python") )
    endif()
 
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.py ${CMAKE_CURRENT_BINARY_DIR}/mdi.py COPYONLY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi_mpi4py.py ${CMAKE_CURRENT_BINARY_DIR}/mdi_mpi4py.py COPYONLY)
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_BINARY_DIR}/__init__.py COPYONLY)
 
    # Write the name of the mdi library, for use by mdi.py
@@ -89,15 +84,3 @@ endif()
 
 #copy the mdi.h header file into the binary directory
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.h ${CMAKE_CURRENT_BINARY_DIR}/mdi.h COPYONLY)
-
-# Install
-install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
-if( (NOT language) OR (language STREQUAL "Python") )
-  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.py ${CMAKE_BINARY_DIR}/MDI_Library/mdi_name ${CMAKE_BINARY_DIR}/MDI_Library/__init__.py
-          DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
-endif()
-install(TARGETS mdi
-        EXPORT "${PN}Targets"
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)

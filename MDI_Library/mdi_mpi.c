@@ -22,6 +22,32 @@ int intra_rank = 0;
 /*! \brief Order of this code within all codes represented by MPI_COMM_WORLD */
 int mpi_code_rank = 0;
 
+/*! \brief Size of MPI_COMM_WORLD */
+int world_size = -1;
+
+/*! \brief Rank of this process within MPI_COMM_WORLD */
+int world_rank = -1;
+
+/*! \brief Set the size of MPI_COMM_WORLD
+ *
+ * \param [in]       world_size_in
+ *                   Size of MPI_COMM_WORLD
+ */
+int set_world_size(int world_size_in) {
+  world_size = world_size_in;
+  return 0;
+}
+
+/*! \brief Set the rank of this process in MPI_COMM_WORLD
+ *
+ * \param [in]       world_rank_in
+ *                   Rank of this process within MPI_COMM_WORLD
+ */
+int set_world_rank(int world_rank_in) {
+  world_rank = world_rank_in;
+  return 0;
+}
+
 /*! \brief Identify groups of processes belonging to the same codes
  *
  * If do_split == 1, this function will call MPI_Comm_split to create an intra-code communicator for each code.
@@ -40,10 +66,9 @@ int mpi_identify_codes(const char* code_name, int do_split) {
   int i, j;
   int driver_rank;
   int nunique_names = 0;
-  int world_rank;
+  //int world_rank;
 
   // get the number of processes
-  int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
   // get the rank of this process
@@ -60,7 +85,7 @@ int mpi_identify_codes(const char* code_name, int do_split) {
   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
   MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-     MPI_CHAR, MPI_COMM_WORLD);
+		MPI_CHAR, MPI_COMM_WORLD);
 
   // determine which rank corresponds to rank 0 of the driver
   driver_rank = -1;
