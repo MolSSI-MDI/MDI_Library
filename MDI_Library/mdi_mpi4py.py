@@ -153,6 +153,9 @@ class MPI4PYManager():
         # order of this rank's associated code
         self.mpi_code_rank = 0
 
+        # name of this code
+        self.name = None
+
         if mpi_comm is None:
             raise Exception("MDI Error: Attempting to use MPI4Py without an MPI communciator")
         elif not use_mpi4py:
@@ -170,11 +173,11 @@ class MPI4PYManager():
             raise Exception("MDI Error: Attempting to use MPI4Py but MDI method is not MPI")
 
         # determine the name of the code associated with this MPI rank
-        my_name = None
+        self.name = None
         for i in range(len(options)):
             if options[i] == "-name" and i < len(options) - 1:
-                my_name = options[i+1]
-        if not my_name:
+                self.name = options[i+1]
+        if not self.name:
             raise Exception("MDI Error: Unable to find -name option")
 
         # determine the role of this code
@@ -186,7 +189,7 @@ class MPI4PYManager():
             pass
         elif my_role == "DRIVER":
             # if the role is driver, set the name to a null string
-            my_name = ""
+            self.name = ""
         else:
             raise Exception("MDI Error: Unable to find -name option")
 
@@ -202,8 +205,8 @@ class MPI4PYManager():
 
         # construct a NumPy buffer of the name of this rank's code
         namebuf = [ 0 for i in range(MDI_NAME_LENGTH) ]
-        for i in range(len(my_name)):
-            namebuf[i] = ord(my_name[i])
+        for i in range(len(self.name)):
+            namebuf[i] = ord(self.name[i])
         sendbuf = np.array(namebuf, dtype=np.uint8)
 
         # gather the names of the codes associated with all of the ranks
@@ -286,8 +289,18 @@ class MPI4PYManager():
 
     def Recv_Command(self, comm):
         communicator = self.communicators[comm-1]
-        return_value = communicator.recv(MDI_COMMAND_LENGTH, MDI_CHAR)
-        return return_value
+
+        command = communicator.recv(MDI_COMMAND_LENGTH, MDI_CHAR)
+
+        # check if this command corresponds to one of MDI's standard built-in commands
+        if command == "<NAME":
+            self.Send(self.name, MDI_NAME_LENGTH, MDI_CHAR, comm)
+            return self.Recv_Command(comm)
+        elif command == "<VERSION":
+            self.Send(MDI_VERSION, 1, MDI_DOUBLE, comm)
+            return self.Recv_Command(comm)
+
+        return command
 
     def Send_Command(self, buf, comm):
         communicator = self.communicators[comm-1]
