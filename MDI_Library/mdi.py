@@ -180,8 +180,8 @@ def MDI_Send(arg1, arg2, arg3, arg4):
             mdi_type = MDI_DOUBLE
 
         if arg3 == MDI_CHAR:
-            data_temp = (arg_type*arg2)(*arg1)
-            data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
+            data_temp = arg1.encode('utf-8')
+            data = ctypes.c_char_p(data_temp)
 
         elif arg3 == MDI_INT or arg3 == MDI_DOUBLE:
             if not isinstance(arg1, list):
