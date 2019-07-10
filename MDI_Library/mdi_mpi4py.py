@@ -81,7 +81,7 @@ class MPI4PYCommunicator():
             strbuf = [ 0 for i in range(length) ]
             for i in range(min(length,len(buf))):
                 strbuf[i] = ord(buf[i])
-            buf = np.array(strbuf, dtype=np.uint8)
+            buf = np.array(strbuf, dtype=numpy_type)
 
         else:
             raise Exception("MDI Error: MDI type not recognized")
@@ -130,12 +130,10 @@ class MPI4PYCommunicator():
 
 
     def exchange_version(self):
-        arg_type = ctypes.c_double
-        mdi_type = MDI_DOUBLE
         sendbuf = np.array([MDI_VERSION], dtype=np.float64)
         self.send(sendbuf, 1, MDI_DOUBLE)
 
-        recvbuf = self.recv(1, MDI_DOUBLE)
+        self.mdi_version = self.recv(1, MDI_DOUBLE)
         return 0
 
 class MPI4PYManager():

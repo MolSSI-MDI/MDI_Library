@@ -90,13 +90,11 @@ def MDI_Init(arg1, comm):
     command = arg1.encode('utf-8')
     if comm is None:
         mpi_communicator_ptr = None
-        do_mpi_split = False
     else:
         if use_mpi4py:
             intra_code_comm = comm
             mpi_communicator = MPI._addressof(comm)
             mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
-            do_mpi_split = True
 
             # send basic information about the MPI communicator to the MDI libarary
             mpi_rank = comm.Get_rank()
