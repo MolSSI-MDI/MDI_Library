@@ -51,6 +51,7 @@ extern const int MDI_DOUBLE_NUMPY;
 // MDI communication types
 extern const int MDI_TCP;
 extern const int MDI_MPI;
+extern const int MDI_TEST;
 
 /*----------------------*/
 /* MDI unit conversions */

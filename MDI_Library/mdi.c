@@ -60,6 +60,8 @@ const int MDI_DOUBLE_NUMPY = 4;
 const int MDI_TCP    = 1;
 /*! \brief MPI communication method */
 const int MDI_MPI    = 2;
+/*! \brief Test communication method */
+const int MDI_TEST   = 3;
 
 /*----------------------*/
 /* MDI unit conversions */

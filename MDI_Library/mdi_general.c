@@ -13,6 +13,7 @@
 #include "mdi_global.h"
 #include "mdi_mpi.h"
 #include "mdi_tcp.h"
+#include "mdi_test.h"
 
 //this is the number of communicator handles that have been returned by MDI_Accept_Connection()
 static int returned_comms = 0;
@@ -195,6 +196,9 @@ int general_init(const char* options, void* world_comm) {
 	tcp_listen(port);
       }
     }
+    else if ( strcmp(method, "TEST") == 0 ) {
+      test_initialize();
+    }
     else {
       mdi_error("Error in MDI_Init: method not recognized");
     }
@@ -218,6 +222,13 @@ int general_init(const char* options, void* world_comm) {
 	tcp_request_connection(port, hostname);
       }
     }
+    else if ( strcmp(method, "TEST") == 0 ) {
+      test_initialize();
+    }
+    else {
+      mdi_error("Error in MDI_Init: method not recognized");
+    }
+
     
   }
   else {
@@ -231,7 +242,6 @@ int general_init(const char* options, void* world_comm) {
     }
   }
 
-  //delete[] argv;
   free( argv_line );
 
   return 0;
@@ -299,6 +309,9 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   else if ( this->method == MDI_TCP ) {
     tcp_send(buf, count, datatype, comm);
   }
+  else if ( this->method == MDI_TEST ) {
+    test_send(buf, count, datatype, comm);
+  }
   else {
     mdi_error("MDI method not recognized in communicator_send");
   }
@@ -336,6 +349,9 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
   else if ( this->method == MDI_TCP ) {
     tcp_recv(buf, count, datatype, comm);
+  }
+  else if ( this->method == MDI_TEST ) {
+    test_recv(buf, count, datatype, comm);
   }
   else {
     mdi_error("MDI method not recognized in communicator_send");
