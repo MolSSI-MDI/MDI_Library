@@ -26,7 +26,18 @@ mdi_name_file = open(dir_path + "/mdi_name","r")
 mdi_name = mdi_name_file.read()
 
 # load the MDI library
-mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
+try:
+    mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
+    # check if the library is loaded correctly
+    ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
+except:
+    try:
+        mdi = ctypes.WinDLL(dir_path + "/" + mdi_name)
+        # check if the library is loaded correctly
+        ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
+    except:
+        raise Exception("MDI Error: Unable to load library")
+
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
