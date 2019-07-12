@@ -130,12 +130,13 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   while (try_connect == 1) {
     ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
     if (ret < 0 ) {
-      if ( errno == ECONNREFUSED ) {
-
-	// close the socket, so that a new one can be created
 #ifdef _WIN32
+      if ( errno == WSAECONNREFUSED ) {
+	// close the socket, so that a new one can be created
 	ret = closesocket(sockfd);
 #else
+      if ( errno == ECONNREFUSED ) {
+	// close the socket, so that a new one can be created
 	ret = close(sockfd);
 #endif
 	if (ret != 0) {

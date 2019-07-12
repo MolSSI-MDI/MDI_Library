@@ -21,23 +21,23 @@ try:
 except ImportError:
     use_mpi4py = False
 
-# get the name of the MDI library
-mdi_name_file = open(dir_path + "/mdi_name","r")
-mdi_name = mdi_name_file.read()
+try: # unix
+    # get the name of the MDI library
+    mdi_name_file = open(dir_path + "/mdi_name","r")
+    mdi_name = mdi_name_file.read()
 
-# load the MDI library
-try:
+    # load the MDI library
     mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
-    # check if the library is loaded correctly
-    ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
-except:
-    try:
-        mdi = ctypes.WinDLL(dir_path + "/" + mdi_name)
-        # check if the library is loaded correctly
-        ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
-    except:
-        raise Exception("MDI Error: Unable to load library")
+except: # windows
+    # get the name of the MDI library
+    mdi_name_file = open(dir_path + "\\mdi_name","r")
+    mdi_name = mdi_name_file.read()
 
+    # load the MDI library
+    try:
+        mdi = ctypes.CDLL(dir_path + "\\" + mdi_name)
+    except:
+        mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name)
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
