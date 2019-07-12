@@ -99,16 +99,14 @@ jobs:
                 -DENABLE_XHOST=!ENABLE_XHOST! ^
                 -DMAX_AM_ERI=!MAX_AM_ERI! ^
                 $(Build.SourcesDirectory)
-        displayName: "Configure Psi4"
+        displayName: "Configure the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)
 
       # Build
       - script: |
           call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-          cmake --build . ^
-                --config %CMAKE_BUILD_TYPE% ^
-                -- -j %NUMBER_OF_PROCESSORS%
-        displayName: "Build Psi4"
+          make -j %NUMBER_OF_PROCESSORS%
+        displayName: "Build the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)/build
 
       # Install
@@ -125,41 +123,6 @@ jobs:
       # Check if OpenMP configuration had not failed silently
       - script: |
           python -c "from psi4 import core; core.set_num_threads(42); assert core.get_num_threads() == 42"
-        displayName: "Test Psi4 (OpenMP)"
+        displayName: "Test the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)/install/lib
 
-      # Test (ctest)
-      - script: |
-          setlocal EnableDelayedExpansion
-          if "%CTEST_TYPE%"=="full" set CTEST_TYPE=".*"
-          ctest --build-config %CMAKE_BUILD_TYPE% ^
-                --label-regex !CTEST_TYPE! ^
-                --output-on-failure ^
-                --parallel %NUMBER_OF_PROCESSORS% ^
-                --timeout 3000
-        displayName: "Test Psi4 (ctest $(ctest.type))"
-        workingDirectory: $(Build.BinariesDirectory)/build
-
-      # Test (pytest)
-      - script: |
-          set PATH=$(Build.BinariesDirectory)\install\bin;%PATH%
-          set PYTHONPATH=$(Build.BinariesDirectory)\install\lib;%PYTHONPATH%
-          psi4 --test %PYTEST_TYPE% -n %NUMBER_OF_PROCESSORS%
-        displayName: "Test Psi4 (pytest $(pytest.type))"
-        workingDirectory: $(Build.BinariesDirectory)
-
-      # Build package
-      - script: |
-          set INSTALL_DIR=$(Build.BinariesDirectory)\install
-          conda build --python %PYTHON_VERSION% ^
-                      conda\win
-          copy /y C:\tools\miniconda3\conda-bld\win-64\psi4-*.bz2 $(Build.ArtifactStagingDirectory)
-        condition: and(succeeded(), eq(variables['conda.build'], 'true'))
-        displayName: "Build Psi4 package"
-
-      # Publish package
-      - task: PublishBuildArtifacts@1
-        inputs:
-          artifactName: conda
-        condition: and(succeeded(), eq(variables['conda.build'], 'true'))
-        displayName: "Publish Psi4 package"
