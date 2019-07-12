@@ -28,7 +28,7 @@ static int sigint_sockfd;
  */
 void sigint_handler(int dummy) {
 #ifdef _WIN32
-  closesocket(sigint_sockfd)
+  closesocket(sigint_sockfd);
 #else
   close(sigint_sockfd);
 #endif
