@@ -288,15 +288,19 @@ class MPI4PYManager():
     def Recv_Command(self, comm):
         communicator = self.communicators[comm-1]
 
-        command = communicator.recv(MDI_COMMAND_LENGTH, MDI_CHAR)
+        get_new_command = True
 
-        # check if this command corresponds to one of MDI's standard built-in commands
-        if command == "<NAME":
-            self.Send(self.name, MDI_NAME_LENGTH, MDI_CHAR, comm)
-            return self.Recv_Command(comm)
-        elif command == "<VERSION":
-            self.Send(MDI_VERSION, 1, MDI_DOUBLE, comm)
-            return self.Recv_Command(comm)
+        while get_new_command:
+            command = communicator.recv(MDI_COMMAND_LENGTH, MDI_CHAR)
+            get_new_command = False
+
+            # check if this command corresponds to one of MDI's standard built-in commands
+            if command == "<NAME":
+                self.Send(self.name, MDI_NAME_LENGTH, MDI_CHAR, comm)
+                get_new_command = True
+            elif command == "<VERSION":
+                self.Send(MDI_VERSION, 1, MDI_DOUBLE, comm)
+                get_new_command = True
 
         return command
 
