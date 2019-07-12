@@ -15,58 +15,6 @@ jobs:
     timeoutInMinutes: 360
     steps:
 
-      # Check cmake configuration
-      - script: |
-          setlocal EnableDelayedExpansion
-          echo cmake.build_type: %CMAKE_BUILD_TYPE%
-          set VALID=false
-          if "%CMAKE_BUILD_TYPE%"=="Debug" set VALID=true
-          if "%CMAKE_BUILD_TYPE%"=="Release" set VALID=true
-          if "!VALID!"=="false" (
-            echo ERROR: Invalid "cmake.build_type" value: "%CMAKE_BUILD_TYPE%". Valid values: "Debug" and "Release".
-            exit 1
-          )
-        displayName: "Check cmake configuration"
-
-      # Check ctest configuration
-      - script: |
-          setlocal EnableDelayedExpansion
-          echo ctest.type: %CTEST_TYPE%
-          set VALID=false
-          if "%CTEST_TYPE%"=="quick" set VALID=true
-          if "%CTEST_TYPE%"=="full" set VALID=true
-          if "!VALID!"=="false" (
-            echo ERROR: Invalid "ctest.type" value: "%CTEST_TYPE%". Valid values: "quick" and "full".
-            exit 1
-          )
-        displayName: "Check ctest configuration"
-
-      # Check pytest configuration
-      - script: |
-          setlocal EnableDelayedExpansion
-          echo pytest.type: %PYTEST_TYPE%
-          set VALID=false
-          if "%PYTEST_TYPE%"=="quick" set VALID=true
-          if "%PYTEST_TYPE%"=="full" set VALID=true
-          if "!VALID!"=="false" (
-            echo ERROR: Invalid "pytest.type" value: "%PYTEST_TYPE%". Valid values: "quick" and "full".
-            exit 1
-          )
-        displayName: "Check pytest configuration"
-
-      # Check conda configuration
-      - script: |
-          setlocal EnableDelayedExpansion
-          echo conda.build: %CONDA_BUILD%
-          set VALID=false
-          if "%CONDA_BUILD%"=="true" set VALID=true
-          if "%CONDA_BUILD%"=="false" set VALID=true
-          if "!VALID!"=="false" (
-            echo ERROR: Invalid "conda.build" value: "%CONDA_BUILD%". Valid values: "true" and "false".
-            exit 1
-          )
-        displayName: "Check conda configuration"
-
       # Install Chocolatey (https://chocolatey.org/install#install-with-powershellexe)
       - powershell: |
           Set-ExecutionPolicy Bypass -Scope Process -Force
