@@ -15,14 +15,6 @@ jobs:
     timeoutInMinutes: 360
     steps:
 
-      # Check Python
-      - script: |
-          setlocal EnableDelayedExpansion
-          echo python.version: %PYTHON_VERSION%
-          which python
-          python --version
-        displayName: "Check Python version: $(python.version)"
-
       # Check cmake configuration
       - script: |
           setlocal EnableDelayedExpansion
