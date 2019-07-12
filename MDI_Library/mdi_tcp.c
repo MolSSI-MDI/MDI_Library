@@ -9,11 +9,11 @@
   #include <netinet/in.h>
   #include <sys/socket.h>
   #include <netdb.h>
+  #include <unistd.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <errno.h>
 #include "mdi.h"
@@ -27,7 +27,11 @@ static int sigint_sockfd;
  *                   Dummy argument.
  */
 void sigint_handler(int dummy) {
+#ifdef _WIN32
+  closesocket(sigint_sockfd)
+#else
   close(sigint_sockfd);
+#endif
 }
 
 /*! \brief Socket over which a driver will listen for incoming connections */
@@ -129,8 +133,12 @@ int tcp_request_connection(int port, char* hostname_ptr) {
       if ( errno == ECONNREFUSED ) {
 
 	// close the socket, so that a new one can be created
+#ifdef _WIN32
+	ret = closesocket(sockfd);
+#else
 	ret = close(sockfd);
-	if (ret < 0) {
+#endif
+	if (ret != 0) {
 	  mdi_error("Could not close socket");
 	}
 
@@ -229,7 +237,11 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   while ( n >= 0 && total_sent < count_t*datasize ) {
+#ifdef _WIN32
+    n = send(this->sockfd, buf+total_sent, count_t*datasize-total_sent, 0);
+#else
     n = write(this->sockfd, buf+total_sent, count_t*datasize-total_sent);
+#endif
     total_sent += n;
   }
   if (n < 0) { mdi_error("Error writing to socket: server has quit or connection broke"); }
@@ -269,10 +281,20 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     mdi_error("MDI data type not recognized in tcp_recv");
   }
 
+#ifdef _WIN32
+  n = nr = recv(this->sockfd,buf,count_t*datasize,0);
+#else
   n = nr = read(this->sockfd,buf,count_t*datasize);
+#endif
 
-  while (nr>0 && n<count_t*datasize )
-    {  nr=read(this->sockfd,buf+n,count_t*datasize-n); n+=nr; }
+  while (nr>0 && n<count_t*datasize ) {
+#ifdef _WIN32
+    nr=recv(this->sockfd,buf+n,count_t*datasize-n,0);
+#else
+    nr=read(this->sockfd,buf+n,count_t*datasize-n);
+#endif
+    n+=nr;
+  }
 
   if (n == 0) { mdi_error("Error reading from socket: server has quit or connection broke"); }
 

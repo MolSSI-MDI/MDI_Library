@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include "mdi.h"
 #include "mdi_general.h"
 #include "mdi_global.h"
