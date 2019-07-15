@@ -113,11 +113,3 @@ jobs:
                 -- -j %NUMBER_OF_PROCESSORS%
         displayName: "Install Psi4"
         workingDirectory: $(Build.BinariesDirectory)/build
-
-      # Test (OpenMP)
-      # Check if OpenMP configuration had not failed silently
-      - script: |
-          python -c "from psi4 import core; core.set_num_threads(42); assert core.get_num_threads() == 42"
-        displayName: "Test the MDI Library"
-        workingDirectory: $(Build.BinariesDirectory)/install/lib
-
