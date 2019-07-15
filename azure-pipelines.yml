@@ -111,5 +111,16 @@ jobs:
                 --config %CMAKE_BUILD_TYPE% ^
                 --target install ^
                 -- -j %NUMBER_OF_PROCESSORS%
-        displayName: "Install Psi4"
+        displayName: "Install the MDI Library"
+        workingDirectory: $(Build.BinariesDirectory)/build
+        
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          ls
+          ls *
+          which python
+          python --version
+          cd MDI_Library
+          python mdi_mpi4py.py
+        displayName: "Test MPI4PY"
         workingDirectory: $(Build.BinariesDirectory)/build
