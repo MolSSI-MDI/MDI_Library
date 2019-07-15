@@ -90,6 +90,7 @@ jobs:
                 -DCMAKE_INSTALL_PREFIX=../install ^
                 -DCMAKE_C_COMPILER=clang-cl ^
                 -DCMAKE_CXX_COMPILER=clang-cl ^
+                -Dlanguage=Python
                 $(Build.SourcesDirectory)
         displayName: "Configure the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)
