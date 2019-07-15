@@ -19,7 +19,7 @@ try:
 except ImportError:
     use_mpi4py = False
 
-mdi = ctypes.CDLL("mdi.dll",RTLD_GLOBAL)
+mdi = ctypes.CDLL("mdi.dll",ctypes.RTLD_GLOBAL)
 
 mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Conversion_Factor.restype = ctypes.c_double
