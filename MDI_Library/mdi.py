@@ -28,6 +28,9 @@ try: # unix
 
     # load the MDI library
     mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
+
+    # confirm that it is possible to load from this library
+    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 except: # windows
     # get the name of the MDI library
     mdi_name_file = open(dir_path + "\\mdi_name","r")
@@ -36,8 +39,14 @@ except: # windows
     # load the MDI library
     try:
         mdi = ctypes.CDLL(dir_path + "\\" + mdi_name)
+
+        # confirm that it is possible to load from this library
+        MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
     except:
         mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name)
+
+        # confirm that it is possible to load from this library
+        MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value

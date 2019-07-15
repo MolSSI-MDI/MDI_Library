@@ -23,6 +23,13 @@ Contents:
 extern "C" {
 #endif
 
+// ensure that symbols are exported to Windows .dll files
+#ifdef _WIN32
+  #define DllExport   __declspec( dllexport )
+#else
+  #define DllExport 
+#endif
+
 // type of an MDI communicator handle
 typedef int MDI_Comm;
 
@@ -30,65 +37,65 @@ typedef int MDI_Comm;
 typedef int MDI_Datatype;
 
 // MDI version number
-extern const double MDI_VERSION;
+DllExport extern const double MDI_VERSION;
 
 // length of an MDI command in characters
-extern const int MDI_COMMAND_LENGTH;
+DllExport extern const int MDI_COMMAND_LENGTH;
 
 // length of an MDI name in characters
-extern const int MDI_NAME_LENGTH;
+DllExport extern const int MDI_NAME_LENGTH;
 
 // value of a null communicator
-extern const MDI_Comm MDI_NULL_COMM;
+DllExport extern const MDI_Comm MDI_NULL_COMM;
 
 // MDI data types
-extern const int MDI_INT;
-extern const int MDI_DOUBLE;
-extern const int MDI_CHAR;
-extern const int MDI_INT_NUMPY;
-extern const int MDI_DOUBLE_NUMPY;
+DllExport extern const int MDI_INT;
+DllExport extern const int MDI_DOUBLE;
+DllExport extern const int MDI_CHAR;
+DllExport extern const int MDI_INT_NUMPY;
+DllExport extern const int MDI_DOUBLE_NUMPY;
 
 // MDI communication types
-extern const int MDI_TCP;
-extern const int MDI_MPI;
-extern const int MDI_TEST;
+DllExport extern const int MDI_TCP;
+DllExport extern const int MDI_MPI;
+DllExport extern const int MDI_TEST;
 
 /*----------------------*/
 /* MDI unit conversions */
 /*----------------------*/
 
 // length
-extern const double MDI_METER_TO_BOHR;
-extern const double MDI_ANGSTROM_TO_BOHR;
+DllExport extern const double MDI_METER_TO_BOHR;
+DllExport extern const double MDI_ANGSTROM_TO_BOHR;
 
 // time
-extern const double MDI_SECOND_TO_AUT;
-extern const double MDI_PICOSECOND_TO_AUT;
+DllExport extern const double MDI_SECOND_TO_AUT;
+DllExport extern const double MDI_PICOSECOND_TO_AUT;
 
 // force
-extern const double MDI_NEWTON_TO_AUF;
+DllExport extern const double MDI_NEWTON_TO_AUF;
 
 // energy
-extern const double MDI_JOULE_TO_HARTREE;
-extern const double MDI_KJ_TO_HARTREE;
-extern const double MDI_KJPERMOL_TO_HARTREE;
-extern const double MDI_KCALPERMOL_TO_HARTREE;
-extern const double MDI_EV_TO_HARTREE;
-extern const double MDI_RYDBERG_TO_HARTREE;
-extern const double MDI_KELVIN_TO_HARTREE;
+DllExport extern const double MDI_JOULE_TO_HARTREE;
+DllExport extern const double MDI_KJ_TO_HARTREE;
+DllExport extern const double MDI_KJPERMOL_TO_HARTREE;
+DllExport extern const double MDI_KCALPERMOL_TO_HARTREE;
+DllExport extern const double MDI_EV_TO_HARTREE;
+DllExport extern const double MDI_RYDBERG_TO_HARTREE;
+DllExport extern const double MDI_KELVIN_TO_HARTREE;
 
-int MDI_Init(const char* options, void* world_comm);
-int MDI_Accept_Communicator();
-int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
-int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
-int MDI_Send_Command(const char* buf, MDI_Comm comm);
-int MDI_Recv_Command(char* buf, MDI_Comm comm);
-double MDI_Conversion_Factor(char* in_unit, char* out_unit);
+DllExport int MDI_Init(const char* options, void* world_comm);
+DllExport int MDI_Accept_Communicator();
+DllExport int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+DllExport int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+DllExport int MDI_Send_Command(const char* buf, MDI_Comm comm);
+DllExport int MDI_Recv_Command(char* buf, MDI_Comm comm);
+DllExport double MDI_Conversion_Factor(char* in_unit, char* out_unit);
 
 // only used internally by MDI
-void mdi_error(const char* message);
-int MDI_Get_MPI_Code_Rank();
-void MDI_Set_MPI_Intra_Rank(int rank);
+DllExport void mdi_error(const char* message);
+DllExport int MDI_Get_MPI_Code_Rank();
+DllExport void MDI_Set_MPI_Intra_Rank(int rank);
 
 #ifdef __cplusplus
 }
