@@ -19,19 +19,19 @@ try:
 except ImportError:
     use_mpi4py = False
 
-mdi_name_file = open(dir_path + "\\mdi_name","r")
-mdi_name = mdi_name_file.read()
-mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name,ctypes.RTLD_GLOBAL)
-
-mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Conversion_Factor.restype = ctypes.c_double
-def MDI_Conversion_Factor(arg1, arg2):
-    in_unit = arg1.encode('utf-8')
-    out_unit = arg2.encode('utf-8')
-    return mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit))
-
-unit_conv = MDI_Conversion_Factor("angstrom","bohr")
-raise Exception("UNIT CONVERSION: " + str(unit_conv))
+#mdi_name_file = open(dir_path + "\\mdi_name","r")
+#mdi_name = mdi_name_file.read()
+#mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name,ctypes.RTLD_GLOBAL)
+#
+#mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+#mdi.MDI_Conversion_Factor.restype = ctypes.c_double
+#def MDI_Conversion_Factor(arg1, arg2):
+#    in_unit = arg1.encode('utf-8')
+#    out_unit = arg2.encode('utf-8')
+#    return mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit))
+#
+#unit_conv = MDI_Conversion_Factor("angstrom","bohr")
+#raise Exception("UNIT CONVERSION: " + str(unit_conv))
 
     
 try: # unix
