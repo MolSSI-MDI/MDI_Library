@@ -19,6 +19,19 @@ try:
 except ImportError:
     use_mpi4py = False
 
+mdi = ctypes.CDLL("mdi.dll",RTLD_GLOBAL)
+
+mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
+mdi.MDI_Conversion_Factor.restype = ctypes.c_double
+def MDI_Conversion_Factor(arg1, arg2):
+    in_unit = arg1.encode('utf-8')
+    out_unit = arg2.encode('utf-8')
+    return mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit))
+
+unit_conv = MDI_Conversion_Factor("angstrom","bohr")
+raise Exception("UNIT CONVERSION: " + str(unit_conv))
+
+    
 try: # unix
     # get the name of the MDI library
     mdi_name_file = open(dir_path + "/mdi_name","r")
