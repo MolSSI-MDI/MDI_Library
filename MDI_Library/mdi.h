@@ -23,7 +23,12 @@ Contents:
 extern "C" {
 #endif
 
-#define DllExport   __declspec( dllexport )
+// ensure that symbols are exported to Windows .dll files
+#ifdef _WIN32
+  #define DllExport   __declspec( dllexport )
+#else
+  #define DllExport 
+#endif
 
 // type of an MDI communicator handle
 typedef int MDI_Comm;
