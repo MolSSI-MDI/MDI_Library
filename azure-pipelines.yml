@@ -98,7 +98,9 @@ jobs:
       # Build
       - script: |
           call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-          make -j %NUMBER_OF_PROCESSORS%
+          cmake --build . ^
+                --config %CMAKE_BUILD_TYPE% ^
+                -- -j %NUMBER_OF_PROCESSORS%
         displayName: "Build the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)/build
 
