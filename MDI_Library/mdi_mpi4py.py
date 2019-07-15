@@ -33,6 +33,7 @@ except: # windows
     # get the name of the MDI library
     mdi_name_file = open(dir_path + "\\mdi_name","r")
     mdi_name = mdi_name_file.read()
+    raise Exception("mdi_name: " + str(mdi_name))
 
     # load the MDI library
     try:
