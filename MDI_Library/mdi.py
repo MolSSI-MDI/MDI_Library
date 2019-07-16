@@ -4,7 +4,6 @@ import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 import ctypes
-#import mdi_mpi4py
 from .mdi_mpi4py import MPI4PYManager
 
 # attempt to import numpy
@@ -21,23 +20,23 @@ try:
 except ImportError:
     use_mpi4py = False
 
-try: # unix
-    # get the name of the MDI library
+# get the path to the MDI Library
+try: # Unix
     mdi_name_file = open(dir_path + "/mdi_name","r")
     mdi_name = mdi_name_file.read()
-
-    # load the MDI library
-    mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
-except: # windows
-    # get the name of the MDI library
+    mdi_path = dir_path + "/" + mdi_name
+except IOError: # Windows
     mdi_name_file = open(dir_path + "\\mdi_name","r")
     mdi_name = mdi_name_file.read()
+    mdi_path = dir_path + "\\" + mdi_name
 
-    # load the MDI library
-    try:
-        mdi = ctypes.CDLL(dir_path + "\\" + mdi_name)
-    except:
-        mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name)
+# load the MDI Library
+try:
+    mdi = ctypes.CDLL(mdi_path)
+    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
+except (ValueError, AttributeError):
+    mdi = ctypes.WinDLL(mdi_path)
+    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value

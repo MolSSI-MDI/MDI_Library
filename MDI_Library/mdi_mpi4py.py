@@ -1,5 +1,6 @@
 """ Class for handling MPI4PY-based communication. """
 
+import sys
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -19,50 +20,23 @@ try:
 except ImportError:
     use_mpi4py = False
 
-#mdi_name_file = open(dir_path + "\\mdi_name","r")
-#mdi_name = mdi_name_file.read()
-#mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name,ctypes.RTLD_GLOBAL)
-#
-#mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-#mdi.MDI_Conversion_Factor.restype = ctypes.c_double
-#def MDI_Conversion_Factor(arg1, arg2):
-#    in_unit = arg1.encode('utf-8')
-#    out_unit = arg2.encode('utf-8')
-#    return mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit))
-#
-#unit_conv = MDI_Conversion_Factor("angstrom","bohr")
-#raise Exception("UNIT CONVERSION: " + str(unit_conv))
-
-    
-try: # unix
-    # get the name of the MDI library
+# get the path to the MDI Library
+try: # Unix
     mdi_name_file = open(dir_path + "/mdi_name","r")
     mdi_name = mdi_name_file.read()
-
-    # load the MDI library
-    mdi = ctypes.CDLL(dir_path + "/" + mdi_name)
-
-    # confirm that it is possible to load from this library
-    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
-except: # windows
-    # get the name of the MDI library
+    mdi_path = dir_path + "/" + mdi_name
+except IOError: # Windows
     mdi_name_file = open(dir_path + "\\mdi_name","r")
     mdi_name = mdi_name_file.read()
-    raise Exception("mdi_name: " + str(mdi_name) + "\n" + 
-                    "dir_path: " + str(dir_path) + "\n" +
-                    "mdi_path: " + dir_path + "\\" + mdi_name)
+    mdi_path = dir_path + "\\" + mdi_name
 
-    # load the MDI library
-    try:
-        mdi = ctypes.CDLL(dir_path + "\\" + mdi_name)
-
-        # confirm that it is possible to load from this library
-        MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
-    except:
-        mdi = ctypes.WinDLL(dir_path + "\\" + mdi_name)
-
-        # confirm that it is possible to load from this library
-        MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
+# load the MDI Library
+try:
+    mdi = ctypes.CDLL(mdi_path)
+    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
+except (ValueError, AttributeError):
+    mdi = ctypes.WinDLL(mdi_path)
+    MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
@@ -234,6 +208,14 @@ class MPI4PYManager():
         for i in range(len(options)):
             if options[i] == "-ipi":
                 ipi_compatibility = True
+
+        # check if this calculation should redirect the standard output
+        output_file = None
+        for i in range(len(options)):
+            if options[i] == "-out" and i < len(options) - 1:
+                output_file = options[i+1]
+        if output_file is not None:
+            sys.stdout = open(output_file, 'w')
 
         # obtain basic information about the MPI configuration
         mpi_rank = mpi_comm.Get_rank()
