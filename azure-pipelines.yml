@@ -146,4 +146,4 @@ jobs:
           echo "-----------------------"
           python mdi_mpi4py.py
         displayName: "Test Installed MPI4PY"
-        workingDirectory: $(Build.BinariesDirectory)/install
+        workingDirectory: $(Build.BinariesDirectory)/install/lib
