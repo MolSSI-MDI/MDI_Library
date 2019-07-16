@@ -5,6 +5,11 @@ trigger:
 variables:
   llvm.version: '7.0.1' # Note: LLVM 8.0.0 fails to build the optimized libint
   mkl.version: '2019.1'
+  conda.build: false
+  conda.build_type: Debug
+  ctest.type: quick
+  pytest.type: quick
+  python.version: 3.6
 
 jobs:
 
