@@ -116,7 +116,6 @@ jobs:
           cmake --build . ^
                 --config %CMAKE_BUILD_TYPE% ^
                 --target install ^
-                -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory)/install
                 -- -j %NUMBER_OF_PROCESSORS%
         displayName: "Install the MDI Library"
         workingDirectory: $(Build.BinariesDirectory)/build
