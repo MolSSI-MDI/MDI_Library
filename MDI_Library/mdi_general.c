@@ -184,7 +184,7 @@ int general_init(const char* options, void* world_comm) {
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
-      mpi_identify_codes("", do_split);
+      mpi_identify_codes("", do_split, mpi_communicator);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -207,7 +207,7 @@ int general_init(const char* options, void* world_comm) {
     // initialize this code as an engine
 
     if ( strcmp(method, "MPI") == 0 ) {
-      mpi_identify_codes(name, do_split);
+      mpi_identify_codes(name, do_split, mpi_communicator);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {

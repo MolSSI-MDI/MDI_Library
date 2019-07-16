@@ -61,17 +61,17 @@ int set_world_rank(int world_rank_in) {
  *                   Should normally be set to 1, unless the code associated with this process is a Python code.
  *                   In that case, the Python wrapper code will do the split instead.
  */
-int mpi_identify_codes(const char* code_name, int do_split) {
+int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm) {
   int i, j;
   int driver_rank;
   int nunique_names = 0;
   //int world_rank;
 
   // get the number of processes
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_size(world_comm, &world_size);
 
   // get the rank of this process
-  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+  MPI_Comm_rank(world_comm, &world_rank);
 
   //create the name of this process
   char buffer[MDI_NAME_LENGTH];
@@ -84,7 +84,7 @@ int mpi_identify_codes(const char* code_name, int do_split) {
   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
   MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-		MPI_CHAR, MPI_COMM_WORLD);
+		MPI_CHAR, world_comm);
 
   // determine which rank corresponds to rank 0 of the driver
   driver_rank = -1;
@@ -137,7 +137,7 @@ int mpi_identify_codes(const char* code_name, int do_split) {
 	color = 1;
 	key = 1;
       }
-      MPI_Comm_split(MPI_COMM_WORLD, color, key, &new_mpi_comm);
+      MPI_Comm_split(world_comm, color, key, &new_mpi_comm);
 
       // create an MDI communicator for communication between the driver and engine
       if ( world_rank == driver_rank || world_rank == i ) {
@@ -162,10 +162,10 @@ int mpi_identify_codes(const char* code_name, int do_split) {
   if ( do_split == 1 ) {
 
     // create the intra-code communicators
-    MPI_Comm_split(MPI_COMM_WORLD, mpi_code_rank, world_rank, &intra_MPI_comm);
+    MPI_Comm_split(world_comm, mpi_code_rank, world_rank, &intra_MPI_comm);
     MPI_Comm_rank(intra_MPI_comm, &intra_rank);
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(world_comm);
 
   }
 
