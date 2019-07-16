@@ -102,5 +102,6 @@ if( (NOT language) OR (language STREQUAL "Python") )
 endif()
 install(TARGETS mdi
         EXPORT "${PN}Targets"
+        RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
