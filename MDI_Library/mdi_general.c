@@ -47,12 +47,14 @@ int general_init(const char* options, void* world_comm) {
   name = malloc(MDI_NAME_LENGTH+1);
   char* hostname;
   int port;
+  char* output_file;
   char* language = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
+  int has_output_file = 0;
 
   // get the MPI rank
   MPI_Comm mpi_communicator;
@@ -146,6 +148,15 @@ int general_init(const char* options, void* world_comm) {
       ipi_compatibility = 1;
       iarg += 1;
     }
+    //-out
+    else if (strcmp(argv[iarg],"-out") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -out option");
+      }
+      has_output_file = 1;
+      output_file = argv[iarg+1];
+      iarg += 2;
+    }
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
@@ -157,6 +168,11 @@ int general_init(const char* options, void* world_comm) {
     else {
       mdi_error("Unrecognized option");
     }
+  }
+
+  // redirect the standard output
+  if ( has_output_file == 1 ) {
+    freopen(output_file, "w", stdout);
   }
 
   // ensure the -role option was provided

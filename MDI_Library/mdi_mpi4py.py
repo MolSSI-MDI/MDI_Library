@@ -1,5 +1,6 @@
 """ Class for handling MPI4PY-based communication. """
 
+import sys
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -207,6 +208,14 @@ class MPI4PYManager():
         for i in range(len(options)):
             if options[i] == "-ipi":
                 ipi_compatibility = True
+
+        # check if this calculation should redirect the standard output
+        output_file = None
+        for i in range(len(options)):
+            if options[i] == "-out" and i < len(options) - 1:
+                output_file = options[i+1]
+        if output_file is not None:
+            sys.stdout = open(output_file, 'w')
 
         # obtain basic information about the MPI configuration
         mpi_rank = mpi_comm.Get_rank()
