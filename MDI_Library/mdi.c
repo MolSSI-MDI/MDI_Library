@@ -601,3 +601,23 @@ void MDI_Set_MPI_Intra_Rank(int rank)
 {
   intra_rank = rank;
 }
+
+/*! \brief Set the size of MPI_COMM_WORLD
+ *
+ * This function is only used if the linked program uses MPI4PY.
+ *
+ */
+void MDI_Set_World_Size(int world_size_in)
+{
+  set_world_size(world_size_in);
+}
+
+/*! \brief Set the rank of this process within MPI_COMM_WORLD
+ *
+ * This function is only used if the linked program uses MPI4PY.
+ *
+ */
+void MDI_Set_World_Rank(int world_rank_in)
+{
+  set_world_rank(world_rank_in);
+}

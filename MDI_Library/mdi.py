@@ -79,12 +79,12 @@ mdi.MDI_Set_MPI_Intra_Rank.argtypes = [ctypes.c_int]
 mdi.MDI_Set_MPI_Intra_Rank.restype = None
 
 # set_world_size
-mdi.set_world_size.argtypes = [ctypes.c_int]
-mdi.set_world_size.restype = ctypes.c_int
+mdi.MDI_Set_World_Size.argtypes = [ctypes.c_int]
+mdi.MDI_Set_World_Size.restype = None
 
 # set_world_rank
-mdi.set_world_rank.argtypes = [ctypes.c_int]
-mdi.set_world_rank.restype = ctypes.c_int
+mdi.MDI_Set_World_Rank.argtypes = [ctypes.c_int]
+mdi.MDI_Set_World_Rank.restype = None
 
 
 # MDI_Init
@@ -109,8 +109,8 @@ def MDI_Init(arg1, comm):
             # send basic information about the MPI communicator to the MDI libarary
             mpi_rank = comm.Get_rank()
             mpi_world_size = comm.Get_size()
-            mdi.set_world_rank(mpi_rank)
-            mdi.set_world_size(mpi_world_size)
+            mdi.MDI_Set_World_Rank(mpi_rank)
+            mdi.MDI_Set_World_Size(mpi_world_size)
         else:
             raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but MPI4Py is not found")
 
