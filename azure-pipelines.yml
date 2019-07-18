@@ -48,8 +48,8 @@ jobs:
 
       # Create conda enviroment
       # Note: conda activate doesn't work here, because it creates a new shell!
-      #                        deepdiff ^
-      #                  intel-openmp=%MKL_VERSION% ^
+      #                  mpmath ^
+      #                                          pint ^
       - script: |
           conda install cmake ^
                         conda-build ^
