@@ -48,13 +48,11 @@ jobs:
 
       # Create conda enviroment
       # Note: conda activate doesn't work here, because it creates a new shell!
-      #                  mpmath ^
-      #                                          pint ^
+      #                  mkl-devel=%MKL_VERSION% ^
       - script: |
           conda install cmake ^
                         conda-build ^
                         conda-verify ^
-                        mkl-devel=%MKL_VERSION% ^
                         ninja ^
                         numpy ^
                         pybind11 ^
