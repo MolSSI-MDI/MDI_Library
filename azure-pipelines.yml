@@ -55,10 +55,8 @@ jobs:
                         conda-build ^
                         conda-verify ^
                         mkl-devel=%MKL_VERSION% ^
-                        mpmath ^
                         ninja ^
                         numpy ^
-                        pint ^
                         pybind11 ^
                         python=%PYTHON_VERSION%
           conda list
