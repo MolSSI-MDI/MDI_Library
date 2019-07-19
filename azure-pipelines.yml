@@ -50,7 +50,7 @@ jobs:
                         ninja ^
                         numpy ^
                         pybind11 ^
-                        clang ^
+                        llvm ^
                         python=%PYTHON_VERSION%
           conda list
         displayName: "Install conda packages"
