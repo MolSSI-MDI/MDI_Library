@@ -1,0 +1,118 @@
+trigger:
+  branches:
+    include:
+    - '*'
+
+variables:
+  python.version: 3.6
+  llvm.version: '7.0.1' # Note: LLVM 8.0.0 fails to build the optimized libint
+  mkl.version: '2019.1'
+  conda.build: false
+  conda.build_type: Debug
+
+jobs:
+
+  # Configure, build, install, and test job
+  - job: 'build'
+    pool:
+      vmImage: 'vs2015-win2012r2'
+    timeoutInMinutes: 360
+    steps:
+
+      # Install Chocolatey (https://chocolatey.org/install#install-with-powershellexe)
+      - powershell: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+          Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
+          choco --version
+        displayName: "Install Chocolatey"
+
+      # Install Miniconda
+      - script: |
+          choco install miniconda3 --yes
+          set PATH=C:\tools\miniconda3\Scripts;C:\tools\miniconda3;C:\tools\miniconda3\Library\bin;%PATH%
+          echo '##vso[task.setvariable variable=PATH]%PATH%'
+          set LIB=C:\tools\miniconda3\Library\lib;%LIB%
+          echo '##vso[task.setvariable variable=LIB]%LIB%'
+          conda --version
+        displayName: "Install Miniconda"
+
+      # Configure Miniconda
+      - script: |
+          conda config --set always_yes yes
+          conda config --append channels conda-forge
+          conda config --append channels psi4
+          conda info
+        displayName: "Configure Miniconda"
+
+      # Create conda enviroment
+      # Note: conda activate doesn't work here, because it creates a new shell!
+      #                  mkl-devel=%MKL_VERSION% ^
+      - script: |
+          conda install cmake ^
+                        conda-build ^
+                        conda-verify ^
+                        ninja ^
+                        numpy ^
+                        pybind11 ^
+                        python=%PYTHON_VERSION%
+          conda list
+        displayName: "Install conda packages"
+
+      # Install LLVM
+      # Note: LLVM distributed by conda is too old
+      - script: |
+          choco install llvm --version %LLVM_VERSION% --yes
+          set PATH=C:\Program Files\LLVM\bin;%PATH%
+          echo '##vso[task.setvariable variable=PATH]%PATH%'
+          clang-cl --version
+        displayName: "Install LLVM"
+
+      # Configure
+      - script: |
+          setlocal EnableDelayedExpansion
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          mkdir build & cd build
+          cmake -G Ninja ^
+                -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
+                -DCMAKE_INSTALL_PREFIX=../install ^
+                -DCMAKE_C_COMPILER=clang-cl ^
+                -DCMAKE_CXX_COMPILER=clang-cl ^
+                -Dlanguage=Python ^
+                $(Build.SourcesDirectory)
+        displayName: "Configure the MDI Library"
+        workingDirectory: $(Build.BinariesDirectory)
+
+      # Build
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          cmake --build . ^
+                --config %CMAKE_BUILD_TYPE% ^
+                -- -j %NUMBER_OF_PROCESSORS%
+        displayName: "Build the MDI Library"
+        workingDirectory: $(Build.BinariesDirectory)/build
+
+      # Install
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          mkdir $(Build.BinariesDirectory)/install
+          cmake --build . ^
+                --config %CMAKE_BUILD_TYPE% ^
+                --target install ^
+                -- -j %NUMBER_OF_PROCESSORS%
+        displayName: "Install the MDI Library"
+        workingDirectory: $(Build.BinariesDirectory)/build
+        
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          cd MDI_Library
+          python mdi_mpi4py.py
+        displayName: "Test MPI4PY"
+        workingDirectory: $(Build.BinariesDirectory)/build
+        
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+          cd MDI_Library
+          python mdi_mpi4py.py
+        displayName: "Test Installed MPI4PY"
+        workingDirectory: $(Build.BinariesDirectory)/install/lib
