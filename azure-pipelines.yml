@@ -51,6 +51,7 @@ jobs:
                         numpy ^
                         pybind11 ^
                         llvm ^
+                        clang ^
                         python=%PYTHON_VERSION%
           conda list
         displayName: "Install conda packages"
