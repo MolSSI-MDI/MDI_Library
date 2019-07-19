@@ -104,14 +104,7 @@ jobs:
         
       - script: |
           call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-          ls
-          ls *
-          which python
-          python --version
           cd MDI_Library
-          echo "-----------------------"
-          link.exe /dump /exports mdi.dll
-          echo "-----------------------"
           python mdi_mpi4py.py
         displayName: "Test MPI4PY"
         workingDirectory: $(Build.BinariesDirectory)/build
