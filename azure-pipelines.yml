@@ -1,6 +1,6 @@
 trigger:
   - master
-  - 1.3.x
+  - *
 
 variables:
   python.version: 3.6
