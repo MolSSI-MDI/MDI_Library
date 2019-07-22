@@ -115,29 +115,29 @@ if( python_package STREQUAL "ON" )
     set(PYTHON_SITE_PACKAGES "${_site_packages}" CACHE PATH INTERNAL)
     unset(_site_packages)
 
-    set(MDI_INSTALL_INCLUDEDIR ${PYTHON_SITE_PACKAGES})
-    set(MDI_INSTALL_LIBDIR     ${PYTHON_SITE_PACKAGES})
+    set(MDI_INSTALL_INCLUDEDIR ${PYTHON_SITE_PACKAGES}/mdi)
+    set(MDI_INSTALL_LIBDIR     ${PYTHON_SITE_PACKAGES}/mdi)
 
 else()
 
-    set(MDI_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
-    set(MDI_INSTALL_LIBDIR     ${CMAKE_INSTALL_LIBDIR})
+    set(MDI_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
+    set(MDI_INSTALL_LIBDIR     ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
 
 endif()
 
 # Perform the installation
 install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
-        DESTINATION ${MDI_INSTALL_INCLUDEDIR}/MDI_Library)
+        DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 if( (NOT language) OR (language STREQUAL "Python") )
   install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.py
                 ${CMAKE_BINARY_DIR}/MDI_Library/mdi_name
                 ${CMAKE_BINARY_DIR}/MDI_Library/__init__.py
                 ${CMAKE_BINARY_DIR}/MDI_Library/mdi_mpi4py.py
-          DESTINATION ${MDI_INSTALL_LIBDIR}/MDI_Library)
+          DESTINATION ${MDI_INSTALL_LIBDIR})
 endif()
 install(TARGETS mdi
         EXPORT "${PN}Targets"
-        RUNTIME DESTINATION ${MDI_INSTALL_LIBDIR}/MDI_Library
-        LIBRARY DESTINATION ${MDI_INSTALL_LIBDIR}/MDI_Library
-        ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR}/MDI_Library)
+        RUNTIME DESTINATION ${MDI_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${MDI_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR})
  
