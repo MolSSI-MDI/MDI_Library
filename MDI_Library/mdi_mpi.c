@@ -74,7 +74,8 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   MPI_Comm_rank(world_comm, &world_rank);
 
   //create the name of this process
-  char buffer[MDI_NAME_LENGTH];
+  //char buffer[MDI_NAME_LENGTH];
+  char* buffer = malloc( sizeof(char) * MDI_NAME_LENGTH );
   strcpy(buffer, code_name);
 
   char* names = NULL;
@@ -87,10 +88,11 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
 		MPI_CHAR, world_comm);
 
   // determine which rank corresponds to rank 0 of the driver
+  char* name = malloc( sizeof(char) * MDI_NAME_LENGTH );
   driver_rank = -1;
   for (i=0; i<world_size; i++) {
     if ( driver_rank == -1 ) {
-      char name[MDI_NAME_LENGTH];
+      //char name[MDI_NAME_LENGTH];
       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
       if ( strcmp(name, "") == 0 ) {
 	driver_rank = i;
@@ -102,13 +104,15 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   }
 
   //create communicators
+  char* prev_name = malloc( sizeof(char) * MDI_NAME_LENGTH );
+  char* my_name = malloc( sizeof(char) * MDI_NAME_LENGTH );
   for (i=0; i<world_size; i++) {
-    char name[MDI_NAME_LENGTH];
+    //char name[MDI_NAME_LENGTH];
     memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
 
     int found = 0;
     for (j=0; j<i; j++) {
-      char prev_name[MDI_NAME_LENGTH];
+      //char prev_name[MDI_NAME_LENGTH];
       memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
       if ( strcmp(name, prev_name) == 0 ) {
 	found = 1;
@@ -120,7 +124,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
       // add this code's name to the list of unique names
       memcpy( &unique_names[nunique_names*MDI_NAME_LENGTH], name, MDI_NAME_LENGTH );
       nunique_names++;
-      char my_name[MDI_NAME_LENGTH];
+      //char my_name[MDI_NAME_LENGTH];
       memcpy( my_name, &names[world_rank*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
       if ( strcmp(my_name, name) == 0 ) {
 	mpi_code_rank = nunique_names;
@@ -168,6 +172,13 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
     MPI_Barrier(world_comm);
 
   }
+
+  free( buffer );
+  free( names );
+  free( unique_names );
+  free( name );
+  free( prev_name );
+  free( my_name );
 
   return 0;
 }

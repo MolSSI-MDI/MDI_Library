@@ -48,6 +48,12 @@ int tcp_listen(int port) {
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
 
+#ifdef _WIN32
+  // initialize Winsock
+  WSADATA wsa_data;
+  ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
+#endif
+
   // create the socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
@@ -59,7 +65,8 @@ int tcp_listen(int port) {
   signal(SIGINT, sigint_handler);
 
   // create the socket address
-  bzero((char *) &serv_addr, sizeof(serv_addr));
+  //bzero((char *) &serv_addr, sizeof(serv_addr));
+  memset( &serv_addr, 0, sizeof(serv_addr) );
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   serv_addr.sin_port = htons(port);
@@ -99,6 +106,12 @@ int tcp_listen(int port) {
 int tcp_request_connection(int port, char* hostname_ptr) {
   int ret, sockfd;
 
+#ifdef _WIN32
+  // initialize Winsock
+  WSADATA wsa_data;
+  ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
+#endif
+
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
 
@@ -111,27 +124,30 @@ int tcp_request_connection(int port, char* hostname_ptr) {
     mdi_error("Unkown address type");
   }
 
-  bzero((char *) &driver_address, sizeof(driver_address));
+  //bzero((char *) &driver_address, sizeof(driver_address));
+  memset( &driver_address, 0, sizeof(driver_address) );
   driver_address.sin_family = AF_INET;
   driver_address.sin_addr.s_addr = 
     ((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
   driver_address.sin_port = htons(port);
-
-  // create the socket
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd < 0) {
-    mdi_error("Could not create socket");
-  }
 
   // connect to the driver
   // if the connection is refused, try again
   //   this allows the production code to start before the driver
   int try_connect = 1;
   while (try_connect == 1) {
+
+    // create the socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+      mdi_error("Could not create socket");
+    }
+
     ret = connect(sockfd, (const struct sockaddr *) &driver_address, sizeof(struct sockaddr));
     if (ret < 0 ) {
 #ifdef _WIN32
-      if ( errno == WSAECONNREFUSED ) {
+      int sock_error = WSAGetLastError();
+      if ( sock_error == WSAECONNREFUSED ) {
 	// close the socket, so that a new one can be created
 	ret = closesocket(sockfd);
 #else
@@ -141,12 +157,6 @@ int tcp_request_connection(int port, char* hostname_ptr) {
 #endif
 	if (ret != 0) {
 	  mdi_error("Could not close socket");
-	}
-
-	// create the socket
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd < 0) {
-	  mdi_error("Could not create socket");
 	}
 
       }

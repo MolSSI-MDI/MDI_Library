@@ -21,8 +21,9 @@ endif()
 #determine whether this is a SHARED or STATIC build
 if( NOT libtype )
    set(libtype "SHARED")
-elseif ( (NOT libtype STREQUAL "STATIC") AND (NOT libtype STREQUAL "SHARED") )
-   message( FATAL_ERROR "Value of libtype not recognized. Accepted values are: SHARED; STATIC." )
+elseif ( (NOT libtype STREQUAL "STATIC") AND 
+         (NOT libtype STREQUAL "SHARED") )
+   message( FATAL_ERROR "Value of libtype not recognized. Accepted values are: SHARED; STATIC; PACKAGE." )
 endif()
 
 #construct the list of source files
@@ -65,6 +66,10 @@ elseif( mpi STREQUAL "OFF" )
    message( "Compiling without MPI." )
    target_include_directories(mdi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/)
 
+else()
+
+   message( FATAL_ERROR "Value of mpi not recognized. Accepted values are: ON; OFF." )
+
 endif()
 
 #do any Python-specific work
@@ -93,15 +98,46 @@ endif()
 #copy the mdi.h header file into the binary directory
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.h ${CMAKE_CURRENT_BINARY_DIR}/mdi.h COPYONLY)
 
+
+
+
+# ----------------------------------------------------------------------------------------------------
 # Install
+
+# Determine where the files should be installed
+if( python_package STREQUAL "ON" )
+
+    execute_process(
+        COMMAND python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+        OUTPUT_VARIABLE _site_packages
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(PYTHON_SITE_PACKAGES "${_site_packages}" CACHE PATH INTERNAL)
+    unset(_site_packages)
+
+    set(MDI_INSTALL_INCLUDEDIR ${PYTHON_SITE_PACKAGES}/mdi)
+    set(MDI_INSTALL_LIBDIR     ${PYTHON_SITE_PACKAGES}/mdi)
+
+else()
+
+    set(MDI_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
+    set(MDI_INSTALL_LIBDIR     ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
+
+endif()
+
+# Perform the installation
 install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/MDI_Library)
+        DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 if( (NOT language) OR (language STREQUAL "Python") )
-  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.py ${CMAKE_BINARY_DIR}/MDI_Library/mdi_name ${CMAKE_BINARY_DIR}/MDI_Library/__init__.py ${CMAKE_BINARY_DIR}/MDI_Library/mdi_mpi4py.py
-          DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
+  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.py
+                ${CMAKE_BINARY_DIR}/MDI_Library/mdi_name
+                ${CMAKE_BINARY_DIR}/MDI_Library/__init__.py
+                ${CMAKE_BINARY_DIR}/MDI_Library/mdi_mpi4py.py
+          DESTINATION ${MDI_INSTALL_LIBDIR})
 endif()
 install(TARGETS mdi
         EXPORT "${PN}Targets"
-        RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/MDI_Library)
+        RUNTIME DESTINATION ${MDI_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${MDI_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR})
+ 
