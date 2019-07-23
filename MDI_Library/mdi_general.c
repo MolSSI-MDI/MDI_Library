@@ -393,10 +393,11 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     mdi_error("Called MDI_Send_Command with incorrect rank");
   }
   int count = MDI_COMMAND_LENGTH;
-  char command[MDI_COMMAND_LENGTH];
+  char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
 
   strcpy(command, buf);
   int ret = general_send( command, count, MDI_CHAR, comm );
+  free( command );
   return ret;
 }
 

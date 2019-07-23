@@ -249,7 +249,7 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   while ( n >= 0 && total_sent < count_t*datasize ) {
 #ifdef _WIN32
-    n = send(this->sockfd, buf+total_sent, count_t*datasize-total_sent, 0);
+    n = send(this->sockfd, (char*)buf+total_sent, count_t*datasize-total_sent, 0);
 #else
     n = write(this->sockfd, buf+total_sent, count_t*datasize-total_sent);
 #endif
@@ -293,14 +293,14 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
 #ifdef _WIN32
-  n = nr = recv(this->sockfd,buf,count_t*datasize,0);
+  n = nr = recv(this->sockfd,(char*)buf,count_t*datasize,0);
 #else
   n = nr = read(this->sockfd,buf,count_t*datasize);
 #endif
 
   while (nr>0 && n<count_t*datasize ) {
 #ifdef _WIN32
-    nr=recv(this->sockfd,buf+n,count_t*datasize-n,0);
+    nr=recv(this->sockfd,(char*)buf+n,count_t*datasize-n,0);
 #else
     nr=read(this->sockfd,buf+n,count_t*datasize-n);
 #endif
