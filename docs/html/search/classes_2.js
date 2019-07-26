@@ -8,5 +8,7 @@ var searchData=
   ['mdi_5frecv_5fcommand_5f',['MDI_Recv_Command_',['../interfacemdi_1_1MDI__Recv__Command__.html',1,'mdi']]],
   ['mdi_5fsend',['mdi_send',['../interfacemdi_1_1mdi__send.html',1,'mdi']]],
   ['mdi_5fsend_5f',['MDI_Send_',['../interfacemdi_1_1MDI__Send__.html',1,'mdi']]],
-  ['mdi_5fsend_5fcommand_5f',['MDI_Send_Command_',['../interfacemdi_1_1MDI__Send__Command__.html',1,'mdi']]]
+  ['mdi_5fsend_5fcommand_5f',['MDI_Send_Command_',['../interfacemdi_1_1MDI__Send__Command__.html',1,'mdi']]],
+  ['mpi4pycommunicator',['MPI4PYCommunicator',['../classMDI__Library_1_1mdi__mpi4py_1_1MPI4PYCommunicator.html',1,'MDI_Library::mdi_mpi4py']]],
+  ['mpi4pymanager',['MPI4PYManager',['../classMDI__Library_1_1mdi__mpi4py_1_1MPI4PYManager.html',1,'MDI_Library::mdi_mpi4py']]]
 ];

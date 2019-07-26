@@ -117,8 +117,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True
 <tr class="memitem:a699d640ade0ef06a2e869938d0f967cf"><td class="memItemLeft" align="right" valign="top"><a id="a699d640ade0ef06a2e869938d0f967cf"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name</b> = mdi_name_file.read()</td></tr>
 <tr class="separator:a699d640ade0ef06a2e869938d0f967cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ef2454ecfd744259a32bb638151a21d"><td class="memItemLeft" align="right" valign="top"><a id="a3ef2454ecfd744259a32bb638151a21d"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_path</b> = dir_path + &quot;/&quot; + mdi_name</td></tr>
+<tr class="separator:a3ef2454ecfd744259a32bb638151a21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95785436e5114a22d0ded423da84b1d"><td class="memItemLeft" align="right" valign="top"><a id="aa95785436e5114a22d0ded423da84b1d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>mdi</b> = ctypes.CDLL(dir_path + &quot;/&quot; + mdi_name)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mdi</b> = ctypes.CDLL(mdi_path)</td></tr>
 <tr class="separator:aa95785436e5114a22d0ded423da84b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0710a54c5275d6bfefbfb38d885034a4"><td class="memItemLeft" align="right" valign="top"><a id="a0710a54c5275d6bfefbfb38d885034a4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#a0710a54c5275d6bfefbfb38d885034a4">MDI_COMMAND_LENGTH</a> = ctypes.c_int.in_dll(mdi, &quot;MDI_COMMAND_LENGTH&quot;).value</td></tr>
@@ -160,6 +163,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#af04c7fd0d5579c49735c7c7f0fce4f19">MDI_MPI</a> = ctypes.c_int.in_dll(mdi, &quot;MDI_MPI&quot;).value</td></tr>
 <tr class="memdesc:af04c7fd0d5579c49735c7c7f0fce4f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">MPI communication method. <br /></td></tr>
 <tr class="separator:af04c7fd0d5579c49735c7c7f0fce4f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bef4921da61048feb31be0c06718e95"><td class="memItemLeft" align="right" valign="top"><a id="a6bef4921da61048feb31be0c06718e95"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#a6bef4921da61048feb31be0c06718e95">MDI_VERSION</a> = ctypes.c_double.in_dll(mdi, &quot;MDI_VERSION&quot;).value</td></tr>
+<tr class="memdesc:a6bef4921da61048feb31be0c06718e95"><td class="mdescLeft">&#160;</td><td class="mdescRight">MDI version number. <br /></td></tr>
+<tr class="separator:a6bef4921da61048feb31be0c06718e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add378ddd22eb9412f713b10b96fa5874"><td class="memItemLeft" align="right" valign="top"><a id="add378ddd22eb9412f713b10b96fa5874"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#add378ddd22eb9412f713b10b96fa5874">MDI_METER_TO_BOHR</a> = ctypes.c_double.in_dll(mdi, &quot;MDI_METER_TO_BOHR&quot;).value</td></tr>
 <tr class="memdesc:add378ddd22eb9412f713b10b96fa5874"><td class="mdescLeft">&#160;</td><td class="mdescRight">conversion factor between meters and bohr <br /></td></tr>
@@ -211,6 +218,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True
 <tr class="memitem:aaf0b36caa270483ddad68a6f49e6715d"><td class="memItemLeft" align="right" valign="top"><a id="aaf0b36caa270483ddad68a6f49e6715d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>intra_code_comm</b> = None</td></tr>
 <tr class="separator:aaf0b36caa270483ddad68a6f49e6715d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc31332cd5f343b6d6c6d4673f79b962"><td class="memItemLeft" align="right" valign="top"><a id="acc31332cd5f343b6d6c6d4673f79b962"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_manager</b> = None</td></tr>
+<tr class="separator:acc31332cd5f343b6d6c6d4673f79b962"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf6086861f386d0ab85484d36b25fdc4"><td class="memItemLeft" align="right" valign="top"><a id="adf6086861f386d0ab85484d36b25fdc4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>argtypes</b></td></tr>
 <tr class="separator:adf6086861f386d0ab85484d36b25fdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,7 +229,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True
 <tr class="separator:a7fe946f899462701d839d4073fcbef4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">Pyrhon wrapper for MDI. </pre> </div><h2 class="groupheader">Function Documentation</h2>
+<div class="textblock"><pre class="fragment">Python wrapper for MDI. </pre> </div><h2 class="groupheader">Function Documentation</h2>
 <a id="ad06021baed63e4db218cb4435f1af556"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad06021baed63e4db218cb4435f1af556">&#9670;&nbsp;</a></span>MDI_Accept_Communicator()</h2>
 

@@ -33,7 +33,11 @@ double \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\
 int \mbox{\hyperlink{mdi_8c_a0accde4a79728e8eaab73632daba3c15}{M\+D\+I\+\_\+\+Get\+\_\+\+M\+P\+I\+\_\+\+Code\+\_\+\+Rank}} ()
 \begin{DoxyCompactList}\small\item\em Return order of this code within all codes represented in M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}{M\+D\+I\+\_\+\+Set\+\_\+\+M\+P\+I\+\_\+\+Intra\+\_\+\+Rank}} (int rank)
-\begin{DoxyCompactList}\small\item\em Return the rank of the calling process within its associated code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Return the rank of the calling process within its associated code. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mdi_8c_a8d6c16394da02c29977001487ce109f2}{M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Size}} (int world\+\_\+size\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mdi_8c_a4b95094e7410c4d58739245172019100}{M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Rank}} (int world\+\_\+rank\+\_\+in)
+\begin{DoxyCompactList}\small\item\em Set the rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -70,6 +74,9 @@ const int \mbox{\hyperlink{mdi_8c_aa69d77aeaab908058636a4420b02ae90}{M\+D\+I\+\_
 \mbox{\Hypertarget{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}\label{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}} 
 const int \mbox{\hyperlink{mdi_8c_ac9eaa23189e2bf8a92c2136ee0112a87}{M\+D\+I\+\_\+\+M\+PI}} = 2
 \begin{DoxyCompactList}\small\item\em M\+PI communication method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi_8c_ab0752d8d30929c35fa8297e1a3127068}\label{mdi_8c_ab0752d8d30929c35fa8297e1a3127068}} 
+const int \mbox{\hyperlink{mdi_8c_ab0752d8d30929c35fa8297e1a3127068}{M\+D\+I\+\_\+\+T\+E\+ST}} = 3
+\begin{DoxyCompactList}\small\item\em Test communication method. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi_8c_a323937b5877ef054dc40e584ef767070}\label{mdi_8c_a323937b5877ef054dc40e584ef767070}} 
 const double \mbox{\hyperlink{mdi_8c_a323937b5877ef054dc40e584ef767070}{M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR}} = 1.\+88972612546e10
 \begin{DoxyCompactList}\small\item\em conversion factor between meters and bohr \end{DoxyCompactList}\item 
@@ -321,4 +328,24 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 
 Return the rank of the calling process within its associated code. 
 
-When using the M\+PI communication method, all processes across all codes are spawned as part of the same M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. This funciton returns the rank of the calling process within the subset of processes associated with the same code. 
+When using the M\+PI communication method, all processes across all codes are spawned as part of the same M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. This funciton returns the rank of the calling process within the subset of processes associated with the same code. \mbox{\Hypertarget{mdi_8c_a4b95094e7410c4d58739245172019100}\label{mdi_8c_a4b95094e7410c4d58739245172019100}} 
+\index{mdi.c@{mdi.c}!MDI\_Set\_World\_Rank@{MDI\_Set\_World\_Rank}}
+\index{MDI\_Set\_World\_Rank@{MDI\_Set\_World\_Rank}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Set\_World\_Rank()}{MDI\_Set\_World\_Rank()}}
+{\footnotesize\ttfamily void M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Rank (\begin{DoxyParamCaption}\item[{int}]{world\+\_\+rank\+\_\+in }\end{DoxyParamCaption})}
+
+
+
+Set the rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. 
+
+This function is only used if the linked program uses M\+P\+I4\+PY. \mbox{\Hypertarget{mdi_8c_a8d6c16394da02c29977001487ce109f2}\label{mdi_8c_a8d6c16394da02c29977001487ce109f2}} 
+\index{mdi.c@{mdi.c}!MDI\_Set\_World\_Size@{MDI\_Set\_World\_Size}}
+\index{MDI\_Set\_World\_Size@{MDI\_Set\_World\_Size}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Set\_World\_Size()}{MDI\_Set\_World\_Size()}}
+{\footnotesize\ttfamily void M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Size (\begin{DoxyParamCaption}\item[{int}]{world\+\_\+size\+\_\+in }\end{DoxyParamCaption})}
+
+
+
+Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. 
+
+This function is only used if the linked program uses M\+P\+I4\+PY. 

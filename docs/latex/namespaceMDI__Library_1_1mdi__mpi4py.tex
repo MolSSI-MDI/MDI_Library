@@ -1,0 +1,71 @@
+\hypertarget{namespaceMDI__Library_1_1mdi__mpi4py}{}\doxysection{M\+D\+I\+\_\+\+Library.\+mdi\+\_\+mpi4py Namespace Reference}
+\label{namespaceMDI__Library_1_1mdi__mpi4py}\index{MDI\_Library.mdi\_mpi4py@{MDI\_Library.mdi\_mpi4py}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classMDI__Library_1_1mdi__mpi4py_1_1MPI4PYCommunicator}{M\+P\+I4\+P\+Y\+Communicator}}
+\item 
+class \mbox{\hyperlink{classMDI__Library_1_1mdi__mpi4py_1_1MPI4PYManager}{M\+P\+I4\+P\+Y\+Manager}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a26a68786a7b44e365132c6d382753b62}\label{namespaceMDI__Library_1_1mdi__mpi4py_a26a68786a7b44e365132c6d382753b62}} 
+{\bfseries dir\+\_\+path} = os.\+path.\+dirname(os.\+path.\+realpath(\+\_\+\+\_\+file\+\_\+\+\_\+))
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a34526c45218310d4162e88cc88977d69}\label{namespaceMDI__Library_1_1mdi__mpi4py_a34526c45218310d4162e88cc88977d69}} 
+bool {\bfseries use\+\_\+numpy} = True
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a6bc12fe04de27ac80e672314c96156bc}\label{namespaceMDI__Library_1_1mdi__mpi4py_a6bc12fe04de27ac80e672314c96156bc}} 
+bool {\bfseries use\+\_\+mpi4py} = True
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_aa272213b728257576c718a5c5eb922a4}\label{namespaceMDI__Library_1_1mdi__mpi4py_aa272213b728257576c718a5c5eb922a4}} 
+{\bfseries mdi\+\_\+name\+\_\+file} = open(dir\+\_\+path + \char`\"{}/mdi\+\_\+name\char`\"{},\char`\"{}r\char`\"{})
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a9686328878dbbfc0f91cb7230b023e89}\label{namespaceMDI__Library_1_1mdi__mpi4py_a9686328878dbbfc0f91cb7230b023e89}} 
+{\bfseries mdi\+\_\+name} = mdi\+\_\+name\+\_\+file.\+read()
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a2973f0856c84d3361ded60745eb3296e}\label{namespaceMDI__Library_1_1mdi__mpi4py_a2973f0856c84d3361ded60745eb3296e}} 
+string {\bfseries mdi\+\_\+path} = dir\+\_\+path + \char`\"{}/\char`\"{} + mdi\+\_\+name
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a4434439fe79a22a2f3524ea7ea183b6c}\label{namespaceMDI__Library_1_1mdi__mpi4py_a4434439fe79a22a2f3524ea7ea183b6c}} 
+{\bfseries mdi} = ctypes.\+C\+D\+LL(mdi\+\_\+path)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_ad503e13b6949467d87854562ed323899}\label{namespaceMDI__Library_1_1mdi__mpi4py_ad503e13b6949467d87854562ed323899}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_ad503e13b6949467d87854562ed323899}{M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em length of an M\+DI command in characters \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a2eaede897474ba626af5e98608bb8847}\label{namespaceMDI__Library_1_1mdi__mpi4py_a2eaede897474ba626af5e98608bb8847}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_a2eaede897474ba626af5e98608bb8847}{M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em length of an M\+DI name in characters \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a65033db165ca1ff5e6b0a983c7e7f322}\label{namespaceMDI__Library_1_1mdi__mpi4py_a65033db165ca1ff5e6b0a983c7e7f322}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_a65033db165ca1ff5e6b0a983c7e7f322}{M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em value of a null communicator \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a120389bb7e77a7547e932281aec112c0}\label{namespaceMDI__Library_1_1mdi__mpi4py_a120389bb7e77a7547e932281aec112c0}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_a120389bb7e77a7547e932281aec112c0}{M\+D\+I\+\_\+\+I\+NT}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+I\+NT\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em integer data type \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_ad7e5562723f8daf38b4257b135c8926b}\label{namespaceMDI__Library_1_1mdi__mpi4py_ad7e5562723f8daf38b4257b135c8926b}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_ad7e5562723f8daf38b4257b135c8926b}{M\+D\+I\+\_\+\+D\+O\+U\+B\+LE}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+D\+O\+U\+B\+LE\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em double precision float data type \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_ae1eff686e10865d70688917f7f1627e7}\label{namespaceMDI__Library_1_1mdi__mpi4py_ae1eff686e10865d70688917f7f1627e7}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_ae1eff686e10865d70688917f7f1627e7}{M\+D\+I\+\_\+\+C\+H\+AR}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+H\+AR\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em character data type \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a55e5db12740b1e2bccc0d09a4ce368db}\label{namespaceMDI__Library_1_1mdi__mpi4py_a55e5db12740b1e2bccc0d09a4ce368db}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_a55e5db12740b1e2bccc0d09a4ce368db}{M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em Num\+Py integer data type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_ace6a75a4203c96ea8e18794ab64c28b6}\label{namespaceMDI__Library_1_1mdi__mpi4py_ace6a75a4203c96ea8e18794ab64c28b6}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_ace6a75a4203c96ea8e18794ab64c28b6}{M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em Num\+Py double precision float data type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_aa96d665274560c4885c1776c65d36bba}\label{namespaceMDI__Library_1_1mdi__mpi4py_aa96d665274560c4885c1776c65d36bba}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_aa96d665274560c4885c1776c65d36bba}{M\+D\+I\+\_\+\+T\+CP}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+T\+CP\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em T\+C\+P/\+IP communication method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_aa7c86d3e1a3555a2447283f1d0e669e6}\label{namespaceMDI__Library_1_1mdi__mpi4py_aa7c86d3e1a3555a2447283f1d0e669e6}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_aa7c86d3e1a3555a2447283f1d0e669e6}{M\+D\+I\+\_\+\+M\+PI}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+M\+PI\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em M\+PI communication method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi__mpi4py_a3661b7aa3ec44d62bcfe84c090e9fd1e}\label{namespaceMDI__Library_1_1mdi__mpi4py_a3661b7aa3ec44d62bcfe84c090e9fd1e}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi__mpi4py_a3661b7aa3ec44d62bcfe84c090e9fd1e}{M\+D\+I\+\_\+\+V\+E\+R\+S\+I\+ON}} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+V\+E\+R\+S\+I\+ON\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em M\+DI version number. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Class for handling MPI4PY-based communication. \end{DoxyVerb}
+ 

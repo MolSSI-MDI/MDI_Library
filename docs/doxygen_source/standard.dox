@@ -193,8 +193,7 @@ This command is intended to be used in conjuction with the \ref recv_ndensity an
 
 \subsection recv_energy <ENERGY
 
-The engine sends its most recently calculated energy to the driver.
-The \c MD_INIT, \c SCF, and \c ATOM_STEP commands can be used to cause the engine to calculate a new energy.
+The engine calculates and sends its energy to the driver.
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>

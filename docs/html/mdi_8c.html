@@ -113,6 +113,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a6290edc0924c7f9375e4cb9e0c7a7744"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a6290edc0924c7f9375e4cb9e0c7a7744">MDI_Set_MPI_Intra_Rank</a> (int rank)</td></tr>
 <tr class="memdesc:a6290edc0924c7f9375e4cb9e0c7a7744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the rank of the calling process within its associated code.  <a href="#a6290edc0924c7f9375e4cb9e0c7a7744">More...</a><br /></td></tr>
 <tr class="separator:a6290edc0924c7f9375e4cb9e0c7a7744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d6c16394da02c29977001487ce109f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a8d6c16394da02c29977001487ce109f2">MDI_Set_World_Size</a> (int world_size_in)</td></tr>
+<tr class="memdesc:a8d6c16394da02c29977001487ce109f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the size of MPI_COMM_WORLD.  <a href="#a8d6c16394da02c29977001487ce109f2">More...</a><br /></td></tr>
+<tr class="separator:a8d6c16394da02c29977001487ce109f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b95094e7410c4d58739245172019100"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a4b95094e7410c4d58739245172019100">MDI_Set_World_Rank</a> (int world_rank_in)</td></tr>
+<tr class="memdesc:a4b95094e7410c4d58739245172019100"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rank of this process within MPI_COMM_WORLD.  <a href="#a4b95094e7410c4d58739245172019100">More...</a><br /></td></tr>
+<tr class="separator:a4b95094e7410c4d58739245172019100"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -160,6 +166,10 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ac9eaa23189e2bf8a92c2136ee0112a87">MDI_MPI</a> = 2</td></tr>
 <tr class="memdesc:ac9eaa23189e2bf8a92c2136ee0112a87"><td class="mdescLeft">&#160;</td><td class="mdescRight">MPI communication method. <br /></td></tr>
 <tr class="separator:ac9eaa23189e2bf8a92c2136ee0112a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0752d8d30929c35fa8297e1a3127068"><td class="memItemLeft" align="right" valign="top"><a id="ab0752d8d30929c35fa8297e1a3127068"></a>
+const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ab0752d8d30929c35fa8297e1a3127068">MDI_TEST</a> = 3</td></tr>
+<tr class="memdesc:ab0752d8d30929c35fa8297e1a3127068"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test communication method. <br /></td></tr>
+<tr class="separator:ab0752d8d30929c35fa8297e1a3127068"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a323937b5877ef054dc40e584ef767070"><td class="memItemLeft" align="right" valign="top"><a id="a323937b5877ef054dc40e584ef767070"></a>
 const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a323937b5877ef054dc40e584ef767070">MDI_METER_TO_BOHR</a> = 1.88972612546e10</td></tr>
 <tr class="memdesc:a323937b5877ef054dc40e584ef767070"><td class="mdescLeft">&#160;</td><td class="mdescRight">conversion factor between meters and bohr <br /></td></tr>
@@ -576,6 +586,48 @@ const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 <p>Return the rank of the calling process within its associated code. </p>
 <p>When using the MPI communication method, all processes across all codes are spawned as part of the same MPI_COMM_WORLD. This funciton returns the rank of the calling process within the subset of processes associated with the same code. </p>
+
+</div>
+</div>
+<a id="a4b95094e7410c4d58739245172019100"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b95094e7410c4d58739245172019100">&#9670;&nbsp;</a></span>MDI_Set_World_Rank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MDI_Set_World_Rank </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>world_rank_in</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the rank of this process within MPI_COMM_WORLD. </p>
+<p>This function is only used if the linked program uses MPI4PY. </p>
+
+</div>
+</div>
+<a id="a8d6c16394da02c29977001487ce109f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6c16394da02c29977001487ce109f2">&#9670;&nbsp;</a></span>MDI_Set_World_Size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MDI_Set_World_Size </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>world_size_in</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the size of MPI_COMM_WORLD. </p>
+<p>This function is only used if the linked program uses MPI4PY. </p>
 
 </div>
 </div>

@@ -82,9 +82,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a100ef6b80282cb10d7c63d05b22899eb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a100ef6b80282cb10d7c63d05b22899eb">mpi_identify_codes</a> (const char *code_name, int do_split)</td></tr>
-<tr class="memdesc:a100ef6b80282cb10d7c63d05b22899eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identify groups of processes belonging to the same codes.  <a href="#a100ef6b80282cb10d7c63d05b22899eb">More...</a><br /></td></tr>
-<tr class="separator:a100ef6b80282cb10d7c63d05b22899eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a027fc7cf6eb7e67c2b54a6091ee4ebd5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a027fc7cf6eb7e67c2b54a6091ee4ebd5">set_world_size</a> (int world_size_in)</td></tr>
+<tr class="memdesc:a027fc7cf6eb7e67c2b54a6091ee4ebd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the size of MPI_COMM_WORLD.  <a href="#a027fc7cf6eb7e67c2b54a6091ee4ebd5">More...</a><br /></td></tr>
+<tr class="separator:a027fc7cf6eb7e67c2b54a6091ee4ebd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0639f31fe7860f028614354b78b22205"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a0639f31fe7860f028614354b78b22205">set_world_rank</a> (int world_rank_in)</td></tr>
+<tr class="memdesc:a0639f31fe7860f028614354b78b22205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rank of this process in MPI_COMM_WORLD.  <a href="#a0639f31fe7860f028614354b78b22205">More...</a><br /></td></tr>
+<tr class="separator:a0639f31fe7860f028614354b78b22205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3701d036ed2e7bf59b85553c4596305d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a3701d036ed2e7bf59b85553c4596305d">mpi_identify_codes</a> (const char *code_name, int do_split, MPI_Comm world_comm)</td></tr>
+<tr class="memdesc:a3701d036ed2e7bf59b85553c4596305d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identify groups of processes belonging to the same codes.  <a href="#a3701d036ed2e7bf59b85553c4596305d">More...</a><br /></td></tr>
+<tr class="separator:a3701d036ed2e7bf59b85553c4596305d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66fead66748e44e6c85283f44b98a15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#ae66fead66748e44e6c85283f44b98a15">mpi_update_world_comm</a> (void *world_comm)</td></tr>
 <tr class="memdesc:ae66fead66748e44e6c85283f44b98a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a pointer to MPI_COMM_WORLD to instead point to the intra-code MPI communicator.  <a href="#ae66fead66748e44e6c85283f44b98a15">More...</a><br /></td></tr>
 <tr class="separator:ae66fead66748e44e6c85283f44b98a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,12 +115,20 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a6da60e1bcb42aadfd89405b192a82cf4">mpi_code_rank</a></td></tr>
 <tr class="memdesc:a6da60e1bcb42aadfd89405b192a82cf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Order of this code within all codes represented by MPI_COMM_WORLD. <br /></td></tr>
 <tr class="separator:a6da60e1bcb42aadfd89405b192a82cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8411355a7d80016be6edcce3437b978"><td class="memItemLeft" align="right" valign="top"><a id="ab8411355a7d80016be6edcce3437b978"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#ab8411355a7d80016be6edcce3437b978">world_size</a></td></tr>
+<tr class="memdesc:ab8411355a7d80016be6edcce3437b978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of MPI_COMM_WORLD. <br /></td></tr>
+<tr class="separator:ab8411355a7d80016be6edcce3437b978"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0be0ed3102aab1d72782301d75cf570b"><td class="memItemLeft" align="right" valign="top"><a id="a0be0ed3102aab1d72782301d75cf570b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a0be0ed3102aab1d72782301d75cf570b">world_rank</a></td></tr>
+<tr class="memdesc:a0be0ed3102aab1d72782301d75cf570b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rank of this process within MPI_COMM_WORLD. <br /></td></tr>
+<tr class="separator:a0be0ed3102aab1d72782301d75cf570b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>MPI communication implementation. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a100ef6b80282cb10d7c63d05b22899eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a100ef6b80282cb10d7c63d05b22899eb">&#9670;&nbsp;</a></span>mpi_identify_codes()</h2>
+<a id="a3701d036ed2e7bf59b85553c4596305d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3701d036ed2e7bf59b85553c4596305d">&#9670;&nbsp;</a></span>mpi_identify_codes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -129,7 +143,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>do_split</em>&#160;</td>
+          <td class="paramname"><em>do_split</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Comm&#160;</td>
+          <td class="paramname"><em>world_comm</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -273,6 +293,58 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">world_comm</td><td>On input, the MPI communicator that spans all of the codes. On output, the MPI communicator that spans the single code corresponding to the calling rank. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0639f31fe7860f028614354b78b22205"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0639f31fe7860f028614354b78b22205">&#9670;&nbsp;</a></span>set_world_rank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int set_world_rank </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>world_rank_in</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the rank of this process in MPI_COMM_WORLD. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">world_rank_in</td><td>Rank of this process within MPI_COMM_WORLD </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a027fc7cf6eb7e67c2b54a6091ee4ebd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a027fc7cf6eb7e67c2b54a6091ee4ebd5">&#9670;&nbsp;</a></span>set_world_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int set_world_size </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>world_size_in</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the size of MPI_COMM_WORLD. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">world_size_in</td><td>Size of MPI_COMM_WORLD </td></tr>
   </table>
   </dd>
 </dl>

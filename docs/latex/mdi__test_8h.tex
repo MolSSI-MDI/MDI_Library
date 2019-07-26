@@ -1,0 +1,77 @@
+\hypertarget{mdi__test_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+test.h File Reference}
+\label{mdi__test_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_test.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_test.h}}
+
+
+Dummy communication implementation for testing purposes.  
+
+
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{mdi__test_8h_ae54d986664004625b74db96c978e9765}{test\+\_\+initialize}} ()
+\begin{DoxyCompactList}\small\item\em Perform initialization of a dummy communicator for testing purposes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__test_8h_abeca111cdef5cccac0ec9332dc180f00}{test\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Dummy function to handle sending data through an M\+DI connection, for testing purposes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__test_8h_a84f4b606828330e7cabbe76a76f476d5}{test\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Dummy function to handle receiving data through an M\+DI connection, for testing purposes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Dummy communication implementation for testing purposes. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__test_8h_ae54d986664004625b74db96c978e9765}\label{mdi__test_8h_ae54d986664004625b74db96c978e9765}} 
+\index{mdi\_test.h@{mdi\_test.h}!test\_initialize@{test\_initialize}}
+\index{test\_initialize@{test\_initialize}!mdi\_test.h@{mdi\_test.h}}
+\doxysubsubsection{\texorpdfstring{test\_initialize()}{test\_initialize()}}
+{\footnotesize\ttfamily int test\+\_\+initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Perform initialization of a dummy communicator for testing purposes. 
+
+\mbox{\Hypertarget{mdi__test_8h_a84f4b606828330e7cabbe76a76f476d5}\label{mdi__test_8h_a84f4b606828330e7cabbe76a76f476d5}} 
+\index{mdi\_test.h@{mdi\_test.h}!test\_recv@{test\_recv}}
+\index{test\_recv@{test\_recv}!mdi\_test.h@{mdi\_test.h}}
+\doxysubsubsection{\texorpdfstring{test\_recv()}{test\_recv()}}
+{\footnotesize\ttfamily int test\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Dummy function to handle receiving data through an M\+DI connection, for testing purposes. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__test_8h_abeca111cdef5cccac0ec9332dc180f00}\label{mdi__test_8h_abeca111cdef5cccac0ec9332dc180f00}} 
+\index{mdi\_test.h@{mdi\_test.h}!test\_send@{test\_send}}
+\index{test\_send@{test\_send}!mdi\_test.h@{mdi\_test.h}}
+\doxysubsubsection{\texorpdfstring{test\_send()}{test\_send()}}
+{\footnotesize\ttfamily int test\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Dummy function to handle sending data through an M\+DI connection, for testing purposes. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}

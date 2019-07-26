@@ -44,8 +44,11 @@ bool {\bfseries use\+\_\+mpi4py} = True
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a699d640ade0ef06a2e869938d0f967cf}\label{namespaceMDI__Library_1_1mdi_a699d640ade0ef06a2e869938d0f967cf}} 
 {\bfseries mdi\+\_\+name} = mdi\+\_\+name\+\_\+file.\+read()
 \item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a3ef2454ecfd744259a32bb638151a21d}\label{namespaceMDI__Library_1_1mdi_a3ef2454ecfd744259a32bb638151a21d}} 
+string {\bfseries mdi\+\_\+path} = dir\+\_\+path + \char`\"{}/\char`\"{} + mdi\+\_\+name
+\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}\label{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}} 
-{\bfseries mdi} = ctypes.\+C\+D\+LL(dir\+\_\+path + \char`\"{}/\char`\"{} + mdi\+\_\+name)
+{\bfseries mdi} = ctypes.\+C\+D\+LL(mdi\+\_\+path)
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}\label{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}{M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
@@ -77,6 +80,9 @@ bool {\bfseries use\+\_\+mpi4py} = True
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_af04c7fd0d5579c49735c7c7f0fce4f19}\label{namespaceMDI__Library_1_1mdi_af04c7fd0d5579c49735c7c7f0fce4f19}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_af04c7fd0d5579c49735c7c7f0fce4f19}{M\+D\+I\+\_\+\+M\+PI}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+M\+PI\char`\"{}).value
 \begin{DoxyCompactList}\small\item\em M\+PI communication method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6bef4921da61048feb31be0c06718e95}\label{namespaceMDI__Library_1_1mdi_a6bef4921da61048feb31be0c06718e95}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a6bef4921da61048feb31be0c06718e95}{M\+D\+I\+\_\+\+V\+E\+R\+S\+I\+ON}} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+V\+E\+R\+S\+I\+ON\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em M\+DI version number. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_add378ddd22eb9412f713b10b96fa5874}\label{namespaceMDI__Library_1_1mdi_add378ddd22eb9412f713b10b96fa5874}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_add378ddd22eb9412f713b10b96fa5874}{M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR}} = ctypes.\+c\+\_\+double.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+M\+E\+T\+E\+R\+\_\+\+T\+O\+\_\+\+B\+O\+HR\char`\"{}).value
 \begin{DoxyCompactList}\small\item\em conversion factor between meters and bohr \end{DoxyCompactList}\item 
@@ -116,6 +122,9 @@ bool {\bfseries use\+\_\+mpi4py} = True
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aaf0b36caa270483ddad68a6f49e6715d}\label{namespaceMDI__Library_1_1mdi_aaf0b36caa270483ddad68a6f49e6715d}} 
 {\bfseries intra\+\_\+code\+\_\+comm} = None
 \item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acc31332cd5f343b6d6c6d4673f79b962}\label{namespaceMDI__Library_1_1mdi_acc31332cd5f343b6d6c6d4673f79b962}} 
+{\bfseries mdi\+\_\+manager} = None
+\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_adf6086861f386d0ab85484d36b25fdc4}\label{namespaceMDI__Library_1_1mdi_adf6086861f386d0ab85484d36b25fdc4}} 
 {\bfseries argtypes}
 \item 
@@ -125,7 +134,7 @@ bool {\bfseries use\+\_\+mpi4py} = True
 
 
 \doxysubsection{Detailed Description}
-\begin{DoxyVerb}Pyrhon wrapper for MDI. \end{DoxyVerb}
+\begin{DoxyVerb}Python wrapper for MDI. \end{DoxyVerb}
  
 
 \doxysubsection{Function Documentation}
