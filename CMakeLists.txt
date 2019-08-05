@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(mdi)
-
 option(language "language")
 option(libtype "libtype")
 option(mpi "on or off" ON)
