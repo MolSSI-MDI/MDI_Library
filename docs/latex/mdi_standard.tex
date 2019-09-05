@@ -1,12 +1,15 @@
 \hypertarget{mdi_standard_standard_overview}{}\doxysection{Overview}\label{mdi_standard_standard_overview}
-The M\+DI Standard provides a straightforward, A\+P\+I-\/like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-\/level program flow of one or more engine codes. The driver exercises this control through the use of \mbox{\hyperlink{mdi_standard_command_list}{commands}} that are defined by the M\+DI Standard. Commands are available that correspond to a variety of tasks, such as \char`\"{}receive a new set of nuclear coordinates from me\char`\"{} (\mbox{\hyperlink{mdi_standard_send_coords}{$>$C\+O\+O\+R\+DS}}), \char`\"{}run a self-\/consistent field calculation\char`\"{} (\mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}}) and \char`\"{}send me the forces on the nuclei\char`\"{} (\mbox{\hyperlink{mdi_standard_recv_forces}{$<$F\+O\+R\+C\+ES}}). The M\+DI standard defines the \mbox{\hyperlink{mdi_standard_standard_units}{units}}, data types, and formatting of any data communicated between codes in response to a command.\hypertarget{mdi_standard_standard_units}{}\doxysection{Units}\label{mdi_standard_standard_units}
+The M\+DI Standard provides a straightforward, A\+P\+I-\/like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-\/level program flow of one or more engine codes. The driver exercises this control through the use of \mbox{\hyperlink{mdi_standard_command_list}{commands}} that are defined by the M\+DI Standard. Commands are available that correspond to a variety of tasks, such as \char`\"{}receive a new set of nuclear coordinates from me\char`\"{} (\mbox{\hyperlink{mdi_standard_send_coords}{$>$C\+O\+O\+R\+DS}}), \char`\"{}run a self-\/consistent field calculation\char`\"{} (scf\+\_\+command) and \char`\"{}send me the forces on the nuclei\char`\"{} (\mbox{\hyperlink{mdi_standard_recv_forces}{$<$F\+O\+R\+C\+ES}}). The M\+DI standard defines the \mbox{\hyperlink{mdi_standard_standard_units}{units}}, data types, and formatting of any data communicated between codes in response to a command.\hypertarget{mdi_standard_standard_units}{}\doxysection{Units}\label{mdi_standard_standard_units}
 All physical quantities communicated through M\+DI must be expressed in atomic units. Whenever it is necessary to perform a unit conversion on data communicated through M\+DI, the conversion factor should be obtained through the \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor()}} function. Use of this function ensures self-\/consistency in unit conversions between codes, which is important for avoiding numerical instabilities.\hypertarget{mdi_standard_standard_nodes_sec}{}\doxysection{Nodes}\label{mdi_standard_standard_nodes_sec}
-One of the powerful features of the M\+DI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in M\+DI engines. In particular, the \mbox{\hyperlink{mdi_standard_md_init}{M\+D\+\_\+\+I\+N\+IT}} and \mbox{\hyperlink{mdi_standard_optg_init}{O\+P\+T\+G\+\_\+\+I\+N\+IT}} commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain \char`\"{}nodes\char`\"{} and listen for new commands.
+One of the powerful features of the M\+DI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in M\+DI engines. In particular, the md\+\_\+init and optg\+\_\+init commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain \char`\"{}nodes\char`\"{} and listen for new commands.
 
 The M\+DI Standard defines several nodes. Their names and when they occur are as follows\+:
 
 \begin{DoxyParagraph}{}
-{\bfseries{ @\+P\+RE-\/F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces, {\bfseries{except}} those associated with a constraint algorithm like S\+H\+A\+KE or R\+A\+T\+T\+LE. ~\newline
+{\bfseries{ @\+G\+L\+O\+B\+AL }} -\/ Upon initially connecting to the driver. ~\newline
+ {\bfseries{ @\+I\+N\+I\+T\+\_\+\+MD }} -\/ Upon initializing a new molecular dynamics simulation. ~\newline
+ {\bfseries{ @\+I\+N\+I\+T\+\_\+\+O\+P\+TG }} -\/ Upon initializing a new geometry optimization. ~\newline
+ {\bfseries{ @\+P\+RE-\/F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces, {\bfseries{except}} those associated with a constraint algorithm like S\+H\+A\+KE or R\+A\+T\+T\+LE. ~\newline
  {\bfseries{ @\+F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces. ~\newline
  {\bfseries{ @\+C\+O\+O\+R\+DS }} -\/ After updating the atomic coordinates.
 \end{DoxyParagraph}
@@ -26,7 +29,7 @@ The following constants are defined by the M\+DI Standard and are accessible thr
 \item {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} -\/ Maximum number of characters in an M\+DI command (see \mbox{\hyperlink{mdi_standard_command_list}{Command List}})
 \end{DoxyItemize}\hypertarget{mdi_standard_command_list}{}\doxysection{Command List}\label{mdi_standard_command_list}
 The following is a list of commands that are officially part of the M\+DI standard.\hypertarget{mdi_standard_next_node}{}\doxysubsection{@}\label{mdi_standard_next_node}
-The engine proceeds to the next node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_node}{}\doxysubsection{$<$@}\label{mdi_standard_send_node}
+The engine proceeds to the next node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_node}{}\doxysubsection{$<$@}\label{mdi_standard_send_node}
 The engine sends the driver a string that corresponds to the name of its current node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}).
 
 \begin{DoxyParagraph}{}
@@ -41,19 +44,22 @@ The engine sends the Cartesian coordinates of a set of grid points. This command
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+D\+E\+N\+S\+I\+TY }
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_set_cell}{}\doxysubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
-The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
+The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors. The driver also sends the displacement vector of the origin of the simulation cell.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
- {\bfseries{ Quantity\+: }} 9 ~\newline
- {\bfseries{ Note\+: }} In the case of a quantum chemistry code that uses a plane wave basis set, the engine will recalculate the g-\/vectors either immediately or at the beginning of the next S\+CF command.
+ {\bfseries{ Quantity\+: }} 12 ~\newline
+ {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
+
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_cell}{}\doxysubsection{$<$\+C\+E\+LL}\label{mdi_standard_recv_cell}
-The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\+E\+LL} command.
+The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\+E\+LL} command. The engine also sends the displacement vector of the origin of the simulation cell.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
- {\bfseries{ Quantity\+: }} 9
+ {\bfseries{ Quantity\+: }} 12 ~\newline
+ {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
+
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_charges}{}\doxysubsection{$>$\+C\+H\+A\+R\+G\+ES}\label{mdi_standard_send_charges}
 The driver sends a set of atomic charges to the engine, which replaces its atomic charges with those sent by the driver.
@@ -72,8 +78,26 @@ The engine sends a set of atomic charges to the driver, in the same format as sp
  {\bfseries{ Quantity\+: }} {\ttfamily N\+A\+T\+O\+MS} ~\newline
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_send_clattice}{}\doxysubsection{$>$\+C\+L\+A\+T\+T\+I\+CE}\label{mdi_standard_send_clattice}
+This command, along with the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} and {\ttfamily $>$L\+A\+T\+T\+I\+CE} commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. After sending this command, the driver sends the coordinates of each of the point charges to the engine. Prior to sending this command, the driver must have set the number of point charges using the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} command.
+
+This command is primarily intended for use with gas-\/phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the {\ttfamily $>$P\+O\+T\+E\+N\+T\+I\+AL} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+L\+A\+T\+T\+I\+CE } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_commands}{}\doxysubsection{$<$\+C\+O\+M\+M\+A\+N\+DS}\label{mdi_standard_recv_commands}
+The engine sends a string listing all commands that it supports to the driver. All engines are required to support this command. Typically, a driver should send this command to each of the engines immediately after establishing a connection with them, and exit with an appropriate error message in the event that any of the engines do not support a command that is required by the driver. See also the {\ttfamily $<$N\+C\+O\+M\+M\+A\+N\+DS} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+C\+H\+AR} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily N\+C\+O\+M\+M\+A\+N\+DS} $\ast$ {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} ~\newline
+ {\bfseries{ Format\+: }} A single string sequentially listing all of the commands, with the first command corresponding to the first {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters, the second command corresponding to the next {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters, etc. Commands having fewer than {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters are padded with blank spaces (\char`\"{} \char`\"{}).
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_coords_node}{}\doxysubsection{@\+C\+O\+O\+R\+DS}\label{mdi_standard_coords_node}
-The engine proceeds to the next @\+C\+O\+O\+R\+DS node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_coords}{}\doxysubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
+The engine proceeds to the next {\ttfamily @\+C\+O\+O\+R\+DS}  node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_coords}{}\doxysubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
 The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.
 
 \begin{DoxyParagraph}{}
@@ -91,9 +115,9 @@ The engine sends a set of atomic coordinates to the driver.
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_cpotential}{}\doxysubsection{$>$\+C\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_cpotential}
-The driver sends the Cartesian coordinates of a set of grid points. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
+The driver sends the Cartesian coordinates of a set of grid points. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent scf\+\_\+command command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
 
-Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the values of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command.
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the values of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent scf\+\_\+command command.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
@@ -106,8 +130,47 @@ The engine sends the value of its electronic density on a set of grid points. Th
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily N\+D\+E\+N\+S\+I\+TY} 
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_dimensions}{}\doxysubsection{$<$\+D\+I\+M\+E\+N\+S\+I\+O\+NS}\label{mdi_standard_recv_dimensions}
+The engine sends basic information about the dimensionality of its system to the driver. For each of its three cell vectors (see the {\ttfamily $<$C\+E\+LL} command) the engine sends an integer that indicates whether that dimension is represented as periodic, non-\/periodic, or not represented at all (in the case of 1d or 2d systems). The possible values for each cell vector are\+:
+
+
+\begin{DoxyItemize}
+\item 0\+: Not represented
+\item 1\+: Non-\/periodic
+\item 2\+: Periodic
+\end{DoxyItemize}
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 3 ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of cell vector (see the $<$C\+E\+LL command)
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_mult}{}\doxysubsection{$>$\+E\+L\+E\+C\+\_\+\+M\+U\+LT}\label{mdi_standard_send_mult}
+The driver sends the electronic multiplicity of the system to the engine. This command is typically only appropriate for quantum mechanics engines.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_mult}{}\doxysubsection{$<$\+E\+L\+E\+C\+\_\+\+M\+U\+LT}\label{mdi_standard_recv_mult}
+The engine sends the electronic multiplicity of its system to the driver. This command is typically only appropriate for quantum mechanics engines.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_elements}{}\doxysubsection{$<$\+E\+L\+E\+M\+E\+N\+TS}\label{mdi_standard_recv_elements}
+The engine sends the atomic number of each element in its system to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily N\+A\+T\+O\+MS} ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_energy}{}\doxysubsection{$<$\+E\+N\+E\+R\+GY}\label{mdi_standard_recv_energy}
-The engine calculates and sends its energy to the driver.
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its energy to the driver, not including nuclear kinetic energy. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated energy to the driver, not including nuclear kinetic energy.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
@@ -115,7 +178,7 @@ The engine calculates and sends its energy to the driver.
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_exit_command}{}\doxysubsection{E\+X\+IT}\label{mdi_standard_exit_command}
 The engine terminates and can no longer be sent commands.\hypertarget{mdi_standard_forces_node}{}\doxysubsection{@\+F\+O\+R\+C\+ES}\label{mdi_standard_forces_node}
-The engine proceeds to the next @\+F\+O\+R\+C\+ES node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_send_forces}{}\doxysubsection{$>$\+F\+O\+R\+C\+ES}\label{mdi_standard_send_forces}
+The engine proceeds to the next {\ttfamily @\+F\+O\+R\+C\+ES}  node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_forces}{}\doxysubsection{$>$\+F\+O\+R\+C\+ES}\label{mdi_standard_send_forces}
 The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.
 
 \begin{DoxyParagraph}{}
@@ -134,26 +197,45 @@ The driver sends a set of atomic forces to the engine, which adds the forces sen
 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_forces}{}\doxysubsection{$<$\+F\+O\+R\+C\+ES}\label{mdi_standard_recv_forces}
-The engine calculates and sends a set of atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.).
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.\+g. S\+H\+A\+KE, R\+A\+T\+T\+LE, etc.). If the engine has previously calculated the atomic forces of the system, and no intervening commands from the driver could have changed the atomic forces, the engine is permitted to send the previously calculated atomic forces instead of recalculating them.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated atomic forces to the driver. Depending on the engine\textquotesingle{}s current node, these forces may not include all contributions to the atomic forces. See the descriptions of the different nodes for more details.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+A\+T\+O\+MS } ~\newline
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_recv_masses}{}\doxysubsection{$<$\+M\+A\+S\+S\+ES}\label{mdi_standard_recv_masses}
-The engine sends the driver the mass of each of the atom types.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily  $<$N\+T\+Y\+P\+ES } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of type index (see the {\ttfamily $<$T\+Y\+P\+ES} command)
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_md_init}{}\doxysubsection{M\+D\+\_\+\+I\+N\+IT}\label{mdi_standard_md_init}
-The engine performs any initialization operations that are necessary before an MD simulation can be time propagated through the use of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\+N\+E\+R\+GY} command.
+\hypertarget{mdi_standard_global_node}{}\doxysubsection{@\+G\+L\+O\+B\+AL}\label{mdi_standard_global_node}
+If not already at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, the engine exists whatever simulation (i.\+e. MD, O\+P\+TG, etc.) it is performing (possibly after completing an unfinished time step or geometry optimization step) and returns to the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_init_md}{}\doxysubsection{@\+I\+N\+I\+T\+\_\+\+MD}\label{mdi_standard_init_md}
+The engine performs any initialization operations that are necessary before a molecular dynamics simulation can be performed, proceeding to the @\+I\+N\+I\+T\+\_\+\+MD node.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_init_optg}{}\doxysubsection{@\+I\+N\+I\+T\+\_\+\+O\+P\+TG}\label{mdi_standard_init_optg}
+The engine performs any initialization operations that are necessary before a geometry optimization can be performed, proceeding to the @\+I\+N\+I\+T\+\_\+\+O\+P\+TG node.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_lattice}{}\doxysubsection{$>$\+L\+A\+T\+T\+I\+CE}\label{mdi_standard_send_lattice}
+This command, along with the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} and {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE} commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. After sending this command, the driver sends the charges of each of the point charges to the engine. Prior to sending this command, the driver must have set the number of point charges using the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} command.
+
+This command is primarily intended for use with gas-\/phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the {\ttfamily $>$P\+O\+T\+E\+N\+T\+I\+AL} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  N\+L\+A\+T\+T\+I\+CE } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of point charge index
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_masses}{}\doxysubsection{$<$\+M\+A\+S\+S\+ES}\label{mdi_standard_recv_masses}
+The engine sends the driver the mass of each of the atoms.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  $<$N\+A\+T\+O\+MS } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_name}{}\doxysubsection{$<$\+N\+A\+ME}\label{mdi_standard_send_name}
 The engine sends the driver a string that corresponds to the argument of {\ttfamily -\/name} in the M\+DI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular Q\+M/\+MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being \char`\"{}\+M\+M\char`\"{} and the expected name of the QM code being \char`\"{}\+Q\+M\char`\"{}. After initializing M\+DI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.
@@ -169,6 +251,13 @@ The engine sends the driver the number of atoms in the engine\textquotesingle{}s
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_ncommands}{}\doxysubsection{$<$\+N\+C\+O\+M\+M\+A\+N\+DS}\label{mdi_standard_recv_ncommands}
+The engine sends the driver the number of commands the engine supports. See also the {\ttfamily $<$C\+O\+M\+M\+A\+N\+DS} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_ndensity}{}\doxysubsection{$<$\+N\+D\+E\+N\+S\+I\+TY}\label{mdi_standard_recv_ndensity}
 The engine sends the number of grid points it is using to represent its electronic density on a grid. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_recv_cdensity}{$<$C\+D\+E\+N\+S\+I\+TY}} and \mbox{\hyperlink{mdi_standard_recv_density}{$<$D\+E\+N\+S\+I\+TY}} commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation. See the \mbox{\hyperlink{mdi_standard_recv_density}{$<$D\+E\+N\+S\+I\+TY}} command for more details.
 
@@ -176,35 +265,68 @@ The engine sends the number of grid points it is using to represent its electron
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_send_nlattice}{}\doxysubsection{$>$\+N\+L\+A\+T\+T\+I\+CE}\label{mdi_standard_send_nlattice}
+This command, along with the {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE} and {\ttfamily $>$L\+A\+T\+T\+I\+CE} commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. After sending this command, the driver sends the number of point charges to the engine. This command must be sent before either the {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE} or {\ttfamily $>$L\+A\+T\+T\+I\+CE} commands can be sent.
+
+This command is primarily intended for use with gas-\/phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the {\ttfamily $>$P\+O\+T\+E\+N\+T\+I\+AL} command.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
+ {\bfseries{ Quantity\+: }} 1 ~\newline
+
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_send_npotential}{}\doxysubsection{$>$\+N\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_npotential}
-The driver sends the number of grid points it is using to represent a potential on a grid. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
+The driver sends the number of grid points it is using to represent a potential on a grid. This command is intended to be used in conjuction with the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} and \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} commands; these three commands enable a driver to set an external potential that is incorporated into a subsequent scf\+\_\+command command. See the \mbox{\hyperlink{mdi_standard_send_potential}{$>$P\+O\+T\+E\+N\+T\+I\+AL}} command for more details.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
  {\bfseries{ Quantity\+: }} 1
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_recv_types}{}\doxysubsection{$<$\+N\+T\+Y\+P\+ES}\label{mdi_standard_recv_types}
-The engine sends the driver the number of different types of atoms (e.\+g. \char`\"{}\+H\char`\"{}, \char`\"{}\+He\char`\"{}, \char`\"{}\+C\char`\"{}, \char`\"{}\+O\char`\"{}, etc.) in the engine\textquotesingle{}s system.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+I\+NT} ~\newline
- {\bfseries{ Quantity\+: }} 1
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_optg_init}{}\doxysubsection{O\+P\+T\+G\+\_\+\+I\+N\+IT}\label{mdi_standard_optg_init}
-The engine performs any initialization operations that are necessary before a geometry optimization can be performed through the use of the {\ttfamily A\+T\+O\+M\+\_\+\+S\+T\+EP} command. This engine calculates the energy of the system, which can be queried by the {\ttfamily $<$E\+N\+E\+R\+GY} command.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_potential}{}\doxysubsection{$>$\+P\+O\+T\+E\+N\+T\+I\+AL}\label{mdi_standard_send_potential}
-The driver sends an set of values to the engine that correspond to a potential on a grid. If an \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command is later issued, this potential will be incorporated into the S\+CF calculation as an external potential.
+The driver sends an set of values to the engine that correspond to a potential on a grid. If an scf\+\_\+command command is later issued, this potential will be incorporated into the S\+CF calculation as an external potential.
 
-Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the Cartesian coordinates of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent \mbox{\hyperlink{mdi_standard_scf_command}{S\+CF}} command.
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the \mbox{\hyperlink{mdi_standard_send_npotential}{$>$N\+P\+O\+T\+E\+N\+T\+I\+AL}} command. It is also necessary that the driver send the Cartesian coordinates of the grid points via the \mbox{\hyperlink{mdi_standard_send_cpotential}{$>$C\+P\+O\+T\+E\+N\+T\+I\+AL}} command prior to any subsequent scf\+\_\+command command.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily N\+P\+O\+T\+E\+N\+T\+I\+AL} 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_pre-forces_node}{}\doxysubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
-The engine proceeds to the next @\+P\+RE-\/F\+O\+R\+C\+ES node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command requires that either the {\ttfamily M\+D\+\_\+\+I\+N\+IT} command or the {\ttfamily O\+P\+T\+G\+\_\+\+I\+N\+IT} command was previously executed.\hypertarget{mdi_standard_scf_command}{}\doxysubsection{S\+CF}\label{mdi_standard_scf_command}
-The engine performs a full self-\/consistent field calculation in order to relax the electronic density distribution. The engine updates its energy, which can be queried with the {\ttfamily $<$E\+N\+E\+R\+GY} command. 
+The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_totcharge}{}\doxysubsection{$>$\+T\+O\+T\+C\+H\+A\+R\+GE}\label{mdi_standard_send_totcharge}
+The driver sends a value for the total charge of the system, including electron and nuclear charges, to the engine, which adjusts the number of electrons present in its system to the value required to reproduce the value sent by the driver. This command is typically only appropriate for quantum mechanics engines. Engines that support this command are not required to support non-\/integer charges; they are permitted to produce an error message if the value received deviates by more than 10$^\wedge$-\/12 from an integer, and to otherwise round the value received to the nearest integer.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_totcharge}{}\doxysubsection{$<$\+T\+O\+T\+C\+H\+A\+R\+GE}\label{mdi_standard_recv_totcharge}
+The engine sends the total charge of its system, including electron and nuclear charges, to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_velocities}{}\doxysubsection{$>$\+V\+E\+L\+O\+C\+I\+T\+ES}\label{mdi_standard_send_velocities}
+The driver sends a set of atomic velocities to the driver, which replaces its atomic velocities with those provided by the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+A\+T\+O\+MS } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the velocities for each individual atom being provided in xyz order
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_velocities}{}\doxysubsection{$<$\+V\+E\+L\+O\+C\+I\+T\+ES}\label{mdi_standard_recv_velocities}
+The engine sends the velocities of the atoms in its system to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+A\+T\+O\+MS } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the velocities for each individual atom being provided in xyz order
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_version}{}\doxysubsection{$<$\+V\+E\+R\+S\+I\+ON}\label{mdi_standard_recv_version}
+The engine sends the version number of the M\+DI Library to which it is linked to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  1 } ~\newline
+ 
+\end{DoxyParagraph}
