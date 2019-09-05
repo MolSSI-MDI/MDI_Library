@@ -404,7 +404,7 @@ Place it immediately after the comment that reads \"<c>Perform the simulation</c
   double forces[3*natoms];
 
   // Have the MD engine initialize a new MD simulation
-  MDI_Send_Command("MD_INIT", mm_comm);
+  MDI_Send_Command("@INIT_MD", mm_comm);
 
   // Perform each iteration of the simulation
   for (int iiteration = 0; iiteration < niterations; iiteration++) {
@@ -417,10 +417,7 @@ Place it immediately after the comment that reads \"<c>Perform the simulation</c
     MDI_Send_Command(">COORDS", qm_comm);
     MDI_Send(&coords, 3*natoms, MDI_DOUBLE, qm_comm);
 
-    // Have the QM engine perform an SCF calculation
-    MDI_Send_Command("SCF", qm_comm);
-
-    // Have the MM engine proceed to the @FORCES node
+    // Have the MM engine proceed to the @PRE-FORCES node
     MDI_Send_Command("@PRE-FORCES", mm_comm);
 
     // Get the QM energy
@@ -497,6 +494,5 @@ Although not generally useful for production runs, this can be a good way to ben
 
 In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code.
 The only requirement on the engines is that the "QM" code supports all of the MDI commands sent by the AIMD driver to the "QM" engine, and that the "MM" code supports all of the MDI commands sent by the AIMD driver to the "MM" engine.
-The "SCF" MDI command in your driver will not be supported by most MM engines, but by simply removing it you can run your driver with two MM engines.
 
 **/
