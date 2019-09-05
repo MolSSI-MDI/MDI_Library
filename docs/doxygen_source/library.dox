@@ -61,9 +61,20 @@ The following options are available:
     - This option turns on compatibility mode for i-PI, allowing codes that use MDI for communication to communicate with codes that use i-PI for communication.
     If none of the drivers or engines is using i-PI for communication, this option should not be used, as it disables some of the MDI Library's error checking.
 
-    - \b required: Only if one of the engines or drivers is using i-PI for communication.
+    - \b required: Only if one of the engines or drivers is using i-PI for communication
 
     - \b argument: None
+
+  - \c -out
+
+    - This option redirects the standard output of the driver or engine to a user-specified file.
+    It is primarily intended for use when \c method=MPI (e.g., running all of the codes as part of a single MPMD launch).
+    When \c method=MPI, all codes will by default write to the same output file, which typically leads to unreadably mangled output.
+    The -out option allows the user to override this behavior, specifying a unique output file for each driver and engine.
+
+    - \b required: Never
+
+    - \b argument: The name of the file to which the output will be redirected
 
 For more information about running or developing codes that use the MDI Library, please see the \ref tutorials "tutorials".
 

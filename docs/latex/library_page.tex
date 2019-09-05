@@ -48,8 +48,14 @@ Whenever a code is launched as a driver or engine, it must be provided the "{\tt
 \item {\ttfamily -\/ipi} 
 \begin{DoxyItemize}
 \item This option turns on compatibility mode for i-\/\+PI, allowing codes that use M\+DI for communication to communicate with codes that use i-\/\+PI for communication. If none of the drivers or engines is using i-\/\+PI for communication, this option should not be used, as it disables some of the M\+DI Library\textquotesingle{}s error checking.
-\item {\bfseries{required\+:}} Only if one of the engines or drivers is using i-\/\+PI for communication.
+\item {\bfseries{required\+:}} Only if one of the engines or drivers is using i-\/\+PI for communication
 \item {\bfseries{argument\+:}} None
+\end{DoxyItemize}
+\item {\ttfamily -\/out} 
+\begin{DoxyItemize}
+\item This option redirects the standard output of the driver or engine to a user-\/specified file. It is primarily intended for use when {\ttfamily method=M\+PI} (e.\+g., running all of the codes as part of a single M\+P\+MD launch). When {\ttfamily method=M\+PI}, all codes will by default write to the same output file, which typically leads to unreadably mangled output. The -\/out option allows the user to override this behavior, specifying a unique output file for each driver and engine.
+\item {\bfseries{required\+:}} Never
+\item {\bfseries{argument\+:}} The name of the file to which the output will be redirected
 \end{DoxyItemize}
 \end{DoxyItemize}
 
