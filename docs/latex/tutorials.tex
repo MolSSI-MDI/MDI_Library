@@ -377,7 +377,7 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{\textcolor{keywordtype}{double} forces[3*natoms];}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// Have the MD engine initialize a new MD simulation}}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"MD\_INIT"}, mm\_comm);}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"@INIT\_MD"}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{// Perform each iteration of the simulation}}
 \DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} iiteration = 0; iiteration < niterations; iiteration++) \{}
@@ -390,10 +390,7 @@ The following code will handle all of the work associated with driving an A\+I\+
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{">COORDS"}, qm\_comm);}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{MDI\_Send}}(\&coords, 3*natoms, \mbox{\hyperlink{mdi_8c_a3d0c16831c941e5b870461394bfe5c82}{MDI\_DOUBLE}}, qm\_comm);}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Have the QM engine perform an SCF calculation}}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"SCF"}, qm\_comm);}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Have the MM engine proceed to the @FORCES node}}
+\DoxyCodeLine{  \textcolor{comment}{// Have the MM engine proceed to the @PRE-\/FORCES node}}
 \DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{MDI\_Send\_Command}}(\textcolor{stringliteral}{"@PRE-\/FORCES"}, mm\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Get the QM energy}}
@@ -458,4 +455,4 @@ Note that although we used QE as the QM code and L\+A\+M\+M\+PS as the MM code, 
 
 The above script allows you to run a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of L\+A\+M\+M\+PS. Although not generally useful for production runs, this can be a good way to benchmark the cost of the computational overhead introduced by using our driver as a middleman between two codes.
 
-In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code. The only requirement on the engines is that the \char`\"{}\+Q\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+Q\+M\char`\"{} engine, and that the \char`\"{}\+M\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+M\+M\char`\"{} engine. The \char`\"{}\+S\+C\+F\char`\"{} M\+DI command in your driver will not be supported by most MM engines, but by simply removing it you can run your driver with two MM engines. 
+In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code. The only requirement on the engines is that the \char`\"{}\+Q\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+Q\+M\char`\"{} engine, and that the \char`\"{}\+M\+M\char`\"{} code supports all of the M\+DI commands sent by the A\+I\+MD driver to the \char`\"{}\+M\+M\char`\"{} engine. 
