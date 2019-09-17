@@ -141,7 +141,7 @@ if( (NOT language) OR (language STREQUAL "Python") )
 endif()
 
 install(TARGETS mdi
-        EXPORT "${PN}Targets"}
+        EXPORT "${PN}Targets"
         RUNTIME DESTINATION ${MDI_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${MDI_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR})
