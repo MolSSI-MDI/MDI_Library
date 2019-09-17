@@ -1,7 +1,6 @@
 ################################# MDI Project ##################################
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-set(PN ${PROJECT_NAME})
 
 
 #check for MPI
@@ -47,6 +46,9 @@ endif()
 
 add_library(mdi ${libtype}
                 ${sources})
+
+# set API version of MDI Library
+set_target_properties(mdi PROPERTIES SOVERSION 1)  # bump whenever interface has changes or removals
 
 #if this is a Windows build, link to ws2_32
 if(WIN32)
@@ -104,6 +106,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.h ${CMAKE_CURRENT_BINARY_DIR}/mdi
 # ----------------------------------------------------------------------------------------------------
 # Install
 
+set(PN ${PROJECT_NAME})
+
 # Determine where the files should be installed
 if( python_package STREQUAL "ON" )
 
@@ -135,9 +139,25 @@ if( (NOT language) OR (language STREQUAL "Python") )
                 ${CMAKE_BINARY_DIR}/MDI_Library/mdi_mpi4py.py
           DESTINATION ${MDI_INSTALL_LIBDIR})
 endif()
+
 install(TARGETS mdi
-        EXPORT "${PN}Targets"
+        EXPORT mdi DESTINATION ${MDI_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${MDI_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${MDI_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR})
+
+# Provide support for packages
  
+set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}")
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PN}Config.cmake.in"
+                              "${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake"
+                              INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+                                 VERSION ${${PN}_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+install(EXPORT "${PN}Targets"
+        NAMESPACE "${PN}::"
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})

@@ -26,7 +26,8 @@ else()
    message( FATAL_ERROR "Language not supported.  Supported languages: C, Fortran, Python" )
 endif()
 
-project(MDI
+project(mdi
+        VERSION 0.6.5
         LANGUAGES ${use_C} ${use_Fortran})
 
 add_subdirectory(MDI_Library)

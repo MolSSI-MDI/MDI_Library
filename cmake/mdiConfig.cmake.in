@@ -1,0 +1,31 @@
+# mdiConfig.cmake
+# --------------------
+#
+# MDI_Library cmake module.
+# This module sets the following variables in your project::
+#
+#   mdi_FOUND - true if MDI_Library and all required components found on the system
+#   mdi_VERSION - MDI_Library version in format Major.Minor.Release
+#   mdi_INCLUDE_DIRS - Directory where MDI_Library header is located.
+#   mdi_INCLUDE_DIR - same as DIRS
+#   mdi_LIBRARIES - MDI_Library library to link against.
+#   mdi_LIBRARY - same as LIBRARIES
+#
+#
+# Exported targets::
+#
+# If the MDI_Library is found, this module defines the following :prop_tgt:`IMPORTED`
+# target. Target is shared _or_ static, so, for both, use separate, not
+# overlapping, installations. ::
+#
+#   mdi::mdi - the main MDI library with header attached.
+#
+#
+# Suggested usage::
+#
+#   find_package(mdi)
+#   find_package(mdi 1.0.1 EXACT CONFIG REQUIRED)
+
+@PACKAGE_INIT@
+
+set(PN mdi)
