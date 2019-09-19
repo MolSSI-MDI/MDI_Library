@@ -14,8 +14,8 @@ The MDI Library currently supports the following communication methods:
 
 \section library_launching_sec Launching Codes with the MDI Library
 
-Whenever a code is launched as a driver or engine, it must be provided the \"\c -mdi\" runtime option.
-The argument for the \"\c -mdi\" option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library.
+Whenever a code is launched as a driver or engine, it must be provided either the \"\c -mdi\" or \"\c --mdi\" runtime option (see \ref mdi_ecosystem for details regarding which codes use the single dash and which codes use the double dash).
+The argument for this option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library.
 The following options are available:
 
   - \c -role
@@ -78,6 +78,28 @@ The following options are available:
 
 For more information about running or developing codes that use the MDI Library, please see the \ref tutorials "tutorials".
 
+\subsection tcp_launch Using TCP Communication
+
+Launching a driver using TCP communication involves the general format:
+
+    <driver_executable> <driver_options> -mdi "-role DRIVER -name driver -method TCP -port 8021" &
+
+Launching an engine using TCP communication involves the general format:
+
+    <engine_executable> <engine_options> -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+
+The ampersand ("&") causes the code to run in the background, allowing additional drivers and/or engines to be launched from the same terminal or job script.
+
+Note that some codes may use \"\c --mdi\" instead of \"\c -mdi\".
+
+\subsection mpi_launch Using MPI Communication
+
+When using MPI communication, the driver and engines must be launched as part of a single \c mpiexec launch command.
+The general format for this is:
+
+    mpiexec -n <driver_nprocs>  <driver_executable>  -mdi "-role DRIVER -name driver -method MPI  -out driver.out"  : \
+            -n <engine1_nprocs> <engine1_executable> -mdi "-role ENGINE -name engine1 -method MPI -out engine1.out" : \
+            -n <engine2_nprocs> <engine2_executable> -mdi "-role ENGINE -name engine2 -method MPI -out engine2.out"
 
 
 \section compiliation_sec Compiling the MDI Library

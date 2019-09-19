@@ -75,7 +75,7 @@ Overview</h1>
 </ul>
 <h1><a class="anchor" id="library_launching_sec"></a>
 Launching Codes with the MDI Library</h1>
-<p>Whenever a code is launched as a driver or engine, it must be provided the "<code>-mdi"</code> runtime option. The argument for the "<code>-mdi"</code> option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library. The following options are available:</p>
+<p>Whenever a code is launched as a driver or engine, it must be provided either the "<code>-mdi"</code> or "<code>--mdi"</code> runtime option (see <a class="el" href="mdi_ecosystem.html">MDI Ecosystem</a> for details regarding which codes use the single dash and which codes use the double dash). The argument for this option is a string, <b> in quotes</b>, consisting of a sequence of options used by the MDI Library. The following options are available:</p>
 <ul>
 <li><code>-role</code> <ul>
 <li><b>required:</b> always</li>
@@ -124,7 +124,18 @@ Launching Codes with the MDI Library</h1>
 </li>
 </ul>
 <p>For more information about running or developing codes that use the MDI Library, please see the <a class="el" href="tutorials.html">tutorials</a>.</p>
-<h1><a class="anchor" id="compiliation_sec"></a>
+<h2><a class="anchor" id="tcp_launch"></a>
+Using TCP Communication</h2>
+<p>Launching a driver using TCP communication involves the general format: </p><pre class="fragment">&lt;driver_executable&gt; &lt;driver_options&gt; -mdi "-role DRIVER -name driver -method TCP -port 8021" &amp;
+</pre><p>Launching an engine using TCP communication involves the general format: </p><pre class="fragment">&lt;engine_executable&gt; &lt;engine_options&gt; -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
+</pre><p>The ampersand ("&amp;") causes the code to run in the background, allowing additional drivers and/or engines to be launched from the same terminal or job script.</p>
+<p>Note that some codes may use "<code>--mdi"</code> instead of "<code>-mdi"</code>.</p>
+<h2><a class="anchor" id="mpi_launch"></a>
+Using MPI Communication</h2>
+<p>When using MPI communication, the driver and engines must be launched as part of a single <code>mpiexec</code> launch command. The general format for this is: </p><pre class="fragment">mpiexec -n &lt;driver_nprocs&gt;  &lt;driver_executable&gt;  -mdi "-role DRIVER -name driver -method MPI  -out driver.out"  : \
+        -n &lt;engine1_nprocs&gt; &lt;engine1_executable&gt; -mdi "-role ENGINE -name engine1 -method MPI -out engine1.out" : \
+        -n &lt;engine2_nprocs&gt; &lt;engine2_executable&gt; -mdi "-role ENGINE -name engine2 -method MPI -out engine2.out"
+</pre><h1><a class="anchor" id="compiliation_sec"></a>
 Compiling the MDI Library</h1>
 <p>The MDI Library uses CMake to compile. If you do not already have CMake installed on your machine, please follow the instructions on the <a href="https://cmake.org/">official website</a> to do so.</p>
 <p>With CMake installed, you can build the MDI Library as follows:</p>

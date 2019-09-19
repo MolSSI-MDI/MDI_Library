@@ -1,0 +1,124 @@
+/** \page mdi_ecosystem MDI Ecosystem
+
+\section ecosystem_overview Overview
+
+This section provides basic usage instructions for the drivers, engines, and other codes that compose the MDI ecosystem.
+
+
+
+\section ecosystem_lammps LAMMPS
+
+MolSSI provides <a href="https://github.com/MolSSI/lammps/tree/mdi">an MDI-enabled fork</a> of <a href="https://lammps.sandia.gov/">LAMMPS</a> that can be run as an MDI engine.
+To use LAMMPS as an engine, follow these steps:
+
+  -#
+Acquire the MDI-enabled fork of LAMMPS:
+
+    git clone --branch mdi git@github.com:MolSSI/lammps.git
+
+  -#
+Compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.
+
+  -#
+Prepare a LAMMPS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings.
+The file must include the <b>mdi fix</b>.
+At the end of the input file, call the \b mdi command, which does not accept any arguments.
+For example:
+
+    units           real
+    neigh_modify    delay 0 every 1 check yes
+    atom_style      full
+    bond_style      harmonic
+    angle_style     harmonic
+    pair_style      lj/cut/coul/long 10.0
+    pair_modify     mix arithmetic
+    kspace_style    pppm 1e-4
+    special_bonds   amber
+    
+    atom_modify     sort 0 0
+
+    read_data       lammps.data
+    
+    timestep        1.0
+    
+    dump            1 all custom 1 dump.lammpstrj id element xu yu zu
+    dump            2 all custom 1 dump.force id element fx fy fz
+    dump            3 all xyz 1 dump.xyz
+    dump_modify     1 element O H
+    dump_modify     2 element O H
+    
+    thermo_style    multi
+    thermo          1
+    
+    fix             1 all mdi
+    fix             2 all nvt temp 300.0 300.0 70.0
+    fix             3 all shake 0.0001 20 0 b 1 a 1
+
+    mdi
+
+  -#
+Launch LAMMPS using the \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
+For example:
+
+    lammps -in lammps.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+
+
+
+\section ecosystem_psi4 Psi4
+
+MolSSI provides <a href="https://github.com/MolSSI/psi4/tree/mdi">an MDI-enabled fork</a> of <a href="http://www.psicode.org/">Psi4</a> that can be run as an MDI engine.
+To use Psi4 as an engine, follow these steps:
+
+  -#
+Acquire the MDI-enabled fork of Psi4:
+
+    git clone --branch mdi git@github.com:MolSSI/psi4.git
+
+  -#
+Compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.
+
+  -#
+Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings.
+At the end of the input file, call the \b mdi command, which accepts as its only argument the computational method that should be used for any energy or gradient calculations that are requested by the driver.
+For example:
+
+    molecule {
+    O 4.92718 4.99809 1.10308
+    H 5.80905 5.31488 0.90767
+    H 4.87602 4.14701 0.667997
+    }
+    
+    mdi("scf/sto-3g")
+
+  -#
+Launch Psi4 using the \"\c --mdi\" runtime option, which is described in \ref library_launching_sec.
+For example:
+
+    psi4 -i psi4.dat --mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+
+
+
+
+\section ecosystem_qe Quantum ESPRESSO
+
+MolSSI provides <a href="https://github.com/MolSSI/q-e/tree/mdi">an MDI-enabled fork</a> of <a href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a> (QE) that can be run as an MDI engine.
+To use QE as an engine, follow these steps:
+
+  -#
+Acquire the MDI-enabled fork of QE:
+
+    git clone --branch mdi git@github.com:MolSSI/q-e.git
+
+  -#
+Compile pw.x, following the <a href="https://www.quantum-espresso.org/Doc/user_guide/node10.html">QE build guide</a>.
+
+  -#
+Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.
+
+  -#
+Launch QE using the \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
+For example:
+
+    pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+
+**/

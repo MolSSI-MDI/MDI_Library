@@ -70,9 +70,11 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 The following codes support MDI:
 
-  - <a href="https://github.com/MolSSI/lammps/tree/mdi">LAMMPS</a>
+  - \ref ecosystem_lammps
 
-  - <a href="https://github.com/MolSSI/q-e/tree/mdi">Quantum ESPRESSO</a>
+  - \ref ecosystem_psi4
+
+  - \ref ecosystem_qe
 
 The following codes support <a href="http://ipi-code.org/">i-PI</a>, with which MDI is compatible (see the \ref library_launching_sec "-ipi" option).  Note that the i-PI command set is different from that of the MDI Standard.
 
