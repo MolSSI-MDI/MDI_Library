@@ -105,6 +105,10 @@
 
     SUBROUTINE MDI_Init(foptions, fworld_comm, ierr)
       IMPLICIT NONE
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Init
+#endif
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(INOUT) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
@@ -114,6 +118,10 @@
 
     SUBROUTINE MDI_Accept_Communicator(communicator)
       IMPLICIT NONE
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
+#endif
       INTEGER, INTENT(OUT) :: communicator
 
       communicator = MDI_Accept_Communicator_()
@@ -121,6 +129,10 @@
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       CHARACTER(LEN=*), INTENT(IN)             :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -138,6 +150,10 @@
 
     SUBROUTINE MDI_Send_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_d
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_d
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       REAL(KIND=8), INTENT(IN)                 :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -150,6 +166,10 @@
 
     SUBROUTINE MDI_Send_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_dv
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_dv
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       REAL(KIND=8), INTENT(IN), TARGET         :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
@@ -159,6 +179,10 @@
 
     SUBROUTINE MDI_Send_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_i
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_i
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       INTEGER, INTENT(IN)                      :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -171,6 +195,10 @@
 
     SUBROUTINE MDI_Send_iv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_iv
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_iv
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       INTEGER(KIND=C_INT), TARGET              :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
@@ -180,6 +208,10 @@
 
     SUBROUTINE MDI_Recv_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       CHARACTER(LEN=*), INTENT(OUT)            :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -205,6 +237,10 @@
 
     SUBROUTINE MDI_Recv_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_d
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_d
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       REAL(KIND=8), INTENT(OUT)                :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -217,6 +253,10 @@
 
     SUBROUTINE MDI_Recv_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_dv
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_dv
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       REAL(KIND=8), INTENT(OUT), TARGET        :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
@@ -226,6 +266,10 @@
 
     SUBROUTINE MDI_Recv_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_i
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_i
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       INTEGER, INTENT(OUT)                     :: fbuf
       INTEGER, INTENT(OUT)                     :: ierr
@@ -238,6 +282,10 @@
 
     SUBROUTINE MDI_Recv_iv (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_iv
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_iv
+#endif
       INTEGER, INTENT(IN)                      :: count, datatype, comm
       INTEGER(KIND=C_INT), INTENT(OUT), TARGET :: fbuf(count)
       INTEGER, INTENT(OUT)                     :: ierr
@@ -247,6 +295,10 @@
 
     SUBROUTINE MDI_Send_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
+#endif
       CHARACTER(LEN=*), INTENT(IN)             :: fbuf
       INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
@@ -264,6 +316,10 @@
 
     SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
+#endif
       CHARACTER(LEN=*), INTENT(OUT)            :: fbuf
       INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
@@ -289,6 +345,10 @@
 
     SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor)
       USE ISO_C_BINDING
+#ifdef _WIN32
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Conversion_Factor
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Conversion_Factor
+#endif
       CHARACTER(LEN=*), INTENT(IN)             :: fin_unit, fout_unit
       DOUBLE PRECISION, INTENT(OUT)            :: factor
 

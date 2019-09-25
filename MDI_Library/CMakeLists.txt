@@ -41,7 +41,7 @@ if( mpi STREQUAL "OFF" )
    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/mpi.h")
 endif()
 if( (NOT language) OR (language STREQUAL "Fortran") )
-   list(APPEND sources "mdi_f90.f90")
+   list(APPEND sources "mdi_f90.F90")
 endif()
 
 add_library(mdi ${libtype}
