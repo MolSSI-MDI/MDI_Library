@@ -94,38 +94,20 @@ script:
   # Confirm that all executables have been created
   - find driver_cxx engine_cxx driver_f90 engine_f90 driver_py.py engine_py.py
   # Run a CXX-CXX test calculation using TCP/IP
-  - ./driver_cxx -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  - ./engine_cxx -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  - wait
+  - ../../../tests/cxx-cxx_tcp.sh
   # Run a CXX-Fortran test calculation using TCP/IP
-  #- ./driver_cxx -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  #- ./engine_f90 -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  #- wait
+  #- ../../../tests/cxx-f90_tcp.sh
   # Run a CXX-Python test calculation using TCP/IP
-  - ./driver_cxx -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  - python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  - wait
+  - ../../../tests/cxx-py_tcp.sh
   # Run a Fortran-CXX test calculation using TCP/IP
-  #- ./driver_f90 -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  #- ./engine_cxx -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  #- wait
-  # Run a Fortran-Fortran test calculation using TCP/IP
-  #- ./driver_f90 -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  #- ./engine_f90 -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  #- wait
+  #- ../../../tests/f90-cxx_tcp.sh
+  # Run a Fortran-Fortran test calculation using TCP/IP 
+  #- ../../../tests/f90-f90_tcp.sh
   # Run a Fortran-Python test calculation using TCP/IP
-  #- ./driver_f90 -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  #- python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  #- wait
+  #- ../../../tests/f90-py_tcp.sh
   # Run a Python-CXX test calculation using TCP/IP
-  - python driver_py.py -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  - ./engine_cxx -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  - wait
+  - ../../../tests/py-cxx_tcp.sh
   # Run a Python-Fortran test calculation using TCP/IP
-  #- python driver_py.py -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  #- ./engine_f90 -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  #- wait
+  #- ../../../tests/py-f90_tcp.sh
   # Run a Python-Python test calculation using TCP/IP
-  - python driver_py.py -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-  - python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-  - wait
+  - ../../../tests/py-py_tcp.sh
