@@ -72,7 +72,7 @@ int tcp_listen(int port) {
   serv_addr.sin_port = htons(port);
 
   // enable reuse of the socket
-  ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse_value, sizeof(int));
+  ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char*) &reuse_value, sizeof(int));
   if (ret < 0) {
     mdi_error("Could not reuse socket");
   }
