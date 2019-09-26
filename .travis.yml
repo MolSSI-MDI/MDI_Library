@@ -53,7 +53,7 @@ matrix:
          - cd build
          - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
          - ls ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-         - cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library -G "MinGW Makefiles" -Dlanguage=Python ..
+         - cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library -G "MinGW Makefiles" ..
          - mingw32-make
          - ls
       script:
