@@ -86,7 +86,7 @@ matrix:
          - ../../../tests/py-cxx_tcp.sh
 
          # Run a Python-Fortran test calculation using TCP/IP
-         #- ../../../tests/py-f90_tcp.sh
+         - ../../../tests/py-f90_tcp.sh
 
          # Run a Python-Python test calculation using TCP/IP
          - ../../../tests/py-py_tcp.sh
