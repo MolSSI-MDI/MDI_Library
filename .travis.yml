@@ -59,6 +59,7 @@ matrix:
       script:
          - ls
          - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
+         - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
 
          # Confirm that all executables have been created
          - find driver_cxx.exe engine_cxx.exe driver_f90.exe engine_f90.exe driver_py.py engine_py.py
@@ -67,25 +68,25 @@ matrix:
          - ../../../tests/cxx-cxx_tcp.sh
 
          # Run a CXX-Fortran test calculation using TCP/IP
-         - ../../../tests/cxx-f90_tcp.sh
+         #- ../../../tests/cxx-f90_tcp.sh
 
          # Run a CXX-Python test calculation using TCP/IP
          - ../../../tests/cxx-py_tcp.sh
 
          # Run a Fortran-CXX test calculation using TCP/IP
-         - ../../../tests/f90-cxx_tcp.sh
+         #- ../../../tests/f90-cxx_tcp.sh
 
          # Run a Fortran-Fortran test calculation using TCP/IP 
-         - ../../../tests/f90-f90_tcp.sh
+         #- ../../../tests/f90-f90_tcp.sh
 
          # Run a Fortran-Python test calculation using TCP/IP
-         - ../../../tests/f90-py_tcp.sh
+         #- ../../../tests/f90-py_tcp.sh
 
          # Run a Python-CXX test calculation using TCP/IP
          - ../../../tests/py-cxx_tcp.sh
 
          # Run a Python-Fortran test calculation using TCP/IP
-         - ../../../tests/py-f90_tcp.sh
+         #- ../../../tests/py-f90_tcp.sh
 
          # Run a Python-Python test calculation using TCP/IP
          - ../../../tests/py-py_tcp.sh
