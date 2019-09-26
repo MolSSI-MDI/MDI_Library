@@ -105,7 +105,7 @@
 
     SUBROUTINE MDI_Init(foptions, fworld_comm, ierr)
       IMPLICIT NONE
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Init
 #endif
@@ -118,7 +118,7 @@
 
     SUBROUTINE MDI_Accept_Communicator(communicator)
       IMPLICIT NONE
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
 #endif
@@ -129,7 +129,7 @@
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
 #endif
@@ -150,7 +150,7 @@
 
     SUBROUTINE MDI_Send_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_d
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_d
 #endif
@@ -166,7 +166,7 @@
 
     SUBROUTINE MDI_Send_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_dv
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_dv
 #endif
@@ -179,7 +179,7 @@
 
     SUBROUTINE MDI_Send_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_i
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_i
 #endif
@@ -195,7 +195,7 @@
 
     SUBROUTINE MDI_Send_iv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_iv
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_iv
 #endif
@@ -208,7 +208,7 @@
 
     SUBROUTINE MDI_Recv_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
 #endif
@@ -237,7 +237,7 @@
 
     SUBROUTINE MDI_Recv_d (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_d
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_d
 #endif
@@ -253,7 +253,7 @@
 
     SUBROUTINE MDI_Recv_dv(fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING  
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_dv
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_dv
 #endif
@@ -266,7 +266,7 @@
 
     SUBROUTINE MDI_Recv_i (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_i
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_i
 #endif
@@ -282,7 +282,7 @@
 
     SUBROUTINE MDI_Recv_iv (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_iv
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_iv
 #endif
@@ -295,7 +295,7 @@
 
     SUBROUTINE MDI_Send_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
 #endif
@@ -316,7 +316,7 @@
 
     SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
 #endif
@@ -345,7 +345,7 @@
 
     SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor)
       USE ISO_C_BINDING
-#ifdef _WIN32
+#if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Conversion_Factor
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Conversion_Factor
 #endif
