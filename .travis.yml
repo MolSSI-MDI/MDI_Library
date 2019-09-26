@@ -58,20 +58,37 @@ matrix:
          - ls
       script:
          - ls
-         - echo $PATH
          - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-         - echo $PATH
+
          # Confirm that all executables have been created
          - find driver_cxx.exe engine_cxx.exe driver_f90.exe engine_f90.exe driver_py.py engine_py.py
-         #- START /B "" driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021"
-         #- START /B "" engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"
-         #- START /MIN "" driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021"
-         #- START /MIN "" engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"
-         #- ./driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-         #- ./engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-         #- wait
+
          # Run a CXX-CXX test calculation using TCP/IP
          - ../../../tests/cxx-cxx_tcp.sh
+
+         # Run a CXX-Fortran test calculation using TCP/IP
+         - ../../../tests/cxx-f90_tcp.sh
+
+         # Run a CXX-Python test calculation using TCP/IP
+         - ../../../tests/cxx-py_tcp.sh
+
+         # Run a Fortran-CXX test calculation using TCP/IP
+         - ../../../tests/f90-cxx_tcp.sh
+
+         # Run a Fortran-Fortran test calculation using TCP/IP 
+         - ../../../tests/f90-f90_tcp.sh
+
+         # Run a Fortran-Python test calculation using TCP/IP
+         - ../../../tests/f90-py_tcp.sh
+
+         # Run a Python-CXX test calculation using TCP/IP
+         - ../../../tests/py-cxx_tcp.sh
+
+         # Run a Python-Fortran test calculation using TCP/IP
+         - ../../../tests/py-f90_tcp.sh
+
+         # Run a Python-Python test calculation using TCP/IP
+         - ../../../tests/py-py_tcp.sh
 
 
 install:
@@ -82,6 +99,7 @@ install:
   - make
   - sudo make install
   - cd ..
+
   # Make local install build
   - mkdir build
   - cd build
@@ -90,6 +108,7 @@ install:
   - make install
   - ls
   - ls MDI_Library
+
   # Build test codes
   - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.1.0.tar.gz
   - tar xvzf test_codes.tar.gz
