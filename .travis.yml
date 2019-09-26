@@ -74,19 +74,19 @@ matrix:
          - ../../../tests/cxx-cxx_tcp.sh
 
          # Run a CXX-Fortran test calculation using TCP/IP
-         #- ../../../tests/cxx-f90_tcp.sh
+         - ../../../tests/cxx-f90_tcp.sh
 
          # Run a CXX-Python test calculation using TCP/IP
          - ../../../tests/cxx-py_tcp.sh
 
          # Run a Fortran-CXX test calculation using TCP/IP
-         #- ../../../tests/f90-cxx_tcp.sh
+         - ../../../tests/f90-cxx_tcp.sh
 
          # Run a Fortran-Fortran test calculation using TCP/IP 
-         #- ../../../tests/f90-f90_tcp.sh
+         - ../../../tests/f90-f90_tcp.sh
 
          # Run a Fortran-Python test calculation using TCP/IP
-         #- ../../../tests/f90-py_tcp.sh
+         - ../../../tests/f90-py_tcp.sh
 
          # Run a Python-CXX test calculation using TCP/IP
          - ../../../tests/py-cxx_tcp.sh
