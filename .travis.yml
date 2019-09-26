@@ -100,6 +100,7 @@ script:
   #- ./engine_f90 -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
   # Run a CXX-Python test calculation using TCP/IP
+  - ../../../tests/cxx-py_tcp.sh
   #- ./driver_cxx -mdi "-role DRIVER -name driver -method TCP -port 8021" &
   #- python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
@@ -116,6 +117,7 @@ script:
   #- python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
   # Run a Python-CXX test calculation using TCP/IP
+  - ../../../tests/py-cxx_tcp.sh
   #- python driver_py.py -mdi "-role DRIVER -name driver -method TCP -port 8021" &
   #- ./engine_cxx -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
@@ -124,6 +126,7 @@ script:
   #- ./engine_f90 -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
   # Run a Python-Python test calculation using TCP/IP
+  - ../../../tests/py-py_tcp.sh
   #- python driver_py.py -mdi "-role DRIVER -name driver -method TCP -port 8021" &
   #- python engine_py.py -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
   #- wait
