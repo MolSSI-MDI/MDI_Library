@@ -60,6 +60,8 @@ matrix:
          - ls
          # Confirm that all executables have been created
          - find driver_cxx.exe engine_cxx.exe driver_f90.exe engine_f90.exe driver_py.py engine_py.py
+         - START /B driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021"
+         - START /B engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"
 
 
 install:
