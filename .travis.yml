@@ -64,9 +64,11 @@ matrix:
          #- START /B "" engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"
          #- START /MIN "" driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021"
          #- START /MIN "" engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"
-         - ./driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021" &
-         - ./engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
-         - wait
+         #- ./driver_cxx.exe -mdi "-role DRIVER -name driver -method TCP -port 8021" &
+         #- ./engine_cxx.exe -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" &
+         #- wait
+         # Run a CXX-CXX test calculation using TCP/IP
+         - ../../../tests/cxx-cxx_tcp.sh
 
 
 install:
