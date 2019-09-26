@@ -55,6 +55,13 @@ if(WIN32)
   target_link_libraries(mdi wsock32 ws2_32)
 endif()
 
+# gfortran has trouble identifying windows, so use CMake to set the appropriate defines
+if(WIN32)
+  add_definitions(-DMDI_WINDOWS=1)
+else()
+  add_definitions(-DMDI_WINDOWS=0)
+endif()
+
 #include and link to MPI
 if( mpi STREQUAL "ON" )
 
