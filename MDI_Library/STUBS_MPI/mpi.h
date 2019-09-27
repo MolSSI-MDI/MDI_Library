@@ -8,6 +8,7 @@
 typedef int MPI_Comm;
 typedef int MPI_Datatype;
 typedef int MPI_Status;
+typedef int MPI_Fint;
 
 #define MPI_STATUS_IGNORE 0
 #define MPI_COMM_WORLD 0
@@ -30,5 +31,7 @@ static int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
 static int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
              MPI_Comm comm, MPI_Status *status) { return 0; };
 static int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm) { return 0; };
+static MPI_Comm MPI_Comm_f2c( MPI_Fint comm ) { return comm; };
+static MPI_Fint MPI_Comm_c2f( MPI_Comm comm ) { return comm; };
 
 #endif

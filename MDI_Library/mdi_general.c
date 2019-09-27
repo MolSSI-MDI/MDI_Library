@@ -56,23 +56,6 @@ int general_init(const char* options, void* world_comm) {
   int has_port = 0;
   int has_output_file = 0;
 
-  // get the MPI rank
-  MPI_Comm mpi_communicator;
-  int mpi_rank = 0;
-  if ( world_comm == NULL ) {
-    mpi_communicator = 0;
-    mpi_rank = 0;
-  }
-  else {
-    if ( world_rank == -1 ) {
-      mpi_communicator = *(MPI_Comm*) world_comm;
-      MPI_Comm_rank(mpi_communicator, &mpi_rank);
-    }
-    else {
-      mpi_rank = 0;
-    }
-  }
-
   // calculate argc
   char* argv_line = strdup(options);
   char* token = strtok(argv_line, " ");
@@ -170,6 +153,28 @@ int general_init(const char* options, void* world_comm) {
     }
   }
 
+  // get the MPI rank
+  MPI_Comm mpi_communicator;
+  int mpi_rank = 0;
+  if ( world_comm == NULL ) {
+    mpi_communicator = 0;
+    mpi_rank = 0;
+  }
+  else {
+    if ( world_rank == -1 ) {
+      if ( strcmp(language, "Fortran") == 0 ) {
+	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
+      }
+      else {
+	mpi_communicator = *(MPI_Comm*) world_comm;
+      }
+      MPI_Comm_rank(mpi_communicator, &mpi_rank);
+    }
+    else {
+      mpi_rank = 0;
+    }
+  }
+
   // redirect the standard output
   if ( has_output_file == 1 ) {
     freopen(output_file, "w", stdout);
@@ -253,7 +258,15 @@ int general_init(const char* options, void* world_comm) {
   // set the MPI communicator correctly
   if ( mpi_initialized == 1 ) {
     if ( do_split == 1 ) {
-      mpi_update_world_comm(world_comm);
+      if ( strcmp(language, "Fortran") == 0 ) {
+	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
+	mpi_update_world_comm( (void*) &mpi_communicator);
+        MPI_Fint f_comm = MPI_Comm_c2f( mpi_communicator );
+	world_comm = (void*) &f_comm;
+      }
+      else {
+	mpi_update_world_comm(world_comm);
+      }
     }
   }
 

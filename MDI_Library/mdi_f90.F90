@@ -113,7 +113,7 @@
       INTEGER, INTENT(INOUT) :: fworld_comm
       INTEGER, INTENT(OUT) :: ierr
 
-      ierr = MDI_Init_( TRIM(foptions)//c_null_char, fworld_comm )
+      ierr = MDI_Init_( TRIM(foptions)//" _language Fortran"//c_null_char, fworld_comm )
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Accept_Communicator(communicator)
