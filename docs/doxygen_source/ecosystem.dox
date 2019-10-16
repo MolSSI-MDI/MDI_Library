@@ -99,6 +99,44 @@ For example:
 
 
 
+
+\section ecosystem_qcengine QCEngine
+
+The <a href="https://github.com/MolSSI/QCEngine">current master branch</a> of QCEngine can be run as an MDI engine.
+To use QCEngine as an MDI engine, follow these steps:
+
+  -#
+Install QCEngine, following the <a href="https://qcengine.readthedocs.io/en/latest/install.html">QCEngine installation guide</a>.
+
+  -#
+Prepare a QCEngine input file that specifies the initial molecular geometry of the system and any other desired settings.
+At the end of the input file, create an \"\c MDIServer\" object and call the \"\c start()\" method on it.
+For example:
+
+    import qcengine as qcng
+    import qcelemental as qcel
+
+    molecule {
+    O 4.92718 4.99809 1.10308
+    H 5.80905 5.31488 0.90767
+    H 4.87602 4.14701 0.667997
+    }
+    
+    o = qcng.MDIServer(mdi_options = "-role ENGINE -name QM -method TCP -port 8021 -hostname localhost",
+                       program = "psi4",
+                       molecule = mol,
+                       model = {"method": "SCF", "basis": "sto-3g"},
+                       keywords = {"scf_type": "df"})
+    o.start()
+
+
+  -#
+Run the input script as normal.
+Note that there is NOT a \"\c --mdi\" runtime option.
+
+
+
+
 \section ecosystem_qe Quantum ESPRESSO
 
 MolSSI provides <a href="https://github.com/MolSSI/q-e/tree/mdi">an MDI-enabled fork</a> of <a href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a> (QE) that can be run as an MDI engine.

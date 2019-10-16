@@ -127,6 +127,29 @@ mdi("scf/sto-3g")
 <li>Launch Psi4 using the "<code>--mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">psi4 -i psi4.dat --mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
 </pre></li>
 </ol>
+<h1><a class="anchor" id="ecosystem_qcengine"></a>
+QCEngine</h1>
+<p>The <a href="https://github.com/MolSSI/QCEngine">current master branch</a> of QCEngine can be run as an MDI engine. To use QCEngine as an MDI engine, follow these steps:</p>
+<ol type="1">
+<li>Install QCEngine, following the <a href="https://qcengine.readthedocs.io/en/latest/install.html">QCEngine installation guide</a>.</li>
+<li>Prepare a QCEngine input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, create an "<code>MDIServer"</code> object and call the "<code>start()"</code> method on it. For example: <pre class="fragment">import qcengine as qcng
+import qcelemental as qcel
+
+molecule {
+O 4.92718 4.99809 1.10308
+H 5.80905 5.31488 0.90767
+H 4.87602 4.14701 0.667997
+}
+
+o = qcng.MDIServer(mdi_options = "-role ENGINE -name QM -method TCP -port 8021 -hostname localhost",
+                   program = "psi4",
+                   molecule = mol,
+                   model = {"method": "SCF", "basis": "sto-3g"},
+                   keywords = {"scf_type": "df"})
+o.start()
+</pre></li>
+<li>Run the input script as normal. Note that there is NOT a "<code>--mdi"</code> runtime option.</li>
+</ol>
 <h1><a class="anchor" id="ecosystem_qe"></a>
 Quantum ESPRESSO</h1>
 <p>MolSSI provides <a href="https://github.com/MolSSI/q-e/tree/mdi">an MDI-enabled fork</a> of <a href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a> (QE) that can be run as an MDI engine. To use QE as an engine, follow these steps:</p>

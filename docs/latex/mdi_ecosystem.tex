@@ -64,6 +64,30 @@ mdi("scf/sto-3g")
 \item Launch Psi4 using the "{\ttfamily -\/-\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}psi4 -i psi4.dat --mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
 \end{DoxyVerb}
 
+\end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_qcengine}{}\doxysection{Q\+C\+Engine}\label{mdi_ecosystem_ecosystem_qcengine}
+The \href{https://github.com/MolSSI/QCEngine}{\texttt{ current master branch}} of Q\+C\+Engine can be run as an M\+DI engine. To use Q\+C\+Engine as an M\+DI engine, follow these steps\+:
+
+
+\begin{DoxyEnumerate}
+\item Install Q\+C\+Engine, following the \href{https://qcengine.readthedocs.io/en/latest/install.html}{\texttt{ Q\+C\+Engine installation guide}}.
+\item Prepare a Q\+C\+Engine input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, create an "{\ttfamily M\+D\+I\+Server"} object and call the "{\ttfamily start()"} method on it. For example\+: \begin{DoxyVerb}import qcengine as qcng
+import qcelemental as qcel
+
+molecule {
+O 4.92718 4.99809 1.10308
+H 5.80905 5.31488 0.90767
+H 4.87602 4.14701 0.667997
+}
+
+o = qcng.MDIServer(mdi_options = "-role ENGINE -name QM -method TCP -port 8021 -hostname localhost",
+                   program = "psi4",
+                   molecule = mol,
+                   model = {"method": "SCF", "basis": "sto-3g"},
+                   keywords = {"scf_type": "df"})
+o.start()
+\end{DoxyVerb}
+
+\item Run the input script as normal. Note that there is N\+OT a "{\ttfamily -\/-\/mdi"} runtime option.
 \end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_qe}{}\doxysection{Quantum E\+S\+P\+R\+E\+S\+SO}\label{mdi_ecosystem_ecosystem_qe}
 Mol\+S\+SI provides \href{https://github.com/MolSSI/q-e/tree/mdi}{\texttt{ an M\+D\+I-\/enabled fork}} of \href{https://www.quantum-espresso.org/}{\texttt{ Quantum E\+S\+P\+R\+E\+S\+SO}} (QE) that can be run as an M\+DI engine. To use QE as an engine, follow these steps\+:
 

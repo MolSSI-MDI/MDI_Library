@@ -68,13 +68,25 @@ The source code of the MDI library is available at GitHub at https://github.com/
 
 \section main_doc_engines_sec Engines
 
-The following codes support MDI:
+The following codes can be directly run as MDI engines:
 
   - \ref ecosystem_lammps
 
   - \ref ecosystem_psi4
 
+  - \ref ecosystem_qcengine
+
   - \ref ecosystem_qe
+
+Through \ref ecosystem_qcengine, it is additionally possible to control the following codes via MDI:
+
+  - \ref <a href="http://www.petachem.com/">PetaChem</a>
+
+  - \ref <a href="https://www.molpro.net/">Molpro</a>
+
+  - \ref <a href="https://github.com/aiqm/torchani">TorchANI</a>
+
+  - \ref <a href="http://rdkit.org/">RDKit</a>
 
 The following codes support <a href="http://ipi-code.org/">i-PI</a>, with which MDI is compatible (see the \ref library_launching_sec "-ipi" option).  Note that the i-PI command set is different from that of the MDI Standard.
 
