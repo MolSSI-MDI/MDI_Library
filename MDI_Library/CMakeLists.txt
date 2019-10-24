@@ -138,18 +138,18 @@ endif()
 
 # Perform the installation
 if( (NOT language) OR (language STREQUAL "Fortran") )
-  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
-                ${CMAKE_BINARY_DIR}/MDI_Library/mdi.mod
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
+                ${CMAKE_CURRENT_BINARY_DIR}/mdi.mod
           DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 else()
-  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.h
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
           DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 endif()
 if( (NOT language) OR (language STREQUAL "Python") )
-  install(FILES ${CMAKE_BINARY_DIR}/MDI_Library/mdi.py
-                ${CMAKE_BINARY_DIR}/MDI_Library/mdi_name
-                ${CMAKE_BINARY_DIR}/MDI_Library/__init__.py
-                ${CMAKE_BINARY_DIR}/MDI_Library/mdi_mpi4py.py
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
+                ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+                ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
+                ${CMAKE_CURRENT_BINARY_DIR}/mdi_mpi4py.py
           DESTINATION ${MDI_INSTALL_LIBDIR})
 endif()
 
