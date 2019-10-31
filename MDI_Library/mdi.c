@@ -342,7 +342,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
   double out_conv = 1.0;
 
   // identify the input unit
-  if ( strcmp( in_unit, "atomic unit of mass" ) == 0 ) {
+  if ( strcmp( in_unit, "atomic_unit_of_mass" ) == 0 ) {
     in_category = 1;
     in_conv = atomic_unit_of_mass;
   }
@@ -354,11 +354,11 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 1;
     in_conv = gram;
   }
-  else if ( strcmp( in_unit, "atomic mass unit" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_mass_unit" ) == 0 ) {
     in_category = 1;
     in_conv = atomic_mass_unit;
   }
-  else if ( strcmp( in_unit, "atomic unit of charge" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_unit_of_charge" ) == 0 ) {
     in_category = 2;
     in_conv = atomic_unit_of_charge;
   }
@@ -366,7 +366,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 2;
     in_conv = coulomb;
   }
-  else if ( strcmp( in_unit, "atomic unit of energy" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_unit_of_energy" ) == 0 ) {
     in_category = 3;
     in_conv = atomic_unit_of_energy;
   }
@@ -382,7 +382,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 3;
     in_conv = kilojoule;
   }
-  else if ( strcmp( in_unit, "kilojoule per mol" ) == 0 ) {
+  else if ( strcmp( in_unit, "kilojoule_per_mol" ) == 0 ) {
     in_category = 3;
     in_conv = kilojoule_per_mol;
   }
@@ -394,11 +394,11 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 3;
     in_conv = kilocalorie;
   }
-  else if ( strcmp( in_unit, "kilocalorie per mol" ) == 0 ) {
+  else if ( strcmp( in_unit, "kilocalorie_per_mol" ) == 0 ) {
     in_category = 3;
     in_conv = kilocalorie_per_mol;
   }
-  else if ( strcmp( in_unit, "electron volt" ) == 0 ) {
+  else if ( strcmp( in_unit, "electron_volt" ) == 0 ) {
     in_category = 3;
     in_conv = electron_volt;
   }
@@ -406,15 +406,15 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 3;
     in_conv = rydberg;
   }
-  else if ( strcmp( in_unit, "kelvin energy" ) == 0 ) {
+  else if ( strcmp( in_unit, "kelvin_energy" ) == 0 ) {
     in_category = 3;
     in_conv = kelvin_energy;
   }
-  else if ( strcmp( in_unit, "inverse meter energy" ) == 0 ) {
+  else if ( strcmp( in_unit, "inverse_meter_energy" ) == 0 ) {
     in_category = 3;
     in_conv = inverse_meter_energy;
   }
-  else if ( strcmp( in_unit, "atomic unit of force" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_unit_of_force" ) == 0 ) {
     in_category = 4;
     in_conv = inverse_meter_energy;
   }
@@ -422,7 +422,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 4;
     in_conv = newton;
   }
-  else if ( strcmp( in_unit, "atomic unit of length" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_unit_of_length" ) == 0 ) {
     in_category = 5;
     in_conv = atomic_unit_of_length;
   }
@@ -438,7 +438,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 5;
     in_conv = angstrom;
   }
-  else if ( strcmp( in_unit, "atomic unit of time" ) == 0 ) {
+  else if ( strcmp( in_unit, "atomic_unit_of_time" ) == 0 ) {
     in_category = 6;
     in_conv = atomic_unit_of_time;
   }
@@ -455,7 +455,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
   }
 
   // identify the output unit
-  if ( strcmp( out_unit, "atomic unit of mass" ) == 0 ) {
+  if ( strcmp( out_unit, "atomic_unit_of_mass" ) == 0 ) {
     out_category = 1;
     out_conv = atomic_unit_of_mass;
   }
@@ -467,11 +467,11 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 1;
     out_conv = gram;
   }
-  else if ( strcmp( out_unit, "atomic mass unit" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_mass_unit" ) == 0 ) {
     out_category = 1;
     out_conv = atomic_mass_unit;
   }
-  else if ( strcmp( out_unit, "atomic unit of charge" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_unit_of_charge" ) == 0 ) {
     out_category = 2;
     out_conv = atomic_unit_of_charge;
   }
@@ -479,7 +479,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 2;
     out_conv = coulomb;
   }
-  else if ( strcmp( out_unit, "atomic unit of energy" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_unit_of_energy" ) == 0 ) {
     out_category = 3;
     out_conv = atomic_unit_of_energy;
   }
@@ -495,7 +495,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 3;
     out_conv = kilojoule;
   }
-  else if ( strcmp( out_unit, "kilojoule per mol" ) == 0 ) {
+  else if ( strcmp( out_unit, "kilojoule_per_mol" ) == 0 ) {
     out_category = 3;
     out_conv = kilojoule_per_mol;
   }
@@ -507,11 +507,11 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 3;
     out_conv = kilocalorie;
   }
-  else if ( strcmp( out_unit, "kilocalorie per mol" ) == 0 ) {
+  else if ( strcmp( out_unit, "kilocalorie_per_mol" ) == 0 ) {
     out_category = 3;
     out_conv = kilocalorie_per_mol;
   }
-  else if ( strcmp( out_unit, "electron volt" ) == 0 ) {
+  else if ( strcmp( out_unit, "electron_volt" ) == 0 ) {
     out_category = 3;
     out_conv = electron_volt;
   }
@@ -519,15 +519,15 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 3;
     out_conv = rydberg;
   }
-  else if ( strcmp( out_unit, "kelvin energy" ) == 0 ) {
+  else if ( strcmp( out_unit, "kelvin_energy" ) == 0 ) {
     out_category = 3;
     out_conv = kelvin_energy;
   }
-  else if ( strcmp( out_unit, "inverse meter energy" ) == 0 ) {
+  else if ( strcmp( out_unit, "inverse_meter_energy" ) == 0 ) {
     out_category = 3;
     out_conv = inverse_meter_energy;
   }
-  else if ( strcmp( out_unit, "atomic unit of force" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_unit_of_force" ) == 0 ) {
     out_category = 4;
     out_conv = inverse_meter_energy;
   }
@@ -535,7 +535,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 4;
     out_conv = newton;
   }
-  else if ( strcmp( out_unit, "atomic unit of length" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_unit_of_length" ) == 0 ) {
     out_category = 5;
     out_conv = atomic_unit_of_length;
   }
@@ -551,7 +551,7 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     out_category = 5;
     out_conv = angstrom;
   }
-  else if ( strcmp( out_unit, "atomic unit of time" ) == 0 ) {
+  else if ( strcmp( out_unit, "atomic_unit_of_time" ) == 0 ) {
     out_category = 6;
     out_conv = atomic_unit_of_time;
   }
