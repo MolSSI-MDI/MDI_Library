@@ -261,6 +261,8 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  *    - atomic_unit_of_length
  *    - bohr
  *    - meter
+ *    - nanometer
+ *    - picometer
  * - mass
  *    - atomic_mass_unit
  *    - atomic_unit_of_mass
@@ -319,6 +321,8 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
   double atomic_unit_of_length = 1.0;
   double bohr = 1.0;
   double meter = 1.88972612462577e10;
+  double nanometer = 1.88972612462577e1;
+  double picometer = 1.88972612462577e-2;
   double angstrom = 1.88975437603133;
 
   // time
@@ -434,6 +438,14 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
     in_category = 5;
     in_conv = meter;
   }
+  else if ( strcmp( in_unit, "nanometer" ) == 0 ) {
+    in_category = 5;
+    in_conv = nanometer;
+  }
+  else if ( strcmp( in_unit, "picometer" ) == 0 ) {
+    in_category = 5;
+    in_conv = picometer;
+  }
   else if ( strcmp( in_unit, "angstrom" ) == 0 ) {
     in_category = 5;
     in_conv = angstrom;
@@ -546,6 +558,14 @@ double MDI_Conversion_Factor(char* in_unit, char* out_unit)
   else if ( strcmp( out_unit, "meter" ) == 0 ) {
     out_category = 5;
     out_conv = meter;
+  }
+  else if ( strcmp( out_unit, "nanometer" ) == 0 ) {
+    out_category = 5;
+    out_conv = nanometer;
+  }
+  else if ( strcmp( out_unit, "picometer" ) == 0 ) {
+    out_category = 5;
+    out_conv = picometer;
   }
   else if ( strcmp( out_unit, "angstrom" ) == 0 ) {
     out_category = 5;
