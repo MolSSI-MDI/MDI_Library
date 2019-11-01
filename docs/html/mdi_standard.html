@@ -303,6 +303,20 @@ EXIT</h2>
 <h2><a class="anchor" id="pre-forces_node"></a>
 @PRE-FORCES</h2>
 <p>The engine proceeds to the next <code> @PRE-FORCES </code> node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@GLOBAL</code>  node.</p>
+<h2><a class="anchor" id="send_stress"></a>
+&lt;STRESS</h2>
+<p>The engine sends its virial stress tensor to the driver.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> 9 <br  />
+ <b> Format: </b> The tensor components are sent in row-major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). <br  />
+</dd></dl>
+<h2><a class="anchor" id="recv_stress"></a>
+&gt;STRESS</h2>
+<p>The driver sends a virial stress tensor to the engine, which replaces its internal stress tensor with the stress tensor sent by the driver.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> 9 <br  />
+ <b> Format: </b> The tensor components are sent in row-major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). <br  />
+</dd></dl>
 <h2><a class="anchor" id="send_totcharge"></a>
 &gt;TOTCHARGE</h2>
 <p>The driver sends a value for the total charge of the system, including electron and nuclear charges, to the engine, which adjusts the number of electrons present in its system to the value required to reproduce the value sent by the driver. This command is typically only appropriate for quantum mechanics engines. Engines that support this command are not required to support non-integer charges; they are permitted to produce an error message if the value received deviates by more than 10^-12 from an integer, and to otherwise round the value received to the nearest integer.</p>

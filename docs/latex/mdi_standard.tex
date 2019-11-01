@@ -292,7 +292,25 @@ Before sending this command, the driver must have first sent the number of grid 
  {\bfseries{ Quantity\+: }} {\ttfamily N\+P\+O\+T\+E\+N\+T\+I\+AL} 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_pre-forces_node}{}\doxysubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
-The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_totcharge}{}\doxysubsection{$>$\+T\+O\+T\+C\+H\+A\+R\+GE}\label{mdi_standard_send_totcharge}
+The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_stress}{}\doxysubsection{$<$\+S\+T\+R\+E\+SS}\label{mdi_standard_send_stress}
+The engine sends its virial stress tensor to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 9 ~\newline
+ {\bfseries{ Format\+: }} The tensor components are sent in row-\/major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). ~\newline
+
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_stress}{}\doxysubsection{$>$\+S\+T\+R\+E\+SS}\label{mdi_standard_recv_stress}
+The driver sends a virial stress tensor to the engine, which replaces its internal stress tensor with the stress tensor sent by the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 9 ~\newline
+ {\bfseries{ Format\+: }} The tensor components are sent in row-\/major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). ~\newline
+
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_totcharge}{}\doxysubsection{$>$\+T\+O\+T\+C\+H\+A\+R\+GE}\label{mdi_standard_send_totcharge}
 The driver sends a value for the total charge of the system, including electron and nuclear charges, to the engine, which adjusts the number of electrons present in its system to the value required to reproduce the value sent by the driver. This command is typically only appropriate for quantum mechanics engines. Engines that support this command are not required to support non-\/integer charges; they are permitted to produce an error message if the value received deviates by more than 10$^\wedge$-\/12 from an integer, and to otherwise round the value received to the nearest integer.
 
 \begin{DoxyParagraph}{}
