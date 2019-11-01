@@ -494,6 +494,28 @@ This command is not valid at the \c @GLOBAL node.
 
 
 
+\subsection send_stress <STRESS
+
+The engine sends its virial stress tensor to the driver.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> 9 <br>
+<b> Format: </b> The tensor components are sent in row-major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). <br>
+
+
+
+\subsection recv_stress >STRESS
+
+The driver sends a virial stress tensor to the engine, which replaces its internal stress tensor with the stress tensor sent by the driver.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> 9 <br>
+<b> Format: </b> The tensor components are sent in row-major order (xx, xy, xz, yx, yy, yz, zx, zy, zz). <br>
+
+
+
 \subsection send_totcharge >TOTCHARGE
 
 The driver sends a value for the total charge of the system, including electron and nuclear charges, to the engine, which adjusts the number of electrons present in its system to the value required to reproduce the value sent by the driver.
