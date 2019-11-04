@@ -281,7 +281,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  * \param [in]       out_unit
  *                   Name of the unit to convert to.
  */
-double MDI_Conversion_Factor(char* in_unit, char* out_unit)
+double MDI_Conversion_Factor(const char* in_unit, const char* out_unit)
 {
   // Except where otherwise noted, all values are from:
   //   - https://physics.nist.gov/cuu/Constants/Table/allascii.txt
