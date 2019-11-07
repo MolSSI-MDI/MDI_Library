@@ -155,7 +155,7 @@ def MDI_Accept_Communicator():
         comm = ctypes.c_int()
         ret = mdi.MDI_Accept_Communicator(ctypes.byref(comm))
         if ret != 0:
-            raise Exception("MDI Error: MDI_Recv failed")
+            raise Exception("MDI Error: MDI_Accept_Communicator failed")
         return comm.value
 
 # MDI_Send
@@ -314,8 +314,8 @@ mdi.MDI_Conversion_Factor.restype = ctypes.c_int
 def MDI_Conversion_Factor(arg1, arg2):
     in_unit = arg1.encode('utf-8')
     out_unit = arg2.encode('utf-8')
-    conversion = ctypes.POINTER(ctypes.c_double)
-    ret = mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit), conversion)
+    conversion = ctypes.c_double()
+    ret = mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit), ctypes.byref(conversion))
     if ret != 0:
-        raise Exception("MDI Error: MDI_Recv failed")
-    return conversion
+        raise Exception("MDI Error: MDI_Conversion_Factor failed")
+    return conversion.value

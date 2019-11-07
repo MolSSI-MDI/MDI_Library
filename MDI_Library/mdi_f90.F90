@@ -60,7 +60,7 @@
 
      FUNCTION MDI_Accept_Communicator_(comm) bind(c, name="MDI_Accept_Communicator")
        USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT)                      :: comm
+       TYPE(C_PTR), VALUE                       :: comm
        INTEGER(KIND=C_INT)                      :: MDI_Accept_Communicator_
      END FUNCTION MDI_Accept_Communicator_
 
@@ -127,7 +127,10 @@
       INTEGER, INTENT(OUT) :: communicator
       INTEGER, INTENT(OUT) :: ierr
 
-      ierr = MDI_Accept_Communicator_(communicator)
+      INTEGER(KIND=C_INT), TARGET              :: cbuf
+
+      ierr = MDI_Accept_Communicator_(c_loc(cbuf))
+      communicator = cbuf
     END SUBROUTINE MDI_Accept_Communicator
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
@@ -359,6 +362,7 @@
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cin_unit(LEN_TRIM(fin_unit)+1)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cout_unit(LEN_TRIM(fout_unit)+1)
+      REAL(KIND=C_DOUBLE), TARGET              :: cfactor
 
       DO i = 1, LEN_TRIM(fin_unit)
          cin_unit(i) = fin_unit(i:i)
@@ -370,7 +374,8 @@
       END DO
       cout_unit( LEN_TRIM(fout_unit) + 1 ) = c_null_char
 
-      ierr = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit), factor )
+      ierr = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit), c_loc(cfactor) )
+      factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
 
   END MODULE
