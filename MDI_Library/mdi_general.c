@@ -35,6 +35,8 @@ static char* name;
 int general_init(const char* options, void* world_comm) {
   returned_comms = 0;
   vector_init(&communicators, sizeof(communicator));
+
+  // initialize the vector of nodes
   vector_init(&nodes, sizeof(node));
 
   char* strtol_ptr;
