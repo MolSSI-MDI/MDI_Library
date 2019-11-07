@@ -94,8 +94,7 @@
 
      FUNCTION MDI_Conversion_Factor_(in_unit, out_unit, conv) bind(c, name="MDI_Conversion_Factor")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: in_unit, out_unit
-       REAL(KIND=C_DOUBLE)                      :: conv
+       TYPE(C_PTR), VALUE                       :: in_unit, out_unit, conv
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
