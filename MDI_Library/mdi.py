@@ -152,7 +152,7 @@ def MDI_Accept_Communicator():
     if mdi_manager:
         return mdi_manager.Accept_Communicator()
     else:
-        comm = c_int()
+        comm = ctypes.c_int()
         ret = mdi.MDI_Accept_Communicator(ctypes.byref(comm))
         if ret != 0:
             raise Exception("MDI Error: MDI_Recv failed")
