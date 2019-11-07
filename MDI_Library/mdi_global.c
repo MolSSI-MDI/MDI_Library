@@ -14,6 +14,9 @@ int ipi_compatibility = 0;
 /*! \brief Vector containing all MDI communicators */
 vector communicators;
 
+/*! \brief Vector containing all nodes supported by this code */
+vector nodes;
+
 /*! \brief Initialize memory allocation for a vector structure
  *
  * \param [in]       v
@@ -81,6 +84,60 @@ void* vector_get(vector* v, int index) {
   return ( void* )( v->data + (index * v->stride) );
 }
 
+/*! \brief Determine the index of a node within a vector of nodes
+ *
+ * \param [in]       v
+ *                   Pointer to the vector
+ * \param [in]       node_name
+ *                   Name of the node
+ */
+int get_node_index(vector* v, const char* node_name) {
+  int inode;
+  int node_index = -1;
+  for ( inode = 0; inode < v->size; inode++ ) {
+    node* this_node = vector_get(v, inode);
+    if ( strcmp( node_name, this_node->name ) == 0 ) {
+      node_index = inode;
+    }
+  }
+  return node_index;
+}
+
+/*! \brief Determine the index of a command within a node
+ *
+ * \param [in]       node
+ *                   Pointer to the node
+ * \param [in]       command_name
+ *                   Name of the command
+ */
+int get_command_index(node* n, const char* command_name) {
+  int icommand;
+  int command_index = -1;
+  for ( icommand = 0; icommand < n->commands->size; icommand++ ) {
+    if ( strcmp( command_name, vector_get( n->commands, icommand ) ) == 0 ) {
+      command_index = icommand;
+    }
+  }
+  return command_index;
+}
+
+/*! \brief Determine the index of a callback within a node
+ *
+ * \param [in]       node
+ *                   Pointer to the node
+ * \param [in]       callback_name
+ *                   Name of the callback
+ */
+int get_callback_index(node* n, const char* callback_name) {
+  int icallback;
+  int callback_index = -1;
+  for ( icallback = 0; icallback < n->callbacks->size; icallback++ ) {
+    if ( strcmp( callback_name, vector_get( n->callbacks, icallback ) ) == 0 ) {
+      callback_index = icallback;
+    }
+  }
+  return callback_index;
+}
 
 /*! \brief Print error message and exit
  *
