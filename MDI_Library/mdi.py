@@ -152,11 +152,11 @@ def MDI_Accept_Communicator():
     if mdi_manager:
         return mdi_manager.Accept_Communicator()
     else:
-        comm = ctypes.POINTER(ctypes.c_int)
-        ret = mdi.MDI_Accept_Communicator(comm)
+        comm = c_int()
+        ret = mdi.MDI_Accept_Communicator(ctypes.byref(comm))
         if ret != 0:
             raise Exception("MDI Error: MDI_Recv failed")
-        return comm
+        return comm.value
 
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
