@@ -47,9 +47,9 @@ matrix:
          - mingw32-make install
          - ls
          - ls MDI_Library
-         - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.1.0.tar.gz
+         - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.1.1.tar.gz
          - tar xvzf test_codes.tar.gz
-         - cd MDI_Test_Codes-0.1.0
+         - cd MDI_Test_Codes-0.1.1
          - mkdir build
          - cd build
          - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
@@ -118,9 +118,9 @@ install:
   - ls MDI_Library
 
   # Build test codes
-  - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.1.0.tar.gz
+  - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.1.1.tar.gz
   - tar xvzf test_codes.tar.gz
-  - cd MDI_Test_Codes-0.1.0
+  - cd MDI_Test_Codes-0.1.1
   - mkdir build
   - cd build
   - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library

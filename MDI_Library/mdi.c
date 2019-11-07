@@ -132,12 +132,13 @@ int MDI_Init(const char* options, void* world_comm)
  * If no new communicators are available, the function returns \p MDI_NULL_COMM.
  *
  */
-MDI_Comm MDI_Accept_Communicator()
+MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
   }
-  return general_accept_communicator();
+  *comm = general_accept_communicator();
+  return 0;
 }
 
 
@@ -225,11 +226,12 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
 }
 
 
-/*! \brief Return a conversion factor between two units
+/*! \brief Determine the conversion factor between two units
  *
- * The function returns the conversion factor from \p in_unit to \p out_unit.
+ * The function determines the conversion factor from \p in_unit to \p out_unit.
  * The function requires that \p in_unit and \p out_unit be members of the same category of unit (\em i.e. charge, energy, force, etc.).
  * For example, calling \p MDI_Conversion_Factor(\p "kilojoule_per_mol",\p "atomic_unit_of_energy") will return the conversion factor from kilojoule/mol to hartrees.
+ * The function returns \p 0 on a success.
  *
  * All quantities communicated through MDI must be represented using atomic units.
  * When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-consistent across codes.
@@ -280,8 +282,10 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  *                   Name of the unit to convert from.
  * \param [in]       out_unit
  *                   Name of the unit to convert to.
+ * \param [out]      conv
+ *                   Conversion factor from in_unit to out_unit
  */
-double MDI_Conversion_Factor(const char* in_unit, const char* out_unit)
+int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* conv)
 {
   // Except where otherwise noted, all values are from:
   //   - https://physics.nist.gov/cuu/Constants/Table/allascii.txt
@@ -592,7 +596,8 @@ double MDI_Conversion_Factor(const char* in_unit, const char* out_unit)
     mdi_error("The units are of two different types, and conversion is not possible.");
   }
 
-  return in_conv / out_conv;
+  *conv = in_conv / out_conv;
+  return 0;
 }
 
 
@@ -640,4 +645,447 @@ void MDI_Set_World_Size(int world_size_in)
 void MDI_Set_World_Rank(int world_rank_in)
 {
   set_world_rank(world_rank_in);
+}
+
+/*! \brief Register a node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ */
+int MDI_Register_Node(const char* node_name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Register_Node called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+  }
+
+  // confirm that this node is not already registered
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index != -1 ) {
+    mdi_error("This node is already registered");
+  }
+
+  node new_node;
+  vector* command_vec = malloc(sizeof(vector));
+  vector* callback_vec = malloc(sizeof(vector));
+  vector_init(command_vec, sizeof(char[COMMAND_LENGTH]));
+  vector_init(callback_vec, sizeof(char[COMMAND_LENGTH]));
+  new_node.commands = command_vec;
+  new_node.callbacks = callback_vec;
+  strcpy(new_node.name, node_name);
+  vector_push_back(&nodes, &new_node);
+  return 0;
+}
+
+/*! \brief Check whether a node is supported on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the node is supported and 0 otherwise.
+ */
+int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Check_Node_Exists called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    *flag = 0;
+  }
+  else {
+    *flag = 1;
+  }
+  return 0;
+}
+
+/*! \brief Get the number of nodes on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      nnodes
+ *                   On return, the number of nodes supported by the engine.
+ */
+int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_NNodes called but MDI has not been initialized");
+  }
+
+  *nnodes = nodes.size;
+  return 0;
+}
+
+/*! \brief Get the name of a node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       index
+ *                   Index of the node on the specified engine.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the node
+ */
+int MDI_Get_Node(int index, MDI_Comm comm, char* name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_Node called but MDI has not been initialized");
+  }
+
+  node* ret_node = vector_get(&nodes, index);
+  strcpy(name, &ret_node->name[0]);
+  return 0;
+}
+
+/*! \brief Register a command on a specified node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the command will be registered.
+ * \param [in]       command_name
+ *                   Name of the command.
+ */
+int MDI_Register_Command(const char* node_name, const char* command_name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Register_Command called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(command_name) > COMMAND_LENGTH ) {
+    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Attempting to register a command on an unregistered node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  // confirm that this command is not already registered
+  int command_index = get_command_index(target_node, command_name);
+  if ( command_index != -1 ) {
+    mdi_error("This command is already registered for this node");
+  }
+
+  // register this command
+  char new_command[COMMAND_LENGTH];
+  strcpy(new_command, command_name);
+  vector_push_back( target_node->commands, &new_command );
+
+  return 0;
+}
+
+/*! \brief Check whether a command is supported on specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the command's node.
+ * \param [in]       command_name
+ *                   Name of the command.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the command is supported and 0 otherwise.
+ */
+int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MDI_Comm comm, int* flag)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Check_Command_Exists called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(command_name) > COMMAND_LENGTH ) {
+    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Could not find the node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  // find the command
+  int command_index = get_command_index(target_node, command_name);
+  if ( command_index == -1 ) {
+    *flag = 0;
+  }
+  else {
+    *flag = 1;
+  }
+  return 0;
+}
+
+/*! \brief Get the number of commands supported for a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      nnodes
+ *                   On return, the number of commands supported on the specified engine
+ *                   on the specified node.
+ */
+int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_NCommands called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Could not find the node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  *ncommands = target_node->commands->size;
+  return 0;
+}
+
+/*! \brief Get the name of a command on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the command is located.
+ * \param [in]       index
+ *                   Index of the command on the specified node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the command
+ */
+int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_Command called but MDI has not been initialized");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("MDI_Get_Command could not find the requested node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  if ( target_node->commands->size <= index ) {
+    mdi_error("MDI_Get_Command failed because the command does not exist");
+  }
+
+  char* target_command = vector_get( target_node->commands, index );
+  strcpy(name, target_command);
+  return 0;
+}
+
+/*! \brief Register a callback on a specified node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the callback will be registered.
+ * \param [in]       callback_name
+ *                   Name of the callback.
+ */
+int MDI_Register_Callback(const char* node_name, const char* callback_name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Register_Callback called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(callback_name) > COMMAND_LENGTH ) {
+    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Attempting to register a callback on an unregistered node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  // confirm that this callback is not already registered
+  int callback_index = get_callback_index(target_node, callback_name);
+  if ( callback_index != -1 ) {
+    mdi_error("This callback is already registered for this node");
+  }
+
+  // register this callback
+  char new_callback[COMMAND_LENGTH];
+  strcpy(new_callback, callback_name);
+  vector_push_back( target_node->callbacks, &new_callback );
+
+  return 0;
+}
+
+/*! \brief Check whether a callback exists on specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the callbacks's node.
+ * \param [in]       command_name
+ *                   Name of the callback.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the callback is supported and 0 otherwise.
+ */
+int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, MDI_Comm comm, int* flag)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Check_Callback_Exists called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(callback_name) > COMMAND_LENGTH ) {
+    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Could not find the node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  // find the callback
+  int callback_index = get_callback_index(target_node, callback_name);
+  if ( callback_index == -1 ) {
+    *flag = 0;
+  }
+  else {
+    *flag = 1;
+  }
+  return 0;
+}
+
+/*! \brief Get the number of callbacks on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      ncallbacks
+ *                   On return, the number of callbacks on the specified node
+ *                   on the specified engine.
+ */
+int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_NCallbacks called but MDI has not been initialized");
+  }
+
+  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
+  if ( strlen(node_name) > COMMAND_LENGTH ) {
+    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("Could not find the node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  *ncallbacks = target_node->callbacks->size;
+  return 0;
+}
+
+/*! \brief Get the name of a callback on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the callback is located.
+ * \param [in]       index
+ *                   Index of the callback on the specified node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_NULL_COMM, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the callback
+ */
+int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_Callback called but MDI has not been initialized");
+  }
+
+  // find the node
+  int node_index = get_node_index(&nodes, node_name);
+  if ( node_index == -1 ) {
+    mdi_error("MDI_Get_Command could not find the requested node");
+  }
+  node* target_node = vector_get(&nodes, node_index);
+
+  if ( target_node->callbacks->size <= index ) {
+    mdi_error("MDI_Get_Command failed because the command does not exist");
+  }
+
+  char* target_callback = vector_get( target_node->callbacks, index );
+  strcpy(name, target_callback);
+  return 0;
 }
