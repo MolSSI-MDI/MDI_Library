@@ -91,6 +91,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a75ffb2ad4233613bd0c97d40b1c68611">vector_get</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
 <tr class="memdesc:a75ffb2ad4233613bd0c97d40b1c68611"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to an element of a vector.  <a href="#a75ffb2ad4233613bd0c97d40b1c68611">More...</a><br /></td></tr>
 <tr class="separator:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a415a91f77e4336ff2ad6facf61a8f199"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a415a91f77e4336ff2ad6facf61a8f199">get_node_index</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, const char *node_name)</td></tr>
+<tr class="memdesc:a415a91f77e4336ff2ad6facf61a8f199"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the index of a node within a vector of nodes.  <a href="#a415a91f77e4336ff2ad6facf61a8f199">More...</a><br /></td></tr>
+<tr class="separator:a415a91f77e4336ff2ad6facf61a8f199"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada787d01c622249d3bf5b2d68e7243d7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ada787d01c622249d3bf5b2d68e7243d7">get_command_index</a> (<a class="el" href="structnode__struct.html">node</a> *n, const char *command_name)</td></tr>
+<tr class="memdesc:ada787d01c622249d3bf5b2d68e7243d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the index of a command within a node.  <a href="#ada787d01c622249d3bf5b2d68e7243d7">More...</a><br /></td></tr>
+<tr class="separator:ada787d01c622249d3bf5b2d68e7243d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62da6acd5dbe977614e689e6000a3b18"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a62da6acd5dbe977614e689e6000a3b18">get_callback_index</a> (<a class="el" href="structnode__struct.html">node</a> *n, const char *callback_name)</td></tr>
+<tr class="memdesc:a62da6acd5dbe977614e689e6000a3b18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the index of a callback within a node.  <a href="#a62da6acd5dbe977614e689e6000a3b18">More...</a><br /></td></tr>
+<tr class="separator:a62da6acd5dbe977614e689e6000a3b18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a10ceefc902b8eb71e2383d7ac95de2c7">mdi_error</a> (const char *message)</td></tr>
 <tr class="memdesc:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message and exit.  <a href="#a10ceefc902b8eb71e2383d7ac95de2c7">More...</a><br /></td></tr>
 <tr class="separator:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,10 +114,125 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 <a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#aae895626c3da244edb20b7ffcca7d05f">communicators</a></td></tr>
 <tr class="memdesc:aae895626c3da244edb20b7ffcca7d05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all MDI communicators. <br /></td></tr>
 <tr class="separator:aae895626c3da244edb20b7ffcca7d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02d49bc23a9b025e018ff7698670cac3"><td class="memItemLeft" align="right" valign="top"><a id="a02d49bc23a9b025e018ff7698670cac3"></a>
+<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a02d49bc23a9b025e018ff7698670cac3">nodes</a></td></tr>
+<tr class="memdesc:a02d49bc23a9b025e018ff7698670cac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all nodes supported by this code. <br /></td></tr>
+<tr class="separator:a02d49bc23a9b025e018ff7698670cac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Global structures used by MDI. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a62da6acd5dbe977614e689e6000a3b18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62da6acd5dbe977614e689e6000a3b18">&#9670;&nbsp;</a></span>get_callback_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int get_callback_index </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structnode__struct.html">node</a> *&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>callback_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine the index of a callback within a node. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node</td><td>Pointer to the node </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">callback_name</td><td>Name of the callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ada787d01c622249d3bf5b2d68e7243d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada787d01c622249d3bf5b2d68e7243d7">&#9670;&nbsp;</a></span>get_command_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int get_command_index </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structnode__struct.html">node</a> *&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>command_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine the index of a command within a node. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node</td><td>Pointer to the node </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">command_name</td><td>Name of the command </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a415a91f77e4336ff2ad6facf61a8f199"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a415a91f77e4336ff2ad6facf61a8f199">&#9670;&nbsp;</a></span>get_node_index()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int get_node_index </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>node_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine the index of a node within a vector of nodes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a10ceefc902b8eb71e2383d7ac95de2c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a10ceefc902b8eb71e2383d7ac95de2c7">&#9670;&nbsp;</a></span>mdi_error()</h2>
 

@@ -18,7 +18,7 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 \item 
 int \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init}} (const char $\ast$options, void $\ast$world\+\_\+comm)
 \begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
-M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a570557fdd42049c5e285faf546037531}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator}} ()
+M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator}} (M\+D\+I\+\_\+\+Comm $\ast$comm)
 \begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Send data through the M\+DI connection. \end{DoxyCompactList}\item 
@@ -28,8 +28,8 @@ int \mbox{\hyperlink{mdi_8c_a77e579331a36c3f0eb7f7ff9668e789d}{M\+D\+I\+\_\+\+Se
 \begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{M\+D\+I\+\_\+\+Recv\+\_\+\+Command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
-double \mbox{\hyperlink{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}} (char $\ast$in\+\_\+unit, char $\ast$out\+\_\+unit)
-\begin{DoxyCompactList}\small\item\em Return a conversion factor between two units. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_aa1ccf61d45e842b50d72084735cb984a}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}} (const char $\ast$in\+\_\+unit, const char $\ast$out\+\_\+unit, double $\ast$conv)
+\begin{DoxyCompactList}\small\item\em Determine the conversion factor between two units. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a0accde4a79728e8eaab73632daba3c15}{M\+D\+I\+\_\+\+Get\+\_\+\+M\+P\+I\+\_\+\+Code\+\_\+\+Rank}} ()
 \begin{DoxyCompactList}\small\item\em Return order of this code within all codes represented in M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}{M\+D\+I\+\_\+\+Set\+\_\+\+M\+P\+I\+\_\+\+Intra\+\_\+\+Rank}} (int rank)
@@ -37,7 +37,31 @@ void \mbox{\hyperlink{mdi_8c_a6290edc0924c7f9375e4cb9e0c7a7744}{M\+D\+I\+\_\+\+S
 void \mbox{\hyperlink{mdi_8c_a8d6c16394da02c29977001487ce109f2}{M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Size}} (int world\+\_\+size\+\_\+in)
 \begin{DoxyCompactList}\small\item\em Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi_8c_a4b95094e7410c4d58739245172019100}{M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Rank}} (int world\+\_\+rank\+\_\+in)
-\begin{DoxyCompactList}\small\item\em Set the rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Set the rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node}} (const char $\ast$node\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_aeddcd7109a1206ce89a187960bfb3069}{M\+D\+I\+\_\+\+Check\+\_\+\+Node\+\_\+\+Exists}} (const char $\ast$node\+\_\+name, M\+D\+I\+\_\+\+Comm comm, int $\ast$flag)
+\begin{DoxyCompactList}\small\item\em Check whether a node is supported on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_aa5988eb94d4e447720c3728f2ce1e310}{M\+D\+I\+\_\+\+Get\+\_\+\+N\+Nodes}} (M\+D\+I\+\_\+\+Comm comm, int $\ast$nnodes)
+\begin{DoxyCompactList}\small\item\em Get the number of nodes on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a45bec162cf811d5f6411abd143e26af4}{M\+D\+I\+\_\+\+Get\+\_\+\+Node}} (int index, M\+D\+I\+\_\+\+Comm comm, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em Get the name of a node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command}} (const char $\ast$node\+\_\+name, const char $\ast$command\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a command on a specified node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a013856347b9026a7eb01e7803b3dc9b5}{M\+D\+I\+\_\+\+Check\+\_\+\+Command\+\_\+\+Exists}} (const char $\ast$node\+\_\+name, const char $\ast$command\+\_\+name, M\+D\+I\+\_\+\+Comm comm, int $\ast$flag)
+\begin{DoxyCompactList}\small\item\em Check whether a command is supported on specified node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a82ee6d49380e2c24428aa6e5447c4567}{M\+D\+I\+\_\+\+Get\+\_\+\+N\+Commands}} (const char $\ast$node\+\_\+name, M\+D\+I\+\_\+\+Comm comm, int $\ast$ncommands)
+\begin{DoxyCompactList}\small\item\em Get the number of commands supported for a specified node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a632b49a3e745b7b381b60de530699298}{M\+D\+I\+\_\+\+Get\+\_\+\+Command}} (const char $\ast$node\+\_\+name, int index, M\+D\+I\+\_\+\+Comm comm, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em Get the name of a command on a specified node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a528561da9c075413ed1cda7cef73ff66}{M\+D\+I\+\_\+\+Register\+\_\+\+Callback}} (const char $\ast$node\+\_\+name, const char $\ast$callback\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a callback on a specified node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}{M\+D\+I\+\_\+\+Check\+\_\+\+Callback\+\_\+\+Exists}} (const char $\ast$node\+\_\+name, const char $\ast$callback\+\_\+name, M\+D\+I\+\_\+\+Comm comm, int $\ast$flag)
+\begin{DoxyCompactList}\small\item\em Check whether a callback exists on specified node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}{M\+D\+I\+\_\+\+Get\+\_\+\+N\+Callbacks}} (const char $\ast$node\+\_\+name, M\+D\+I\+\_\+\+Comm comm, int $\ast$ncallbacks)
+\begin{DoxyCompactList}\small\item\em Get the number of callbacks on a specified node on a specified engine. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_acbbead15b88661810954314a1e27d456}{M\+D\+I\+\_\+\+Get\+\_\+\+Callback}} (const char $\ast$node\+\_\+name, int index, M\+D\+I\+\_\+\+Comm comm, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em Get the name of a callback on a specified node on a specified engine. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -121,27 +145,94 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{mdi_8c_a570557fdd42049c5e285faf546037531}\label{mdi_8c_a570557fdd42049c5e285faf546037531}} 
+\mbox{\Hypertarget{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}\label{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}} 
 \index{mdi.c@{mdi.c}!MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}}
 \index{MDI\_Accept\_Communicator@{MDI\_Accept\_Communicator}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Accept\_Communicator()}{MDI\_Accept\_Communicator()}}
-{\footnotesize\ttfamily M\+D\+I\+\_\+\+Comm M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily M\+D\+I\+\_\+\+Comm M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm $\ast$}]{comm }\end{DoxyParamCaption})}
 
 
 
 Accept a new M\+DI communicator. 
 
-The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}\label{mdi_8c_a886c1af1124f55d869a6f2b80a68c5a7}} 
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}\label{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}} 
+\index{mdi.c@{mdi.c}!MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}}
+\index{MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Check\_Callback\_Exists()}{MDI\_Check\_Callback\_Exists()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Check\+\_\+\+Callback\+\_\+\+Exists (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{callback\+\_\+name,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{flag }\end{DoxyParamCaption})}
+
+
+
+Check whether a callback exists on specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the callbacks\textquotesingle{}s node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the callback. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the callback is supported and 0 otherwise. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a013856347b9026a7eb01e7803b3dc9b5}\label{mdi_8c_a013856347b9026a7eb01e7803b3dc9b5}} 
+\index{mdi.c@{mdi.c}!MDI\_Check\_Command\_Exists@{MDI\_Check\_Command\_Exists}}
+\index{MDI\_Check\_Command\_Exists@{MDI\_Check\_Command\_Exists}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Check\_Command\_Exists()}{MDI\_Check\_Command\_Exists()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Check\+\_\+\+Command\+\_\+\+Exists (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{command\+\_\+name,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{flag }\end{DoxyParamCaption})}
+
+
+
+Check whether a command is supported on specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the command\textquotesingle{}s node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the command. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the command is supported and 0 otherwise. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_aeddcd7109a1206ce89a187960bfb3069}\label{mdi_8c_aeddcd7109a1206ce89a187960bfb3069}} 
+\index{mdi.c@{mdi.c}!MDI\_Check\_Node\_Exists@{MDI\_Check\_Node\_Exists}}
+\index{MDI\_Check\_Node\_Exists@{MDI\_Check\_Node\_Exists}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Check\_Node\_Exists()}{MDI\_Check\_Node\_Exists()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Check\+\_\+\+Node\+\_\+\+Exists (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{flag }\end{DoxyParamCaption})}
+
+
+
+Check whether a node is supported on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the node is supported and 0 otherwise. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_aa1ccf61d45e842b50d72084735cb984a}\label{mdi_8c_aa1ccf61d45e842b50d72084735cb984a}} 
 \index{mdi.c@{mdi.c}!MDI\_Conversion\_Factor@{MDI\_Conversion\_Factor}}
 \index{MDI\_Conversion\_Factor@{MDI\_Conversion\_Factor}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Conversion\_Factor()}{MDI\_Conversion\_Factor()}}
-{\footnotesize\ttfamily double M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor (\begin{DoxyParamCaption}\item[{char $\ast$}]{in\+\_\+unit,  }\item[{char $\ast$}]{out\+\_\+unit }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor (\begin{DoxyParamCaption}\item[{const char $\ast$}]{in\+\_\+unit,  }\item[{const char $\ast$}]{out\+\_\+unit,  }\item[{double $\ast$}]{conv }\end{DoxyParamCaption})}
 
 
 
-Return a conversion factor between two units. 
+Determine the conversion factor between two units. 
 
-The function returns the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}. The function requires that {\ttfamily in\+\_\+unit} and {\ttfamily out\+\_\+unit} be members of the same category of unit ({\itshape i.\+e}. charge, energy, force, etc.). For example, calling {\ttfamily M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}({\ttfamily \char`\"{}kilojoule\+\_\+per\+\_\+mol\char`\"{}},{\ttfamily \char`\"{}atomic\+\_\+unit\+\_\+of\+\_\+energy\char`\"{}}) will return the conversion factor from kilojoule/mol to hartrees.
+The function determines the conversion factor from {\ttfamily in\+\_\+unit} to {\ttfamily out\+\_\+unit}. The function requires that {\ttfamily in\+\_\+unit} and {\ttfamily out\+\_\+unit} be members of the same category of unit ({\itshape i.\+e}. charge, energy, force, etc.). For example, calling {\ttfamily M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor}({\ttfamily \char`\"{}kilojoule\+\_\+per\+\_\+mol\char`\"{}},{\ttfamily \char`\"{}atomic\+\_\+unit\+\_\+of\+\_\+energy\char`\"{}}) will return the conversion factor from kilojoule/mol to hartrees. The function returns {\ttfamily 0} on a success.
 
 All quantities communicated through M\+DI must be represented using atomic units. When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-\/consistent across codes. Use of conversion factors that are not self-\/consistent can result in numerical instabilities.
 
@@ -206,6 +297,54 @@ All conversion factors were acquired from the \href{https://physics.nist.gov/cuu
 \hline
 \mbox{\texttt{ in}}  & {\em out\+\_\+unit} & Name of the unit to convert to. \\
 \hline
+\mbox{\texttt{ out}}  & {\em conv} & Conversion factor from in\+\_\+unit to out\+\_\+unit \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_acbbead15b88661810954314a1e27d456}\label{mdi_8c_acbbead15b88661810954314a1e27d456}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_Callback@{MDI\_Get\_Callback}}
+\index{MDI\_Get\_Callback@{MDI\_Get\_Callback}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_Callback()}{MDI\_Get\_Callback()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+Callback (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{int}]{index,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+Get the name of a callback on a specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the callback is located. \\
+\hline
+\mbox{\texttt{ in}}  & {\em index} & Index of the callback on the specified node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em name} & On return, the name of the callback \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a632b49a3e745b7b381b60de530699298}\label{mdi_8c_a632b49a3e745b7b381b60de530699298}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_Command@{MDI\_Get\_Command}}
+\index{MDI\_Get\_Command@{MDI\_Get\_Command}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_Command()}{MDI\_Get\_Command()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+Command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{int}]{index,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+Get the name of a command on a specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the command is located. \\
+\hline
+\mbox{\texttt{ in}}  & {\em index} & Index of the command on the specified node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em name} & On return, the name of the command \\
+\hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi_8c_a0accde4a79728e8eaab73632daba3c15}\label{mdi_8c_a0accde4a79728e8eaab73632daba3c15}} 
 \index{mdi.c@{mdi.c}!MDI\_Get\_MPI\_Code\_Rank@{MDI\_Get\_MPI\_Code\_Rank}}
@@ -217,7 +356,89 @@ All conversion factors were acquired from the \href{https://physics.nist.gov/cuu
 
 Return order of this code within all codes represented in M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. 
 
-When using the M\+PI communication method, all processes across all codes are spawned as part of the same M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. This funciton returns the order of the code associated with the calling process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \mbox{\Hypertarget{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}\label{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}} 
+When using the M\+PI communication method, all processes across all codes are spawned as part of the same M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. This funciton returns the order of the code associated with the calling process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \mbox{\Hypertarget{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}\label{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_NCallbacks@{MDI\_Get\_NCallbacks}}
+\index{MDI\_Get\_NCallbacks@{MDI\_Get\_NCallbacks}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_NCallbacks()}{MDI\_Get\_NCallbacks()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+N\+Callbacks (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{ncallbacks }\end{DoxyParamCaption})}
+
+
+
+Get the number of callbacks on a specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em ncallbacks} & On return, the number of callbacks on the specified node on the specified engine. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a82ee6d49380e2c24428aa6e5447c4567}\label{mdi_8c_a82ee6d49380e2c24428aa6e5447c4567}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_NCommands@{MDI\_Get\_NCommands}}
+\index{MDI\_Get\_NCommands@{MDI\_Get\_NCommands}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_NCommands()}{MDI\_Get\_NCommands()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+N\+Commands (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{ncommands }\end{DoxyParamCaption})}
+
+
+
+Get the number of commands supported for a specified node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em nnodes} & On return, the number of commands supported on the specified engine on the specified node. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_aa5988eb94d4e447720c3728f2ce1e310}\label{mdi_8c_aa5988eb94d4e447720c3728f2ce1e310}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_NNodes@{MDI\_Get\_NNodes}}
+\index{MDI\_Get\_NNodes@{MDI\_Get\_NNodes}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_NNodes()}{MDI\_Get\_NNodes()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+N\+Nodes (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{nnodes }\end{DoxyParamCaption})}
+
+
+
+Get the number of nodes on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em nnodes} & On return, the number of nodes supported by the engine. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a45bec162cf811d5f6411abd143e26af4}\label{mdi_8c_a45bec162cf811d5f6411abd143e26af4}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_Node@{MDI\_Get\_Node}}
+\index{MDI\_Get\_Node@{MDI\_Get\_Node}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_Node()}{MDI\_Get\_Node()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+\+Node (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+Get the name of a node on a specified engine. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em index} & Index of the node on the specified engine. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\hline
+\mbox{\texttt{ out}}  & {\em name} & On return, the name of the node \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}\label{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}} 
 \index{mdi.c@{mdi.c}!MDI\_Init@{MDI\_Init}}
 \index{MDI\_Init@{MDI\_Init}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Init()}{MDI\_Init()}}
@@ -276,6 +497,61 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a528561da9c075413ed1cda7cef73ff66}\label{mdi_8c_a528561da9c075413ed1cda7cef73ff66}} 
+\index{mdi.c@{mdi.c}!MDI\_Register\_Callback@{MDI\_Register\_Callback}}
+\index{MDI\_Register\_Callback@{MDI\_Register\_Callback}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Register\_Callback()}{MDI\_Register\_Callback()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Register\+\_\+\+Callback (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{callback\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a callback on a specified node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the callback will be registered. \\
+\hline
+\mbox{\texttt{ in}}  & {\em callback\+\_\+name} & Name of the callback. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}\label{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}} 
+\index{mdi.c@{mdi.c}!MDI\_Register\_Command@{MDI\_Register\_Command}}
+\index{MDI\_Register\_Command@{MDI\_Register\_Command}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Register\_Command()}{MDI\_Register\_Command()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Register\+\_\+\+Command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{command\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a command on a specified node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the command will be registered. \\
+\hline
+\mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the command. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}\label{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}} 
+\index{mdi.c@{mdi.c}!MDI\_Register\_Node@{MDI\_Register\_Node}}
+\index{MDI\_Register\_Node@{MDI\_Register\_Node}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Register\_Node()}{MDI\_Register\_Node()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Register\+\_\+\+Node (\begin{DoxyParamCaption}\item[{const char $\ast$}]{node\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}\label{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}} 

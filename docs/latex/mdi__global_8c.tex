@@ -18,6 +18,12 @@ int \mbox{\hyperlink{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}{vector\+\
 \begin{DoxyCompactList}\small\item\em Append a new element to the end of the vector. \end{DoxyCompactList}\item 
 void $\ast$ \mbox{\hyperlink{mdi__global_8c_a75ffb2ad4233613bd0c97d40b1c68611}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
 \begin{DoxyCompactList}\small\item\em Return a pointer to an element of a vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_a415a91f77e4336ff2ad6facf61a8f199}{get\+\_\+node\+\_\+index}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, const char $\ast$node\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Determine the index of a node within a vector of nodes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_ada787d01c622249d3bf5b2d68e7243d7}{get\+\_\+command\+\_\+index}} (\mbox{\hyperlink{structnode__struct}{node}} $\ast$n, const char $\ast$command\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Determine the index of a command within a node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_a62da6acd5dbe977614e689e6000a3b18}{get\+\_\+callback\+\_\+index}} (\mbox{\hyperlink{structnode__struct}{node}} $\ast$n, const char $\ast$callback\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Determine the index of a callback within a node. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi__global_8c_a10ceefc902b8eb71e2383d7ac95de2c7}{mdi\+\_\+error}} (const char $\ast$message)
 \begin{DoxyCompactList}\small\item\em Print error message and exit. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
@@ -28,7 +34,10 @@ int \mbox{\hyperlink{mdi__global_8c_a48c9d97f7b8e32d98dc437aae365e8e7}{ipi\+\_\+
 \begin{DoxyCompactList}\small\item\em Whether M\+DI is running in i-\/\+PI compatibility mode. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}\label{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}} 
 \mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8c_aae895626c3da244edb20b7ffcca7d05f}{communicators}}
-\begin{DoxyCompactList}\small\item\em Vector containing all M\+DI communicators. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Vector containing all M\+DI communicators. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a02d49bc23a9b025e018ff7698670cac3}\label{mdi__global_8c_a02d49bc23a9b025e018ff7698670cac3}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8c_a02d49bc23a9b025e018ff7698670cac3}{nodes}}
+\begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -37,6 +46,57 @@ Global structures used by M\+DI.
 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__global_8c_a62da6acd5dbe977614e689e6000a3b18}\label{mdi__global_8c_a62da6acd5dbe977614e689e6000a3b18}} 
+\index{mdi\_global.c@{mdi\_global.c}!get\_callback\_index@{get\_callback\_index}}
+\index{get\_callback\_index@{get\_callback\_index}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{get\_callback\_index()}{get\_callback\_index()}}
+{\footnotesize\ttfamily int get\+\_\+callback\+\_\+index (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__struct}{node}} $\ast$}]{n,  }\item[{const char $\ast$}]{callback\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Determine the index of a callback within a node. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Pointer to the node \\
+\hline
+\mbox{\texttt{ in}}  & {\em callback\+\_\+name} & Name of the callback \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_ada787d01c622249d3bf5b2d68e7243d7}\label{mdi__global_8c_ada787d01c622249d3bf5b2d68e7243d7}} 
+\index{mdi\_global.c@{mdi\_global.c}!get\_command\_index@{get\_command\_index}}
+\index{get\_command\_index@{get\_command\_index}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{get\_command\_index()}{get\_command\_index()}}
+{\footnotesize\ttfamily int get\+\_\+command\+\_\+index (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structnode__struct}{node}} $\ast$}]{n,  }\item[{const char $\ast$}]{command\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Determine the index of a command within a node. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node} & Pointer to the node \\
+\hline
+\mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the command \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_a415a91f77e4336ff2ad6facf61a8f199}\label{mdi__global_8c_a415a91f77e4336ff2ad6facf61a8f199}} 
+\index{mdi\_global.c@{mdi\_global.c}!get\_node\_index@{get\_node\_index}}
+\index{get\_node\_index@{get\_node\_index}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{get\_node\_index()}{get\_node\_index()}}
+{\footnotesize\ttfamily int get\+\_\+node\+\_\+index (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v,  }\item[{const char $\ast$}]{node\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Determine the index of a node within a vector of nodes. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector \\
+\hline
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{mdi__global_8c_a10ceefc902b8eb71e2383d7ac95de2c7}\label{mdi__global_8c_a10ceefc902b8eb71e2383d7ac95de2c7}} 
 \index{mdi\_global.c@{mdi\_global.c}!mdi\_error@{mdi\_error}}
 \index{mdi\_error@{mdi\_error}!mdi\_global.c@{mdi\_global.c}}

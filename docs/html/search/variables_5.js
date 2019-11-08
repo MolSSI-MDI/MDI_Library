@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['tcp_5fsocket',['tcp_socket',['../mdi__tcp_8c.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c']]]
+  ['size',['size',['../structdynamic__array__struct.html#a4c9b2cb6c298d0c5e63458e47ed7fb8e',1,'dynamic_array_struct']]],
+  ['sockfd',['sockfd',['../structcommunicator__struct.html#a9f010a22911cb8a55767c054b0596030',1,'communicator_struct']]],
+  ['stride',['stride',['../structdynamic__array__struct.html#a954737a27d8650b96e8a7167545fc87c',1,'dynamic_array_struct']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['world_5frank',['world_rank',['../mdi__mpi_8c.html#a0be0ed3102aab1d72782301d75cf570b',1,'world_rank():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#a0be0ed3102aab1d72782301d75cf570b',1,'world_rank():&#160;mdi_mpi.c']]],
-  ['world_5fsize',['world_size',['../mdi__mpi_8c.html#ab8411355a7d80016be6edcce3437b978',1,'world_size():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#ab8411355a7d80016be6edcce3437b978',1,'world_size():&#160;mdi_mpi.c']]]
+  ['tcp_5fsocket',['tcp_socket',['../mdi__tcp_8c.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c']]]
 ];
