@@ -8,6 +8,9 @@
 
 #include <mpi.h>
 
+#define COMMAND_LENGTH 12
+#define NAME_LENGTH 12
+
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator (either MDI_TCP or MDI_MPI) */
   int method;
@@ -34,7 +37,17 @@ typedef struct dynamic_array_struct {
   size_t size; //number of elements actually stored
 } vector;
 
+typedef struct node_struct {
+  char name[COMMAND_LENGTH];
+  vector* commands;
+  vector* callbacks;
+} node;
+
+/*! \brief Vector containing all MDI communicators */
 extern vector communicators;
+
+/*! \brief Vector containing all nodes supported by this code */
+extern vector nodes;
 
 /*! \brief Whether MDI is running in i-PI compatibility mode */
 extern int ipi_compatibility;
@@ -43,6 +56,10 @@ extern int ipi_compatibility;
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
 void* vector_get(vector* v, int index);
+
+int get_node_index(vector* v, const char* node_name);
+int get_command_index(node* n, const char* command_name);
+int get_callback_index(node* n, const char* callback_name);
 
 void mdi_error(const char* message);
 

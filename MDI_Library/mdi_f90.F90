@@ -58,8 +58,9 @@
        INTEGER(KIND=C_INT)                      :: MDI_Init_
      END FUNCTION MDI_Init_
 
-     FUNCTION MDI_Accept_Communicator_() bind(c, name="MDI_Accept_Communicator")
+     FUNCTION MDI_Accept_Communicator_(comm) bind(c, name="MDI_Accept_Communicator")
        USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: comm
        INTEGER(KIND=C_INT)                      :: MDI_Accept_Communicator_
      END FUNCTION MDI_Accept_Communicator_
 
@@ -91,10 +92,10 @@
        INTEGER(KIND=C_INT)                      :: MDI_Recv_Command_
      END FUNCTION MDI_Recv_Command_
 
-     FUNCTION MDI_Conversion_Factor_(in_unit, out_unit) bind(c, name="MDI_Conversion_Factor")
+     FUNCTION MDI_Conversion_Factor_(in_unit, out_unit, conv) bind(c, name="MDI_Conversion_Factor")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: in_unit, out_unit
-       REAL(KIND=C_DOUBLE)                      :: MDI_Conversion_Factor_
+       TYPE(C_PTR), VALUE                       :: in_unit, out_unit, conv
+       INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
   END INTERFACE
@@ -116,15 +117,19 @@
       ierr = MDI_Init_( TRIM(foptions)//" _language Fortran"//c_null_char, fworld_comm )
     END SUBROUTINE MDI_Init
 
-    SUBROUTINE MDI_Accept_Communicator(communicator)
+    SUBROUTINE MDI_Accept_Communicator(communicator, ierr)
       IMPLICIT NONE
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Accept_Communicator
 #endif
       INTEGER, INTENT(OUT) :: communicator
+      INTEGER, INTENT(OUT) :: ierr
 
-      communicator = MDI_Accept_Communicator_()
+      INTEGER(KIND=C_INT), TARGET              :: cbuf
+
+      ierr = MDI_Accept_Communicator_(c_loc(cbuf))
+      communicator = cbuf
     END SUBROUTINE MDI_Accept_Communicator
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
@@ -343,7 +348,7 @@
       ENDDO
     END SUBROUTINE MDI_Recv_Command
 
-    SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor)
+    SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor, ierr)
       USE ISO_C_BINDING
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Conversion_Factor
@@ -351,10 +356,12 @@
 #endif
       CHARACTER(LEN=*), INTENT(IN)             :: fin_unit, fout_unit
       DOUBLE PRECISION, INTENT(OUT)            :: factor
+      INTEGER, INTENT(OUT)                     :: ierr
 
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cin_unit(LEN_TRIM(fin_unit)+1)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cout_unit(LEN_TRIM(fout_unit)+1)
+      REAL(KIND=C_DOUBLE), TARGET              :: cfactor
 
       DO i = 1, LEN_TRIM(fin_unit)
          cin_unit(i) = fin_unit(i:i)
@@ -366,7 +373,8 @@
       END DO
       cout_unit( LEN_TRIM(fout_unit) + 1 ) = c_null_char
 
-      factor = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit) )
+      ierr = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit), c_loc(cfactor) )
+      factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
 
   END MODULE

@@ -145,14 +145,18 @@ def MDI_Get_Intra_Code_MPI_Comm():
         return intra_code_comm
 
 # MDI_Accept_Communicator
-mdi.MDI_Accept_Communicator.argtypes = []
+mdi.MDI_Accept_Communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Accept_Communicator.restype = ctypes.c_int
 def MDI_Accept_Communicator():
     global mdi_manager
     if mdi_manager:
         return mdi_manager.Accept_Communicator()
     else:
-        return mdi.MDI_Accept_Communicator()
+        comm = ctypes.c_int()
+        ret = mdi.MDI_Accept_Communicator(ctypes.byref(comm))
+        if ret != 0:
+            raise Exception("MDI Error: MDI_Accept_Communicator failed")
+        return comm.value
 
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
@@ -305,9 +309,13 @@ def MDI_Recv_Command(arg2):
     return presult
 
 # MDI_Conversion_Factor
-mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Conversion_Factor.restype = ctypes.c_double
+mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_double)]
+mdi.MDI_Conversion_Factor.restype = ctypes.c_int
 def MDI_Conversion_Factor(arg1, arg2):
     in_unit = arg1.encode('utf-8')
     out_unit = arg2.encode('utf-8')
-    return mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit))
+    conversion = ctypes.c_double()
+    ret = mdi.MDI_Conversion_Factor(ctypes.c_char_p(in_unit), ctypes.c_char_p(out_unit), ctypes.byref(conversion))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Conversion_Factor failed")
+    return conversion.value
