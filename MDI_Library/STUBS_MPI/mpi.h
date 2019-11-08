@@ -16,6 +16,10 @@ typedef int MPI_Fint;
 #define MPI_DOUBLE 4
 #define MPI_CHAR 5
 
+int MPI_Init( int *argc, char ***argv) { return 0;};
+int MPI_Finalize(void) { return 0; };
+int MPI_Get_processor_name( char *name, int *resultlen ) {return 0;};
+
 static int MPI_Comm_rank( MPI_Comm comm, int *rank ) { return 0; };
 static int MPI_Comm_size( MPI_Comm comm, int *size ) { return 0; };
 
