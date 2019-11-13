@@ -149,6 +149,9 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
 	new_comm.method = MDI_MPI;
 	new_comm.mpi_comm = new_mpi_comm;
 	new_comm.mpi_rank = key;
+	vector* node_vec = malloc(sizeof(vector));
+	vector_init(node_vec, sizeof(node));
+	new_comm.nodes = node_vec;
 	vector_push_back( &communicators, &new_comm );
 
 	// communicate the version number between codes
