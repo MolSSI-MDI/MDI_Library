@@ -873,7 +873,8 @@ int get_node_info(MDI_Comm comm) {
   MDI_Recv(&nnodes, 1, MDI_INT, comm);
 
   // get the nodes
-  char* node_list = malloc( nnodes * stride * sizeof(char) );
+  size_t list_size = nnodes * stride * sizeof(char);
+  char* node_list = malloc( list_size );
   MDI_Send_Command("<NODES",comm);
   MDI_Recv(node_list, nnodes * stride, MDI_CHAR, comm);
   printf("DRIVER NODE_LIST: %s\n",node_list);
@@ -897,18 +898,18 @@ int get_node_info(MDI_Comm comm) {
     }
 
     // construct the name of the node
-    char* name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( name, name_start, name_length );
+    char* node_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+    strncpy( node_name, name_start, name_length );
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
-      name[ichar] = '\0';
+      node_name[ichar] = '\0';
     }
-    printf("DRIVER NODE: %d %d %s\n",inode,name_length,name);
+    printf("DRIVER NODE: %d %d %s\n",inode,name_length,node_name);
 
     // register this node
-    register_node(this->nodes, name);
+    register_node(this->nodes, node_name);
 
     // free the memory for the node name
-    free( name );
+    free( node_name );
   }
 
   // get the number of commands
@@ -941,20 +942,20 @@ int get_node_info(MDI_Comm comm) {
     }
 
     // construct the name
-    char* name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( name, name_start, name_length );
+    char* command_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+    strncpy( command_name, name_start, name_length );
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
-      name[ichar] = '\0';
+      command_name[ichar] = '\0';
     }
-    printf("DRIVER COMMAND: %d %d %s\n",inode,name_length,name);
+    printf("DRIVER COMMAND: %d %d %s\n",inode,name_length,command_name);
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      strcpy( current_node, name );
+      strcpy( current_node, command_name );
     }
     else { // command
       // register this command
-      register_command(this->nodes, current_node, name);
+      register_command(this->nodes, current_node, command_name);
     }
 
     // determine whether the next name is for a node or a command
@@ -969,7 +970,7 @@ int get_node_info(MDI_Comm comm) {
     }
 
     // free the memory for the node name
-    free( name );
+    free( command_name );
   }
 
 
@@ -1003,20 +1004,20 @@ int get_node_info(MDI_Comm comm) {
     }
 
     // construct the name
-    char* name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( name, name_start, name_length );
+    char* callback_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+    strncpy( callback_name, name_start, name_length );
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
-      name[ichar] = '\0';
+      callback_name[ichar] = '\0';
     }
-    printf("DRIVER CALLBACK: %d %d %s\n",inode,name_length,name);
+    printf("DRIVER CALLBACK: %d %d %s\n",inode,name_length,callback_name);
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      strcpy( current_node, name );
+      strcpy( current_node, callback_name );
     }
     else { // callback
       // register this callback
-      register_callback(this->nodes, current_node, name);
+      register_callback(this->nodes, current_node, callback_name);
     }
 
     // determine whether the next name is for a node or a callback
@@ -1031,7 +1032,7 @@ int get_node_info(MDI_Comm comm) {
     }
 
     // free the memory for the node name
-    free( name );
+    free( callback_name );
   }
   
   // free the memory
