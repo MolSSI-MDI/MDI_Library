@@ -863,12 +863,12 @@ int send_nnodes(MDI_Comm comm) {
  */
 int get_node_info(MDI_Comm comm) {
   printf("~~~Getting node information\n");
-  int stride = MDI_COMMAND_LENGTH + 1;
+  size_t stride = MDI_COMMAND_LENGTH + 1;
   communicator* this = vector_get(&communicators, comm-1);
   char* current_node = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
 
   // get the number of nodes
-  int nnodes;
+  size_t nnodes;
   MDI_Send_Command("<NNODES",comm);
   MDI_Recv(&nnodes, 1, MDI_INT, comm);
 
