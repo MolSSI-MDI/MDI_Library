@@ -11,6 +11,17 @@
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
 
+typedef struct dynamic_array_struct {
+  /*! \brief The elements stored by this vector */
+  unsigned char* data;
+  /*! \brief Size of each element */
+  size_t stride;
+  /*! \brief Total number of elements that can be stored by this vector */
+  size_t capacity;
+  /*! \brief Number of elements actually stored */
+  size_t size; //number of elements actually stored
+} vector;
+
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator (either MDI_TCP or MDI_MPI) */
   int method;
@@ -24,18 +35,9 @@ typedef struct communicator_struct {
   int mpi_rank;
   /*! \brief The MDI version of the connected code */
   double mdi_version;
+  /*! \brief The nodes supported by the connected code */
+  vector* nodes;
 } communicator;
-
-typedef struct dynamic_array_struct {
-  /*! \brief The elements stored by this vector */
-  unsigned char* data;
-  /*! \brief Size of each element */
-  size_t stride;
-  /*! \brief Total number of elements that can be stored by this vector */
-  size_t capacity;
-  /*! \brief Number of elements actually stored */
-  size_t size; //number of elements actually stored
-} vector;
 
 typedef struct node_struct {
   char name[COMMAND_LENGTH];

@@ -173,6 +173,9 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   communicator new_comm;
   new_comm.method = MDI_TCP;
   new_comm.sockfd = sockfd;
+  vector* node_vec = malloc(sizeof(vector));
+  vector_init(node_vec, sizeof(node));
+  new_comm.nodes = node_vec;
   vector_push_back( &communicators, &new_comm );
 
   // communicate the version number between codes
@@ -200,6 +203,9 @@ int tcp_accept_connection() {
   communicator new_comm;
   new_comm.method = MDI_TCP;
   new_comm.sockfd = connection;
+  vector* node_vec = malloc(sizeof(vector));
+  vector_init(node_vec, sizeof(node));
+  new_comm.nodes = node_vec;
   vector_push_back( &communicators, &new_comm );
 
   // communicate the version number between codes

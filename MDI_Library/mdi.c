@@ -659,28 +659,7 @@ int MDI_Register_Node(const char* node_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
   }
-
-  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
-    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
-  }
-
-  // confirm that this node is not already registered
-  int node_index = get_node_index(&nodes, node_name);
-  if ( node_index != -1 ) {
-    mdi_error("This node is already registered");
-  }
-
-  node new_node;
-  vector* command_vec = malloc(sizeof(vector));
-  vector* callback_vec = malloc(sizeof(vector));
-  vector_init(command_vec, sizeof(char[COMMAND_LENGTH]));
-  vector_init(callback_vec, sizeof(char[COMMAND_LENGTH]));
-  new_node.commands = command_vec;
-  new_node.callbacks = callback_vec;
-  strcpy(new_node.name, node_name);
-  vector_push_back(&nodes, &new_node);
-  return 0;
+  return register_node(&nodes, node_name);
 }
 
 /*! \brief Check whether a node is supported on a specified engine
@@ -705,9 +684,10 @@ int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
   }
+  vector* node_vec = get_node_vector(comm);
 
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     *flag = 0;
   }
@@ -733,7 +713,9 @@ int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
     mdi_error("MDI_Get_NNodes called but MDI has not been initialized");
   }
 
-  *nnodes = nodes.size;
+  vector* node_vec = get_node_vector(comm);
+  *nnodes = node_vec->size;
+
   return 0;
 }
 
@@ -754,8 +736,9 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Node called but MDI has not been initialized");
   }
+  vector* node_vec = get_node_vector(comm);
 
-  node* ret_node = vector_get(&nodes, index);
+  node* ret_node = vector_get(node_vec, index);
   strcpy(name, &ret_node->name[0]);
   return 0;
 }
@@ -774,36 +757,7 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
   }
-
-  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
-    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
-  }
-
-  // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(command_name) > COMMAND_LENGTH ) {
-    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
-  }
-
-  // find the node
-  int node_index = get_node_index(&nodes, node_name);
-  if ( node_index == -1 ) {
-    mdi_error("Attempting to register a command on an unregistered node");
-  }
-  node* target_node = vector_get(&nodes, node_index);
-
-  // confirm that this command is not already registered
-  int command_index = get_command_index(target_node, command_name);
-  if ( command_index != -1 ) {
-    mdi_error("This command is already registered for this node");
-  }
-
-  // register this command
-  char new_command[COMMAND_LENGTH];
-  strcpy(new_command, command_name);
-  vector_push_back( target_node->commands, &new_command );
-
-  return 0;
+  return register_command(&nodes, node_name, command_name);
 }
 
 /*! \brief Check whether a command is supported on specified node on a specified engine
@@ -836,12 +790,14 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
     mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
   }
 
+  vector* node_vec = get_node_vector(comm);
+
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   // find the command
   int command_index = get_command_index(target_node, command_name);
@@ -878,12 +834,14 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
   }
 
+  vector* node_vec = get_node_vector(comm);
+
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   *ncommands = target_node->commands->size;
   return 0;
@@ -908,13 +866,14 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Command called but MDI has not been initialized");
   }
+  vector* node_vec = get_node_vector(comm);
 
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("MDI_Get_Command could not find the requested node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   if ( target_node->commands->size <= index ) {
     mdi_error("MDI_Get_Command failed because the command does not exist");
@@ -939,36 +898,7 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
   }
-
-  // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
-    mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
-  }
-
-  // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(callback_name) > COMMAND_LENGTH ) {
-    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
-  }
-
-  // find the node
-  int node_index = get_node_index(&nodes, node_name);
-  if ( node_index == -1 ) {
-    mdi_error("Attempting to register a callback on an unregistered node");
-  }
-  node* target_node = vector_get(&nodes, node_index);
-
-  // confirm that this callback is not already registered
-  int callback_index = get_callback_index(target_node, callback_name);
-  if ( callback_index != -1 ) {
-    mdi_error("This callback is already registered for this node");
-  }
-
-  // register this callback
-  char new_callback[COMMAND_LENGTH];
-  strcpy(new_callback, callback_name);
-  vector_push_back( target_node->callbacks, &new_callback );
-
-  return 0;
+  return register_callback(&nodes, node_name, callback_name);
 }
 
 /*! \brief Check whether a callback exists on specified node on a specified engine
@@ -1001,12 +931,14 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
     mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
   }
 
+  vector* node_vec = get_node_vector(comm);
+
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   // find the callback
   int callback_index = get_callback_index(target_node, callback_name);
@@ -1043,12 +975,14 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
   }
 
+  vector* node_vec = get_node_vector(comm);
+
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   *ncallbacks = target_node->callbacks->size;
   return 0;
@@ -1074,12 +1008,14 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
     mdi_error("MDI_Get_Callback called but MDI has not been initialized");
   }
 
+  vector* node_vec = get_node_vector(comm);
+
   // find the node
-  int node_index = get_node_index(&nodes, node_name);
+  int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("MDI_Get_Command could not find the requested node");
   }
-  node* target_node = vector_get(&nodes, node_index);
+  node* target_node = vector_get(node_vec, node_index);
 
   if ( target_node->callbacks->size <= index ) {
     mdi_error("MDI_Get_Command failed because the command does not exist");
