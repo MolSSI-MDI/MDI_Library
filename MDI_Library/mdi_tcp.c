@@ -112,6 +112,8 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
 #endif
 
+  code* this_code = vector_get(&codes, current_code);
+
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
 
@@ -176,14 +178,14 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
   new_comm.nodes = node_vec;
-  vector_push_back( &communicators, &new_comm );
+  vector_push_back( this_code->comms, &new_comm );
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    communicator* comm = vector_get(&communicators, communicators.size-1);
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
-    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
+    communicator* comm = vector_get(this_code->comms, this_code->comms->size-1);
+    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, this_code->comms->size);
+    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, this_code->comms->size);
   }
 
   return 0;
@@ -194,6 +196,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
  */
 int tcp_accept_connection() {
   int connection;
+  code* this_code = vector_get(&codes, current_code);
 
   connection = accept(tcp_socket, NULL, NULL);
   if (connection < 0) {
@@ -206,14 +209,14 @@ int tcp_accept_connection() {
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
   new_comm.nodes = node_vec;
-  vector_push_back( &communicators, &new_comm );
+  vector_push_back( this_code->comms, &new_comm );
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    communicator* comm = vector_get(&communicators, communicators.size-1);
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, communicators.size);
-    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, communicators.size);
+    communicator* comm = vector_get(this_code->comms, this_code->comms->size-1);
+    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, this_code->comms->size);
+    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, this_code->comms->size);
   }
 
   return 0;
@@ -234,7 +237,8 @@ int tcp_accept_connection() {
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   int n = 0;
-  communicator* this = vector_get(&communicators, comm-1);
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
   size_t count_t = count;
   size_t total_sent = 0;
 
@@ -280,7 +284,8 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  */
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   size_t n, nr;
-  communicator* this = vector_get(&communicators, comm-1);
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
   size_t count_t = count;
 
   // determine the byte size of the data type being sent

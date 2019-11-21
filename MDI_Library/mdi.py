@@ -49,6 +49,8 @@ MDI_INT_NUMPY = ctypes.c_int.in_dll(mdi, "MDI_INT_NUMPY").value
 MDI_DOUBLE_NUMPY = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE_NUMPY").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
+MDI_LIB = ctypes.c_int.in_dll(mdi, "MDI_LIB").value
+MDI_TEST = ctypes.c_int.in_dll(mdi, "MDI_TEST").value
 MDI_VERSION = ctypes.c_double.in_dll(mdi, "MDI_VERSION").value
 
 # Unit conversions
@@ -69,6 +71,8 @@ MDI_KELVIN_TO_HARTREE = ctypes.c_double.in_dll(mdi, "MDI_KELVIN_TO_HARTREE").val
 intra_code_comm = None
 
 mdi_manager = None
+
+execute_command_func = None
 
 # MDI_Get_MPI_Code_Rank
 mdi.MDI_Get_MPI_Code_Rank.argtypes = []
@@ -251,6 +255,8 @@ def MDI_Recv(arg2, arg3, arg4):
 
         if (arg3 == MDI_DOUBLE_NUMPY):
             arg1 = np.zeros(arg2, dtype='float64')
+        elif (arg3 == MDI_INT_NUMPY):
+            arg1 = np.zeros(arg2, dtype='int32')
         elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR):
             arg_size = ctypes.sizeof(arg_type)
             arg1 = (ctypes.c_char*(arg2*arg_size))()
@@ -319,3 +325,31 @@ def MDI_Conversion_Factor(arg1, arg2):
     if ret != 0:
         raise Exception("MDI Error: MDI_Conversion_Factor failed")
     return conversion.value
+
+def MDI_Execute_Command_py(command, comm):
+    global execute_command_func
+
+    command_cast = ctypes.cast(command, ctypes.POINTER(ctypes.c_char*MDI_COMMAND_LENGTH)).contents
+    command_py = ctypes.cast(command_cast, ctypes.c_char_p).value
+    command_py = command_py.decode('utf-8')
+
+    return execute_command_func(command_py, comm)
+
+# MDI_Set_Command_Func
+# NOTE: Do we need to use WINFUNCTYPE on Windows?
+execute_command_func_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_char), ctypes.c_int)
+MDI_Execute_Command_c = execute_command_func_type( MDI_Execute_Command_py )
+mdi.MDI_Set_Command_Func.argtypes = [execute_command_func_type]
+mdi.MDI_Set_Command_Func.restype = ctypes.c_int
+def MDI_Set_Command_Func(func):
+    global execute_command_func
+
+    # store the generic execute command function for future use
+    execute_command_func = func
+
+    # create a function pointer to MDI_Execute_Command_py
+    #callback_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_char), ctypes.c_int)
+    #cfunc = callback_type( MDI_Execute_Command_py )
+
+    #return mdi.MDI_Set_Command_Func( cfunc )
+    return mdi.MDI_Set_Command_Func( MDI_Execute_Command_c )

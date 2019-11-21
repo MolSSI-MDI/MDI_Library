@@ -8,14 +8,18 @@
 #include <string.h>
 #include "mdi_global.h"
 
-/*! \brief Whether MDI is running in i-PI compatibility mode */
+/*! \brief Vector containing all codes that have been initiailized on this rank
+ * Typically, this will only include a single code, unless the communication method is LIBRARY */
+vector codes;
+
+/*! \brief Index of the active code */
+int current_code = 0;
+
+/*! \brief Flag for whether MDI is running in i-PI compatibility mode */
 int ipi_compatibility = 0;
 
-/*! \brief Vector containing all MDI communicators */
-vector communicators;
-
-/*! \brief Vector containing all nodes supported by this code */
-vector nodes;
+/*! \brief Flag for whether MDI has been previously initialized */
+int is_initialized = 0;
 
 /*! \brief Initialize memory allocation for a vector structure
  *
@@ -137,6 +141,33 @@ int get_callback_index(node* n, const char* callback_name) {
     }
   }
   return callback_index;
+}
+
+/*! \brief Create a new code structure and add it to the list of codes
+ * Returns the index of the new code
+ */
+
+int new_code() {
+  code new_code;
+  new_code.returned_comms = 0;
+
+  // initialize the node vector
+  vector* node_vec = malloc(sizeof(vector));
+  vector_init(node_vec, sizeof(node));
+  new_code.nodes = node_vec;
+
+  // initialize the comms vector
+  vector* comms_vec = malloc(sizeof(vector));
+  vector_init(comms_vec, sizeof(communicator));
+  new_code.comms = comms_vec;
+
+  new_code.is_library = 0;
+
+  // add the new code to the global vector of codes
+  vector_push_back( &codes, &new_code );
+
+  // return the index of the new code
+  return codes.size - 1;
 }
 
 /*! \brief Print error message and exit

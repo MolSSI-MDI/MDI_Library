@@ -60,8 +60,10 @@ const int MDI_DOUBLE_NUMPY = 4;
 const int MDI_TCP    = 1;
 /*! \brief MPI communication method */
 const int MDI_MPI    = 2;
+/*! \brief Library communication method */
+const int MDI_LIB    = 3;
 /*! \brief Test communication method */
-const int MDI_TEST   = 3;
+const int MDI_TEST   = 4;
 
 /*----------------------*/
 /* MDI unit conversions */
@@ -100,7 +102,7 @@ const double MDI_RYDBERG_TO_HARTREE = 0.5;
 const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
 
 
-static int is_initialized = 0;
+//static int is_initialized = 0;
 
 
 /*! \brief Initialize communication through the MDI library
@@ -117,9 +119,11 @@ static int is_initialized = 0;
  */
 int MDI_Init(const char* options, void* world_comm)
 {
+  /*
   if ( is_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
   }
+  */
   general_init(options, world_comm);
   is_initialized = 1;
   return 0;
@@ -659,7 +663,8 @@ int MDI_Register_Node(const char* node_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
   }
-  return register_node(&nodes, node_name);
+  code* this_code = vector_get(&codes, current_code);
+  return register_node(this_code->nodes, node_name);
 }
 
 /*! \brief Check whether a node is supported on a specified engine
@@ -757,7 +762,8 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
   }
-  return register_command(&nodes, node_name, command_name);
+  code* this_code = vector_get(&codes, current_code);
+  return register_command(this_code->nodes, node_name, command_name);
 }
 
 /*! \brief Check whether a command is supported on specified node on a specified engine
@@ -898,7 +904,8 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
   }
-  return register_callback(&nodes, node_name, callback_name);
+  code* this_code = vector_get(&codes, current_code);
+  return register_callback(this_code->nodes, node_name, callback_name);
 }
 
 /*! \brief Check whether a callback exists on specified node on a specified engine
@@ -1024,4 +1031,49 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
   char* target_callback = vector_get( target_node->callbacks, index );
   strcpy(name, target_callback);
   return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for MDI_Execute_Command
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       execute_command
+ *                   Function pointer to the generic execute_command function
+ */
+int MDI_Set_Command_Func(int (*generic_command)(const char*, MDI_Comm)) {
+  code* this_code = vector_get(&codes, current_code);
+  this_code->execute_command = generic_command;
+  /*
+  this_code->execute_command("<NATOMS",1);
+  this_code->execute_command("<NATOMS",1);
+  this_code->execute_command("<NATOMS",1);
+  */
+  return 0;
+}
+
+
+/*! \brief Execute a single MDI command
+ *
+ * This function can only be used when -method is LIBRARY.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       command_name
+ *                   Pointer to the command name.
+ * \param [in]       buf
+ *                   Pointer to the buffer where the communicated data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be communicated.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be communicated.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Execute_Command called but MDI has not been initialized");
+  }
+
+  return general_execute_command(command_name, buf, count, datatype, comm);
 }
