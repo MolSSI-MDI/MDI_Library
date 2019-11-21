@@ -10,6 +10,7 @@
 
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
+typedef int MDI_Comm_Type;
 
 typedef struct dynamic_array_struct {
   /*! \brief The elements stored by this vector */
@@ -37,23 +38,48 @@ typedef struct communicator_struct {
   double mdi_version;
   /*! \brief The nodes supported by the connected code */
   vector* nodes;
+  /*! \brief Method-specific information for this communicator */
+  void* method_data;
 } communicator;
 
 typedef struct node_struct {
+  /*! \brief Name of the node */
   char name[COMMAND_LENGTH];
+  /*! \brief Vector containing all the commands supported at this node */
   vector* commands;
+  /*! \brief Vector containing all the callbacks associated with this node */
   vector* callbacks;
 } node;
 
-/*! \brief Vector containing all MDI communicators */
-extern vector communicators;
+typedef struct code_struct {
+  /*! \brief Name of the driver/engine */
+  char name[NAME_LENGTH];
+  /*! \brief Role of the driver/engine */
+  char role[NAME_LENGTH];
+  /*! \brief The number of communicator handles that have been returned by MDI_Accept_Connection() */
+  int returned_comms;
+  /*! \brief Vector containing all nodes supported by this code */
+  vector* nodes;
+  /*! \brief Vector containing all communicators associated with this code */
+  vector* comms;
+  /*! \brief Function pointer to the generic execute_command_function */
+  int (*execute_command)(const char*, MDI_Comm_Type);
+  /*! \brief Flag whether this code is being used as a library */
+  int is_library;
+} code;
 
-/*! \brief Vector containing all nodes supported by this code */
-extern vector nodes;
+/*! \brief Vector containing all codes that have been initiailized on this rank Typically, 
+this will only include a single code, unless the communication method is LIBRARY */
+extern vector codes;
 
-/*! \brief Whether MDI is running in i-PI compatibility mode */
+/*! \brief Index of the active code */
+extern int current_code;
+
+/*! \brief Flag for whether MDI is running in i-PI compatibility mode */
 extern int ipi_compatibility;
 
+/*! \brief Flag for whether MDI has been previously initialized */
+extern int is_initialized;
 
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
@@ -62,6 +88,8 @@ void* vector_get(vector* v, int index);
 int get_node_index(vector* v, const char* node_name);
 int get_command_index(node* n, const char* command_name);
 int get_callback_index(node* n, const char* callback_name);
+
+int new_code();
 
 void mdi_error(const char* message);
 

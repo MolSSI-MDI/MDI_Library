@@ -11,13 +11,8 @@
 #include "mdi_general.h"
 #include "mdi_mpi.h"
 #include "mdi_tcp.h"
+#include "mdi_lib.h"
 #include "mdi_test.h"
-
-//this is the number of communicator handles that have been returned by MDI_Accept_Connection()
-static int returned_comms = 0;
-
-//name of the driver/engine
-static char* name;
 
 /*! \brief Initialize communication through the MDI library
  *
@@ -32,11 +27,15 @@ static char* name;
  *                   Only used if the "-method MPI" option is provided.
  */
 int general_init(const char* options, void* world_comm) {
-  returned_comms = 0;
-  vector_init(&communicators, sizeof(communicator));
+  // If this is the first time MDI has initialized, initialize the code vector
+  if ( ! is_initialized ) {
+    vector_init(&codes, sizeof(code));
+  }
 
-  // initialize the vector of nodes
-  vector_init(&nodes, sizeof(node));
+  // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
+  // Note that unless using the LIBRARY communication method, general_init should only be called once
+  current_code = new_code();
+  code* this_code = vector_get(&codes, current_code);
 
   char* strtol_ptr;
   int i;
@@ -46,16 +45,18 @@ int general_init(const char* options, void* world_comm) {
   // values acquired from the input options
   char* role;
   char* method;
-  name = malloc(MDI_NAME_LENGTH+1);
+  //name = malloc(MDI_NAME_LENGTH+1);
   char* hostname;
   int port;
   char* output_file;
+  char* driver_name;
   char* language = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
+  int has_driver_name = 0;
   int has_output_file = 0;
 
   // calculate argc
@@ -86,6 +87,7 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Argument missing from -role option");
       }
       role = argv[iarg+1];
+      strcpy(this_code->role, role);
       has_role = 1;
       iarg += 2;
     }
@@ -106,7 +108,7 @@ int general_init(const char* options, void* world_comm) {
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
 	mdi_error("Name argument length exceeds MDI_NAME_LENGTH");
       }
-      strcpy(name, argv[iarg+1]);
+      strcpy(this_code->name, argv[iarg+1]);
       has_name = 1;
       iarg += 2;
     }
@@ -140,6 +142,15 @@ int general_init(const char* options, void* world_comm) {
       }
       has_output_file = 1;
       output_file = argv[iarg+1];
+      iarg += 2;
+    }
+    //-driver_name
+    else if (strcmp(argv[iarg],"-driver_name") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Argument missing from -driver_name option");
+      }
+      driver_name = argv[iarg+1];
+      has_driver_name = 1;
       iarg += 2;
     }
     //_language
@@ -182,6 +193,42 @@ int general_init(const char* options, void* world_comm) {
     freopen(output_file, "w", stdout);
   }
 
+  // if the method is not LIBRARY, ensure that MDI has not been previously initialized
+  if ( strcmp(method, "LIBRARY") != 0 ) {
+    if ( is_initialized == 1 ) {
+      mdi_error("MDI_Init called after MDI was already initialized");
+    }
+  }
+
+  // ensure that the name of this code is not the same as the name of any of the other codes
+  for (i = 0; i < codes.size; i++) {
+    if ( i != current_code ) {
+      code* other_code = vector_get(&codes, i);
+      if (strcmp(this_code->name, other_code->name) == 0) {
+	mdi_error("MDI_Init found multiple codes with the same name");
+      }
+    }
+  }
+
+  // Check if this is an engine being used as a library
+  if (strcmp(this_code->role, "ENGINE") == 0) {
+    if ( strcmp(method, "LIBRARY") == 0 ) {
+      this_code->is_library = 1;
+    }
+  }
+
+  // ensure that at most one driver has been initialized
+  if (strcmp(this_code->role, "DRIVER") == 0) {
+    for (i = 0; i < codes.size; i++) {
+      if ( i != current_code ) {
+	code* other_code = vector_get(&codes, i);
+	if (strcmp(this_code->role, other_code->role) == 0) {
+	  mdi_error("MDI_Init found multiple drivers");
+	}
+      }
+    }
+  }
+
   // ensure the -role option was provided
   if ( has_role == 0 ) {
     mdi_error("Error in MDI_Init: -role option not provided");
@@ -218,6 +265,9 @@ int general_init(const char* options, void* world_comm) {
 	tcp_listen(port);
       }
     }
+    else if ( strcmp(method, "LIBRARY") == 0 ) {
+      //library_initialize();
+    }
     else if ( strcmp(method, "TEST") == 0 ) {
       test_initialize();
     }
@@ -230,7 +280,8 @@ int general_init(const char* options, void* world_comm) {
     // initialize this code as an engine
 
     if ( strcmp(method, "MPI") == 0 ) {
-      mpi_identify_codes(name, do_split, mpi_communicator);
+      code* this_code = vector_get(&codes, current_code);
+      mpi_identify_codes(this_code->name, do_split, mpi_communicator);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -243,6 +294,12 @@ int general_init(const char* options, void* world_comm) {
       if ( mpi_rank == 0 ) {
 	tcp_request_connection(port, hostname);
       }
+    }
+    else if ( strcmp(method, "LIBRARY") == 0 ) {
+      if ( has_driver_name == 0 ) {
+	mdi_error("Error in MDI_Init: -driver_name option not provided");
+      }
+      library_initialize();
     }
     else if ( strcmp(method, "TEST") == 0 ) {
       test_initialize();
@@ -286,10 +343,14 @@ int general_init(const char* options, void* world_comm) {
  *
  */
 int general_accept_communicator() {
+  // give the library method an opportunity to update the current code
+  library_accept_communicator();
+
   // if MDI hasn't returned some connections, do that now
-  if ( returned_comms < communicators.size ) {
-    returned_comms++;
-    return returned_comms;
+  code* this_code = vector_get(&codes, current_code);
+  if ( this_code->returned_comms < this_code->comms->size ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
   }
 
   // check for any production codes connecting via TCP
@@ -299,9 +360,9 @@ int general_accept_communicator() {
     tcp_accept_connection();
 
     // if MDI hasn't returned some connections, do that now
-    if ( returned_comms < communicators.size ) {
-      returned_comms++;
-      return (MDI_Comm)returned_comms;
+    if ( this_code->returned_comms < this_code->comms->size ) {
+      this_code->returned_comms++;
+      return (MDI_Comm)this_code->returned_comms;
     }
 
   }
@@ -331,14 +392,17 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   }
 
   //communicator_send(buf, count, datatype, comm);
-
-  communicator* this = vector_get(&communicators, comm-1);
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
 
   if ( this->method == MDI_MPI ) {
     mpi_send(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
     tcp_send(buf, count, datatype, comm);
+  }
+  else if ( this->method == MDI_LIB ) {
+    library_send(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TEST ) {
     test_send(buf, count, datatype, comm);
@@ -372,14 +436,17 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   //communicator_recv(buf, count, datatype, comm);
-
-  communicator* this = vector_get(&communicators, comm-1);
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
 
   if ( this->method == MDI_MPI ) {
     mpi_recv(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
     tcp_recv(buf, count, datatype, comm);
+  }
+  else if ( this->method == MDI_LIB ) {
+    library_recv(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TEST ) {
     test_recv(buf, count, datatype, comm);
@@ -407,12 +474,96 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Called MDI_Send_Command with incorrect rank");
   }
+
+  // ensure that the driver is the current code
+  library_set_driver_current();
+
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
+  int method = this->method;
+
   int count = MDI_COMMAND_LENGTH;
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  int ret;
 
   strncpy(command, buf, MDI_COMMAND_LENGTH);
-  int ret = general_send( command, count, MDI_CHAR, comm );
+  if ( method == MDI_LIB ) {
+    // set the command for the engine to execute
+    library_set_command(command, comm);
+
+    if ( command[0] == '<' ) {
+      // execute the command, so that the data from the engine can be received later by the driver
+      ret = library_execute_command(comm);
+    }
+    else if ( command[0] == '>' ) {
+      // flag the command to be executed after the next call to MDI_Send
+      /*
+      general_send( command, count, MDI_CHAR, comm );
+      ret = library_execute_command(comm);
+      */
+      library_data* libd = (library_data*) this->method_data;
+      libd->execute_on_send = 1;
+    }
+    else {
+      // this is a command that neither sends nor receives data, so execute it now
+      ret = library_execute_command(comm);
+    }
+  }
+  else {
+    ret = general_send( command, count, MDI_CHAR, comm );
+  }
   free( command );
+  return ret;
+}
+
+
+/*! \brief Respond to a general built-in command
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 1 if the command is a built-in command and \p 0 otherwise.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer for the command name.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int general_builtin_command(const char* buf, MDI_Comm comm) {
+  int ret = 0;
+
+  // check if this command corresponds to one of MDI's standard built-in commands
+  if ( strcmp( buf, "<NAME" ) == 0 ) {
+    code* this_code = vector_get(&codes, current_code);
+    MDI_Send(this_code->name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<VERSION" ) == 0 ) {
+    MDI_Send(&MDI_VERSION, 1, MDI_DOUBLE, comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<COMMANDS" ) == 0 ) {
+    send_command_list(comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<CALLBACKS" ) == 0 ) {
+    send_callback_list(comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<NODES" ) == 0 ) {
+    send_node_list(comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<NCOMMANDS" ) == 0 ) {
+    send_ncommands(comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<NCALLBACKS" ) == 0 ) {
+    send_ncallbacks(comm);
+    ret = 1;
+  }
+  else if ( strcmp( buf, "<NNODES" ) == 0 ) {
+    send_nnodes(comm);
+    ret = 1;
+  }
   return ret;
 }
 
@@ -437,8 +588,10 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int ret = general_recv( buf, count, datatype, comm );
 
   // check if this command corresponds to one of MDI's standard built-in commands
+  /*
   if ( strcmp( buf, "<NAME" ) == 0 ) {
-    MDI_Send(name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+    code* this_code = vector_get(&codes, current_code);
+    MDI_Send(this_code->name, MDI_NAME_LENGTH, MDI_CHAR, comm);
     return general_recv_command(buf, comm);
   }
   else if ( strcmp( buf, "<VERSION" ) == 0 ) {
@@ -467,6 +620,11 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   }
   else if ( strcmp( buf, "<NNODES" ) == 0 ) {
     send_nnodes(comm);
+    return general_recv_command(buf, comm);
+  }
+  */
+  int builtin_flag = general_builtin_command(buf, comm);
+  if ( builtin_flag == 1 ) {
     return general_recv_command(buf, comm);
   }
 
@@ -611,14 +769,15 @@ int send_command_list(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
   }
+  code* this_code = vector_get(&codes, current_code);
   int ncommands = 0;
-  int nnodes = nodes.size;
+  int nnodes = this_code->nodes->size;
   int inode, icommand;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     ncommands += this_node->commands->size;
   }
 
@@ -630,7 +789,7 @@ int send_command_list(MDI_Comm comm) {
   int islot = 0;
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
     strcpy(&commands[ islot * stride ], this_node->name);
     int ichar;
@@ -662,7 +821,6 @@ int send_command_list(MDI_Comm comm) {
       islot++;
     }
   }
-  //printf("---COMMANDS: %d %s\n",count, commands);
 
   int ret = general_send( commands, count, MDI_CHAR, comm );
   free( commands );
@@ -682,14 +840,15 @@ int send_callback_list(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
   }
+  code* this_code = vector_get(&codes, current_code);
   int ncallbacks = 0;
-  int nnodes = nodes.size;
+  int nnodes = this_code->nodes->size;
   int inode, icallback;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of callbakcs
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     ncallbacks += this_node->callbacks->size;
   }
 
@@ -701,7 +860,7 @@ int send_callback_list(MDI_Comm comm) {
   int islot = 0;
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
     strcpy(&callbacks[ islot * stride ], this_node->name);
     int ichar;
@@ -752,7 +911,8 @@ int send_node_list(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send node information from the incorrect rank");
   }
-  int nnodes = nodes.size;
+  code* this_code = vector_get(&codes, current_code);
+  int nnodes = this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
@@ -763,7 +923,7 @@ int send_node_list(MDI_Comm comm) {
   // form the list of nodes
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
     strcpy(&node_list[ inode * stride ], this_node->name);
     int ichar;
@@ -791,14 +951,15 @@ int send_ncommands(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
   }
+  code* this_code = vector_get(&codes, current_code);
   int ncommands = 0;
-  int nnodes = nodes.size;
+  int nnodes = this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     ncommands += this_node->commands->size;
   }
 
@@ -819,14 +980,15 @@ int send_ncallbacks(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
   }
+  code* this_code = vector_get(&codes, current_code);
   int ncallbacks = 0;
-  int nnodes = nodes.size;
+  int nnodes = this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of callbacks
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(&nodes, inode);
+    node* this_node = vector_get(this_code->nodes, inode);
     ncallbacks += this_node->callbacks->size;
   }
 
@@ -847,7 +1009,8 @@ int send_nnodes(MDI_Comm comm) {
   if ( intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
   }
-  int nnodes = nodes.size;
+  code* this_code = vector_get(&codes, current_code);
+  int nnodes = this_code->nodes->size;
   int ret = general_send( &nnodes, 1, MDI_INT, comm );
   return ret;
 }
@@ -862,9 +1025,9 @@ int send_nnodes(MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int get_node_info(MDI_Comm comm) {
-  printf("~~~Getting node information\n");
   size_t stride = MDI_COMMAND_LENGTH + 1;
-  communicator* this = vector_get(&communicators, comm-1);
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
   char* current_node = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
 
   // get the number of nodes
@@ -877,7 +1040,6 @@ int get_node_info(MDI_Comm comm) {
   char* node_list = malloc( list_size );
   MDI_Send_Command("<NODES",comm);
   MDI_Recv(node_list, nnodes * stride, MDI_CHAR, comm);
-  printf("DRIVER NODE_LIST: %s\n",node_list);
 
   // register the nodes
   int inode;
@@ -903,7 +1065,6 @@ int get_node_info(MDI_Comm comm) {
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       node_name[ichar] = '\0';
     }
-    printf("DRIVER NODE: %d %d %s\n",inode,name_length,node_name);
 
     // register this node
     register_node(this->nodes, node_name);
@@ -922,7 +1083,6 @@ int get_node_info(MDI_Comm comm) {
   char* commands = malloc( count * sizeof(char) );
   MDI_Send_Command("<COMMANDS",comm);
   MDI_Recv(commands, count, MDI_CHAR, comm);
-  printf("~~~COMMANDS: %d %s\n",ncommands,commands);
 
   // register the commands
   int node_flag = 1;
@@ -1056,11 +1216,12 @@ int get_node_info(MDI_Comm comm) {
 vector* get_node_vector(MDI_Comm comm) {
   // get the vector of nodes associated with the communicator
   vector* node_vec;
+  code* this_code = vector_get(&codes, current_code);
   if ( comm == MDI_NULL_COMM ) {
-    node_vec = &nodes;
+    node_vec = this_code->nodes;
   }
   else {
-    communicator* this = vector_get(&communicators, comm-1);
+    communicator* this = vector_get(this_code->comms, comm-1);
     if ( this->nodes->size == 0 ) {
       // acquire node information for this communicator
       get_node_info(comm);
@@ -1068,4 +1229,43 @@ vector* get_node_vector(MDI_Comm comm) {
     node_vec = this->nodes;
   }
   return node_vec;
+}
+
+
+/*! \brief Execute a single MDI command
+ *
+ * This function can only be used when -method is LIBRARY.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       command_name
+ *                   Pointer to the command name.
+ * \param [in]       buf
+ *                   Pointer to the buffer where the communicated data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be communicated.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be communicated.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int general_execute_command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
+{
+  // this function can only be used when -method is LIBRARY
+  code* this_code = vector_get(&codes, current_code);
+  communicator* this = vector_get(this_code->comms, comm-1);
+  if ( this->method != MDI_LIB ) {
+    mdi_error("MDI_Execute_Command called but method is not LIBRARY");
+  }
+
+  // node commands cannot be executed using MDI_Execute_Command
+  if ( command_name[0] == '@' ) {
+    mdi_error("MDI_Execute_Command cannot be used to execute node commands");
+  }
+
+  // set the buffer used to send / recv data
+  library_data* libd = (library_data*) this->method_data;
+  libd->buf = buf;
+
+  // call execute_command
+  return this_code->execute_command(command_name,comm);
 }

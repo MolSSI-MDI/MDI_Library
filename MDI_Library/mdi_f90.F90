@@ -1,12 +1,87 @@
+  MODULE MDI_GLOBAL
+
+   USE ISO_C_BINDING
+
+   INTEGER(KIND=C_INT), PARAMETER :: COMMAND_LENGTH = 12
+   INTEGER(KIND=C_INT), PARAMETER :: NAME_LENGTH    = 12
+
+  END MODULE
+
+  MODULE MDI_INTERNAL
+  USE ISO_C_BINDING
+  USE MDI_GLOBAL
+
+  IMPLICIT NONE
+
+  PROCEDURE(execute_command), POINTER :: generic_command => null()
+
+  ABSTRACT INTERFACE
+    SUBROUTINE execute_command(buf, comm, ierr)
+      CHARACTER(LEN=*), INTENT(IN) :: buf
+      INTEGER, INTENT(IN)          :: comm
+      INTEGER, INTENT(OUT)         :: ierr
+    END SUBROUTINE execute_command
+  END INTERFACE
+
+  INTERFACE
+
+     FUNCTION MDI_Set_Command_Func_c(command_func) bind(c, name="MDI_Set_Command_Func")
+       USE ISO_C_BINDING
+       TYPE(C_FUNPTR), VALUE, INTENT(IN)        :: command_func
+       INTEGER(KIND=C_INT)                      :: MDI_Set_Command_Func_c
+     END FUNCTION MDI_Set_Command_Func_c
+
+  END INTERFACE
+
+  CONTAINS
+
+  FUNCTION MDI_Execute_Command_f(buf, comm) bind(c)
+    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
+    INTEGER(KIND=C_INT), VALUE               :: comm
+    INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_f
+
+    CHARACTER(LEN=COMMAND_LENGTH)        :: fbuf
+    INTEGER                                  :: commf
+    INTEGER                                  :: ierr
+
+    INTEGER                                  :: i
+    LOGICAL                                  :: end_string
+
+    commf = comm
+
+    ! convert from C string to Fortran string
+    fbuf = ""
+    end_string = .false.
+    DO i = 1, COMMAND_LENGTH
+      IF ( buf(i) == c_null_char ) end_string = .true.
+      IF ( end_string ) THEN
+        fbuf(i:i) = ' '
+      ELSE
+        fbuf(i:i) = buf(i)
+      END IF
+    ENDDO
+    WRITE(6,*)"COMMAND: ",fbuf
+    call generic_command(fbuf, commf, ierr)
+    MDI_Execute_Command_f = ierr
+
+  END FUNCTION MDI_Execute_Command_f
+
+  END MODULE
+
+
+
+
+
 ! Fortran 90 wrapper for the MolSSI Driver Interface
 
    MODULE MDI
    USE ISO_C_BINDING
+   USE MDI_GLOBAL
 
    IMPLICIT NONE
 
-   INTEGER(KIND=C_INT), PARAMETER :: MDI_COMMAND_LENGTH = 12
-   INTEGER(KIND=C_INT), PARAMETER :: MDI_NAME_LENGTH    = 12
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_COMMAND_LENGTH = COMMAND_LENGTH
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_NAME_LENGTH    = NAME_LENGTH
    INTEGER(KIND=C_INT), PARAMETER :: MDI_NULL_COMM      = 0
 
    INTEGER(KIND=C_INT), PARAMETER :: MDI_INT            = 0
@@ -97,6 +172,20 @@
        TYPE(C_PTR), VALUE                       :: in_unit, out_unit, conv
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
+
+     SUBROUTINE MDI_Set_Command_Func(command_func, ierr)
+       USE MDI_INTERNAL
+       PROCEDURE(execute_command)               :: command_func
+       INTEGER, INTENT(OUT)                     :: ierr
+     END SUBROUTINE MDI_Set_Command_Func
+
+!     FUNCTION MDI_Execute_Command_(command_name, buf, count, datatype, comm) BIND(C, name="MDI_Execute_Command")
+!       USE ISO_C_BINDING
+!       TYPE(C_PTR), VALUE                       :: command_name
+!       INTEGER(KIND=C_INT), VALUE               :: count, datatype, comm
+!       TYPE(C_PTR), VALUE                       :: buf
+!       INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_
+!     END FUNCTION MDI_Execute_Command_
 
   END INTERFACE
 
@@ -377,4 +466,25 @@
       factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
 
+
+
   END MODULE
+
+
+
+
+
+SUBROUTINE MDI_Set_Command_Func(command_func, ierr)
+  USE MDI_INTERNAL
+
+#if MDI_WINDOWS
+    !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Command_Func
+    !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Command_Func
+#endif
+    PROCEDURE(execute_command)               :: command_func
+    INTEGER, INTENT(OUT)                     :: ierr
+
+    generic_command => command_func
+    ierr = MDI_Set_Command_Func_c( c_funloc(MDI_Execute_Command_f) )
+
+END SUBROUTINE MDI_Set_Command_Func

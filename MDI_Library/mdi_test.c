@@ -15,12 +15,14 @@
  *
  */
 int test_initialize() {
+  code* this_code = vector_get(&codes, current_code);
+
   communicator new_comm;
   new_comm.method = MDI_TEST;
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
   new_comm.nodes = node_vec;
-  vector_push_back( &communicators, &new_comm );
+  vector_push_back( this_code->comms, &new_comm );
 
   return 0;
 }
