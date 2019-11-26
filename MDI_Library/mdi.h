@@ -117,7 +117,9 @@ DllExport int MDI_Get_MPI_Code_Rank();
 DllExport void MDI_Set_MPI_Intra_Rank(int rank);
 DllExport void MDI_Set_World_Size(int world_size_in);
 DllExport void MDI_Set_World_Rank(int world_rank_in);
-
+DllExport int MDI_Initialize_New_Code();
+DllExport void MDI_Set_Current_Code(int current_code_in);
+DllExport int MDI_Get_Current_Code();
 
 #ifdef __cplusplus
 }

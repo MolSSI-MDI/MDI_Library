@@ -72,7 +72,8 @@ intra_code_comm = None
 
 mdi_manager = None
 
-execute_command_func = None
+# dictionary of function callbacks
+execute_command_dict = {}
 
 # MDI_Get_MPI_Code_Rank
 mdi.MDI_Get_MPI_Code_Rank.argtypes = []
@@ -129,6 +130,10 @@ def MDI_Init(arg1, comm):
     
     # if the communication method is MPI, assign the names of the codes
     if mdi_method == "MPI":
+
+        # initialize a new code object
+        new_code = MDI_Initialize_New_Code()
+        MDI_Set_Current_Code(new_code)
 
         mdi_manager = MPI4PYManager(arg1, comm)
 
@@ -326,14 +331,39 @@ def MDI_Conversion_Factor(arg1, arg2):
         raise Exception("MDI Error: MDI_Conversion_Factor failed")
     return conversion.value
 
+# MDI_Initialize_New_Code
+mdi.MDI_Initialize_New_Code.argtypes = []
+mdi.MDI_Initialize_New_Code.restype = ctypes.c_int
+def MDI_Initialize_New_Code():
+    return mdi.MDI_Initialize_New_Code()
+
+# MDI_Set_Current_Code
+mdi.MDI_Set_Current_Code.argtypes = [ctypes.c_int]
+mdi.MDI_Set_Current_Code.restype = None
+def MDI_Set_Current_Code(current_code_in):
+    mdi.MDI_Set_Current_Code(current_code_in)
+
+# MDI_Get_Current_Code
+mdi.MDI_Get_Current_Code.argtypes = []
+mdi.MDI_Get_Current_Code.restype = ctypes.c_int
+def MDI_Get_Current_Code():
+    return mdi.MDI_Get_Current_Code()
+
+
+#####################################
+# Callback functions                #
+#####################################
 def MDI_Execute_Command_py(command, comm):
-    global execute_command_func
+    global execute_command_dict
 
     command_cast = ctypes.cast(command, ctypes.POINTER(ctypes.c_char*MDI_COMMAND_LENGTH)).contents
     command_py = ctypes.cast(command_cast, ctypes.c_char_p).value
     command_py = command_py.decode('utf-8')
 
-    return execute_command_func(command_py, comm)
+    # get the current code
+    current_code = MDI_Get_Current_Code()
+
+    return execute_command_dict[current_code](command_py, comm)
 
 # MDI_Set_Command_Func
 # NOTE: Do we need to use WINFUNCTYPE on Windows?
@@ -342,14 +372,11 @@ MDI_Execute_Command_c = execute_command_func_type( MDI_Execute_Command_py )
 mdi.MDI_Set_Command_Func.argtypes = [execute_command_func_type]
 mdi.MDI_Set_Command_Func.restype = ctypes.c_int
 def MDI_Set_Command_Func(func):
-    global execute_command_func
+    global execute_command_dict
+
+    current_code = MDI_Get_Current_Code()
 
     # store the generic execute command function for future use
-    execute_command_func = func
+    execute_command_dict[current_code] = func
 
-    # create a function pointer to MDI_Execute_Command_py
-    #callback_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_char), ctypes.c_int)
-    #cfunc = callback_type( MDI_Execute_Command_py )
-
-    #return mdi.MDI_Set_Command_Func( cfunc )
     return mdi.MDI_Set_Command_Func( MDI_Execute_Command_c )

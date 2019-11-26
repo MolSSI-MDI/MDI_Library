@@ -13,7 +13,14 @@
 
   IMPLICIT NONE
 
-  PROCEDURE(execute_command), POINTER :: generic_command => null()
+  ! The execute_command callbacks are implemented in a pseudo-dictionary
+  ! Each key corresponds to the handle of one of the codes that has called MDI_Init
+  ! The values are the actual procedure pointers
+  TYPE command_func_ptr
+     INTEGER                                     :: key
+     PROCEDURE(execute_command), POINTER, NOPASS :: value => null()
+  END TYPE command_func_ptr
+  TYPE(command_func_ptr), ALLOCATABLE :: execute_commands(:)
 
   ABSTRACT INTERFACE
     SUBROUTINE execute_command(buf, comm, ierr)
@@ -31,9 +38,66 @@
        INTEGER(KIND=C_INT)                      :: MDI_Set_Command_Func_c
      END FUNCTION MDI_Set_Command_Func_c
 
+     FUNCTION MDI_Get_Current_Code_() bind(c, name="MDI_Get_Current_Code")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT)                      :: MDI_Get_Current_Code_
+     END FUNCTION MDI_Get_Current_Code_
+
   END INTERFACE
 
   CONTAINS
+
+  ! Return the index in execute_commands that corresponds to the key argument
+  FUNCTION find_execute_command(key)
+    INTEGER, INTENT(IN)                      :: key
+    INTEGER                                  :: find_execute_command
+    INTEGER                                  :: index
+
+    index = 1
+    DO WHILE( (execute_commands(index)%key .ne. key) .and. (index .le. SIZE(execute_commands)) )
+      index = index + 1
+    END DO
+
+    IF ( execute_commands(index)%key .eq. key ) THEN
+      find_execute_command = index
+    ELSE
+      find_execute_command = -1
+    END IF
+  END FUNCTION find_execute_command
+
+  ! Add a value to the execute_command dictionary
+  SUBROUTINE add_execute_command(key, value)
+    INTEGER, INTENT(IN)                      :: key
+    PROCEDURE(execute_command)               :: value
+    INTEGER                                  :: index
+    TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
+
+    IF ( .not. ALLOCATED( execute_commands ) ) THEN
+       ! Just allocate the key-value arrays with a size of one
+       ALLOCATE( execute_commands(1) )
+    ELSE
+      ! Confirm that this key does not already exist
+      index = find_execute_command( key )
+      IF ( index .ne. -1 ) THEN
+        WRITE(6,*)'MDI ERROR: Value already exists in execute_command dictionary'
+      END IF
+
+      ! Store the execute_commands data in a temporary array
+      ALLOCATE( temp_dict( SIZE(execute_commands) ) )
+      temp_dict = execute_commands
+      
+      ! Reallocate execute_commands to the correct size
+      DEALLOCATE( execute_commands )
+      ALLOCATE( execute_commands( SIZE(temp_dict) + 1 ) )
+      execute_commands(1:SIZE(temp_dict)) = temp_dict
+      DEALLOCATE( temp_dict )
+    END IF
+
+    ! Add the key-value pair
+    execute_commands( SIZE(execute_commands) )%key = key
+    execute_commands( SIZE(execute_commands) )%value => value
+
+  END SUBROUTINE add_execute_command
 
   FUNCTION MDI_Execute_Command_f(buf, comm) bind(c)
     CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
@@ -44,7 +108,7 @@
     INTEGER                                  :: commf
     INTEGER                                  :: ierr
 
-    INTEGER                                  :: i
+    INTEGER                                  :: i, current_code
     LOGICAL                                  :: end_string
 
     commf = comm
@@ -61,7 +125,15 @@
       END IF
     ENDDO
     WRITE(6,*)"COMMAND: ",fbuf
-    call generic_command(fbuf, commf, ierr)
+
+    ! Get the correct execute_command callback
+    current_code = MDI_Get_Current_Code_()
+    i = find_execute_command( current_code )
+    IF ( i .eq. -1 ) THEN
+      WRITE(6,*)'MDI Error: Could not locate correct execute_command callback'
+    END IF
+    call execute_commands(i)%value(fbuf, commf, ierr)
+
     MDI_Execute_Command_f = ierr
 
   END FUNCTION MDI_Execute_Command_f
@@ -178,14 +250,6 @@
        PROCEDURE(execute_command)               :: command_func
        INTEGER, INTENT(OUT)                     :: ierr
      END SUBROUTINE MDI_Set_Command_Func
-
-!     FUNCTION MDI_Execute_Command_(command_name, buf, count, datatype, comm) BIND(C, name="MDI_Execute_Command")
-!       USE ISO_C_BINDING
-!       TYPE(C_PTR), VALUE                       :: command_name
-!       INTEGER(KIND=C_INT), VALUE               :: count, datatype, comm
-!       TYPE(C_PTR), VALUE                       :: buf
-!       INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_
-!     END FUNCTION MDI_Execute_Command_
 
   END INTERFACE
 
@@ -483,8 +547,11 @@ SUBROUTINE MDI_Set_Command_Func(command_func, ierr)
 #endif
     PROCEDURE(execute_command)               :: command_func
     INTEGER, INTENT(OUT)                     :: ierr
+    INTEGER                                  :: current_code
 
-    generic_command => command_func
+    current_code = MDI_Get_Current_Code_()
+
+    CALL add_execute_command(current_code, command_func)
     ierr = MDI_Set_Command_Func_c( c_funloc(MDI_Execute_Command_f) )
 
 END SUBROUTINE MDI_Set_Command_Func

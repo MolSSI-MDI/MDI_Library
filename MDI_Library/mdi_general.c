@@ -321,7 +321,8 @@ int general_init(const char* options, void* world_comm) {
 	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
 	mpi_update_world_comm( (void*) &mpi_communicator);
         MPI_Fint f_comm = MPI_Comm_c2f( mpi_communicator );
-	world_comm = (void*) &f_comm;
+	MPI_Fint* f_comm_ptr = (MPI_Fint*) world_comm;
+	*f_comm_ptr = f_comm;
       }
       else {
 	mpi_update_world_comm(world_comm);

@@ -1044,11 +1044,6 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
 int MDI_Set_Command_Func(int (*generic_command)(const char*, MDI_Comm)) {
   code* this_code = vector_get(&codes, current_code);
   this_code->execute_command = generic_command;
-  /*
-  this_code->execute_command("<NATOMS",1);
-  this_code->execute_command("<NATOMS",1);
-  this_code->execute_command("<NATOMS",1);
-  */
   return 0;
 }
 
@@ -1076,4 +1071,32 @@ int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Data
   }
 
   return general_execute_command(command_name, buf, count, datatype, comm);
+}
+
+
+/*! \brief Create a new code object, for storing information about this code
+ *
+ * This function is only used if the linked program uses MPI4PY.
+ *
+ */
+int MDI_Initialize_New_Code() {
+  return new_code();
+}
+
+
+/*! \brief Set the current code
+ *
+ * This function is only used if the linked program uses MPI4PY.
+ *
+ */
+void MDI_Set_Current_Code(int current_code_in) {
+  current_code = current_code_in;
+}
+
+
+/*! \brief Get the current code
+ *
+ */
+int MDI_Get_Current_Code() {
+  return current_code;
 }
