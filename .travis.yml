@@ -31,6 +31,8 @@ matrix:
         - sudo pip install -U pytest
       before_script:
         # Run the MPI tests
+        - ls ..
+        - ls ../tests
         - cd ../tests
         - pytest -k "mpi"
     - os: osx
@@ -153,5 +155,7 @@ install:
 
 script:
   - ls
+  - ls ..
   - cd ../tests
+  - ls
   - pytest -k 'not mpi'
