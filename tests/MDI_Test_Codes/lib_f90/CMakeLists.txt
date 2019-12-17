@@ -40,7 +40,7 @@ set_target_properties(engine_lib_f90 PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 if(NOT MPI_Fortran_FOUND)
-   target_include_directories(engine_lib_f90 PRIVATE ${CMAKE_BINARY_DIR}/MDI_Test_Codes/STUBS_MPI/)
+   target_include_directories(engine_lib_f90 PRIVATE ${CMAKE_BINARY_DIR}/tests/MDI_Test_Codes/STUBS_MPI/)
    target_link_libraries(engine_lib_f90 mpi)
 else()
    target_include_directories(engine_lib_f90 PUBLIC
@@ -75,7 +75,7 @@ set_target_properties(driver_lib_f90 PROPERTIES
 # Ensure that MPI is properly linked
 
 if(NOT MPI_Fortran_FOUND)
-   target_include_directories(driver_lib_f90 PRIVATE ${CMAKE_BINARY_DIR}/MDI_Test_Codes/STUBS_MPI/)
+   target_include_directories(driver_lib_f90 PRIVATE ${CMAKE_BINARY_DIR}/tests/MDI_Test_Codes/STUBS_MPI/)
    target_link_libraries(driver_lib_f90 mpi)
 else()
    target_include_directories(driver_lib_f90 PUBLIC
