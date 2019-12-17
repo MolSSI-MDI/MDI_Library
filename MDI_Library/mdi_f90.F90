@@ -1,13 +1,13 @@
-  MODULE MDI_GLOBAL
+MODULE MDI_GLOBAL
 
    USE ISO_C_BINDING
 
    INTEGER(KIND=C_INT), PARAMETER :: COMMAND_LENGTH = 12
    INTEGER(KIND=C_INT), PARAMETER :: NAME_LENGTH    = 12
 
-  END MODULE
+END MODULE
 
-  MODULE MDI_INTERNAL
+MODULE MDI_INTERNAL
   USE ISO_C_BINDING
   USE MDI_GLOBAL
 
@@ -32,11 +32,12 @@
 
   INTERFACE
 
-     FUNCTION MDI_Set_Command_Func_c(command_func) bind(c, name="MDI_Set_Command_Func")
+     FUNCTION MDI_Set_Execute_Command_Func_c(command_func, class_obj) bind(c, name="MDI_Set_Execute_Command_Func")
        USE ISO_C_BINDING
        TYPE(C_FUNPTR), VALUE, INTENT(IN)        :: command_func
-       INTEGER(KIND=C_INT)                      :: MDI_Set_Command_Func_c
-     END FUNCTION MDI_Set_Command_Func_c
+       TYPE(C_PTR), VALUE                       :: class_obj
+       INTEGER(KIND=C_INT)                      :: MDI_Set_Execute_Command_Func_c
+     END FUNCTION MDI_Set_Execute_Command_Func_c
 
      FUNCTION MDI_Get_Current_Code_() bind(c, name="MDI_Get_Current_Code")
        USE, INTRINSIC :: iso_c_binding
@@ -45,7 +46,45 @@
 
   END INTERFACE
 
-  CONTAINS
+CONTAINS
+
+  FUNCTION str_c_to_f(cbuf, str_len)
+    INTEGER                                  :: str_len
+    CHARACTER(LEN=str_len)                   :: str_c_to_f
+    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(str_len)
+
+    INTEGER                                  :: i
+    LOGICAL                                  :: end_string
+    CHARACTER(LEN=str_len)                   :: fbuf
+
+    ! convert from C string to Fortran string
+    fbuf = ""
+    end_string = .false.
+    DO i = 1, str_len
+       IF ( cbuf(i) == c_null_char ) end_string = .true.
+       IF ( end_string ) THEN
+          fbuf(i:i) = ' '
+       ELSE
+          fbuf(i:i) = cbuf(i)
+       END IF
+    ENDDO
+    str_c_to_f = fbuf
+  END FUNCTION str_c_to_f
+
+  FUNCTION str_f_to_c(fbuf, str_len)
+    INTEGER                                  :: str_len
+    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: str_f_to_c(str_len)
+    CHARACTER(LEN=*)                   :: fbuf
+
+    INTEGER                                  :: i, count
+    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(str_len)
+
+    DO i = 1, LEN_TRIM(fbuf)
+       cbuf(i) = fbuf(i:i)
+    END DO
+    cbuf( LEN_TRIM(fbuf) + 1 ) = c_null_char
+    str_f_to_c = cbuf
+  END FUNCTION str_f_to_c
 
   ! Return the index in execute_commands that corresponds to the key argument
   FUNCTION find_execute_command(key)
@@ -53,16 +92,23 @@
     INTEGER                                  :: find_execute_command
     INTEGER                                  :: index
 
+    ! Check if the execute_commands dictionary has been allocated
+    IF ( .not. ALLOCATED(execute_commands) ) THEN
+      find_execute_command = -1
+      RETURN
+    END IF
+
     index = 1
-    DO WHILE( (execute_commands(index)%key .ne. key) .and. (index .le. SIZE(execute_commands)) )
+    DO WHILE( (index .le. SIZE(execute_commands)) .and. (execute_commands(index)%key .ne. key) )
       index = index + 1
     END DO
 
-    IF ( execute_commands(index)%key .eq. key ) THEN
-      find_execute_command = index
-    ELSE
+    IF ( index .gt. SIZE(execute_commands) ) THEN
       find_execute_command = -1
+      RETURN
     END IF
+
+    find_execute_command = index
   END FUNCTION find_execute_command
 
   ! Add a value to the execute_command dictionary
@@ -99,6 +145,34 @@
 
   END SUBROUTINE add_execute_command
 
+  ! Remove a value from the execute_command dictionary
+  SUBROUTINE remove_execute_command(key)
+    INTEGER, INTENT(IN)                      :: key
+    INTEGER                                  :: index
+    TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
+
+    index = find_execute_command( key )
+
+    ! Ensure that this key was actually found in the execute_command dictionary
+    IF ( index .eq. -1 ) THEN
+      RETURN
+    END IF
+
+    ! Store the execute_commands data in a temporary array
+    ALLOCATE( temp_dict( SIZE(execute_commands) ) )
+    temp_dict = execute_commands
+
+    ! Replace the deleted element with the last element
+    temp_dict(index) = temp_dict( SIZE(temp_dict) )
+      
+    ! Reallocate execute_commands to the correct size
+    DEALLOCATE( execute_commands )
+    ALLOCATE( execute_commands( SIZE(temp_dict) - 1 ) )
+    execute_commands(1:SIZE(execute_commands)) = temp_dict
+    DEALLOCATE( temp_dict )
+
+  END SUBROUTINE remove_execute_command
+
   FUNCTION MDI_Execute_Command_f(buf, comm) bind(c)
     CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
     INTEGER(KIND=C_INT), VALUE               :: comm
@@ -114,17 +188,7 @@
     commf = comm
 
     ! convert from C string to Fortran string
-    fbuf = ""
-    end_string = .false.
-    DO i = 1, COMMAND_LENGTH
-      IF ( buf(i) == c_null_char ) end_string = .true.
-      IF ( end_string ) THEN
-        fbuf(i:i) = ' '
-      ELSE
-        fbuf(i:i) = buf(i)
-      END IF
-    ENDDO
-    WRITE(6,*)"COMMAND: ",fbuf
+    fbuf = str_c_to_f(buf, COMMAND_LENGTH)
 
     ! Get the correct execute_command callback
     current_code = MDI_Get_Current_Code_()
@@ -134,11 +198,16 @@
     END IF
     call execute_commands(i)%value(fbuf, commf, ierr)
 
+    ! If this is the EXIT command, delete all Fortran state associated with the code
+    IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
+      CALL remove_execute_command( current_code )
+    END IF
+
     MDI_Execute_Command_f = ierr
 
   END FUNCTION MDI_Execute_Command_f
 
-  END MODULE
+END MODULE
 
 
 
@@ -146,7 +215,7 @@
 
 ! Fortran 90 wrapper for the MolSSI Driver Interface
 
-   MODULE MDI
+MODULE MDI
    USE ISO_C_BINDING
    USE MDI_GLOBAL
 
@@ -245,17 +314,113 @@
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
-     SUBROUTINE MDI_Set_Command_Func(command_func, ierr)
+     SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
        USE MDI_INTERNAL
-       PROCEDURE(execute_command)               :: command_func
+       PROCEDURE(execute_command)               :: command_func 
+       TYPE(C_PTR), VALUE                       :: class_obj
        INTEGER, INTENT(OUT)                     :: ierr
-     END SUBROUTINE MDI_Set_Command_Func
+     END SUBROUTINE MDI_Set_Execute_Command_Func
+
+     FUNCTION MDI_Register_Node_(node) bind(c, name="MDI_Register_Node")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT)                      :: MDI_Register_Node_
+     END FUNCTION MDI_Register_Node_
+
+     FUNCTION MDI_Check_Node_Exists_(node, comm, flag) bind(c, name="MDI_Check_Node_Exists")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: flag
+       INTEGER(KIND=C_INT)                      :: MDI_Check_Node_Exists_
+     END FUNCTION MDI_Check_Node_Exists_
+
+     FUNCTION MDI_Get_NNodes_(comm, nnodes) bind(c, name="MDI_Get_NNodes")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: nnodes
+       INTEGER(KIND=C_INT)                      :: MDI_Get_NNodes_
+     END FUNCTION MDI_Get_NNodes_
+
+     FUNCTION MDI_Get_Node_(index, comm, node) bind(c, name="MDI_Get_Node")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: index
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT)                      :: MDI_Get_Node_
+     END FUNCTION MDI_Get_Node_
+
+     FUNCTION MDI_Register_Command_(node, command) bind(c, name="MDI_Register_Command")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       TYPE(C_PTR), VALUE                       :: command
+       INTEGER(KIND=C_INT)                      :: MDI_Register_Command_
+     END FUNCTION MDI_Register_Command_
+
+     FUNCTION MDI_Check_Command_Exists_(node, command, comm, flag) bind(c, name="MDI_Check_Command_Exists")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       TYPE(C_PTR), VALUE                       :: command
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: flag
+       INTEGER(KIND=C_INT)                      :: MDI_Check_Command_Exists_
+     END FUNCTION MDI_Check_Command_Exists_
+
+     FUNCTION MDI_Get_NCommands_(node, comm, ncommands) bind(c, name="MDI_Get_NCommands")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: ncommands
+       INTEGER(KIND=C_INT)                      :: MDI_Get_NCommands_
+     END FUNCTION MDI_Get_NCommands_
+
+     FUNCTION MDI_Get_Command_(node, index, comm, command) bind(c, name="MDI_Get_Command")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT), VALUE               :: index
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: command
+       INTEGER(KIND=C_INT)                      :: MDI_Get_Command_
+     END FUNCTION MDI_Get_Command_
+
+     FUNCTION MDI_Register_Callback_(node, callback) bind(c, name="MDI_Register_Callback")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       TYPE(C_PTR), VALUE                       :: callback
+       INTEGER(KIND=C_INT)                      :: MDI_Register_Callback_
+     END FUNCTION MDI_Register_Callback_
+
+     FUNCTION MDI_Check_Callback_Exists_(node, callback, comm, flag) bind(c, name="MDI_Check_Callback_Exists")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       TYPE(C_PTR), VALUE                       :: callback
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: flag
+       INTEGER(KIND=C_INT)                      :: MDI_Check_Callback_Exists_
+     END FUNCTION MDI_Check_Callback_Exists_
+
+     FUNCTION MDI_Get_NCallbacks_(node, comm, ncallbacks) bind(c, name="MDI_Get_NCallbacks")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: ncallbacks
+       INTEGER(KIND=C_INT)                      :: MDI_Get_NCallbacks_
+     END FUNCTION MDI_Get_NCallbacks_
+
+     FUNCTION MDI_Get_Callback_(node, index, comm, callback) bind(c, name="MDI_Get_Callback")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: node
+       INTEGER(KIND=C_INT), VALUE               :: index
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_PTR), VALUE                       :: callback
+       INTEGER(KIND=C_INT)                      :: MDI_Get_Callback_
+     END FUNCTION MDI_Get_Callback_
 
   END INTERFACE
 
 
 
-  CONTAINS
+CONTAINS
 
     SUBROUTINE MDI_Init(foptions, fworld_comm, ierr)
       IMPLICIT NONE
@@ -287,6 +452,7 @@
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
@@ -298,10 +464,7 @@
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(count)
 
-      DO i = 1, LEN_TRIM(fbuf)
-         cbuf(i) = fbuf(i:i)
-      END DO
-      cbuf( LEN_TRIM(fbuf) + 1 ) = c_null_char
+      cbuf = str_f_to_c(fbuf, count)
 
       ierr = MDI_Send_( c_loc(cbuf), count, datatype, comm)
     END SUBROUTINE MDI_Send_s
@@ -365,6 +528,7 @@
     END SUBROUTINE MDI_Send_iv
 
     SUBROUTINE MDI_Recv_s (fbuf, count, datatype, comm, ierr)
+      USE MDI_INTERNAL, ONLY : str_c_to_f
       USE ISO_C_BINDING
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
@@ -381,16 +545,7 @@
       ierr = MDI_Recv_(c_loc(cbuf(1)), count, datatype, comm)
 
       ! convert from C string to Fortran string
-      fbuf = ""
-      end_string = .false.
-      DO i = 1, count
-         IF ( cbuf(i) == c_null_char ) end_string = .true.
-         IF ( end_string ) THEN
-            fbuf(i:i) = ' '
-         ELSE
-            fbuf(i:i) = cbuf(i)
-         END IF
-      ENDDO
+       fbuf = str_c_to_f(cbuf, count)
     END SUBROUTINE MDI_Recv_s
 
     SUBROUTINE MDI_Recv_d (fbuf, count, datatype, comm, ierr)
@@ -453,6 +608,7 @@
 
     SUBROUTINE MDI_Send_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
@@ -464,16 +620,14 @@
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-      DO i = 1, LEN_TRIM(fbuf)
-         cbuf(i) = fbuf(i:i)
-      END DO
-      cbuf( LEN_TRIM(fbuf) + 1 ) = c_null_char
+       cbuf = str_f_to_c(fbuf, MDI_COMMAND_LENGTH)
 
       ierr = MDI_Send_Command_( c_loc(cbuf), comm)
     END SUBROUTINE MDI_Send_Command
 
     SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : MDI_Get_Current_Code_, remove_execute_command, str_c_to_f
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
@@ -482,23 +636,20 @@
       INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: i
+      INTEGER                                  :: i, current_code
       LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
       ierr = MDI_Recv_Command_(c_loc(cbuf(1)), comm)
 
       ! convert from C string to Fortran string
-      fbuf = ""
-      end_string = .false.
-      DO i = 1, MDI_COMMAND_LENGTH
-         IF ( cbuf(i) == c_null_char ) end_string = .true.
-         IF ( end_string ) THEN
-            fbuf(i:i) = ' '
-         ELSE
-            fbuf(i:i) = cbuf(i)
-         END IF
-      ENDDO
+      fbuf = str_c_to_f(cbuf, MDI_COMMAND_LENGTH)
+
+      ! If this is the EXIT command, delete all Fortran state associated with the code
+      IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
+        current_code = MDI_Get_Current_Code_()
+        CALL remove_execute_command( current_code )
+      END IF
     END SUBROUTINE MDI_Recv_Command
 
     SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor, ierr)
@@ -530,28 +681,271 @@
       factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
 
+    SUBROUTINE MDI_Register_Node(fnode, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Node
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Node
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Register_Node_( c_loc(cnode) )
+    END SUBROUTINE MDI_Register_Node
+
+    SUBROUTINE MDI_Check_Node_Exists(fnode, comm, flag, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Node_Exists
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Node_Exists
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: flag
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cflag
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Check_Node_Exists_( c_loc(cnode), comm, c_loc(cflag) )
+      flag = cflag
+    END SUBROUTINE MDI_Check_Node_Exists
+
+    SUBROUTINE MDI_Get_NNodes(comm, nnodes, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NNodes
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NNodes
+#endif
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: nnodes
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cnnodes
+
+      ierr = MDI_Get_NNodes_( comm, c_loc(cnnodes) )
+      nnodes = cnnodes
+    END SUBROUTINE MDI_Get_NNodes
+
+    SUBROUTINE MDI_Get_Node(index, comm, fnode, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Node
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Node
+#endif
+      INTEGER, INTENT(IN)                      :: index
+      INTEGER, INTENT(IN)                      :: comm
+      CHARACTER(LEN=*), INTENT(OUT)            :: fnode
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Get_Node_( index, comm, c_loc(cnode) )
+      fnode = str_c_to_f(cnode, MDI_COMMAND_LENGTH)
+    END SUBROUTINE MDI_Get_Node
+
+    SUBROUTINE MDI_Register_Command(fnode, fcommand, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Command
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Command
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      CHARACTER(LEN=*), INTENT(IN)             :: fcommand
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Register_Command_( c_loc(cnode), c_loc(ccommand) )
+    END SUBROUTINE MDI_Register_Command
+
+    SUBROUTINE MDI_Check_Command_Exists(fnode, fcommand, comm, flag, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Command_Exists
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Command_Exists
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      CHARACTER(LEN=*), INTENT(IN)             :: fcommand
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: flag
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cflag
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Check_Command_Exists_( c_loc(cnode), c_loc(ccommand), comm, c_loc(cflag) )
+      flag = cflag
+    END SUBROUTINE MDI_Check_Command_Exists
+
+    SUBROUTINE MDI_Get_NCommands(fnode, comm, ncommands, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCommands
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCommands
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: ncommands
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cncommands
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Get_NCommands_( c_loc(cnode), comm, c_loc(cncommands) )
+      ncommands = cncommands
+    END SUBROUTINE MDI_Get_NCommands
+
+    SUBROUTINE MDI_Get_Command(fnode, index, comm, fcommand, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Command
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Command
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(IN)                      :: index
+      INTEGER, INTENT(IN)                      :: comm
+      CHARACTER(LEN=*), INTENT(OUT)            :: fcommand
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ierr = MDI_Get_Command_( c_loc(cnode), index, comm, c_loc(ccommand) )
+      fcommand = str_c_to_f(ccommand, MDI_COMMAND_LENGTH)
+    END SUBROUTINE MDI_Get_Command
+
+    SUBROUTINE MDI_Register_Callback(fnode, fcallback, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Callback
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Callback
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      CHARACTER(LEN=*), INTENT(IN)             :: fcallback
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Register_Callback_( c_loc(cnode), c_loc(ccallback) )
+    END SUBROUTINE MDI_Register_Callback
+
+    SUBROUTINE MDI_Check_Callback_Exists(fnode, fcallback, comm, flag, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Callback_Exists
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Callback_Exists
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      CHARACTER(LEN=*), INTENT(IN)             :: fcallback
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: flag
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cflag
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Check_Callback_Exists_( c_loc(cnode), c_loc(ccallback), comm, c_loc(cflag) )
+      flag = cflag
+    END SUBROUTINE MDI_Check_Callback_Exists
+
+    SUBROUTINE MDI_Get_NCallbacks(fnode, comm, ncallbacks, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCallbacks
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCallbacks
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: ncallbacks
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cncallbacks
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+
+      ierr = MDI_Get_NCallbacks_( c_loc(cnode), comm, c_loc(cncallbacks) )
+      ncallbacks = cncallbacks
+    END SUBROUTINE MDI_Get_NCallbacks
+
+    SUBROUTINE MDI_Get_Callback(fnode, index, comm, fcallback, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Callback
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Callback
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fnode
+      INTEGER, INTENT(IN)                      :: index
+      INTEGER, INTENT(IN)                      :: comm
+      CHARACTER(LEN=*), INTENT(OUT)            :: fcallback
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
+
+      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      ierr = MDI_Get_Callback_( c_loc(cnode), index, comm, c_loc(ccallback) )
+      fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
+    END SUBROUTINE MDI_Get_Callback
+
+END MODULE
 
 
-  END MODULE
 
 
 
-
-
-SUBROUTINE MDI_Set_Command_Func(command_func, ierr)
+SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
   USE MDI_INTERNAL
 
 #if MDI_WINDOWS
-    !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Command_Func
-    !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Command_Func
+    !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
+    !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
 #endif
     PROCEDURE(execute_command)               :: command_func
+    TYPE(C_PTR), VALUE                       :: class_obj
     INTEGER, INTENT(OUT)                     :: ierr
     INTEGER                                  :: current_code
 
     current_code = MDI_Get_Current_Code_()
 
     CALL add_execute_command(current_code, command_func)
-    ierr = MDI_Set_Command_Func_c( c_funloc(MDI_Execute_Command_f) )
+    ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
-END SUBROUTINE MDI_Set_Command_Func
+END SUBROUTINE MDI_Set_Execute_Command_Func

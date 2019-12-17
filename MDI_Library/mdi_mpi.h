@@ -10,7 +10,7 @@
 #include "mdi.h"
 
 extern MPI_Comm intra_MPI_comm;
-extern int intra_rank;
+//extern int intra_rank;
 extern int mpi_code_rank;
 extern int world_size;
 extern int world_rank;

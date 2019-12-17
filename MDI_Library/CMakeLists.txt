@@ -95,7 +95,6 @@ if( (NOT language) OR (language STREQUAL "Python") )
    endif()
 
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi.py ${CMAKE_CURRENT_BINARY_DIR}/mdi.py COPYONLY)
-   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mdi_mpi4py.py ${CMAKE_CURRENT_BINARY_DIR}/mdi_mpi4py.py COPYONLY)
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_BINARY_DIR}/__init__.py COPYONLY)
 
    # Write the name of the mdi library, for use by mdi.py
