@@ -140,47 +140,18 @@ install:
   - ls MDI_Library
 
   # Build test codes
-  - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.7.0.tar.gz
-  - tar xvzf test_codes.tar.gz
-  - cd MDI_Test_Codes-0.7.0
-  - mkdir build
-  - cd build
-  - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
-  - ls ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-  - cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library ..
-  - make
-  - ls
+  #- curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.7.0.tar.gz
+  #- tar xvzf test_codes.tar.gz
+  #- cd MDI_Test_Codes-0.7.0
+  #- mkdir build
+  #- cd build
+  #- ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
+  #- ls ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
+  #- cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library ..
+  #- make
+  #- ls
 
 script:
   - ls
   - cd ../tests
   - pytest -k 'not mpi'
-  # Confirm that all executables have been created
-  #- find driver_cxx engine_cxx driver_f90 engine_f90 driver_py.py engine_py.py
-
-  # Run a CXX-CXX test calculation using TCP/IP
-  #- ../../../tests/cxx-cxx_tcp.sh
-
-  # Run a CXX-Fortran test calculation using TCP/IP
-  #- ../../../tests/cxx-f90_tcp.sh
-
-  # Run a CXX-Python test calculation using TCP/IP
-  #- ../../../tests/cxx-py_tcp.sh
-
-  # Run a Fortran-CXX test calculation using TCP/IP
-  #- ../../../tests/f90-cxx_tcp.sh
-
-  # Run a Fortran-Fortran test calculation using TCP/IP 
-  #- ../../../tests/f90-f90_tcp.sh
-
-  # Run a Fortran-Python test calculation using TCP/IP
-  #- ../../../tests/f90-py_tcp.sh
-
-  # Run a Python-CXX test calculation using TCP/IP
-  #- ../../../tests/py-cxx_tcp.sh
-
-  # Run a Python-Fortran test calculation using TCP/IP
-  #- ../../../tests/py-f90_tcp.sh
-
-  # Run a Python-Python test calculation using TCP/IP
-  #- ../../../tests/py-py_tcp.sh
