@@ -93,7 +93,7 @@ matrix:
          - cd ../tests
          - ls
          - pytest test_mdi.py::test_cxx_cxx_tcp
-         - pytest
+         - pytest - k 'not mpi'
 
          # Confirm that all executables have been created
          #- find driver_cxx.exe engine_cxx.exe driver_f90.exe engine_f90.exe driver_py.py engine_py.py
