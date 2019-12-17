@@ -26,7 +26,7 @@ set_target_properties(driver_f90 PROPERTIES
 # Ensure that MPI is properly linked
 
 if(NOT MPI_Fortran_FOUND)
-   target_include_directories(driver_f90 PRIVATE ${CMAKE_BINARY_DIR}/MDI_Test_Codes/STUBS_MPI/)
+   target_include_directories(driver_f90 PRIVATE ${CMAKE_BINARY_DIR}/tests/MDI_Test_Codes/STUBS_MPI/)
    target_link_libraries(driver_f90 mdi
                          mpi)
 else()
