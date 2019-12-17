@@ -7,29 +7,51 @@ matrix:
       compiler: gcc
       before_install:
         - sudo apt-get install gfortran
+        - sudo pip install -U pytest
     - os: linux
       compiler: gcc
       before_install:
         - sudo apt-get install gfortran
-        - sudo apt-get install mpich
+        - sudo apt-get install mpich libmpich-dev
+        - sudo pip install mpi4py
+        - sudo pip install numpy
+        - sudo pip install -U pytest
+      before_script:
+        # Run the MPI tests
+        - cd ../tests
+        - pytest -k "mpi"
     - os: linux
       compiler: gcc
+      env: OMPI_MCA_btl_base_warn_component_unused=0
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
+        - sudo pip install mpi4py
+        - sudo pip install numpy
+        - sudo pip install -U pytest
+      before_script:
+        # Run the MPI tests
+        - cd ../tests
+        - pytest -k "mpi"
     - os: osx
       compiler: gcc
       before_install:
         - brew update > /dev/null
         - brew install gcc > /dev/null
         - export FC=gfortran
+        - sudo pip install -U pytest
     - os: windows
       compiler: gcc
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
       before_install:
-           # remove the sh.exe file, which prevents MinGW from working
+         # install pytest
+         - choco install python --version 3.6.8
+         - python -m pip install --upgrade pip
+         - pip install -U pytest
+
+         # remove the sh.exe file, which prevents MinGW from working
          - where sh > sh_loc.txt
          - powershell -command "cat sh_loc.txt | rm"
-         - echo $MDI_CONFIG_OPTIONS
       install:
          # Make Python package build
          - mkdir python_build
@@ -38,66 +60,27 @@ matrix:
          - mingw32-make VERBOSE=1
          - mingw32-make install
          - cd ..
+
          # Make local install build
          - mkdir build
          - cd build
          - cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=./install ..
          - mingw32-make VERBOSE=1
-         - ls
          - mingw32-make install
-         - ls
-         - ls MDI_Library
-         - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.7.0.tar.gz
-         - tar xvzf test_codes.tar.gz
-         - cd MDI_Test_Codes-0.7.0
-         - mkdir build
-         - cd build
-         - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
-         - ls ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-         - cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library -G "MinGW Makefiles" ..
-         - mingw32-make
-         - ls
       script:
          - ls
          - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
          - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
-         
+
          # Fortran executables don't seem to search the $PATH variable
          - cp ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library/*.dll* .
-         - ls MDI_Test_Codes/STUBS_MPI
-         - cp MDI_Test_Codes/STUBS_MPI/*.dll* .
+         - ls tests/MDI_Test_Codes/STUBS_MPI
+         - cp tests/MDI_Test_Codes/STUBS_MPI/*.dll* .
          - ls
 
-         # Confirm that all executables have been created
-         - find driver_cxx.exe engine_cxx.exe driver_f90.exe engine_f90.exe driver_py.py engine_py.py
-
-         # Run a CXX-CXX test calculation using TCP/IP
-         - ../../../tests/cxx-cxx_tcp.sh
-
-         # Run a CXX-Fortran test calculation using TCP/IP
-         - ../../../tests/cxx-f90_tcp.sh
-
-         # Run a CXX-Python test calculation using TCP/IP
-         - ../../../tests/cxx-py_tcp.sh
-
-         # Run a Fortran-CXX test calculation using TCP/IP
-         - ../../../tests/f90-cxx_tcp.sh
-
-         # Run a Fortran-Fortran test calculation using TCP/IP 
-         - ../../../tests/f90-f90_tcp.sh
-
-         # Run a Fortran-Python test calculation using TCP/IP
-         - ../../../tests/f90-py_tcp.sh
-
-         # Run a Python-CXX test calculation using TCP/IP
-         - ../../../tests/py-cxx_tcp.sh
-
-         # Run a Python-Fortran test calculation using TCP/IP
-         - ../../../tests/py-f90_tcp.sh
-
-         # Run a Python-Python test calculation using TCP/IP
-         - ../../../tests/py-py_tcp.sh
-
+         # Run the tests
+         - cd ../tests
+         - pytest -k 'not mpi'
 
 install:
   # Make Python package build
@@ -117,46 +100,6 @@ install:
   - ls
   - ls MDI_Library
 
-  # Build test codes
-  - curl -L -o test_codes.tar.gz https://github.com/MolSSI/MDI_Test_Codes/archive/v0.7.0.tar.gz
-  - tar xvzf test_codes.tar.gz
-  - cd MDI_Test_Codes-0.7.0
-  - mkdir build
-  - cd build
-  - ls ~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
-  - ls ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-  - cmake -Dmdi_include_path=~/build/MolSSI/MDI_Library/build/install/include/MDI_Library -Dmdi_lib_path=~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library ..
-  - make
-  - ls
-
 script:
-  - ls
-  # Confirm that all executables have been created
-  - find driver_cxx engine_cxx driver_f90 engine_f90 driver_py.py engine_py.py
-
-  # Run a CXX-CXX test calculation using TCP/IP
-  - ../../../tests/cxx-cxx_tcp.sh
-
-  # Run a CXX-Fortran test calculation using TCP/IP
-  #- ../../../tests/cxx-f90_tcp.sh
-
-  # Run a CXX-Python test calculation using TCP/IP
-  - ../../../tests/cxx-py_tcp.sh
-
-  # Run a Fortran-CXX test calculation using TCP/IP
-  #- ../../../tests/f90-cxx_tcp.sh
-
-  # Run a Fortran-Fortran test calculation using TCP/IP 
-  #- ../../../tests/f90-f90_tcp.sh
-
-  # Run a Fortran-Python test calculation using TCP/IP
-  #- ../../../tests/f90-py_tcp.sh
-
-  # Run a Python-CXX test calculation using TCP/IP
-  - ../../../tests/py-cxx_tcp.sh
-
-  # Run a Python-Fortran test calculation using TCP/IP
-  #- ../../../tests/py-f90_tcp.sh
-
-  # Run a Python-Python test calculation using TCP/IP
-  - ../../../tests/py-py_tcp.sh
+  - cd ../tests
+  - pytest -k 'not mpi'
