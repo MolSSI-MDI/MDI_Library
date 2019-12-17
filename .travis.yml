@@ -153,6 +153,8 @@ install:
 
 script:
   - ls
+  - cd ../tests
+  - pytest -k 'not mpi'
   # Confirm that all executables have been created
   #- find driver_cxx engine_cxx driver_f90 engine_f90 driver_py.py engine_py.py
 
