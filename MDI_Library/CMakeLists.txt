@@ -150,7 +150,6 @@ if( (NOT language) OR (language STREQUAL "Python") )
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
                 ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
                 ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
-                ${CMAKE_CURRENT_BINARY_DIR}/mdi_mpi4py.py
           DESTINATION ${MDI_INSTALL_LIBDIR})
 endif()
 
