@@ -85,12 +85,14 @@ matrix:
 
          # Fortran executables don't seem to search the $PATH variable
          - cp ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library/*.dll* .
-         - ls MDI_Test_Codes/STUBS_MPI
-         - cp MDI_Test_Codes/STUBS_MPI/*.dll* .
+         - ls tests/MDI_Test_Codes/STUBS_MPI
+         - cp tests/MDI_Test_Codes/STUBS_MPI/*.dll* .
          - ls
 
          # Run the tests
          - cd ../tests
+         - ls
+         - pytest test_mdi.py::test_cxx_cxx_tcp
          - pytest
 
          # Confirm that all executables have been created
