@@ -628,7 +628,8 @@ int MDI_Get_MPI_Code_Rank()
  */
 void MDI_Set_MPI_Intra_Rank(int rank)
 {
-  intra_rank = rank;
+  code* this_code = get_code(current_code);
+  this_code->intra_rank = rank;
 }
 
 /*! \brief Set the size of MPI_COMM_WORLD
@@ -663,7 +664,7 @@ int MDI_Register_Node(const char* node_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
   }
-  code* this_code = vector_get(&codes, current_code);
+  code* this_code = get_code(current_code);
   return register_node(this_code->nodes, node_name);
 }
 
@@ -762,7 +763,7 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
   }
-  code* this_code = vector_get(&codes, current_code);
+  code* this_code = get_code(current_code);
   return register_command(this_code->nodes, node_name, command_name);
 }
 
@@ -793,7 +794,7 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
 
   // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(command_name) > COMMAND_LENGTH ) {
-    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+    mdi_error("Cannot chcek command name with length greater than MDI_COMMAND_LENGTH");
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -904,7 +905,7 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
   }
-  code* this_code = vector_get(&codes, current_code);
+  code* this_code = get_code(current_code);
   return register_callback(this_code->nodes, node_name, callback_name);
 }
 
@@ -935,7 +936,7 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
 
   // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(callback_name) > COMMAND_LENGTH ) {
-    mdi_error("Cannot register name with length greater than MDI_COMMAND_LENGTH");
+    mdi_error("Cannot check callback name with length greater than MDI_COMMAND_LENGTH");
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -1041,9 +1042,10 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
  * \param [in]       execute_command
  *                   Function pointer to the generic execute_command function
  */
-int MDI_Set_Command_Func(int (*generic_command)(const char*, MDI_Comm)) {
-  code* this_code = vector_get(&codes, current_code);
+int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object) {
+  code* this_code = get_code(current_code);
   this_code->execute_command = generic_command;
+  this_code->execute_command_obj = class_object;
   return 0;
 }
 
@@ -1080,6 +1082,11 @@ int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Data
  *
  */
 int MDI_Initialize_New_Code() {
+  if ( ! is_initialized ) {
+    // initialized the codes vector
+    vector_init(&codes, sizeof(code));
+    is_initialized = 1;
+  }
   return new_code();
 }
 
@@ -1099,4 +1106,96 @@ void MDI_Set_Current_Code(int current_code_in) {
  */
 int MDI_Get_Current_Code() {
   return current_code;
+}
+
+
+/*! \brief Set the callback MDI uses for MPI_Recv when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_recv
+ *                   Function pointer to the mpi4py_recv callback
+ */
+int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Comm)) {
+  //this_code->execute_command = generic_command;
+  //this_code->execute_command_obj = class_object;
+  mpi4py_recv_callback = mpi4py_recv;
+  return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for MPI_Send when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_send
+ *                   Function pointer to the mpi4py_send callback
+ */
+int MDI_Set_Mpi4py_Send_Callback(int (*mpi4py_send)(void*, int, int, int, MDI_Comm)) {
+  mpi4py_send_callback = mpi4py_send;
+  return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for gathering code names when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_gather_names
+ *                   Function pointer to the mpi4py_gather_names callback
+ */
+int MDI_Set_Mpi4py_Gather_Names_Callback(int (*mpi4py_gather_names)(void*, void*)) {
+  mpi4py_gather_names_callback = mpi4py_gather_names;
+  return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for MPI_Split when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_split
+ *                   Function pointer to the mpi4py_split callback
+ */
+int MDI_Set_Mpi4py_Split_Callback(int (*mpi4py_split)(int, int, MDI_Comm, int)) {
+  mpi4py_split_callback = mpi4py_split;
+  return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for MPI_Comm_rank when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_rank
+ *                   Function pointer to the mpi4py_rank callback
+ */
+int MDI_Set_Mpi4py_Rank_Callback(int (*mpi4py_rank)(int)) {
+  mpi4py_rank_callback = mpi4py_rank;
+  return 0;
+}
+
+/*! \brief Set the callback MDI uses for MPI_Comm_size when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_size
+ *                   Function pointer to the mpi4py_size callback
+ */
+int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int)) {
+  mpi4py_size_callback = mpi4py_size;
+  return 0;
+}
+
+
+/*! \brief Set the callback MDI uses for MPI_Barrier when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_barrier
+ *                   Function pointer to the mpi4py_barrier callback
+ */
+int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int)) {
+  mpi4py_barrier_callback = mpi4py_barrier;
+  return 0;
 }

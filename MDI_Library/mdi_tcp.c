@@ -112,7 +112,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
 #endif
 
-  code* this_code = vector_get(&codes, current_code);
+  code* this_code = get_code(current_code);
 
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
@@ -172,20 +172,16 @@ int tcp_request_connection(int port, char* hostname_ptr) {
     }
   }
 
-  communicator new_comm;
-  new_comm.method = MDI_TCP;
-  new_comm.sockfd = sockfd;
-  vector* node_vec = malloc(sizeof(vector));
-  vector_init(node_vec, sizeof(node));
-  new_comm.nodes = node_vec;
-  vector_push_back( this_code->comms, &new_comm );
+  MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
+  communicator* new_comm = get_communicator(this_code->id, comm_id);
+  new_comm->sockfd = sockfd;
+
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    communicator* comm = vector_get(this_code->comms, this_code->comms->size-1);
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, this_code->comms->size);
-    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, this_code->comms->size);
+    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, new_comm->id);
+    tcp_recv(&new_comm->mdi_version, 1, MDI_DOUBLE, new_comm->id);
   }
 
   return 0;
@@ -196,27 +192,22 @@ int tcp_request_connection(int port, char* hostname_ptr) {
  */
 int tcp_accept_connection() {
   int connection;
-  code* this_code = vector_get(&codes, current_code);
+  code* this_code = get_code(current_code);
 
   connection = accept(tcp_socket, NULL, NULL);
   if (connection < 0) {
     mdi_error("Could not accept connection");
   }
 
-  communicator new_comm;
-  new_comm.method = MDI_TCP;
-  new_comm.sockfd = connection;
-  vector* node_vec = malloc(sizeof(vector));
-  vector_init(node_vec, sizeof(node));
-  new_comm.nodes = node_vec;
-  vector_push_back( this_code->comms, &new_comm );
+  MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
+  communicator* new_comm = get_communicator(this_code->id, comm_id);
+  new_comm->sockfd = connection;
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    communicator* comm = vector_get(this_code->comms, this_code->comms->size-1);
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, this_code->comms->size);
-    tcp_recv(&comm->mdi_version, 1, MDI_DOUBLE, this_code->comms->size);
+    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, new_comm->id);
+    tcp_recv(&new_comm->mdi_version, 1, MDI_DOUBLE, new_comm->id);
   }
 
   return 0;
@@ -236,9 +227,14 @@ int tcp_accept_connection() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  // only send from rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   int n = 0;
-  code* this_code = vector_get(&codes, current_code);
-  communicator* this = vector_get(this_code->comms, comm-1);
+  communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
   size_t total_sent = 0;
 
@@ -283,9 +279,14 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  // only recv from rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   size_t n, nr;
-  code* this_code = vector_get(&codes, current_code);
-  communicator* this = vector_get(this_code->comms, comm-1);
+  communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
 
   // determine the byte size of the data type being sent
