@@ -71,7 +71,7 @@ matrix:
          # Make local install build
          - mkdir build
          - cd build
-         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_C_FLAGS="-O0 --coverage" -DCMAKE_CXX_FLAGS="-O0 --coverage" -DCMAKE_INSTALL_PREFIX=./install ..
+         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_C_FLAGS="-O0 -coverage" -DCMAKE_CXX_FLAGS="-O0 -coverage" -DCMAKE_INSTALL_PREFIX=./install ..
          - mingw32-make VERBOSE=1
          - mingw32-make install
       script:
@@ -101,7 +101,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="-O0 --coverage" -DCMAKE_CXX_FLAGS="-O0 --coverage" ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="-O0 -coverage" -DCMAKE_CXX_FLAGS="-O0 -coverage" ..
   - make
   - make install
   - ls
