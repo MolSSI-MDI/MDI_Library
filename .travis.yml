@@ -5,11 +5,17 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      env: 
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
         - sudo pip install -U pytest
     - os: linux
       compiler: gcc
+      env: 
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install mpich libmpich-dev
@@ -22,7 +28,10 @@ matrix:
         - pytest -k "mpi"
     - os: linux
       compiler: gcc
-      env: OMPI_MCA_btl_base_warn_component_unused=0
+      env: 
+        - OMPI_MCA_btl_base_warn_component_unused=0
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
@@ -35,6 +44,9 @@ matrix:
         - pytest -k "mpi"
     - os: osx
       compiler: gcc
+      env: 
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+        - CMAKE_COVERAGE_FLAGS=""
       before_install:
         - brew update > /dev/null
         - brew install gcc > /dev/null
@@ -42,7 +54,10 @@ matrix:
         - sudo pip install -U pytest
     - os: windows
       compiler: gcc
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+      env: 
+         - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+         - CMAKE_COVERAGE_FLAGS=""
+         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
          # install pytest
          - choco install python --version 3.6.8
@@ -94,7 +109,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
   - make
   - make install
   - ls
@@ -103,3 +118,7 @@ install:
 script:
   - cd ../tests
   - pytest -k 'not mpi'
+
+after_success:
+  # get code coverage
+  - bash <(curl -s https://codecov.io/bash)
