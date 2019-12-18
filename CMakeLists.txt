@@ -4,6 +4,7 @@ option(language "language")
 option(libtype "libtype")
 option(mpi "on or off" ON)
 option(python_package "on or off" OFF)
+option(test_codes "on or off" OFF)
 
 set(use_C "")
 set(use_CXX "")
@@ -36,4 +37,8 @@ project(mdi
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 add_subdirectory(MDI_Library)
-add_subdirectory(tests)
+
+# compile test codes
+if ( test_codes )
+   add_subdirectory(tests)
+endif()
