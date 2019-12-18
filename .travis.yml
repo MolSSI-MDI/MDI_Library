@@ -6,7 +6,7 @@ matrix:
     - os: linux
       compiler: gcc
       env: 
-        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
@@ -14,7 +14,7 @@ matrix:
     - os: linux
       compiler: gcc
       env: 
-        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
@@ -30,7 +30,7 @@ matrix:
       compiler: gcc
       env: 
         - OMPI_MCA_btl_base_warn_component_unused=0
-        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
+        - CMAKE_COVERAGE_FLAGS="-O0 -coverage"
         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
@@ -44,7 +44,9 @@ matrix:
         - pytest -k "mpi"
     - os: osx
       compiler: gcc
-      env: CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+      env: 
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+        - CMAKE_COVERAGE_FLAGS=""
       before_install:
         - brew update > /dev/null
         - brew install gcc > /dev/null
@@ -54,6 +56,7 @@ matrix:
       compiler: gcc
       env: 
          - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+         - CMAKE_COVERAGE_FLAGS=""
          - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
          # install pytest
@@ -76,7 +79,7 @@ matrix:
          # Make local install build
          - mkdir build
          - cd build
-         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_C_FLAGS="-O0 -coverage" -DCMAKE_CXX_FLAGS="-O0 -coverage" -DCMAKE_INSTALL_PREFIX=./install ..
+         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
          - mingw32-make VERBOSE=1
          - mingw32-make install
       script:
@@ -106,7 +109,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install '$CMAKE_CUSTOM_FLAGS' ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS=$CMAKE_COVERAGE_FLAGS -DCMAKE_CXX_FLAGS=$CMAKE_COVERAGE_FLAGS ..
   - make
   - make install
   - ls
@@ -119,5 +122,5 @@ script:
 after_success:
   # get code coverage
   - echo ${CODECOV_TOKEN}
-  - echo ${CMAKE_CUSTOM_FLAGS}
+  - echo ${CMAKE_COVERAGE_FLAGS}
   - bash <(curl -s https://codecov.io/bash)
