@@ -140,7 +140,6 @@ def get_mpi_comm_from_flag(comm_flag):
 
 # define the type of the callback function
 mpi4py_recv_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
-#                                         ctypes.POINTER(ctypes.c_char), # buf (ctypes.c_void_p?)
                                          ctypes.POINTER(ctypes.c_byte), # buf (ctypes.c_void_p?)
                                          ctypes.c_int, # count
                                          ctypes.c_int, # datatype
@@ -186,7 +185,6 @@ def set_mpi4py_recv_callback():
 
 # define the type of the callback function
 mpi4py_send_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
-#                                         ctypes.POINTER(ctypes.c_char), # buf (ctypes.c_void_p?)
                                          ctypes.POINTER(ctypes.c_byte), # buf (ctypes.c_void_p?)
                                          ctypes.c_int, # count
                                          ctypes.c_int, # datatype
@@ -241,11 +239,10 @@ mdi.MDI_Set_Mpi4py_Size_Callback.argtypes = [mpi4py_size_func_type]
 
 # define the python callback function
 def mpi4py_size_callback(comm_flag):
-    comm = get_mpi_comm_from_flag( comm_flag )
-
-    if comm:
+    try:
+        comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_size()
-    else:
+    except:
         return -1
 
 # define the python function that will set the callback function in c
@@ -268,11 +265,10 @@ mdi.MDI_Set_Mpi4py_Rank_Callback.argtypes = [mpi4py_rank_func_type]
 
 # define the python callback function
 def mpi4py_rank_callback(comm_flag):
-    comm = get_mpi_comm_from_flag( comm_flag )
-
-    if comm:
+    try:
+        comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_rank()
-    else:
+    except:
         return -1
 
 # define the python function that will set the callback function in c
