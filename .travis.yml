@@ -71,7 +71,7 @@ matrix:
          # Make local install build
          - mkdir build
          - cd build
-         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
+         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_C_FLAGS="-O0 --coverage" -DCMAKE_CXX_FLAGS="-O0 --coverage" -DCMAKE_INSTALL_PREFIX=./install ..
          - mingw32-make VERBOSE=1
          - mingw32-make install
       script:
@@ -111,8 +111,6 @@ script:
   - cd ../tests
   - pytest -k 'not mpi'
 
+after_success:
   # get code coverage
-  - cd ../build/MDI_Library/CMakeFiles/mdi.dir
-  - ls
-  - gcov mdi.c.c
   - bash <(curl -s https://codecov.io/bash)
