@@ -5,7 +5,9 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      env: CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+      env: 
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
       before_install:
         - sudo apt-get install gfortran
         - sudo pip install -U pytest
@@ -113,4 +115,6 @@ script:
 
 after_success:
   # get code coverage
+  - echo ${CODECOV_TOKEN}
+  - echo ${CMAKE_CUSTOM_FLAGS}
   - bash <(curl -s https://codecov.io/bash)
