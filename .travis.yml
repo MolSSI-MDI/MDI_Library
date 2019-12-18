@@ -45,7 +45,7 @@ matrix:
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
       before_install:
          # install pytest
-         - choco install python --version 3.6.8
+         - choco install python --version 3.6.8 --execution-timeout=60
          - python -m pip install --upgrade pip
          - pip install -U pytest
 
