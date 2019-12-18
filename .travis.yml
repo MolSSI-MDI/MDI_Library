@@ -6,14 +6,16 @@ matrix:
     - os: linux
       compiler: gcc
       env: 
-        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
         - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
         - sudo pip install -U pytest
     - os: linux
       compiler: gcc
-      env: CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
+      env: 
+        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
+        - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
         - sudo apt-get install mpich libmpich-dev
@@ -28,6 +30,7 @@ matrix:
       compiler: gcc
       env: 
         - OMPI_MCA_btl_base_warn_component_unused=0
+        - CMAKE_CUSTOM_FLAGS="-DCMAKE_C_FLAGS=\"-O0 -coverage\" -DCMAKE_CXX_FLAGS=\"-O0 -coverage\""
         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
@@ -103,7 +106,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ${CMAKE_CUSTOM_FLAGS} ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install '$CMAKE_CUSTOM_FLAGS' ..
   - make
   - make install
   - ls
