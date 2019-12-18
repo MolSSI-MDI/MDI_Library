@@ -121,6 +121,4 @@ script:
 
 after_success:
   # get code coverage
-  - echo ${CODECOV_TOKEN}
-  - echo ${CMAKE_COVERAGE_FLAGS}
   - bash <(curl -s https://codecov.io/bash)
