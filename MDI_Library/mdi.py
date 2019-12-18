@@ -242,7 +242,7 @@ def mpi4py_size_callback(comm_flag):
     try:
         comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_size()
-    except:
+    except Exception:
         return -1
 
 # define the python function that will set the callback function in c
@@ -268,7 +268,7 @@ def mpi4py_rank_callback(comm_flag):
     try:
         comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_rank()
-    except:
+    except Exception:
         return -1
 
 # define the python function that will set the callback function in c
