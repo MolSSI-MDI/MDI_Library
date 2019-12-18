@@ -120,7 +120,7 @@ def delete_code_state(mdi_comm):
     if mdi_comm in mpi4py_comms:
         del mpi4py_comms[mdi_comm]
 
-def get_mpi_comm_from_flag(comm_flag)
+def get_mpi_comm_from_flag(comm_flag):
     global world_comm
     global intra_code_comm
 
