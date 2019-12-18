@@ -109,7 +109,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS=$CMAKE_COVERAGE_FLAGS -DCMAKE_CXX_FLAGS=$CMAKE_COVERAGE_FLAGS ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
   - make
   - make install
   - ls
