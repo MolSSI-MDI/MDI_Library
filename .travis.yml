@@ -101,7 +101,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="-O0 --coverage" -DCMAKE_CXX_FLAGS="-O0 --coverage" ..
   - make
   - make install
   - ls
@@ -110,3 +110,9 @@ install:
 script:
   - cd ../tests
   - pytest -k 'not mpi'
+
+  # get code coverage
+  - cd ../build/MDI_Library/CMakeFiles/mdi.dir
+  - ls
+  - gcov mdi.c.c
+  - bash <(curl -s https://codecov.io/bash)
