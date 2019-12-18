@@ -120,13 +120,26 @@ def delete_code_state(mdi_comm):
     if mdi_comm in mpi4py_comms:
         del mpi4py_comms[mdi_comm]
 
+def get_mpi_comm_from_flag(comm_flag):
+    global world_comm
+    global intra_code_comm
+
+    # get the correct communicator, based on the comm_flag
+    comm = None
+    if comm_flag == 0: # use world_comm
+        comm = world_comm
+    elif comm_flag == 1: # use the code intra_comm
+        comm = intra_code_comm
+    else:
+        raise Exception("MDI Error: Unknown comm flag in mpi4py callback")
+    return comm
+
 ##################################################
 # MPI4Py Recv Callback                           #
 ##################################################
 
 # define the type of the callback function
 mpi4py_recv_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
-#                                         ctypes.POINTER(ctypes.c_char), # buf (ctypes.c_void_p?)
                                          ctypes.POINTER(ctypes.c_byte), # buf (ctypes.c_void_p?)
                                          ctypes.c_int, # count
                                          ctypes.c_int, # datatype
@@ -172,7 +185,6 @@ def set_mpi4py_recv_callback():
 
 # define the type of the callback function
 mpi4py_send_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
-#                                         ctypes.POINTER(ctypes.c_char), # buf (ctypes.c_void_p?)
                                          ctypes.POINTER(ctypes.c_byte), # buf (ctypes.c_void_p?)
                                          ctypes.c_int, # count
                                          ctypes.c_int, # datatype
@@ -227,20 +239,10 @@ mdi.MDI_Set_Mpi4py_Size_Callback.argtypes = [mpi4py_size_func_type]
 
 # define the python callback function
 def mpi4py_size_callback(comm_flag):
-    global world_comm
-    global intra_code_comm
-
-    # get the correct communicator, based on the comm_flag
-    if comm_flag == 0: # use world_comm
-        comm = world_comm
-    elif comm_flag == 1: # use the code intra_comm
-        comm = intra_code_comm
-    else:
-        raise Exception("MDI Error: Unknown comm flag in mpi4py_size_callback")
-
-    if comm:
+    try:
+        comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_size()
-    else:
+    except Exception:
         return -1
 
 # define the python function that will set the callback function in c
@@ -263,20 +265,10 @@ mdi.MDI_Set_Mpi4py_Rank_Callback.argtypes = [mpi4py_rank_func_type]
 
 # define the python callback function
 def mpi4py_rank_callback(comm_flag):
-    global world_comm
-    global intra_code_comm
-
-    # get the correct communicator, based on the comm_flag
-    if comm_flag == 0: # use world_comm
-        comm = world_comm
-    elif comm_flag == 1: # use the code intra_comm
-        comm = intra_code_comm
-    else:
-        raise Exception("MDI Error: Unknown comm flag in mpi4py_rank_callback")
-
-    if comm:
+    try:
+        comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_rank()
-    else:
+    except Exception:
         return -1
 
 # define the python function that will set the callback function in c
@@ -770,7 +762,7 @@ def MDI_Get_Command(node_name, index, arg2):
     arg_size = ctypes.sizeof(ctypes.c_char)
     command_name = (ctypes.c_char*(MDI_COMMAND_LENGTH*arg_size))()
 
-    ret = mdi.MDI_Get_Node(ctypes.c_char_p(node), index, arg2, command_name)
+    ret = mdi.MDI_Get_Command(ctypes.c_char_p(node), index, arg2, command_name)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_Command failed")
 
@@ -833,7 +825,7 @@ def MDI_Get_Callback(node_name, index, arg2):
     arg_size = ctypes.sizeof(ctypes.c_char)
     callback_name = (ctypes.c_char*(MDI_COMMAND_LENGTH*arg_size))()
 
-    ret = mdi.MDI_Get_Node(ctypes.c_char_p(node), index, arg2, callback_name)
+    ret = mdi.MDI_Get_Callback(ctypes.c_char_p(node), index, arg2, callback_name)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_Callback failed")
 
