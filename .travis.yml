@@ -25,7 +25,7 @@ matrix:
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest --cov-report=xml --cov= -k "mpi"
+        - pytest --cov-report=term --cov= -k "mpi"
     - os: linux
       compiler: gcc
       env: 
@@ -41,7 +41,7 @@ matrix:
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest --cov-report=xml --cov= -k "mpi"
+        - pytest --cov-report=term --cov= -k "mpi"
     - os: osx
       compiler: gcc
       env: 
@@ -117,11 +117,10 @@ install:
 
 script:
   - cd ../tests
-  - pytest --cov-report=xml --cov= -k 'not mpi'
+  - pytest --cov-report=term --cov= -k 'not mpi'
 
 after_success:
   # get code coverage
   - ls -a -l
   - ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
-  - cat coverage.xml
   - bash <(curl -s https://codecov.io/bash)
