@@ -95,7 +95,7 @@ matrix:
 
          # Run the tests
          - cd ../tests
-         - pytest -k 'not mpi'
+         - pytest --cov-report=xml --cov=MDI_Library -k 'not mpi'
 
 install:
   # Make Python package build
@@ -109,7 +109,12 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+  - cmake -Dtest_codes=ON 
+          -DCMAKE_INSTALL_PREFIX=./install 
+          -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          ..
   - make
   - make install
   - ls
