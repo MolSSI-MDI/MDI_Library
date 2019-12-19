@@ -1076,31 +1076,6 @@ int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Data
 }
 
 
-/*! \brief Create a new code object, for storing information about this code
- *
- * This function is only used if the linked program uses MPI4PY.
- *
- */
-int MDI_Initialize_New_Code() {
-  if ( ! is_initialized ) {
-    // initialized the codes vector
-    vector_init(&codes, sizeof(code));
-    is_initialized = 1;
-  }
-  return new_code();
-}
-
-
-/*! \brief Set the current code
- *
- * This function is only used if the linked program uses MPI4PY.
- *
- */
-void MDI_Set_Current_Code(int current_code_in) {
-  current_code = current_code_in;
-}
-
-
 /*! \brief Get the current code
  *
  */
@@ -1117,8 +1092,6 @@ int MDI_Get_Current_Code() {
  *                   Function pointer to the mpi4py_recv callback
  */
 int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Comm)) {
-  //this_code->execute_command = generic_command;
-  //this_code->execute_command_obj = class_object;
   mpi4py_recv_callback = mpi4py_recv;
   return 0;
 }

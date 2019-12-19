@@ -92,18 +92,6 @@ mdi.MDI_Set_World_Size.restype = None
 mdi.MDI_Set_World_Rank.argtypes = [ctypes.c_int]
 mdi.MDI_Set_World_Rank.restype = None
 
-# MDI_Initialize_New_Code
-mdi.MDI_Initialize_New_Code.argtypes = []
-mdi.MDI_Initialize_New_Code.restype = ctypes.c_int
-def MDI_Initialize_New_Code():
-    return mdi.MDI_Initialize_New_Code()
-
-# MDI_Set_Current_Code
-mdi.MDI_Set_Current_Code.argtypes = [ctypes.c_int]
-mdi.MDI_Set_Current_Code.restype = None
-def MDI_Set_Current_Code(current_code_in):
-    mdi.MDI_Set_Current_Code(current_code_in)
-
 # MDI_Get_Current_Code
 mdi.MDI_Get_Current_Code.argtypes = []
 mdi.MDI_Get_Current_Code.restype = ctypes.c_int
