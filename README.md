@@ -5,6 +5,7 @@ MolSSI Driver Interface (MDI) Library
 [![Build Status](https://dev.azure.com/taylorabarnes/MDI_Library/_apis/build/status/MolSSI.MDI_Library?branchName=master)](https://dev.azure.com/taylorabarnes/MDI_Library/_build/latest?definitionId=1&branchName=master)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/MolSSI/MDI_Library.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MolSSI/MDI_Library/context:python)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/MolSSI/MDI_Library.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MolSSI/MDI_Library/context:cpp)
+[![codecov](https://codecov.io/gh/MolSSI/MDI_Library/branch/master/graph/badge.svg)](https://codecov.io/gh/MolSSI/MDI_Library)
 
 ## Overview
 
