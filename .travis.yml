@@ -21,11 +21,11 @@ matrix:
         - sudo apt-get install mpich libmpich-dev
         - sudo pip install mpi4py
         - sudo pip install numpy
-        - sudo pip install -U pytest
+        - sudo pip install -U pytest pytest-cov
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest -k "mpi"
+        - pytest --cov-report=xml -k "mpi"
     - os: linux
       compiler: gcc
       env: 
@@ -37,11 +37,11 @@ matrix:
         - sudo apt-get install openmpi-bin openmpi-doc libopenmpi-dev
         - sudo pip install mpi4py
         - sudo pip install numpy
-        - sudo pip install -U pytest
+        - sudo pip install -U pytest pytest-cov
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest -k "mpi"
+        - pytest --cov-report=xml -k "mpi"
     - os: osx
       compiler: gcc
       env: 
@@ -51,7 +51,7 @@ matrix:
         - brew update > /dev/null
         - brew install gcc > /dev/null
         - export FC=gfortran
-        - sudo pip install -U pytest
+        - sudo pip install -U pytest pytest-cov
     - os: windows
       compiler: gcc
       env: 
@@ -62,7 +62,7 @@ matrix:
          # install pytest
          - choco install python --version 3.6.8
          - python -m pip install --upgrade pip
-         - pip install -U pytest
+         - pip install -U pytest pytest-cov
 
          # remove the sh.exe file, which prevents MinGW from working
          - where sh > sh_loc.txt
@@ -109,7 +109,7 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
   - make
   - make install
   - ls
@@ -117,7 +117,7 @@ install:
 
 script:
   - cd ../tests
-  - pytest -k 'not mpi'
+  - pytest --cov-report=xml -k 'not mpi'
 
 after_success:
   # get code coverage
