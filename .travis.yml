@@ -123,4 +123,5 @@ after_success:
   # get code coverage
   - ls -a -l
   - ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
+  - cat coverage.xml
   - bash <(curl -s https://codecov.io/bash)
