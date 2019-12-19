@@ -25,7 +25,7 @@ matrix:
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest --cov-report=xml --cov=MDI_Library -k "mpi"
+        - pytest --cov-report=xml --cov= -k "mpi"
     - os: linux
       compiler: gcc
       env: 
@@ -41,7 +41,7 @@ matrix:
       before_script:
         # Run the MPI tests
         - cd ../tests
-        - pytest --cov-report=xml --cov=MDI_Library -k "mpi"
+        - pytest --cov-report=xml --cov= -k "mpi"
     - os: osx
       compiler: gcc
       env: 
@@ -117,7 +117,7 @@ install:
 
 script:
   - cd ../tests
-  - pytest --cov-report=xml --cov=MDI_Library -k 'not mpi'
+  - pytest --cov-report=xml --cov= -k 'not mpi'
 
 after_success:
   # get code coverage
