@@ -10,7 +10,7 @@ matrix:
         - CODECOV_TOKEN="99465b5f-26b4-4487-8355-fbcac5249a05"
       before_install:
         - sudo apt-get install gfortran
-        - sudo pip install -U pytest
+        - sudo pip install -U pytest pytest-cov
     - os: linux
       compiler: gcc
       env: 
