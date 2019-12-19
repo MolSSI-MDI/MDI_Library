@@ -2,11 +2,11 @@ import os
 import sys
 import glob
 import subprocess
-try: # Check for installed package
-    import mdi
-except ImportError: # Check for local build
-    sys.path.append('../build')
-    import MDI_Library as mdi
+#try: # Check for installed package
+#    import mdi
+#except ImportError: # Check for local build
+sys.path.append('../build')
+import MDI_Library as mdi
 
 build_dir = "../build"
 
