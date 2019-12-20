@@ -92,18 +92,6 @@ mdi.MDI_Set_World_Size.restype = None
 mdi.MDI_Set_World_Rank.argtypes = [ctypes.c_int]
 mdi.MDI_Set_World_Rank.restype = None
 
-# MDI_Initialize_New_Code
-mdi.MDI_Initialize_New_Code.argtypes = []
-mdi.MDI_Initialize_New_Code.restype = ctypes.c_int
-def MDI_Initialize_New_Code():
-    return mdi.MDI_Initialize_New_Code()
-
-# MDI_Set_Current_Code
-mdi.MDI_Set_Current_Code.argtypes = [ctypes.c_int]
-mdi.MDI_Set_Current_Code.restype = None
-def MDI_Set_Current_Code(current_code_in):
-    mdi.MDI_Set_Current_Code(current_code_in)
-
 # MDI_Get_Current_Code
 mdi.MDI_Get_Current_Code.argtypes = []
 mdi.MDI_Get_Current_Code.restype = ctypes.c_int
@@ -685,7 +673,7 @@ def MDI_Get_NNodes(arg2):
     arg_size = ctypes.sizeof(ctypes.c_int)
     nnodes = (ctypes.c_int*arg_size)()
 
-    ret = mdi.MDI_Check_Node_Exists(arg2, nnodes)
+    ret = mdi.MDI_Get_NNodes(arg2, nnodes)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_NNodes failed")
     nnodes_cast = ctypes.cast(nnodes, ctypes.POINTER(ctypes.c_int)).contents
@@ -746,7 +734,7 @@ def MDI_Get_NCommands(arg1, arg2):
     arg_size = ctypes.sizeof(ctypes.c_int)
     ncommands = (ctypes.c_int*arg_size)()
 
-    ret = mdi.MDI_Check_Node_Exists(ctypes.c_char_p(node), arg2, ncommands)
+    ret = mdi.MDI_Get_NCommands(ctypes.c_char_p(node), arg2, ncommands)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_NCommands failed")
     ncommands_cast = ctypes.cast(ncommands, ctypes.POINTER(ctypes.c_int)).contents
@@ -809,7 +797,7 @@ def MDI_Get_NCallbacks(arg1, arg2):
     arg_size = ctypes.sizeof(ctypes.c_int)
     ncallbacks = (ctypes.c_int*arg_size)()
 
-    ret = mdi.MDI_Check_Node_Exists(ctypes.c_char_p(node), arg2, ncallbacks)
+    ret = mdi.MDI_Get_NCallbacks(ctypes.c_char_p(node), arg2, ncallbacks)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_NCallbacks failed")
     ncallbacks_cast = ctypes.cast(ncallbacks, ctypes.POINTER(ctypes.c_int)).contents

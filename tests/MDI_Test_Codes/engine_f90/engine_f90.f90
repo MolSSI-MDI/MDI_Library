@@ -2,11 +2,14 @@ PROGRAM ENGINE_F90
 
   USE mpi
   USE ISO_C_binding
-  USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_CHAR, MDI_NAME_LENGTH, &
+  USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_DOUBLE, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, MDI_Register_Node, MDI_Register_Command
+       MDI_Set_Execute_Command_Func, &
+       MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback
 
   IMPLICIT NONE
+
+  INTEGER, PARAMETER :: dp = selected_real_kind(15, 307)
 
   LOGICAL :: terminate_flag
 
@@ -53,6 +56,13 @@ PROGRAM ENGINE_F90
    CALL MDI_Register_Node("@GLOBAL", ierr)
    CALL MDI_Register_Command("@GLOBAL", "EXIT", ierr)
    CALL MDI_Register_Command("@GLOBAL", "<NATOMS", ierr)
+   CALL MDI_Register_Command("@GLOBAL", "<COORDS", ierr)
+   CALL MDI_Register_Command("@GLOBAL", "<FORCES", ierr)
+   CALL MDI_Register_Node("@FORCES", ierr)
+   CALL MDI_Register_Command("@FORCES", "EXIT", ierr)
+   CALL MDI_Register_Command("@FORCES", "<FORCES", ierr)
+   CALL MDI_Register_Command("@FORCES", ">FORCES", ierr)
+   CALL MDI_Register_Callback("@FORCES", ">FORCES", ierr)
 
    ! Set the generic execute_command function
    CALL MDI_Set_Execute_Command_Func(generic_command, class_obj, ierr)
@@ -80,22 +90,39 @@ PROGRAM ENGINE_F90
      SUBROUTINE execute_command(command, comm, ierr)
        IMPLICIT NONE
 
-       CHARACTER(LEN=*), INTENT(IN) :: command
-       INTEGER, INTENT(IN)          :: comm
-       INTEGER, INTENT(OUT)         :: ierr
+       CHARACTER(LEN=*), INTENT(IN)  :: command
+       INTEGER, INTENT(IN)           :: comm
+       INTEGER, INTENT(OUT)          :: ierr
 
-       INTEGER :: natoms
+       INTEGER                       :: icoord
+       INTEGER                       :: natoms
+       DOUBLE PRECISION, ALLOCATABLE :: coords(:), forces(:)
+
+       ! set dummy molecular properties
+       natoms = 10
+       ALLOCATE( coords( 3 * natoms ) )
+       DO icoord = 1, 3 * natoms
+          coords(icoord) = 0.1_dp * ( icoord - 1 )
+       END DO
+       ALLOCATE( forces( 3 * natoms ) )
+       DO icoord = 1, 3 * natoms
+          forces(icoord) = 0.01_dp * ( icoord - 1 )
+       END DO
 
        SELECT CASE( TRIM(command) )
        CASE( "EXIT" )
           terminate_flag = .true.
        CASE( "<NATOMS" )
-          natoms = 123
-          !CALL MDI_Send(natoms, 1, MDI_INT, comm, ierr)
-          WRITE(6,*)'SUCCESS!'
+          CALL MDI_Send(natoms, 1, MDI_INT, comm, ierr)
+       CASE( "<COORDS" )
+          CALL MDI_Send(coords, 3 * natoms, MDI_DOUBLE, comm, ierr)
+       CASE( "<FORCES" )
+          CALL MDI_Send(forces, 3 * natoms, MDI_DOUBLE, comm, ierr)
        CASE DEFAULT
           WRITE(6,*)'Error: command not recognized'
        END SELECT
+
+       DEALLOCATE( coords, forces )
 
        ierr = 0
      END SUBROUTINE execute_command

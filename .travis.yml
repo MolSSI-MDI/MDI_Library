@@ -61,6 +61,7 @@ matrix:
       before_install:
          # install pytest
          - choco install python --version 3.6.8
+         - choco install codecov
          - python -m pip install --upgrade pip
          - pip install -U pytest pytest-cov
 
@@ -95,7 +96,9 @@ matrix:
 
          # Run the tests
          - cd ../tests
-         - pytest -k 'not mpi'
+         - pytest --cov-report=xml --cov=MDI_Library -k 'not mpi'
+      after_success:
+         - codecov.exe -f coverage.xml -t "99465b5f-26b4-4487-8355-fbcac5249a05"
 
 install:
   # Make Python package build
@@ -109,7 +112,12 @@ install:
   # Make local install build
   - mkdir build
   - cd build
-  - cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+  - cmake -Dtest_codes=ON 
+          -DCMAKE_INSTALL_PREFIX=./install 
+          -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" 
+          ..
   - make
   - make install
   - ls
