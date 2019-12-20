@@ -10,7 +10,13 @@ except ImportError: # Check for installed package
 
 build_dir = "../build"
 
-sys.path.append(build_dir) 
+sys.path.append(build_dir)
+
+# Output expected from each of the drivers
+driver_out_expected_py = """ Engine name: MM
+NATOMS: 10
+"""
+
 
 # Includes flags to prevent warning messages
 mpiexec_general = "mpiexec "
@@ -413,6 +419,8 @@ def test_f90_py_tcp():
     assert driver_out == " Engine name: MM\n"
 
 def test_py_cxx_tcp():
+    global driver_out_expected_py
+
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
@@ -428,9 +436,11 @@ def test_py_cxx_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py
 
 def test_py_f90_tcp():
+    global driver_out_expected_py
+
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_f90*")[0]
 
@@ -446,9 +456,11 @@ def test_py_f90_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py
 
 def test_py_py_tcp():
+    global driver_out_expected_py
+
     # run the calculation
     driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
@@ -462,4 +474,5 @@ def test_py_py_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+#    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py

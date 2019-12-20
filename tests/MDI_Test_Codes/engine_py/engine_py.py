@@ -18,51 +18,62 @@ try:
 except ImportError:
     use_mpi4py = False
 
-exit_flag = False
-
-def execute_command(command, comm, class_obj):
-    global exit_flag
+def execute_command(command, comm, self):
 
     if command == "EXIT":
-        exit_flag = True
+        self.exit_flag = True
     elif command == "<NATOMS":
-        print("SUCCESS")
+        mdi.MDI_Send(self.natoms, 1, mdi.MDI_INT, comm)
     else:
         raise Exception("Error in engine_py.py: MDI command not recognized")
 
     return 0
 
-# get the MPI communicator
-if use_mpi4py:
-    mpi_world = MPI.COMM_WORLD
-else:
-    mpi_world = None
+class MDIEngine:
 
-# Initialize the MDI Library
-mdi.MDI_Init(sys.argv[2],mpi_world)
-if use_mpi4py:
-    mpi_world = mdi.MDI_Get_Intra_Code_MPI_Comm()
-    world_rank = mpi_world.Get_rank()
-else:
-    world_rank = 0
+    def __init__(self):
+        self.exit_flag = False
 
-# Register the supported commands
-mdi.MDI_Register_Node("@GLOBAL")
-mdi.MDI_Register_Command("@GLOBAL","EXIT")
-mdi.MDI_Register_Command("@GLOBAL","<NATOMS")
+        # MPI variables
+        self.mpi_world = None
+        self.world_rank = 0
 
-# Set the generic execute_command function
-mdi.MDI_Set_Execute_Command_Func(execute_command, None)
+        # set dummy molecular information
+        self.natoms = 10
+        self.coords = [ 0.1 * i for i in range( 3 * self.natoms ) ]
 
-# Connect to the driver
-comm = mdi.MDI_Accept_Communicator()
+    def run(self):
+        # get the MPI communicator
+        if use_mpi4py:
+            self.mpi_world = MPI.COMM_WORLD
 
-while not exit_flag:
-    if world_rank == 0:
-        command = mdi.MDI_Recv_Command(comm)
-    else:
-        command = None
-    if use_mpi4py:
-        command = mpi_world.bcast(command, root=0)
+        # Initialize the MDI Library
+        mdi.MDI_Init(sys.argv[2],self.mpi_world)
+        if use_mpi4py:
+            self.mpi_world = mdi.MDI_Get_Intra_Code_MPI_Comm()
+            self.world_rank = self.mpi_world.Get_rank()
 
-    execute_command( command, comm, None )
+        # Register the supported commands
+        mdi.MDI_Register_Node("@GLOBAL")
+        mdi.MDI_Register_Command("@GLOBAL","EXIT")
+        mdi.MDI_Register_Command("@GLOBAL","<NATOMS")
+
+        # Set the generic execute_command function
+        mdi.MDI_Set_Execute_Command_Func(execute_command, self)
+
+        # Connect to the driver
+        comm = mdi.MDI_Accept_Communicator()
+
+        while not self.exit_flag:
+            if self.world_rank == 0:
+                command = mdi.MDI_Recv_Command(comm)
+            else:
+                command = None
+            if use_mpi4py:
+                command = self.mpi_world.bcast(command, root=0)
+
+            execute_command( command, comm, self )
+
+if __name__== "__main__":
+    engine = MDIEngine()
+    engine.run()

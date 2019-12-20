@@ -90,9 +90,8 @@ PROGRAM ENGINE_F90
        CASE( "EXIT" )
           terminate_flag = .true.
        CASE( "<NATOMS" )
-          natoms = 123
-          !CALL MDI_Send(natoms, 1, MDI_INT, comm, ierr)
-          WRITE(6,*)'SUCCESS!'
+          natoms = 10
+          CALL MDI_Send(natoms, 1, MDI_INT, comm, ierr)
        CASE DEFAULT
           WRITE(6,*)'Error: command not recognized'
        END SELECT

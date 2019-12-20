@@ -11,7 +11,7 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
     exit_signal = true;
   }
   else if ( strcmp(command, "<NATOMS") == 0 ) {
-    int natoms = 123;
+    int natoms = 10;
     MDI_Send(&natoms, 1, MDI_INT, comm);
   }
   else {

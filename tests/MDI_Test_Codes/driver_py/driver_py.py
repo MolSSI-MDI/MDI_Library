@@ -49,5 +49,10 @@ if ( not mdi.MDI_Check_Node_Exists("@GLOBAL",comm) ):
 if ( not mdi.MDI_Check_Command_Exists("@GLOBAL","EXIT",comm) ):
     raise Exception("Engine does not support the EXIT command")
 
+# Send the "<NATOMS" command to the engine
+mdi.MDI_Send_Command("<NATOMS", comm)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, comm)
+print("NATOMS: " + str(natoms))
+
 # Send the "EXIT" command to the engine
 mdi.MDI_Send_Command("EXIT", comm)
