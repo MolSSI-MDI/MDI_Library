@@ -12,6 +12,15 @@ build_dir = "../build"
 
 sys.path.append(build_dir)
 
+driver_out_expected_f90 = """ Engine name: MM
+ NNODES:            2
+ NODE: @FORCES
+ NCOMMANDS:            3
+ COMMAND: >FORCES
+ NCALLBACKS:            1
+ CALLBACK: >FORCES
+"""
+
 # Output expected from each of the drivers
 driver_out_expected_py = """ Engine name: MM
 NNODES: 2
@@ -206,6 +215,8 @@ def test_cxx_py_mpi():
     assert driver_out == " Engine name: MM\n"
 
 def test_f90_cxx_mpi():
+    global driver_out_expected_f90
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -221,9 +232,11 @@ def test_f90_cxx_mpi():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_f90_f90_mpi():
+    global driver_out_expected_f90
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
@@ -239,9 +252,11 @@ def test_f90_f90_mpi():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_f90_py_mpi():
+    global driver_out_expected_f90
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
 
@@ -256,7 +271,7 @@ def test_f90_py_mpi():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_py_cxx_mpi():
     global driver_out_expected_py
@@ -376,6 +391,8 @@ def test_cxx_py_tcp():
     assert driver_out == " Engine name: MM\n"
 
 def test_f90_cxx_tcp():
+    global driver_out_expected_f90
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -392,9 +409,11 @@ def test_f90_cxx_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_f90_f90_tcp():
+    global driver_out_expected_f90
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
@@ -411,9 +430,11 @@ def test_f90_f90_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_f90_py_tcp():
+    global driver_out_expected_f90
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
 
@@ -430,7 +451,7 @@ def test_f90_py_tcp():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_f90
 
 def test_py_cxx_tcp():
     global driver_out_expected_py

@@ -49,7 +49,7 @@ if ( not mdi.MDI_Check_Node_Exists("@GLOBAL",comm) ):
 if ( not mdi.MDI_Check_Command_Exists("@GLOBAL","EXIT",comm) ):
     raise Exception("Engine does not support the EXIT command")
 
-# Get the second node of the engine
+# Test the node, command, and callback inquiry functions
 nnodes = mdi.MDI_Get_NNodes(comm)
 print("NNODES: " + str(nnodes))
 second_node = mdi.MDI_Get_Node(1, comm)
