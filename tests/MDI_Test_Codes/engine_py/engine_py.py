@@ -71,6 +71,12 @@ class MDIEngine:
         mdi.MDI_Register_Command("@GLOBAL","EXIT")
         mdi.MDI_Register_Command("@GLOBAL","<NATOMS")
         mdi.MDI_Register_Command("@GLOBAL","<COORDS")
+        mdi.MDI_Register_Command("@GLOBAL","<FORCES")
+        mdi.MDI_Register_Node("@FORCES")
+        mdi.MDI_Register_Command("@FORCES","EXIT")
+        mdi.MDI_Register_Command("@FORCES","<FORCES")
+        mdi.MDI_Register_Command("@FORCES",">FORCES")
+        mdi.MDI_Register_Callback("@FORCES",">FORCES")
 
         # Set the generic execute_command function
         mdi.MDI_Set_Execute_Command_Func(execute_command, self)

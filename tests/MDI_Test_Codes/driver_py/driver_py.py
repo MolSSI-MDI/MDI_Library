@@ -61,11 +61,14 @@ if use_numpy:
 else:
     datatype = mdi.MDI_DOUBLE
 coords = mdi.MDI_Recv(3 * natoms, datatype, comm)
+coords = np.round( coords, 10 )
 print("COORDS: " + str(coords))
 
 # Send the "<FORCES" command to the engine
 mdi.MDI_Send_Command("<FORCES", comm)
 forces = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm)
+for iforce in range( 3 * natoms ):
+    forces[iforce] = round(forces[iforce], 10)
 print("FORCES: " + str(forces))
 
 # Send the "EXIT" command to the engine
