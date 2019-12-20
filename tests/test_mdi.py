@@ -15,6 +15,9 @@ sys.path.append(build_dir)
 # Output expected from each of the drivers
 driver_out_expected_py = """ Engine name: MM
 NATOMS: 10
+COORDS: [0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.  1.1 1.2 1.3 1.4 1.5 1.6 1.7
+ 1.8 1.9 2.  2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9]
+FORCES: [0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29]
 """
 
 
@@ -251,6 +254,8 @@ def test_f90_py_mpi():
     assert driver_out == " Engine name: MM\n"
 
 def test_py_cxx_mpi():
+    global driver_out_expected_py
+
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
@@ -265,9 +270,11 @@ def test_py_cxx_mpi():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py
 
 def test_py_f90_mpi():
+    global driver_out_expected_py
+
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_f90*")[0]
 
@@ -282,9 +289,11 @@ def test_py_f90_mpi():
     driver_err = format_return(driver_tup[1])
 
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py
 
 def test_py_py_mpi():
+    global driver_out_expected_py
+
     # run the calculation
     driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
@@ -296,7 +305,7 @@ def test_py_py_mpi():
     driver_err = format_return(driver_tup[1])
  
     assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
+    assert driver_out == driver_out_expected_py
 
 
 

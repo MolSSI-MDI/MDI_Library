@@ -7,12 +7,28 @@
 bool exit_signal = false;
 
 int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
+  // set dummy molecular information
+  int natoms = 10;
+  double coords[3*natoms];
+  for (int icoord = 0; icoord < 3 * natoms; icoord++) {
+    coords[icoord] = 0.1 * double(icoord);
+  }
+  double forces[3*natoms];
+  for (int icoord = 0; icoord < 3 * natoms; icoord++) {
+    forces[icoord] = 0.01 * double(icoord);
+  }
+
   if ( strcmp(command, "EXIT") == 0 ) {
     exit_signal = true;
   }
   else if ( strcmp(command, "<NATOMS") == 0 ) {
-    int natoms = 10;
     MDI_Send(&natoms, 1, MDI_INT, comm);
+  }
+  else if ( strcmp(command, "<COORDS") == 0 ) {
+    MDI_Send(&coords, 3 * natoms, MDI_DOUBLE, comm);
+  }
+  else if ( strcmp(command, "<FORCES") == 0 ) {
+    MDI_Send(&forces, 3 * natoms, MDI_DOUBLE, comm);
   }
   else {
     throw std::runtime_error("Unrecognized command.");

@@ -7,7 +7,7 @@ except: # Check for installed package
     import mdi
 
 try:
-    import numpy
+    import numpy as np
     use_numpy = True
 except ImportError:
     use_numpy = False
@@ -24,6 +24,14 @@ def execute_command(command, comm, self):
         self.exit_flag = True
     elif command == "<NATOMS":
         mdi.MDI_Send(self.natoms, 1, mdi.MDI_INT, comm)
+    elif command == "<COORDS":
+        mdi.MDI_Send(self.coords, 3 * self.natoms, mdi.MDI_DOUBLE, comm)
+    elif command == "<FORCES":
+        if use_numpy:
+            datatype = mdi.MDI_DOUBLE_NUMPY
+        else:
+            datatype = mdi.MDI_DOUBLE
+        mdi.MDI_Send(self.forces, 3 * self.natoms, datatype, comm)
     else:
         raise Exception("Error in engine_py.py: MDI command not recognized")
 
@@ -41,6 +49,11 @@ class MDIEngine:
         # set dummy molecular information
         self.natoms = 10
         self.coords = [ 0.1 * i for i in range( 3 * self.natoms ) ]
+        forces = [ 0.01 * i for i in range( 3 * self.natoms ) ]
+        if use_numpy:
+            self.forces = np.array(forces)
+        else:
+            self.forces = forces
 
     def run(self):
         # get the MPI communicator
@@ -57,6 +70,7 @@ class MDIEngine:
         mdi.MDI_Register_Node("@GLOBAL")
         mdi.MDI_Register_Command("@GLOBAL","EXIT")
         mdi.MDI_Register_Command("@GLOBAL","<NATOMS")
+        mdi.MDI_Register_Command("@GLOBAL","<COORDS")
 
         # Set the generic execute_command function
         mdi.MDI_Set_Execute_Command_Func(execute_command, self)

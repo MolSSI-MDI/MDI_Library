@@ -7,7 +7,7 @@ except: # Check for installed package
     import mdi
 
 try:
-    import numpy
+    import numpy as np
     use_numpy = True
 except ImportError:
     use_numpy = False
@@ -53,6 +53,20 @@ if ( not mdi.MDI_Check_Command_Exists("@GLOBAL","EXIT",comm) ):
 mdi.MDI_Send_Command("<NATOMS", comm)
 natoms = mdi.MDI_Recv(1, mdi.MDI_INT, comm)
 print("NATOMS: " + str(natoms))
+
+# Send the "<COORDS" command to the engine
+mdi.MDI_Send_Command("<COORDS", comm)
+if use_numpy:
+    datatype = mdi.MDI_DOUBLE_NUMPY
+else:
+    datatype = mdi.MDI_DOUBLE
+coords = mdi.MDI_Recv(3 * natoms, datatype, comm)
+print("COORDS: " + str(coords))
+
+# Send the "<FORCES" command to the engine
+mdi.MDI_Send_Command("<FORCES", comm)
+forces = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm)
+print("FORCES: " + str(forces))
 
 # Send the "EXIT" command to the engine
 mdi.MDI_Send_Command("EXIT", comm)
