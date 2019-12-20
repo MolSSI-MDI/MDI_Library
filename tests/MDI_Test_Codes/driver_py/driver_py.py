@@ -58,6 +58,13 @@ ncommands = mdi.MDI_Get_NCommands(second_node, comm)
 print("NCOMMANDS: " + str(ncommands))
 third_command = mdi.MDI_Get_Command(second_node, 2, comm)
 print("COMMAND: " + str(third_command))
+ncallbacks = mdi.MDI_Get_NCallbacks(second_node, comm)
+print("NCALLBACKS: " + str(ncallbacks))
+first_callback = mdi.MDI_Get_Callback(second_node, 0, comm)
+print("CALLBACK: " + str(first_callback))
+# Check if the engine supports >FORCES callback
+if ( not mdi.MDI_Check_Callback_Exists("@FORCES",">FORCES",comm) ):
+    raise Exception("Engine does not support the >FORCES command")
 
 # Send the "<NATOMS" command to the engine
 mdi.MDI_Send_Command("<NATOMS", comm)
