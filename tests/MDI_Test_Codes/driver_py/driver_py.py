@@ -49,6 +49,12 @@ if ( not mdi.MDI_Check_Node_Exists("@GLOBAL",comm) ):
 if ( not mdi.MDI_Check_Command_Exists("@GLOBAL","EXIT",comm) ):
     raise Exception("Engine does not support the EXIT command")
 
+# Get the second node of the engine
+nnodes = mdi.MDI_Get_NNodes(comm)
+print("NNODES: " + str(nnodes))
+#second_node = mdi.MDI_Get_Node(1, comm)
+#print("SECOND_NODE: " + str(second_node))
+
 # Send the "<NATOMS" command to the engine
 mdi.MDI_Send_Command("<NATOMS", comm)
 natoms = mdi.MDI_Recv(1, mdi.MDI_INT, comm)
@@ -61,7 +67,11 @@ if use_numpy:
 else:
     datatype = mdi.MDI_DOUBLE
 coords = mdi.MDI_Recv(3 * natoms, datatype, comm)
-coords = np.round( coords, 10 )
+if use_numpy:
+    coords = np.round( coords, 10 )
+else:
+    for icoord in range( 3 * natoms ):
+        coords[icoord] = round(coords[icoord], 10)
 print("COORDS: " + str(coords))
 
 # Send the "<FORCES" command to the engine

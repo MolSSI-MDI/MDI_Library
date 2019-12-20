@@ -4,7 +4,8 @@ PROGRAM ENGINE_F90
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_DOUBLE, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, MDI_Register_Node, MDI_Register_Command
+       MDI_Set_Execute_Command_Func, &
+       MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback
 
   IMPLICIT NONE
 
@@ -55,6 +56,13 @@ PROGRAM ENGINE_F90
    CALL MDI_Register_Node("@GLOBAL", ierr)
    CALL MDI_Register_Command("@GLOBAL", "EXIT", ierr)
    CALL MDI_Register_Command("@GLOBAL", "<NATOMS", ierr)
+   CALL MDI_Register_Command("@GLOBAL", "<COORDS", ierr)
+   CALL MDI_Register_Command("@GLOBAL", "<FORCES", ierr)
+   CALL MDI_Register_Node("@FORCES", ierr)
+   CALL MDI_Register_Command("@FORCES", "EXIT", ierr)
+   CALL MDI_Register_Command("@FORCES", "<FORCES", ierr)
+   CALL MDI_Register_Command("@FORCES", ">FORCES", ierr)
+   CALL MDI_Register_Callback("@FORCES", ">FORCES", ierr)
 
    ! Set the generic execute_command function
    CALL MDI_Set_Execute_Command_Func(generic_command, class_obj, ierr)

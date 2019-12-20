@@ -78,6 +78,13 @@ int main(int argc, char **argv) {
   MDI_Register_Node("@GLOBAL");
   MDI_Register_Command("@GLOBAL","EXIT");
   MDI_Register_Command("@GLOBAL","<NATOMS");
+  MDI_Register_Command("@GLOBAL","<COORDS");
+  MDI_Register_Command("@GLOBAL","<FORCES");
+  MDI_Register_Node("@FORCES");
+  MDI_Register_Command("@FORCES","EXIT");
+  MDI_Register_Command("@FORCES","<FORCES");
+  MDI_Register_Command("@FORCES",">FORCES");
+  MDI_Register_Callback("@FORCES",">FORCES");
 
   // Create the execute_command pointer
   int (*generic_command)(const char*, MDI_Comm, void*) = execute_command;
