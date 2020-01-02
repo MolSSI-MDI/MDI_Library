@@ -45,7 +45,7 @@ matrix:
         - CMAKE_COVERAGE_FLAGS=""
       before_install:
         - brew update > /dev/null
-        - brew install gcc > /dev/null
+        #- brew install gcc > /dev/null
         - export FC=gfortran
         - sudo pip install -U pytest pytest-cov
     - os: windows
@@ -80,7 +80,7 @@ matrix:
         - cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
         - mingw32-make VERBOSE=1
         - mingw32-make install
-      script:
+      before_script:
         - ls
         - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
         - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
@@ -91,9 +91,6 @@ matrix:
         - cp tests/MDI_Test_Codes/STUBS_MPI/*.dll* .
         - ls
 
-        # Run the tests
-        - cd ../tests
-        - pytest --cov-report=xml --cov=MDI_Library -k "${TESTS}"
       after_success:
         - codecov.exe -f coverage.xml -t "99465b5f-26b4-4487-8355-fbcac5249a05"
 
@@ -123,6 +120,7 @@ install:
 script:
   - cd ../tests
   - pytest --cov-report=xml --cov=MDI_Library -k "${TESTS}"
+  - cat coverage.xml
 
 after_success:
   # get code coverage
