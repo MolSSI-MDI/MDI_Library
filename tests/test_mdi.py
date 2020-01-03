@@ -623,7 +623,7 @@ def test_uninitialized():
 
     # Test exceptions when MDI is not initialized
     with pytest.raises(Exception):
-        mdi.MDI_Accept_Communicator(comm)
+        mdi.MDI_Accept_Communicator()
     with pytest.raises(Exception):
         mdi.MDI_Send([1, 2], 2, mdi.MDI_INT, comm)
     with pytest.raises(Exception):
@@ -635,13 +635,13 @@ def test_uninitialized():
     with pytest.raises(Exception):
         mdi.MDI_Register_Node("TESTNODE")
     with pytest.raises(Exception):
-        mdi.MDI_Check_Node_Exists("TESTNODE",)
+        mdi.MDI_Check_Node_Exists("TESTNODE", comm)
     with pytest.raises(Exception):
         mdi.MDI_Get_Node(0, comm, "TESTNODE")
     with pytest.raises(Exception):
-        mdi.MDI_Get_NNodes(comm, "TESTNODE")
+        mdi.MDI_Get_NNodes(comm)
     with pytest.raises(Exception):
-        mdi.MDI_Get_Node(0, comm, "TESTNODE")
+        mdi.MDI_Get_Node(0, comm)
     with pytest.raises(Exception):
         mdi.MDI_Register_Command("TESTNODE", "TESTCOMM")
     with pytest.raises(Exception):
@@ -658,3 +658,30 @@ def test_uninitialized():
         mdi.MDI_Get_NCallbacks("TESTNODE", comm)
     with pytest.raises(Exception):
         mdi.MDI_Get_Callback("TESTNODE", 0, comm)
+
+def test_node_errors():
+    mdi.MDI_Init("-name driver -method TEST", None)
+    mdi.MDI_Register_Node("REALNODE")
+    comm = mdi.MDI_NULL_COMM
+
+    with pytest.raises(Exception):
+        mdi.MDI_Register_Node("LONG_NAME_________________________________________________________")
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Node_Exists("LONG_NAME_________________________________________________________", comm)
+    assert mdi.MDI_Check_Node_Exists("FAKENODE", comm) == 0
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Node(1, comm)
+
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Callback_Exists("LONG_NAME_________________________________________________________", "NAME", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Callback_Exists("NAME","LONG_NAME_________________________________________________________", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Command("FAKENODE", 0, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Command("REALNODE", 0, comm)
+
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Callback("FAKENODE", 0, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Callback("REALNODE", 0, comm)

@@ -726,8 +726,16 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
     return 1;
   }
   vector* node_vec = get_node_vector(comm);
+  if ( node_vec == NULL ) {
+    mdi_error("MDI_Get_Node unable to find node vector");
+    return 1;
+  }
 
   node* ret_node = vector_get(node_vec, index);
+  if ( ret_node == NULL ) {
+    mdi_error("MDI_Get_Node unable to find node");
+    return 1;
+  }
   strcpy(name, &ret_node->name[0]);
   return 0;
 }
@@ -1052,33 +1060,6 @@ int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, v
   this_code->execute_command = generic_command;
   this_code->execute_command_obj = class_object;
   return 0;
-}
-
-
-/*! \brief Execute a single MDI command
- *
- * This function can only be used when -method is LIBRARY.
- * The function returns \p 0 on a success.
- *
- * \param [in]       command_name
- *                   Pointer to the command name.
- * \param [in]       buf
- *                   Pointer to the buffer where the communicated data will be stored.
- * \param [in]       count
- *                   Number of values (integers, double precision floats, characters, etc.) to be communicated.
- * \param [in]       datatype
- *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be communicated.
- * \param [in]       comm
- *                   MDI communicator associated with the connection to the sending code.
- */
-int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
-{
-  if ( is_initialized == 0 ) {
-    mdi_error("MDI_Execute_Command called but MDI has not been initialized");
-    return 1;
-  }
-
-  return general_execute_command(command_name, buf, count, datatype, comm);
 }
 
 
