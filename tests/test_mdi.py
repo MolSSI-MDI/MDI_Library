@@ -659,13 +659,27 @@ def test_uninitialized():
     with pytest.raises(Exception):
         mdi.MDI_Get_Callback("TESTNODE", 0, comm)
 
+def test_test_method():
+    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+    comm = mdi.MDI_Accept_Communicator()
+    mdi.MDI_Send([1, 2], 2, mdi.MDI_INT, comm)
+    mdi.MDI_Recv(2, mdi.MDI_INT, comm)
+
+    # Test using incorrect MDI datatypes
+    with pytest.raises(Exception):
+        mdi.MDI_Send([1, 2], 2, -1234, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Recv(2, -1234, comm)
+
+    mdi.MDI_Finalize()
+
 def test_node_errors():
-    mdi.MDI_Init("-name driver -method TEST", None)
+    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
     mdi.MDI_Register_Node("REALNODE")
     comm = mdi.MDI_NULL_COMM
-
     long_name = "LONG_NAME_________________________________________________________"
 
+    # Test invalid node names
     with pytest.raises(Exception):
         mdi.MDI_Register_Node(long_name)
     with pytest.raises(Exception):
@@ -674,6 +688,7 @@ def test_node_errors():
     with pytest.raises(Exception):
         mdi.MDI_Get_Node(1, comm)
 
+    # Test using invalid command names
     mdi.MDI_Check_Command_Exists("REALNODE","CMDNAME", comm)
     with pytest.raises(Exception):
         mdi.MDI_Check_Command_Exists(long_name, "NAME", comm)
@@ -690,6 +705,7 @@ def test_node_errors():
     with pytest.raises(Exception):
         mdi.MDI_Get_Command("REALNODE", 0, comm)
 
+    # Test using invalid callback names
     mdi.MDI_Check_Callback_Exists("REALNODE","CBKNAME", comm)
     with pytest.raises(Exception):
         mdi.MDI_Check_Callback_Exists(long_name, "NAME", comm)
@@ -705,3 +721,72 @@ def test_node_errors():
         mdi.MDI_Get_Callback("FAKENODE", 0, comm)
     with pytest.raises(Exception):
         mdi.MDI_Get_Callback("REALNODE", 0, comm)
+
+    mdi.MDI_Finalize()
+
+# NOTE: NEED TO CALL MDI_FINALIZE AFTER THESE CALLS?
+def test_init_errors():
+    # Test without basic arguments
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -method TEST", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-role DRIVER -method TEST", None)
+        mdi.MDI_Finalize()
+
+    # Test leaving off arguments
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -method TEST -role", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-role DRIVER -method TEST -name", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TCP -port 8000 -hostname", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TCP -hostname localhost -port", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TCP -hostname localhost -port 8000 -out", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method LIBRARY -driver_name", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TEST _language", None)
+        mdi.MDI_Finalize()
+
+    # Test unrecognized options
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TEST -fakeopt", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method FAKE", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role FAKE -method TEST", None)
+        mdi.MDI_Finalize()
+
+    # Test TCP-specific errors
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TCP", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role ENGINE -method TCP -port 8000", None)
+        mdi.MDI_Finalize()
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role ENGINE -method TCP -hostname localhost", None)
+        mdi.MDI_Finalize()
+
+    # Test double initialization
+    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+    with pytest.raises(Exception):
+        mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+    mdi.MDI_Finalize()

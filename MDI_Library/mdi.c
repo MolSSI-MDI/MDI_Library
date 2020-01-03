@@ -125,8 +125,22 @@ int MDI_Init(const char* options, void* world_comm)
     mdi_error("MDI_Init called after MDI was already initialized");
   }
   */
-  general_init(options, world_comm);
-  is_initialized = 1;
+  int ret = general_init(options, world_comm);
+  if ( ret == 0 ) {
+    is_initialized = 1;
+  }
+  return ret;
+}
+
+
+
+/*! \brief Finalize communication through the MDI library
+ *
+ * This function should only be used for testing purposes
+ */
+int MDI_Finalize()
+{
+  is_initialized = 0;
   return 0;
 }
 

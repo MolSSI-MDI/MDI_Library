@@ -419,6 +419,19 @@ def MDI_Init(arg1, comm):
 
     # call MDI_Init
     ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Init failed")
+
+    return ret
+
+# MDI_Finalize
+mdi.MDI_Finalize.argtypes = []
+mdi.MDI_Finalize.restype = ctypes.c_int
+def MDI_Finalize():
+    # call MDI_Finalize
+    ret = mdi.MDI_Finalize()
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Finalize failed")
 
     return ret
 
