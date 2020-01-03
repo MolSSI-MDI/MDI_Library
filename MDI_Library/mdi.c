@@ -30,6 +30,7 @@ Contents:
 #include "mdi_global.h"
 #include "mdi_general.h"
 #include "mdi_mpi.h"
+#include "physconst.h"
 
 /*! \brief MDI version number */
 const double MDI_VERSION = 0.5;
@@ -164,6 +165,7 @@ int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
+    return 1;
   }
   return general_send(buf, count, datatype, comm);
 }
@@ -187,6 +189,7 @@ int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");
+    return 1;
   }
   return general_recv(buf, count, datatype, comm);
 }
@@ -206,6 +209,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
+    return 1;
   }
   return general_send_command(buf, comm);
 }
@@ -225,6 +229,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
+    return 1;
   }
   return general_recv_command(buf, comm);
 }
@@ -296,47 +301,44 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
 
   // mass
   double atomic_unit_of_mass = 1.0;
-  double kilogram = 1.09776910575776e30;
-  double gram = 1.09776910575776e27;
-  double atomic_mass_unit = 1822.88848621731;
+  double kilogram = 1.0 / pc_atomic_unit_of_mass;
+  double gram = kilogram / 1000.0;
+  double atomic_mass_unit = kilogram * pc_atomic_mass_unit_kilogram_relationship;
 
   // charge
   double atomic_unit_of_charge = 1.0;
-  double coulomb = 6.24150907446076e18;
+  double coulomb = 1.0 / pc_atomic_unit_of_charge;
 
   // energy
   double atomic_unit_of_energy = 1.0;
   double hartree = 1.0;
-  double joule = 2.29371227839632e17;
-  double kilojoule = 2.29371227839632e20;
-  double kilojoule_per_mol = 3.80879884713342e-4;
-  double calorie = 9.5968921728102e17;
-     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
-  double kilocalorie = 9.5968921728102e20;
-     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
-  double kilocalorie_per_mol = 1.59360143764062e-3;
-     // from https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science
-  double electron_volt = 3.67493221756549e-2;
-  double rydberg = 0.5;
-  double kelvin_energy = 3.16681156345558e-6;
-  double inverse_meter_energy = 4.55633525291194e-8;
+  double joule = 1.0 / pc_atomic_unit_of_energy;
+  double kilojoule = joule * 1000.0;
+  double kilojoule_per_mol = 1.0 / pc_hartree2kJmol;
+  double calorie = joule * pc_calorie_joule_relationship;
+  double kilocalorie = calorie * 1000.0;
+  double kilocalorie_per_mol = 1.0 / pc_hartree2kcalmol;
+  double electron_volt = pc_electron_volt_hartree_relationship;
+  double rydberg = electron_volt * pc_Rydberg_constant_times_hc_in_eV;
+  double kelvin_energy = pc_kelvin_hartree_relationship;
+  double inverse_meter_energy = pc_inverse_meter_hartree_relationship;
 
   // force
   double atomic_unit_of_force = 1.0;
-  double newton = 1.21378026608897e7;
+  double newton = 1.0 / pc_atomic_unit_of_force;
 
   // length
   double atomic_unit_of_length = 1.0;
   double bohr = 1.0;
-  double meter = 1.88972612462577e10;
-  double nanometer = 1.88972612462577e1;
-  double picometer = 1.88972612462577e-2;
-  double angstrom = 1.88975437603133;
+  double meter = 1.0 / pc_atomic_unit_of_length;
+  double nanometer = 1.0e-9 * meter;
+  double picometer = 1.0e-12 * meter;
+  double angstrom = 1.0 / pc_bohr2angstroms;
 
   // time
   double atomic_unit_of_time = 1.0;
-  double second = 4.13413733351821e16;
-  double picosecond = 4.13413733351821e4;
+  double second = 1.0 / pc_atomic_unit_of_time;
+  double picosecond = 1.0e-12 * second;
 
   // categories of input and output units (i.e. length, force, time, etc.)
   //    0 - none
@@ -472,6 +474,7 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
   }
   else {
     mdi_error("Unit name not recognized");
+    return 1;
   }
 
   // identify the output unit
@@ -593,11 +596,13 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
   }
   else {
     mdi_error("Unit name not recognized");
+    return 1;
   }
 
   // confirm that the two units belong to the same category (i.e. mass, energy, time, etc.)
   if ( in_category != out_category ) {
     mdi_error("The units are of two different types, and conversion is not possible.");
+    return 2;
   }
 
   *conv = in_conv / out_conv;
@@ -663,6 +668,7 @@ int MDI_Register_Node(const char* node_name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
+    return 1;
   }
   code* this_code = get_code(current_code);
   return register_node(this_code->nodes, node_name);
@@ -684,11 +690,13 @@ int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Node_Exists called but MDI has not been initialized");
+    return 1;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 2;
   }
   vector* node_vec = get_node_vector(comm);
 
@@ -717,6 +725,7 @@ int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NNodes called but MDI has not been initialized");
+    return 1;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -741,6 +750,7 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Node called but MDI has not been initialized");
+    return 1;
   }
   vector* node_vec = get_node_vector(comm);
 
@@ -762,6 +772,7 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
+    return 1;
   }
   code* this_code = get_code(current_code);
   return register_command(this_code->nodes, node_name, command_name);
@@ -785,16 +796,19 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Command_Exists called but MDI has not been initialized");
+    return 1;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 2;
   }
 
   // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(command_name) > COMMAND_LENGTH ) {
     mdi_error("Cannot chcek command name with length greater than MDI_COMMAND_LENGTH");
+    return 3;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -803,6 +817,7 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
+    return 1;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -834,11 +849,13 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NCommands called but MDI has not been initialized");
+    return 1;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 2;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -847,6 +864,7 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
+    return 1;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -872,6 +890,7 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Command called but MDI has not been initialized");
+    return 1;
   }
   vector* node_vec = get_node_vector(comm);
 
@@ -879,11 +898,13 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("MDI_Get_Command could not find the requested node");
+    return 1;
   }
   node* target_node = vector_get(node_vec, node_index);
 
   if ( target_node->commands->size <= index ) {
     mdi_error("MDI_Get_Command failed because the command does not exist");
+    return 1;
   }
 
   char* target_command = vector_get( target_node->commands, index );
@@ -904,6 +925,7 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
+    return 1;
   }
   code* this_code = get_code(current_code);
   return register_callback(this_code->nodes, node_name, callback_name);
@@ -927,16 +949,19 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Callback_Exists called but MDI has not been initialized");
+    return 1;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 2;
   }
 
   // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(callback_name) > COMMAND_LENGTH ) {
     mdi_error("Cannot check callback name with length greater than MDI_COMMAND_LENGTH");
+    return 3;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -945,6 +970,7 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
+    return 4;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -976,11 +1002,13 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NCallbacks called but MDI has not been initialized");
+    return 1;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 2;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -989,6 +1017,7 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Could not find the node");
+    return 3;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -1014,6 +1043,7 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Callback called but MDI has not been initialized");
+    return 1;
   }
 
   vector* node_vec = get_node_vector(comm);
@@ -1022,11 +1052,13 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("MDI_Get_Command could not find the requested node");
+    return 2;
   }
   node* target_node = vector_get(node_vec, node_index);
 
   if ( target_node->callbacks->size <= index ) {
     mdi_error("MDI_Get_Command failed because the command does not exist");
+    return 3;
   }
 
   char* target_callback = vector_get( target_node->callbacks, index );
@@ -1070,6 +1102,7 @@ int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Data
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Execute_Command called but MDI has not been initialized");
+    return 1;
   }
 
   return general_execute_command(command_name, buf, count, datatype, comm);

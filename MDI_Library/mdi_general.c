@@ -84,6 +84,7 @@ int general_init(const char* options, void* world_comm) {
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -role option");
+	return 1;
       }
       role = argv[iarg+1];
       strcpy(this_code->role, role);
@@ -94,6 +95,7 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -method option");
+	return 1;
       }
       method = argv[iarg+1];
       has_method = 1;
@@ -103,9 +105,11 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -name option");
+	return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
 	mdi_error("Name argument length exceeds MDI_NAME_LENGTH");
+	return 1;
       }
       strcpy(this_code->name, argv[iarg+1]);
       has_name = 1;
@@ -115,6 +119,7 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -hostname option");
+	return 1;
       }
       hostname = argv[iarg+1];
       has_hostname = 1;
@@ -124,6 +129,7 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -port option");
+	return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
       has_port = 1;
@@ -138,6 +144,7 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -out option");
+	return 1;
       }
       has_output_file = 1;
       output_file = argv[iarg+1];
@@ -147,6 +154,7 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"-driver_name") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from -driver_name option");
+	return 1;
       }
       driver_name = argv[iarg+1];
       has_driver_name = 1;
@@ -156,12 +164,14 @@ int general_init(const char* options, void* world_comm) {
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Argument missing from _language option");
+	return 1;
       }
       language = argv[iarg+1];
       iarg += 2;
     }
     else {
       mdi_error("Unrecognized option");
+      return 1;
     }
   }
 
@@ -200,6 +210,7 @@ int general_init(const char* options, void* world_comm) {
   if ( strcmp(method, "LIBRARY") != 0 ) {
     if ( is_initialized == 1 ) {
       mdi_error("MDI_Init called after MDI was already initialized");
+      return 1;
     }
   }
 
@@ -209,6 +220,7 @@ int general_init(const char* options, void* world_comm) {
       code* other_code = vector_get(&codes, i);
       if (strcmp(this_code->name, other_code->name) == 0) {
 	mdi_error("MDI_Init found multiple codes with the same name");
+	return 1;
       }
     }
   }
@@ -227,6 +239,7 @@ int general_init(const char* options, void* world_comm) {
 	code* other_code = vector_get(&codes, i);
 	if (strcmp(this_code->role, other_code->role) == 0) {
 	  mdi_error("MDI_Init found multiple drivers");
+	  return 1;
 	}
       }
     }
@@ -235,16 +248,19 @@ int general_init(const char* options, void* world_comm) {
   // ensure the -role option was provided
   if ( has_role == 0 ) {
     mdi_error("Error in MDI_Init: -role option not provided");
+    return 1;
   }
 
   // ensure the -name option was provided
   if ( has_name == 0 ) {
     mdi_error("Error in MDI_Init: -name option not provided");
+    return 1;
   }
 
   // ensure the -method option was provided
   if ( has_method == 0 ) {
     mdi_error("Error in MDI_Init: -method option not provided");
+    return 1;
   }
 
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
@@ -264,6 +280,7 @@ int general_init(const char* options, void* world_comm) {
     else if ( strcmp(method, "TCP") == 0 ) {
       if ( has_port == 0 ) {
 	mdi_error("Error in MDI_Init: -port option not provided");
+	return 1;
       }
       if ( mpi_rank == 0 ) {
 	tcp_listen(port);
@@ -277,6 +294,7 @@ int general_init(const char* options, void* world_comm) {
     }
     else {
       mdi_error("Error in MDI_Init: method not recognized");
+      return 1;
     }
 
   }
@@ -291,9 +309,11 @@ int general_init(const char* options, void* world_comm) {
     else if ( strcmp(method, "TCP") == 0 ) {
       if ( has_hostname == 0 ) {
 	mdi_error("Error in MDI_Init: -hostname option not provided");
+	return 1;
       }
       if ( has_port == 0 ) {
 	mdi_error("Error in MDI_Init: -port option not provided");
+	return 1;
       }
       if ( mpi_rank == 0 ) {
 	tcp_request_connection(port, hostname);
@@ -302,6 +322,7 @@ int general_init(const char* options, void* world_comm) {
     else if ( strcmp(method, "LIBRARY") == 0 ) {
       if ( has_driver_name == 0 ) {
 	mdi_error("Error in MDI_Init: -driver_name option not provided");
+	return 1;
       }
       library_initialize();
     }
@@ -310,12 +331,14 @@ int general_init(const char* options, void* world_comm) {
     }
     else {
       mdi_error("Error in MDI_Init: method not recognized");
+      return 1;
     }
 
     
   }
   else {
     mdi_error("Error in MDI_Init: role not recognized");
+    return 1;
   }
 
   // set the MPI communicator correctly
@@ -408,6 +431,7 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   }
   else {
     mdi_error("MDI method not recognized in communicator_send");
+    return 1;
   }
 
 
@@ -446,6 +470,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
   else {
     mdi_error("MDI method not recognized in communicator_send");
+    return 1;
   }
 
 
@@ -602,14 +627,15 @@ int register_node(vector* node_vec, const char* node_name)
 {
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
-    //mdi_error("Cannot register node name with length greater than MDI_COMMAND_LENGTH");
-    mdi_error(node_name);
+    mdi_error("Cannot register node name with length greater than MDI_COMMAND_LENGTH");
+    return 1;
   }
 
   // confirm that this node is not already registered
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index != -1 ) {
-    mdi_error("This node is already registered");
+    mdi_error("This node is already registered"); 
+    return 1;
   }
 
   node new_node;
@@ -641,17 +667,20 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 1;
   }
 
   // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(command_name) > COMMAND_LENGTH ) {
     mdi_error("Cannot register command name with length greater than MDI_COMMAND_LENGTH");
+    return 1;
   }
 
   // find the node
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a command on an unregistered node");
+    return 1;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -659,6 +688,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   int command_index = get_command_index(target_node, command_name);
   if ( command_index != -1 ) {
     mdi_error("This command is already registered for this node");
+    return 1;
   }
 
   // register this command
@@ -686,17 +716,20 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
+    return 1;
   }
 
   // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(callback_name) > COMMAND_LENGTH ) {
     mdi_error("Cannot register callback name with length greater than MDI_COMMAND_LENGTH");
+    return 1;
   }
 
   // find the node
   int node_index = get_node_index(node_vec, node_name);
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a callback on an unregistered node");
+    return 1;
   }
   node* target_node = vector_get(node_vec, node_index);
 
@@ -704,6 +737,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   int callback_index = get_callback_index(target_node, callback_name);
   if ( callback_index != -1 ) {
     mdi_error("This callback is already registered for this node");
+    return 1;
   }
 
   // register this callback
@@ -727,6 +761,7 @@ int send_command_list(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
+    return 1;
   }
   int ncommands = 0;
   int nnodes = this_code->nodes->size;
@@ -798,6 +833,7 @@ int send_callback_list(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
+    return 1;
   }
   int ncallbacks = 0;
   int nnodes = this_code->nodes->size;
@@ -869,6 +905,7 @@ int send_node_list(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send node information from the incorrect rank");
+    return 1;
   }
   int nnodes = this_code->nodes->size;
   int inode;
@@ -909,6 +946,7 @@ int send_ncommands(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
+    return 1;
   }
   int ncommands = 0;
   int nnodes = this_code->nodes->size;
@@ -938,6 +976,7 @@ int send_ncallbacks(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
+    return 1;
   }
   int ncallbacks = 0;
   int nnodes = this_code->nodes->size;
@@ -967,6 +1006,7 @@ int send_nnodes(MDI_Comm comm) {
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
+    return 1;
   }
   int nnodes = this_code->nodes->size;
   int ret = general_send( &nnodes, 1, MDI_INT, comm );
@@ -1015,6 +1055,7 @@ int get_node_info(MDI_Comm comm) {
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse node name");
+      return 1;
     }
 
     // construct the name of the node
@@ -1057,6 +1098,7 @@ int get_node_info(MDI_Comm comm) {
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse command name");
+      return 1;
     }
 
     // construct the name
@@ -1085,6 +1127,7 @@ int get_node_info(MDI_Comm comm) {
     }
     else {
       mdi_error("Error obtaining node information: could not parse delimiter");
+      return 1;
     }
 
     // free the memory for the node name
@@ -1119,6 +1162,7 @@ int get_node_info(MDI_Comm comm) {
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse callback name");
+      return 1;
     }
 
     // construct the name
@@ -1147,6 +1191,7 @@ int get_node_info(MDI_Comm comm) {
     }
     else {
       mdi_error("Error obtaining node information: could not parse delimiter");
+      return 1;
     }
 
     // free the memory for the node name
@@ -1213,11 +1258,13 @@ int general_execute_command(const char* command_name, void* buf, int count, MDI_
   communicator* this = get_communicator(current_code, comm);
   if ( this->method != MDI_LIB ) {
     mdi_error("MDI_Execute_Command called but method is not LIBRARY");
+    return 1;
   }
 
   // node commands cannot be executed using MDI_Execute_Command
   if ( command_name[0] == '@' ) {
     mdi_error("MDI_Execute_Command cannot be used to execute node commands");
+    return 1;
   }
 
   // set the buffer used to send / recv data

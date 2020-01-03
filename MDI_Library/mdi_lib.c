@@ -54,6 +54,7 @@ int library_set_driver_current() {
       // confirm that the driver was found
       if ( found_driver == 0 ) {
 	mdi_error("MDI_Accept_Communicator could not locate the driver; was MDI_Init called by the driver?");
+	return 1;
       }
     }
   }
@@ -97,7 +98,8 @@ int library_accept_communicator() {
       // set the connected code for the engine
       code* engine_code = get_code(iengine);
       if ( engine_code->comms->size != 1 ) {
-	mdi_error("MDI_Accept_Communicator error: Engine appears to have been initialized multiple times");
+	mdi_error("MDI_Accept_Communicator error: Engine appears to have been initialized multiple times"); 
+	return 1;
       }
       communicator* engine_comm = vector_get(engine_code->comms,0);
       library_data* engine_lib = (library_data*) engine_comm->method_data;
@@ -146,7 +148,8 @@ int library_get_matching_handle(MDI_Comm comm) {
 
   // ensure that the communicator was found
   if ( found_self == 0 ) {
-    mdi_error("Could not find communicator for engine; Did the engine call MDI_Init?");
+    mdi_error("Could not find communicator for engine; Did the engine call MDI_Init?"); 
+    return 1;
   }
 
   return engine_comm_handle;
@@ -242,6 +245,7 @@ int library_execute_command(MDI_Comm comm) {
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
     mdi_error("MDI data type not recognized in library_send");
+    return 1;
   }
 
   code* this_code = get_code(current_code);
@@ -277,6 +281,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     // confirm that libd->buf is not already allocated
     if ( libd->buf_allocated != 0 ) {
       mdi_error("MDI recv buffer already allocated");
+      return 1;
     }
 
     // allocate the memory required for the send
@@ -336,6 +341,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
     mdi_error("MDI data type not recognized in library_send");
+    return 1;
   }
 
   // determine the byte size of the data type being sent
@@ -353,6 +359,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   // confirm that libd->buf is initialized
   if ( other_lib->buf_allocated != 1 ) {
     mdi_error("MDI send buffer is not allocated");
+    return 1;
   }
 
   // copy the contents of libd->buf into buf
