@@ -116,7 +116,8 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
     }
   }
   if ( driver_rank == -1 ) {
-    mdi_error("Unable to identify driver when attempting to connect via MPI");
+    mdi_error("Unable to identify driver when attempting to connect via MPI"); 
+    return 1;
   }
 
   //create communicators
@@ -277,17 +278,20 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   else if ( datatype == MDI_INT_NUMPY ) {
     if ( this_code->is_python == 0 ) {
       mdi_error("MDI_INT_NUMPY datatype only permitted if using Python");
+      return 1;
     }
     mpi_type = MPI_INT;
   }
   else if ( datatype == MDI_DOUBLE_NUMPY ) {
     if ( this_code->is_python == 0 ) {
       mdi_error("MDI_DOUBLE_NUMPY datatype only permitted if using Python");
+      return 1;
     }
     mpi_type = MPI_DOUBLE;
   }
   else {
     mdi_error("MDI data type not recognized in mpi_send");
+    return 1;
   }
 
   // send the data
@@ -336,17 +340,20 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   else if ( datatype == MDI_INT_NUMPY ) {
     if ( this_code->is_python == 0 ) {
       mdi_error("MDI_INT_NUMPY datatype only permitted if using Python");
+      return 1;
     }
     mpi_type = MPI_INT;
   }
   else if ( datatype == MDI_DOUBLE_NUMPY ) {
     if ( this_code->is_python == 0 ) {
       mdi_error("MDI_DOUBLE_NUMPY datatype only permitted if using Python");
+      return 1;
     }
     mpi_type = MPI_DOUBLE;
   }
   else {
     mdi_error("MDI data type not recognized in mpi_send");
+    return 1;
   }
 
   // receive the data

@@ -37,6 +37,7 @@ int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) 
 
   if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
     mdi_error("MDI data type not recognized in test_send");
+    return 1;
   }
 
   return 0;
@@ -58,6 +59,7 @@ int test_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
     mdi_error("MDI data type not recognized in test_send");
+    return 1;
   }
 
   return 0;

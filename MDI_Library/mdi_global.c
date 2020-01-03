@@ -140,6 +140,7 @@ int vector_free(vector* v) {
 void* vector_get(vector* v, int index) {
   if (index < 0 || index >= v->size) {
     mdi_error("Vector accessed out-of-bounds");
+    return NULL;
   }
   return ( void* )( v->data + (index * v->stride) );
 }
@@ -294,6 +295,7 @@ int delete_code(int code_id) {
   }
   if ( code_found != 1 ) {
     mdi_error("Code not found during delete");
+    return 1;
   }
 
   // delete the node vector
@@ -380,7 +382,8 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
     }
   }
   if ( comm_found != 1 ) {
-    mdi_error("Communicator not found during delete");
+    mdi_error("Communicator not found during delete"); 
+    return 1;
   }
 
   // do any method-specific deletion operations
@@ -410,5 +413,5 @@ int communicator_delete(void* comm) {
  */
 void mdi_error(const char* message) {
   perror(message);
-  exit(1);
+  //exit(1);
 }
