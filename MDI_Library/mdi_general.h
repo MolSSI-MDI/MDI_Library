@@ -18,7 +18,6 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int general_send_command(const char* buf, MDI_Comm comm);
 int general_recv_command(char* buf, MDI_Comm comm);
-int general_execute_command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int general_builtin_command(const char* buf, MDI_Comm comm);
 
 int register_node(vector* node_vec, const char* node_name);
