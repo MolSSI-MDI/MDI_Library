@@ -611,3 +611,50 @@ def test_unit_conversions_py():
         assert mdi.MDI_Conversion_Factor("atomic_unit_of_energy","atomic_unit_of_time")
     with pytest.raises(Exception):
         assert mdi.MDI_Conversion_Factor("meter","calorie")
+
+
+
+##########################
+# Error Tests            #
+##########################
+
+def test_uninitialized():
+    comm = mdi.MDI_NULL_COMM
+
+    # Test exceptions when MDI is not initialized
+    with pytest.raises(Exception):
+        mdi.MDI_Accept_Communicator(comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Send([1, 2], 2, mdi.MDI_INT, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Recv(2, mdi.MDI_INT, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Send_Command("<VERSION", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Recv_Command(comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Register_Node("TESTNODE")
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Node_Exists("TESTNODE",)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Node(0, comm, "TESTNODE")
+    with pytest.raises(Exception):
+        mdi.MDI_Get_NNodes(comm, "TESTNODE")
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Node(0, comm, "TESTNODE")
+    with pytest.raises(Exception):
+        mdi.MDI_Register_Command("TESTNODE", "TESTCOMM")
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Command_Exists("TESTNODE", "TESTCOMM", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_NCommands("TESTNODE", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Command("TESTNODE", 0, comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Register_Callback("TESTNODE", "TESTCALL")
+    with pytest.raises(Exception):
+        mdi.MDI_Check_Callback_Exists("TESTNODE", "TESTCALL", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_NCallbacks("TESTNODE", comm)
+    with pytest.raises(Exception):
+        mdi.MDI_Get_Callback("TESTNODE", 0, comm)

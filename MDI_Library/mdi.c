@@ -141,6 +141,7 @@ MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
+    return 1;
   }
   *comm = general_accept_communicator();
   return 0;
@@ -607,34 +608,6 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
 
   *conv = in_conv / out_conv;
   return 0;
-}
-
-
-/*! \brief Return order of this code within all codes represented in MPI_COMM_WORLD
- *
- * When using the MPI communication method, all processes across all codes are spawned 
- * as part of the same MPI_COMM_WORLD.
- * This funciton returns the order of the code associated with the calling process 
- * within MPI_COMM_WORLD.
- *
- */
-int MDI_Get_MPI_Code_Rank()
-{
-  return mpi_code_rank;
-}
-
-/*! \brief Return the rank of the calling process within its associated code
- *
- * When using the MPI communication method, all processes across all codes are spawned 
- * as part of the same MPI_COMM_WORLD.
- * This funciton returns the rank of the calling process within the subset of processes
- * associated with the same code.
- *
- */
-void MDI_Set_MPI_Intra_Rank(int rank)
-{
-  code* this_code = get_code(current_code);
-  this_code->intra_rank = rank;
 }
 
 /*! \brief Set the size of MPI_COMM_WORLD

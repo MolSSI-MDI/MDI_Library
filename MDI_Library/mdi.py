@@ -76,14 +76,6 @@ mpi4py_comms = {}
 # dictionary of function callbacks
 execute_command_dict = {}
 
-# MDI_Get_MPI_Code_Rank
-mdi.MDI_Get_MPI_Code_Rank.argtypes = []
-mdi.MDI_Get_MPI_Code_Rank.restype = ctypes.c_int
-
-# MDI_Set_MPI_Intra_Rank
-mdi.MDI_Set_MPI_Intra_Rank.argtypes = [ctypes.c_int]
-mdi.MDI_Set_MPI_Intra_Rank.restype = None
-
 # set_world_size
 mdi.MDI_Set_World_Size.argtypes = [ctypes.c_int]
 mdi.MDI_Set_World_Size.restype = None
@@ -490,7 +482,9 @@ def MDI_Send(arg1, arg2, arg3, arg4):
             data_temp = (arg_type*arg2)(*arg1)
             data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
 
-    return mdi.MDI_Send(data, arg2, ctypes.c_int(mdi_type), arg4)
+    ret = mdi.MDI_Send(data, arg2, ctypes.c_int(mdi_type), arg4)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Send failed")
 
 # MDI_Recv
 mdi.MDI_Recv.restype = ctypes.c_int
@@ -557,7 +551,9 @@ mdi.MDI_Send_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Send_Command.restype = ctypes.c_int
 def MDI_Send_Command(arg1, arg2):
     command = arg1.encode('utf-8')
-    return mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
+    ret = mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Send_Command failed")
 
 # MDI_Recv_Command
 mdi.MDI_Recv_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
