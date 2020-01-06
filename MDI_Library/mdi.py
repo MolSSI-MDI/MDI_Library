@@ -114,6 +114,12 @@ def get_mpi_comm_from_flag(comm_flag):
         raise Exception("MDI Error: Unknown comm flag in mpi4py callback")
     return comm
 
+def c_ptr_to_py_str(in_ptr, length): 
+    result = ctypes.cast(in_ptr, ctypes.POINTER(ctypes.c_char*length)).contents
+    presult = ctypes.cast(result, ctypes.c_char_p).value
+    presult = presult.decode('utf-8')
+    return presult
+
 ##################################################
 # MPI4Py Recv Callback                           #
 ##################################################
@@ -756,10 +762,7 @@ def MDI_Get_Command(node_name, index, arg2):
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_Command failed")
 
-    result = ctypes.cast(command_name, ctypes.POINTER(ctypes.c_char*MDI_COMMAND_LENGTH)).contents
-    presult = ctypes.cast(result, ctypes.c_char_p).value
-    presult = presult.decode('utf-8')
-    return presult
+    return c_ptr_to_py_str(command_name, MDI_COMMAND_LENGTH)
 
 # MDI_Register_Callback
 mdi.MDI_Register_Callback.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
@@ -819,8 +822,4 @@ def MDI_Get_Callback(node_name, index, arg2):
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_Callback failed")
 
-    result = ctypes.cast(callback_name, ctypes.POINTER(ctypes.c_char*MDI_COMMAND_LENGTH)).contents
-    presult = ctypes.cast(result, ctypes.c_char_p).value
-    presult = presult.decode('utf-8')
-
-    return presult
+    return c_ptr_to_py_str(callback_name, MDI_COMMAND_LENGTH)
