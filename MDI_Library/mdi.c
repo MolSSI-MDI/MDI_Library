@@ -125,9 +125,11 @@ int MDI_Init(const char* options, void* world_comm)
     mdi_error("MDI_Init called after MDI was already initialized");
   }
   */
-  general_init(options, world_comm);
-  is_initialized = 1;
-  return 0;
+  int ret = general_init(options, world_comm);
+  if ( ret == 0 ) {
+    is_initialized = 1;
+  }
+  return ret;
 }
 
 
@@ -141,6 +143,7 @@ MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
+    return 1;
   }
   *comm = general_accept_communicator();
   return 0;
@@ -609,34 +612,6 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
   return 0;
 }
 
-
-/*! \brief Return order of this code within all codes represented in MPI_COMM_WORLD
- *
- * When using the MPI communication method, all processes across all codes are spawned 
- * as part of the same MPI_COMM_WORLD.
- * This funciton returns the order of the code associated with the calling process 
- * within MPI_COMM_WORLD.
- *
- */
-int MDI_Get_MPI_Code_Rank()
-{
-  return mpi_code_rank;
-}
-
-/*! \brief Return the rank of the calling process within its associated code
- *
- * When using the MPI communication method, all processes across all codes are spawned 
- * as part of the same MPI_COMM_WORLD.
- * This funciton returns the rank of the calling process within the subset of processes
- * associated with the same code.
- *
- */
-void MDI_Set_MPI_Intra_Rank(int rank)
-{
-  code* this_code = get_code(current_code);
-  this_code->intra_rank = rank;
-}
-
 /*! \brief Set the size of MPI_COMM_WORLD
  *
  * This function is only used if the linked program uses MPI4PY.
@@ -753,8 +728,16 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
     return 1;
   }
   vector* node_vec = get_node_vector(comm);
+  if ( node_vec == NULL ) {
+    mdi_error("MDI_Get_Node unable to find node vector");
+    return 1;
+  }
 
   node* ret_node = vector_get(node_vec, index);
+  if ( ret_node == NULL ) {
+    mdi_error("MDI_Get_Node unable to find node");
+    return 1;
+  }
   strcpy(name, &ret_node->name[0]);
   return 0;
 }
@@ -1079,33 +1062,6 @@ int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, v
   this_code->execute_command = generic_command;
   this_code->execute_command_obj = class_object;
   return 0;
-}
-
-
-/*! \brief Execute a single MDI command
- *
- * This function can only be used when -method is LIBRARY.
- * The function returns \p 0 on a success.
- *
- * \param [in]       command_name
- *                   Pointer to the command name.
- * \param [in]       buf
- *                   Pointer to the buffer where the communicated data will be stored.
- * \param [in]       count
- *                   Number of values (integers, double precision floats, characters, etc.) to be communicated.
- * \param [in]       datatype
- *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be communicated.
- * \param [in]       comm
- *                   MDI communicator associated with the connection to the sending code.
- */
-int MDI_Execute_Command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
-{
-  if ( is_initialized == 0 ) {
-    mdi_error("MDI_Execute_Command called but MDI has not been initialized");
-    return 1;
-  }
-
-  return general_execute_command(command_name, buf, count, datatype, comm);
 }
 
 

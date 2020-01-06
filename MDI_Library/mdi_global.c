@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "mdi_global.h"
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
@@ -412,6 +413,12 @@ int communicator_delete(void* comm) {
  *                   Message printed before exiting.
  */
 void mdi_error(const char* message) {
-  perror(message);
+  if ( errno == 0 || errno == ENOTTY ) {
+    fprintf( stderr, message );
+    fprintf( stderr, "\n" );
+  }
+  else {
+    perror(message);
+  }
   //exit(1);
 }

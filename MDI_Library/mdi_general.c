@@ -83,7 +83,7 @@ int general_init(const char* options, void* world_comm) {
     //-role
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -role option");
+	mdi_error("Error in MDI_Init: Argument missing from -role option");
 	return 1;
       }
       role = argv[iarg+1];
@@ -94,7 +94,7 @@ int general_init(const char* options, void* world_comm) {
     //-method
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -method option");
+	mdi_error("Error in MDI_Init: Argument missing from -method option");
 	return 1;
       }
       method = argv[iarg+1];
@@ -104,11 +104,11 @@ int general_init(const char* options, void* world_comm) {
     //-name
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -name option");
+	mdi_error("Error in MDI_Init: Argument missing from -name option");
 	return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
-	mdi_error("Name argument length exceeds MDI_NAME_LENGTH");
+	mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
 	return 1;
       }
       strcpy(this_code->name, argv[iarg+1]);
@@ -118,7 +118,7 @@ int general_init(const char* options, void* world_comm) {
     //-hostname
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -hostname option");
+	mdi_error("Error in MDI_Init: Argument missing from -hostname option");
 	return 1;
       }
       hostname = argv[iarg+1];
@@ -128,7 +128,7 @@ int general_init(const char* options, void* world_comm) {
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -port option");
+	mdi_error("Error in MDI_Init: Argument missing from -port option");
 	return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
@@ -143,7 +143,7 @@ int general_init(const char* options, void* world_comm) {
     //-out
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -out option");
+	mdi_error("Error in MDI_Init: Argument missing from -out option");
 	return 1;
       }
       has_output_file = 1;
@@ -153,7 +153,7 @@ int general_init(const char* options, void* world_comm) {
     //-driver_name
     else if (strcmp(argv[iarg],"-driver_name") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -driver_name option");
+	mdi_error("Error in MDI_Init: Argument missing from -driver_name option");
 	return 1;
       }
       driver_name = argv[iarg+1];
@@ -163,14 +163,14 @@ int general_init(const char* options, void* world_comm) {
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from _language option");
+	mdi_error("Error in MDI_Init: Argument missing from -_language option");
 	return 1;
       }
       language = argv[iarg+1];
       iarg += 2;
     }
     else {
-      mdi_error("Unrecognized option");
+      mdi_error("Error in MDI_Init: Unrecognized option");
       return 1;
     }
   }
@@ -293,7 +293,7 @@ int general_init(const char* options, void* world_comm) {
       test_initialize();
     }
     else {
-      mdi_error("Error in MDI_Init: method not recognized");
+      mdi_error("Error in MDI_Init: Method not recognized");
       return 1;
     }
 
@@ -337,7 +337,7 @@ int general_init(const char* options, void* world_comm) {
     
   }
   else {
-    mdi_error("Error in MDI_Init: role not recognized");
+    mdi_error("Error in MDI_Init: Role not recognized");
     return 1;
   }
 
@@ -1232,45 +1232,4 @@ vector* get_node_vector(MDI_Comm comm) {
     node_vec = this->nodes;
   }
   return node_vec;
-}
-
-
-/*! \brief Execute a single MDI command
- *
- * This function can only be used when -method is LIBRARY.
- * The function returns \p 0 on a success.
- *
- * \param [in]       command_name
- *                   Pointer to the command name.
- * \param [in]       buf
- *                   Pointer to the buffer where the communicated data will be stored.
- * \param [in]       count
- *                   Number of values (integers, double precision floats, characters, etc.) to be communicated.
- * \param [in]       datatype
- *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be communicated.
- * \param [in]       comm
- *                   MDI communicator associated with the connection to the sending code.
- */
-int general_execute_command(const char* command_name, void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
-{
-  // this function can only be used when -method is LIBRARY
-  code* this_code = get_code(current_code);
-  communicator* this = get_communicator(current_code, comm);
-  if ( this->method != MDI_LIB ) {
-    mdi_error("MDI_Execute_Command called but method is not LIBRARY");
-    return 1;
-  }
-
-  // node commands cannot be executed using MDI_Execute_Command
-  if ( command_name[0] == '@' ) {
-    mdi_error("MDI_Execute_Command cannot be used to execute node commands");
-    return 1;
-  }
-
-  // set the buffer used to send / recv data
-  library_data* libd = (library_data*) this->method_data;
-  libd->buf = buf;
-
-  // call execute_command
-  return this_code->execute_command(command_name,comm,this_code->execute_command_obj);
 }

@@ -121,8 +121,6 @@ DllExport int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int));
 
 // only used internally by MDI
 DllExport void mdi_error(const char* message);
-DllExport int MDI_Get_MPI_Code_Rank();
-DllExport void MDI_Set_MPI_Intra_Rank(int rank);
 DllExport void MDI_Set_World_Size(int world_size_in);
 DllExport void MDI_Set_World_Rank(int world_rank_in);
 DllExport int MDI_Get_Current_Code();

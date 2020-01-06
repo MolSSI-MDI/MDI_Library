@@ -76,14 +76,6 @@ mpi4py_comms = {}
 # dictionary of function callbacks
 execute_command_dict = {}
 
-# MDI_Get_MPI_Code_Rank
-mdi.MDI_Get_MPI_Code_Rank.argtypes = []
-mdi.MDI_Get_MPI_Code_Rank.restype = ctypes.c_int
-
-# MDI_Set_MPI_Intra_Rank
-mdi.MDI_Set_MPI_Intra_Rank.argtypes = [ctypes.c_int]
-mdi.MDI_Set_MPI_Intra_Rank.restype = None
-
 # set_world_size
 mdi.MDI_Set_World_Size.argtypes = [ctypes.c_int]
 mdi.MDI_Set_World_Size.restype = None
@@ -381,8 +373,8 @@ def MDI_Init(arg1, comm):
     global world_comm
     global intra_code_comm
 
-    # append the _language option, so that MDI knows this is a Python code
-    arg1 = arg1 + " _language Python"
+    # prepend the _language option, so that MDI knows this is a Python code
+    arg1 = "_language Python " + arg1
 
     command = arg1.encode('utf-8')
     if comm is None:
@@ -409,7 +401,7 @@ def MDI_Init(arg1, comm):
         if args[i] == "-method" and i < len(args) - 1:
             mdi_method = args[i+1]
     if not mdi_method:
-        raise Exception("MDI Error: Unable to find -name option")
+        raise Exception("MDI Error: Unable to find -method option")
 
     # set the MPI4Py callback functions
     set_mpi4py_recv_callback()
@@ -427,6 +419,8 @@ def MDI_Init(arg1, comm):
 
     # call MDI_Init
     ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Init failed")
 
     return ret
 
@@ -471,6 +465,8 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         data = arg1.astype(np.float64)
         data = data.ctypes.data_as(ctypes.c_char_p)
         mdi_type = MDI_DOUBLE
+    else:
+        raise Exception("MDI Error: Unrecognized datatype in MDI_Send")
 
     if arg3 == MDI_CHAR:
         data_temp = arg1.encode('utf-8')
@@ -490,7 +486,9 @@ def MDI_Send(arg1, arg2, arg3, arg4):
             data_temp = (arg_type*arg2)(*arg1)
             data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
 
-    return mdi.MDI_Send(data, arg2, ctypes.c_int(mdi_type), arg4)
+    ret = mdi.MDI_Send(data, arg2, ctypes.c_int(mdi_type), arg4)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Send failed")
 
 # MDI_Recv
 mdi.MDI_Recv.restype = ctypes.c_int
@@ -529,6 +527,8 @@ def MDI_Recv(arg2, arg3, arg4):
     elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR):
         arg_size = ctypes.sizeof(arg_type)
         arg1 = (ctypes.c_char*(arg2*arg_size))()
+    else:
+        raise Exception("MDI Error: Unrecognized datatype in MDI_Recv")
     ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(mdi_type), arg4)
     if ret != 0:
         raise Exception("MDI Error: MDI_Recv failed")
@@ -557,7 +557,9 @@ mdi.MDI_Send_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Send_Command.restype = ctypes.c_int
 def MDI_Send_Command(arg1, arg2):
     command = arg1.encode('utf-8')
-    return mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
+    ret = mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Send_Command failed")
 
 # MDI_Recv_Command
 mdi.MDI_Recv_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
