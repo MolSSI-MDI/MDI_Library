@@ -36,8 +36,10 @@ typedef int MDI_Comm;
 // type of an MDI datatype handle
 typedef int MDI_Datatype;
 
-// MDI version number
-DllExport extern const double MDI_VERSION;
+// MDI version numbers
+DllExport extern const int MDI_MAJOR_VERSION;
+DllExport extern const int MDI_MINOR_VERSION;
+DllExport extern const int MDI_PATCH_VERSION;
 
 // length of an MDI command in characters
 DllExport extern const int MDI_COMMAND_LENGTH;
@@ -64,26 +66,6 @@ DllExport extern const int MDI_TEST;
 /*----------------------*/
 /* MDI unit conversions */
 /*----------------------*/
-
-// length
-DllExport extern const double MDI_METER_TO_BOHR;
-DllExport extern const double MDI_ANGSTROM_TO_BOHR;
-
-// time
-DllExport extern const double MDI_SECOND_TO_AUT;
-DllExport extern const double MDI_PICOSECOND_TO_AUT;
-
-// force
-DllExport extern const double MDI_NEWTON_TO_AUF;
-
-// energy
-DllExport extern const double MDI_JOULE_TO_HARTREE;
-DllExport extern const double MDI_KJ_TO_HARTREE;
-DllExport extern const double MDI_KJPERMOL_TO_HARTREE;
-DllExport extern const double MDI_KCALPERMOL_TO_HARTREE;
-DllExport extern const double MDI_EV_TO_HARTREE;
-DllExport extern const double MDI_RYDBERG_TO_HARTREE;
-DllExport extern const double MDI_KELVIN_TO_HARTREE;
 
 DllExport int MDI_Init(const char* options, void* world_comm);
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);

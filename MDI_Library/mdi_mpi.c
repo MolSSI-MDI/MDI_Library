@@ -211,8 +211,12 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
     if (this_comm->method == MDI_MPI) {
       // only communicate the version number if not using i-PI compatibility mode
       if ( ipi_compatibility != 1 ) {
-	mpi_send(&MDI_VERSION, 1, MDI_DOUBLE, this_comm->id);
-	mpi_recv(&this_comm->mdi_version, 1, MDI_DOUBLE, this_comm->id);
+	int version[3];
+	version[0] = MDI_MAJOR_VERSION;
+	version[1] = MDI_MINOR_VERSION;
+	version[2] = MDI_PATCH_VERSION;
+	mpi_send(&version[0], 3, MDI_INT, this_comm->id);
+	mpi_recv(&this_comm->mdi_version[0], 3, MDI_INT, this_comm->id);
       }
     }
   }

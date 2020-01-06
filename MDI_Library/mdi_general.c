@@ -206,8 +206,8 @@ int general_init(const char* options, void* world_comm) {
     freopen(output_file, "w", stdout);
   }
 
-  // if the method is not LIBRARY, ensure that MDI has not been previously initialized
-  if ( strcmp(method, "LIBRARY") != 0 ) {
+  // if the method is not LIB, ensure that MDI has not been previously initialized
+  if ( strcmp(method, "LIB") != 0 ) {
     if ( is_initialized == 1 ) {
       mdi_error("MDI_Init called after MDI was already initialized");
       return 1;
@@ -227,7 +227,7 @@ int general_init(const char* options, void* world_comm) {
 
   // Check if this is an engine being used as a library
   if (strcmp(this_code->role, "ENGINE") == 0) {
-    if ( strcmp(method, "LIBRARY") == 0 ) {
+    if ( strcmp(method, "LIB") == 0 ) {
       this_code->is_library = 1;
     }
   }
@@ -286,7 +286,7 @@ int general_init(const char* options, void* world_comm) {
 	tcp_listen(port);
       }
     }
-    else if ( strcmp(method, "LIBRARY") == 0 ) {
+    else if ( strcmp(method, "LIB") == 0 ) {
       //library_initialize();
     }
     else if ( strcmp(method, "TEST") == 0 ) {
@@ -319,7 +319,7 @@ int general_init(const char* options, void* world_comm) {
 	tcp_request_connection(port, hostname);
       }
     }
-    else if ( strcmp(method, "LIBRARY") == 0 ) {
+    else if ( strcmp(method, "LIB") == 0 ) {
       if ( has_driver_name == 0 ) {
 	mdi_error("Error in MDI_Init: -driver_name option not provided");
 	return 1;
@@ -552,7 +552,11 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
     ret = 1;
   }
   else if ( strcmp( buf, "<VERSION" ) == 0 ) {
-    MDI_Send(&MDI_VERSION, 1, MDI_DOUBLE, comm);
+    int version[3];
+    version[0] = MDI_MAJOR_VERSION;
+    version[1] = MDI_MINOR_VERSION;
+    version[2] = MDI_PATCH_VERSION;
+    MDI_Send(&version[0], 3, MDI_DOUBLE, comm);
     ret = 1;
   }
   else if ( strcmp( buf, "<COMMANDS" ) == 0 ) {
