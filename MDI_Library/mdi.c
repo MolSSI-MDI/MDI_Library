@@ -32,8 +32,14 @@ Contents:
 #include "mdi_mpi.h"
 #include "physconst.h"
 
-/*! \brief MDI version number */
-const double MDI_VERSION = 0.5;
+/*! \brief MDI major version number */
+const int MDI_MAJOR_VERSION = 0;
+
+/*! \brief MDI minor version number */
+const int MDI_MINOR_VERSION = 6;
+
+/*! \brief MDI patch version number */
+const int MDI_PATCH_VERSION = 5;
 
 /*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;
@@ -65,45 +71,6 @@ const int MDI_MPI    = 2;
 const int MDI_LIB    = 3;
 /*! \brief Test communication method */
 const int MDI_TEST   = 4;
-
-/*----------------------*/
-/* MDI unit conversions */
-/*----------------------*/
-
-// length
-/*! \brief conversion factor between meters and bohr */
-const double MDI_METER_TO_BOHR = 1.88972612546e10;
-/*! \brief conversion factor between Angstroms and bohr */
-const double MDI_ANGSTROM_TO_BOHR = 1.88972612546;
-
-// time
-/*! \brief conversion factor between seconds and atomic units of time */
-const double MDI_SECOND_TO_AUT = 4.1341374575751e16;
-/*! \brief conversion factor between picoseconds and atomic units of time */
-const double MDI_PICOSECOND_TO_AUT = 4.1341374575751e4;
-
-// force
-/*! \brief conversion factor between newtons and atomic units of force */
-const double MDI_NEWTON_TO_AUF = 1.213780478e7;
-
-// energy
-/*! \brief conversion factor between joules and hartrees */
-const double MDI_JOULE_TO_HARTREE = 2.29371265835792e17;
-/*! \brief conversion factor between kilojoules and hartrees */
-const double MDI_KJ_TO_HARTREE = 2.29371265835792e20;
-/*! \brief conversion factor between kilojoules/mol and hartrees */
-const double MDI_KJPERMOL_TO_HARTREE = 3.80879947807451e-4;
-/*! \brief conversion factor between kcal/mol and hartrees */
-const double MDI_KCALPERMOL_TO_HARTREE = 1.5941730215480900e-3;
-/*! \brief conversion factor between eV and hartrees */
-const double MDI_EV_TO_HARTREE = 3.67493266806491e-2;
-/*! \brief conversion factor between rydbergs and hartrees */
-const double MDI_RYDBERG_TO_HARTREE = 0.5;
-/*! \brief conversion factor between Kelvin and hartrees */
-const double MDI_KELVIN_TO_HARTREE = 3.16681050847798e-6;
-
-
-//static int is_initialized = 0;
 
 
 /*! \brief Initialize communication through the MDI library

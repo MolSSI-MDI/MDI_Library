@@ -331,7 +331,9 @@ int new_communicator(int code_id, int method) {
   new_comm.nodes = node_vec;
   new_comm.id = this_code->next_comm;
   new_comm.code_id = code_id;
-  new_comm.mdi_version = 0.0;
+  new_comm.mdi_version[0] = 0;
+  new_comm.mdi_version[1] = 0;
+  new_comm.mdi_version[2] = 0;
   this_code->next_comm++;
 
   new_comm.delete = communicator_delete;

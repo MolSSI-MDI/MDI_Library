@@ -39,7 +39,7 @@ typedef struct communicator_struct {
   process within the inter-code MPI communicator */
   int mpi_rank;
   /*! \brief The MDI version of the connected code */
-  double mdi_version;
+  int mdi_version[3];
   /*! \brief The nodes supported by the connected code */
   vector* nodes;
   /*! \brief Method-specific information for this communicator */

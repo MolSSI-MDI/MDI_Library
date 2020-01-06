@@ -189,8 +189,12 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, new_comm->id);
-    tcp_recv(&new_comm->mdi_version, 1, MDI_DOUBLE, new_comm->id);
+    int version[3];
+    version[0] = MDI_MAJOR_VERSION;
+    version[1] = MDI_MINOR_VERSION;
+    version[2] = MDI_PATCH_VERSION;
+    tcp_send(&version[0], 3, MDI_INT, new_comm->id);
+    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id);
   }
 
   return 0;
@@ -216,8 +220,12 @@ int tcp_accept_connection() {
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
-    tcp_send(&MDI_VERSION, 1, MDI_DOUBLE, new_comm->id);
-    tcp_recv(&new_comm->mdi_version, 1, MDI_DOUBLE, new_comm->id);
+    int version[3];
+    version[0] = MDI_MAJOR_VERSION;
+    version[1] = MDI_MINOR_VERSION;
+    version[2] = MDI_PATCH_VERSION;
+    tcp_send(&version[0], 3, MDI_INT, new_comm->id);
+    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id);
   }
 
   return 0;
