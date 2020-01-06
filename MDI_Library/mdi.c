@@ -133,18 +133,6 @@ int MDI_Init(const char* options, void* world_comm)
 }
 
 
-
-/*! \brief Finalize communication through the MDI library
- *
- * This function should only be used for testing purposes
- */
-int MDI_Finalize()
-{
-  is_initialized = 0;
-  return 0;
-}
-
-
 /*! \brief Accept a new MDI communicator
  *
  * The function returns an MDI_Comm that describes a connection between two codes.

@@ -83,7 +83,7 @@ int general_init(const char* options, void* world_comm) {
     //-role
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -role option");
+	mdi_error("Error in MDI_Init: Argument missing from -role option");
 	return 1;
       }
       role = argv[iarg+1];
@@ -94,7 +94,7 @@ int general_init(const char* options, void* world_comm) {
     //-method
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -method option");
+	mdi_error("Error in MDI_Init: Argument missing from -method option");
 	return 1;
       }
       method = argv[iarg+1];
@@ -104,11 +104,11 @@ int general_init(const char* options, void* world_comm) {
     //-name
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -name option");
+	mdi_error("Error in MDI_Init: Argument missing from -name option");
 	return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
-	mdi_error("Name argument length exceeds MDI_NAME_LENGTH");
+	mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
 	return 1;
       }
       strcpy(this_code->name, argv[iarg+1]);
@@ -118,7 +118,7 @@ int general_init(const char* options, void* world_comm) {
     //-hostname
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -hostname option");
+	mdi_error("Error in MDI_Init: Argument missing from -hostname option");
 	return 1;
       }
       hostname = argv[iarg+1];
@@ -128,7 +128,7 @@ int general_init(const char* options, void* world_comm) {
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -port option");
+	mdi_error("Error in MDI_Init: Argument missing from -port option");
 	return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
@@ -143,7 +143,7 @@ int general_init(const char* options, void* world_comm) {
     //-out
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -out option");
+	mdi_error("Error in MDI_Init: Argument missing from -out option");
 	return 1;
       }
       has_output_file = 1;
@@ -153,7 +153,7 @@ int general_init(const char* options, void* world_comm) {
     //-driver_name
     else if (strcmp(argv[iarg],"-driver_name") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from -driver_name option");
+	mdi_error("Error in MDI_Init: Argument missing from -driver_name option");
 	return 1;
       }
       driver_name = argv[iarg+1];
@@ -163,14 +163,14 @@ int general_init(const char* options, void* world_comm) {
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Argument missing from _language option");
+	mdi_error("Error in MDI_Init: Argument missing from -_language option");
 	return 1;
       }
       language = argv[iarg+1];
       iarg += 2;
     }
     else {
-      mdi_error("Unrecognized option");
+      mdi_error("Error in MDI_Init: Unrecognized option");
       return 1;
     }
   }
@@ -293,7 +293,7 @@ int general_init(const char* options, void* world_comm) {
       test_initialize();
     }
     else {
-      mdi_error("Error in MDI_Init: method not recognized");
+      mdi_error("Error in MDI_Init: Method not recognized");
       return 1;
     }
 
@@ -337,7 +337,7 @@ int general_init(const char* options, void* world_comm) {
     
   }
   else {
-    mdi_error("Error in MDI_Init: role not recognized");
+    mdi_error("Error in MDI_Init: Role not recognized");
     return 1;
   }
 

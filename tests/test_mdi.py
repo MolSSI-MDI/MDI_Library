@@ -660,133 +660,232 @@ def test_uninitialized():
         mdi.MDI_Get_Callback("TESTNODE", 0, comm)
 
 def test_test_method():
-    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
-    comm = mdi.MDI_Accept_Communicator()
-    mdi.MDI_Send([1, 2], 2, mdi.MDI_INT, comm)
-    mdi.MDI_Recv(2, mdi.MDI_INT, comm)
 
-    # Test using incorrect MDI datatypes
-    with pytest.raises(Exception):
-        mdi.MDI_Send([1, 2], 2, -1234, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Recv(2, -1234, comm)
+    # run the calculation
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_tmethod.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
 
-    mdi.MDI_Finalize()
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
 
-def test_node_errors():
-    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
-    mdi.MDI_Register_Node("REALNODE")
-    comm = mdi.MDI_NULL_COMM
-    long_name = "LONG_NAME_________________________________________________________"
+    expected_err = """Cannot register node name with length greater than MDI_COMMAND_LENGTH
+Node name is greater than MDI_COMMAND_LENGTH
+Vector accessed out-of-bounds
+MDI_Get_Node unable to find node
+Node name is greater than MDI_COMMAND_LENGTH
+Cannot chcek command name with length greater than MDI_COMMAND_LENGTH
+Could not find the node
+Node name is greater than MDI_COMMAND_LENGTH
+Could not find the node
+MDI_Get_Command could not find the requested node
+MDI_Get_Command failed because the command does not exist
+Node name is greater than MDI_COMMAND_LENGTH
+Cannot check callback name with length greater than MDI_COMMAND_LENGTH
+Could not find the node
+Node name is greater than MDI_COMMAND_LENGTH
+Could not find the node
+MDI_Get_Command could not find the requested node
+MDI_Get_Command failed because the command does not exist
+"""
 
-    # Test invalid node names
-    with pytest.raises(Exception):
-        mdi.MDI_Register_Node(long_name)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Node_Exists(long_name, comm)
-    assert mdi.MDI_Check_Node_Exists("FAKENODE", comm) == 0
-    with pytest.raises(Exception):
-        mdi.MDI_Get_Node(1, comm)
+    assert driver_err == expected_err
+    assert driver_out == ""
 
-    # Test using invalid command names
-    mdi.MDI_Check_Command_Exists("REALNODE","CMDNAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Command_Exists(long_name, "NAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Command_Exists("NAME",long_name, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Command_Exists("FAKENODE","NAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_NCommands(long_name, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_NCommands("FAKENODE", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_Command("FAKENODE", 0, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_Command("REALNODE", 0, comm)
-
-    # Test using invalid callback names
-    mdi.MDI_Check_Callback_Exists("REALNODE","CBKNAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Callback_Exists(long_name, "NAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Callback_Exists("NAME", long_name, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Check_Callback_Exists("FAKENODE","NAME", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_NCallbacks(long_name, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_NCallbacks("FAKENODE", comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_Callback("FAKENODE", 0, comm)
-    with pytest.raises(Exception):
-        mdi.MDI_Get_Callback("REALNODE", 0, comm)
-
-    mdi.MDI_Finalize()
-
-# NOTE: NEED TO CALL MDI_FINALIZE AFTER THESE CALLS?
 def test_init_errors():
-    # Test without basic arguments
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -method TEST", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-role DRIVER -method TEST", None)
-        mdi.MDI_Finalize()
+    # Test running with no -method option
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_method.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = ""
+    assert driver_err == expected_err
+    assert driver_out == ""
 
-    # Test leaving off arguments
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -method TEST -role", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-role DRIVER -method TEST -name", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TCP -port 8000 -hostname", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TCP -hostname localhost -port", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TCP -hostname localhost -port 8000 -out", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method LIBRARY -driver_name", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TEST _language", None)
-        mdi.MDI_Finalize()
+    # Test running with no -name option
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_name.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: -name option not provided
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
 
-    # Test unrecognized options
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TEST -fakeopt", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method FAKE", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role FAKE -method TEST", None)
-        mdi.MDI_Finalize()
+    # Test running with no -role option
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_role.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: -role option not provided
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
 
-    # Test TCP-specific errors
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TCP", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role ENGINE -method TCP -port 8000", None)
-        mdi.MDI_Finalize()
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role ENGINE -method TCP -hostname localhost", None)
-        mdi.MDI_Finalize()
+    # Test running with no -port option for a DRIVER using TCP
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_port_d.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: -port option not provided
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test running with no -port option for an ENGINE using TCP
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_port_e.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: -port option not provided
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test running with no -hostname option for an ENGINE using TCP
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_no_hostname.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: -hostname option not provided
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test running with a fake option
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_fake_opt.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Unrecognized option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test running with a fake method
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_fake_method.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Method not recognized
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test running with a fake role
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_fake_role.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Role not recognized
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -role argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_role.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -role option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -method argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_method.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = ""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -name argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_name.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -name option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -hostname argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_hostname.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -hostname option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -port argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_port.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -port option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -out argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_out.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -out option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -driver_name argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_driver_name.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -driver_name option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
+
+    # Test leaving off the -_language argument
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_language.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """Error in MDI_Init: Argument missing from -_language option
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""
 
     # Test double initialization
-    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
-    with pytest.raises(Exception):
-        mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
-    mdi.MDI_Finalize()
+    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_double.py"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+    expected_err = """MDI_Init called after MDI was already initialized
+"""
+    assert driver_err == expected_err
+    assert driver_out == ""

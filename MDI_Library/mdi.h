@@ -86,7 +86,6 @@ DllExport extern const double MDI_RYDBERG_TO_HARTREE;
 DllExport extern const double MDI_KELVIN_TO_HARTREE;
 
 DllExport int MDI_Init(const char* options, void* world_comm);
-DllExport int MDI_Finalize();
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);
 DllExport int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 DllExport int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
