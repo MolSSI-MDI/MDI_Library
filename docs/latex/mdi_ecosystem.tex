@@ -7,6 +7,14 @@ Mol\+S\+SI provides \href{https://github.com/MolSSI/lammps/tree/mdi}{\texttt{ an
 \item Acquire the M\+D\+I-\/enabled fork of L\+A\+M\+M\+PS\+: \begin{DoxyVerb}git clone --branch mdi git@github.com:MolSSI/lammps.git
 \end{DoxyVerb}
 
+\item Compile the repository\textquotesingle{}s internal M\+DI distribution by doing\+: \begin{DoxyVerb}cd lammps/lib/mdi
+python Install.py -m gcc
+\end{DoxyVerb}
+
+\item Activate the {\ttfamily U\+S\+E\+R-\/\+M\+DI} package\+: \begin{DoxyVerb}cd ../../src
+make yes-user-mdi
+\end{DoxyVerb}
+
 \item Compile L\+A\+M\+M\+PS, following the \href{https://lammps.sandia.gov/doc/Build.html}{\texttt{ L\+A\+M\+M\+PS build guide}}.
 \item Prepare a L\+A\+M\+M\+PS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings. The file must include the {\bfseries{mdi fix}}. At the end of the input file, call the {\bfseries{mdi}} command, which does not accept any arguments. For example\+: \begin{DoxyVerb}units           real
 neigh_modify    delay 0 every 1 check yes

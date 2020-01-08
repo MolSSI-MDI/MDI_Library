@@ -1,7 +1,7 @@
 \hypertarget{mdi_standard_standard_overview}{}\doxysection{Overview}\label{mdi_standard_standard_overview}
-The M\+DI Standard provides a straightforward, A\+P\+I-\/like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-\/level program flow of one or more engine codes. The driver exercises this control through the use of \mbox{\hyperlink{mdi_standard_command_list}{commands}} that are defined by the M\+DI Standard. Commands are available that correspond to a variety of tasks, such as \char`\"{}receive a new set of nuclear coordinates from me\char`\"{} (\mbox{\hyperlink{mdi_standard_send_coords}{$>$C\+O\+O\+R\+DS}}), \char`\"{}run a self-\/consistent field calculation\char`\"{} (scf\+\_\+command) and \char`\"{}send me the forces on the nuclei\char`\"{} (\mbox{\hyperlink{mdi_standard_recv_forces}{$<$F\+O\+R\+C\+ES}}). The M\+DI standard defines the \mbox{\hyperlink{mdi_standard_standard_units}{units}}, data types, and formatting of any data communicated between codes in response to a command.\hypertarget{mdi_standard_standard_units}{}\doxysection{Units}\label{mdi_standard_standard_units}
+The M\+DI Standard provides a straightforward, A\+P\+I-\/like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-\/level program flow of one or more engine codes. The driver exercises this control through the use of \mbox{\hyperlink{mdi_standard_command_list}{commands}} that are defined by the M\+DI Standard. Commands are available that correspond to a variety of tasks, such as \char`\"{}receive a new set of nuclear coordinates from me\char`\"{} (\mbox{\hyperlink{mdi_standard_send_coords}{$>$C\+O\+O\+R\+DS}}), \char`\"{}start an M\+D simulation\char`\"{} (\mbox{\hyperlink{mdi_standard_init_md}{@\+I\+N\+I\+T\+\_\+\+MD}}) and \char`\"{}send me the forces on the nuclei\char`\"{} (\mbox{\hyperlink{mdi_standard_recv_forces}{$<$F\+O\+R\+C\+ES}}). The M\+DI standard defines the \mbox{\hyperlink{mdi_standard_standard_units}{units}}, data types, and formatting of any data communicated between codes in response to a command.\hypertarget{mdi_standard_standard_units}{}\doxysection{Units}\label{mdi_standard_standard_units}
 All physical quantities communicated through M\+DI must be expressed in atomic units. Whenever it is necessary to perform a unit conversion on data communicated through M\+DI, the conversion factor should be obtained through the \mbox{\hyperlink{mdi_8c_aa1ccf61d45e842b50d72084735cb984a}{M\+D\+I\+\_\+\+Conversion\+\_\+\+Factor()}} function. Use of this function ensures self-\/consistency in unit conversions between codes, which is important for avoiding numerical instabilities.\hypertarget{mdi_standard_standard_nodes_sec}{}\doxysection{Nodes}\label{mdi_standard_standard_nodes_sec}
-One of the powerful features of the M\+DI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in M\+DI engines. In particular, the md\+\_\+init and optg\+\_\+init commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain \char`\"{}nodes\char`\"{} and listen for new commands.
+One of the powerful features of the M\+DI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in M\+DI engines. In particular, the \mbox{\hyperlink{mdi_standard_init_md}{@\+I\+N\+I\+T\+\_\+\+MD}} and \mbox{\hyperlink{mdi_standard_init_optg}{@\+I\+N\+I\+T\+\_\+\+O\+P\+TG}} commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain \char`\"{}nodes\char`\"{} and listen for new commands.
 
 The M\+DI Standard defines several nodes. Their names and when they occur are as follows\+:
 
@@ -13,13 +13,21 @@ The M\+DI Standard defines several nodes. Their names and when they occur are as
  {\bfseries{ @\+F\+O\+R\+C\+ES }} -\/ After calculating all contributions to the atomic forces. ~\newline
  {\bfseries{ @\+C\+O\+O\+R\+DS }} -\/ After updating the atomic coordinates.
 \end{DoxyParagraph}
-Several M\+DI commands are only relevant when an engine is paused at a node. The \mbox{\hyperlink{mdi_standard_send_node}{$<$@}} command instructs the engine to send the name of its node, while the \mbox{\hyperlink{mdi_standard_next_node}{@}} command instructs the engine to proceed in its simulation until it reaches the next node. In addition, there are commands associated with each type of node (\mbox{\hyperlink{mdi_standard_pre-forces_node}{@\+P\+RE-\/F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_forces_node}{@\+F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_coords_node}{@\+C\+O\+O\+R\+DS}}) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.
+Not all M\+DI engines are required to support each of these nodes, with the exception of the @\+G\+L\+O\+B\+AL node, which every M\+DI engine must support.
+
+Several M\+DI commands enable a driver to control the program flow of an engine through different nodes. The \mbox{\hyperlink{mdi_standard_send_node}{$<$@}} command instructs the engine to send the name of its node, while the \mbox{\hyperlink{mdi_standard_next_node}{@}} command instructs the engine to proceed in its simulation until it reaches the next node. In addition, there are commands associated with each type of node (\mbox{\hyperlink{mdi_standard_pre-forces_node}{@\+P\+RE-\/F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_forces_node}{@\+F\+O\+R\+C\+ES}}, \mbox{\hyperlink{mdi_standard_coords_node}{@\+C\+O\+O\+R\+DS}}) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.
 
 A typical MD implementation might progress from a @\+P\+RE-\/F\+O\+R\+C\+ES node, to the @\+F\+O\+R\+C\+ES node, to the @\+C\+O\+O\+R\+DS node, and then repeat the cycle; however, this behavior is {\bfseries{not}} guaranteed. Engines are permitted to pass through nodes in whatever order the implementation dictates. When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.\hypertarget{mdi_standard_standard_constants_sec}{}\doxysection{Constants}\label{mdi_standard_standard_constants_sec}
 The following constants are defined by the M\+DI Standard and are accessible through the \mbox{\hyperlink{library_page}{M\+DI Library}}\+:
 
 
 \begin{DoxyItemize}
+\item {\ttfamily M\+D\+I\+\_\+\+M\+PI} -\/ Identifier for the M\+PI communication method
+\item {\ttfamily M\+D\+I\+\_\+\+T\+CP} -\/ Identifier for the T\+CP communication method
+\item {\ttfamily M\+D\+I\+\_\+\+L\+IB} -\/ Identifier for the L\+IB communication method
+\item {\ttfamily M\+D\+I\+\_\+\+T\+E\+ST} -\/ Identifier for the T\+E\+ST communication method
+\item {\ttfamily M\+D\+I\+\_\+\+D\+R\+I\+V\+ER} -\/ Identifier for the D\+R\+I\+V\+ER role
+\item {\ttfamily M\+D\+I\+\_\+\+E\+N\+G\+I\+NE} -\/ Identifier for the E\+N\+G\+I\+NE role
 \item {\ttfamily M\+D\+I\+\_\+\+I\+NT} -\/ Data type identifier for integers
 \item {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} -\/ Data type identifier for double precision floats
 \item {\ttfamily M\+D\+I\+\_\+\+C\+H\+AR} -\/ Data type identifier for characters
@@ -29,7 +37,7 @@ The following constants are defined by the M\+DI Standard and are accessible thr
 \item {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} -\/ Maximum number of characters in an M\+DI command (see \mbox{\hyperlink{mdi_standard_command_list}{Command List}})
 \end{DoxyItemize}\hypertarget{mdi_standard_command_list}{}\doxysection{Command List}\label{mdi_standard_command_list}
 The following is a list of commands that are officially part of the M\+DI standard.\hypertarget{mdi_standard_next_node}{}\doxysubsection{@}\label{mdi_standard_next_node}
-The engine proceeds to the next node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_node}{}\doxysubsection{$<$@}\label{mdi_standard_send_node}
+The engine proceeds to the next node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is typically not supported at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_node}{}\doxysubsection{$<$@}\label{mdi_standard_send_node}
 The engine sends the driver a string that corresponds to the name of its current node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}).
 
 \begin{DoxyParagraph}{}
@@ -43,22 +51,40 @@ The engine sends the Cartesian coordinates of a set of grid points. This command
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+D\+E\+N\+S\+I\+TY }
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_set_cell}{}\doxysubsection{$>$\+C\+E\+LL}\label{mdi_standard_set_cell}
-The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors. The driver also sends the displacement vector of the origin of the simulation cell.
+\hypertarget{mdi_standard_send_cell}{}\doxysubsection{$>$\+C\+E\+LL}\label{mdi_standard_send_cell}
+The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
- {\bfseries{ Quantity\+: }} 12 ~\newline
- {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
+ {\bfseries{ Quantity\+: }} 9 ~\newline
+ {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. ~\newline
 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_cell}{}\doxysubsection{$<$\+C\+E\+LL}\label{mdi_standard_recv_cell}
-The engine sends a set of cell vectors to the driver, in the same format as specified for the {\ttfamily $>$C\+E\+LL} command. The engine also sends the displacement vector of the origin of the simulation cell.
+The engine sends a set of cell vectors to the driver.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
- {\bfseries{ Quantity\+: }} 12 ~\newline
- {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
+ {\bfseries{ Quantity\+: }} 9 ~\newline
+ {\bfseries{ Format\+: }} The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector. ~\newline
+
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_send_cell_displ}{}\doxysubsection{$>$\+C\+E\+L\+L\+\_\+\+D\+I\+S\+PL}\label{mdi_standard_send_cell_displ}
+The driver sends a displacement vector to the engine, which adjusts the origin of its simulation cell to the value of the displacement vector.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 3 ~\newline
+ {\bfseries{ Format\+: }} The 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
+
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_cell_displ}{}\doxysubsection{$<$\+C\+E\+L\+L\+\_\+\+D\+I\+S\+PL}\label{mdi_standard_recv_cell_displ}
+The engine sends the displacement vector of the origin of its simulation cell to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 3 ~\newline
+ {\bfseries{ Format\+: }} The 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector. ~\newline
 
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_charges}{}\doxysubsection{$>$\+C\+H\+A\+R\+G\+ES}\label{mdi_standard_send_charges}
@@ -87,14 +113,6 @@ This command is primarily intended for use with gas-\/phase quantum mechanics co
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+L\+A\+T\+T\+I\+CE } ~\newline
  {\bfseries{ Format\+: }} Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order
-\end{DoxyParagraph}
-\hypertarget{mdi_standard_recv_commands}{}\doxysubsection{$<$\+C\+O\+M\+M\+A\+N\+DS}\label{mdi_standard_recv_commands}
-The engine sends a string listing all commands that it supports to the driver. All engines are required to support this command. Typically, a driver should send this command to each of the engines immediately after establishing a connection with them, and exit with an appropriate error message in the event that any of the engines do not support a command that is required by the driver. See also the {\ttfamily $<$N\+C\+O\+M\+M\+A\+N\+DS} command.
-
-\begin{DoxyParagraph}{}
-{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+C\+H\+AR} ~\newline
- {\bfseries{ Quantity\+: }} {\ttfamily N\+C\+O\+M\+M\+A\+N\+DS} $\ast$ {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} ~\newline
- {\bfseries{ Format\+: }} A single string sequentially listing all of the commands, with the first command corresponding to the first {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters, the second command corresponding to the next {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters, etc. Commands having fewer than {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} characters are padded with blank spaces (\char`\"{} \char`\"{}).
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_coords_node}{}\doxysubsection{@\+C\+O\+O\+R\+DS}\label{mdi_standard_coords_node}
 The engine proceeds to the next {\ttfamily @\+C\+O\+O\+R\+DS}  node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_coords}{}\doxysubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
@@ -187,7 +205,7 @@ The driver sends a set of atomic forces to the engine, which replaces its intern
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order ~\newline
 
 \end{DoxyParagraph}
-\hypertarget{mdi_standard_send_add_forces}{}\doxysubsection{+\+F\+O\+R\+C\+ES}\label{mdi_standard_send_add_forces}
+\hypertarget{mdi_standard_send_add_forces}{}\doxysubsection{$>$+\+F\+O\+R\+C\+ES}\label{mdi_standard_send_add_forces}
 The driver sends a set of atomic forces to the engine, which adds the forces sent by the driver to its internal forces.
 
 \begin{DoxyParagraph}{}
@@ -218,6 +236,33 @@ The engine performs any initialization operations that are necessary before a ge
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Note\+: }} This command may change the engine\textquotesingle{}s atomic coordinates under certain circumstances, such as if the S\+H\+A\+KE algorithm is used.
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_ke}{}\doxysubsection{$<$\+KE}\label{mdi_standard_recv_ke}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its total kinetic energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated total kinetic energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_ke_elec}{}\doxysubsection{$<$\+K\+E\+\_\+\+E\+L\+EC}\label{mdi_standard_recv_ke_elec}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends the total kinetic energy of all electrons in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated electronic kinetic energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_ke_nuc}{}\doxysubsection{$<$\+K\+E\+\_\+\+N\+UC}\label{mdi_standard_recv_ke_nuc}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends the total kinetic energy of all nuclei in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated nuclear kinetic energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_send_lattice}{}\doxysubsection{$>$\+L\+A\+T\+T\+I\+CE}\label{mdi_standard_send_lattice}
 This command, along with the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} and {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE} commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. After sending this command, the driver sends the charges of each of the point charges to the engine. Prior to sending this command, the driver must have set the number of point charges using the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} command.
@@ -290,6 +335,33 @@ Before sending this command, the driver must have first sent the number of grid 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily N\+P\+O\+T\+E\+N\+T\+I\+AL} 
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_pe}{}\doxysubsection{$<$\+PE}\label{mdi_standard_recv_pe}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its total potential energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated total potential energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_pe_elec}{}\doxysubsection{$<$\+P\+E\+\_\+\+E\+L\+EC}\label{mdi_standard_recv_pe_elec}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its electronic potential energy to the driver. The electronic potential energy is defined as including all interactions between the electrons and any other particles or fields in the system. It also includes the interactions between the electrons and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated electronic potential energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_pe_nuc}{}\doxysubsection{$<$\+P\+E\+\_\+\+N\+UC}\label{mdi_standard_recv_pe_nuc}
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its nuclear potential energy to the driver. The nuclear potential energy is defined as including all interactions between the nuclei and any other particles or fields in the system, excluding any electrons. It also includes the interactions between the nuclei and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated electronic potential energy to the driver.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_pre-forces_node}{}\doxysubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
 The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+G\+L\+O\+B\+AL}  node.\hypertarget{mdi_standard_send_stress}{}\doxysubsection{$<$\+S\+T\+R\+E\+SS}\label{mdi_standard_send_stress}

@@ -14,14 +14,14 @@ M\+DI is designed to support a wide variety of different calculation types, with
 
 
 \begin{DoxyItemize}
-\item Run an {\itshape  ab initio} molecular dynamics (A\+I\+MD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.
+\item Run an {\itshape  ab initio} molecular dynamics (A\+I\+MD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechancis (MM) code performs time integration.
 \item Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
 \item Implement an advanced sampling technique ({\itshape i.\+e.} metadynamics, replica exchange, etc.) in a self-\/contained driver that can use other codes to compute forces.
 \item Implement a new forcefield in a self-\/contained engine that is compatible with multiple MM codes.
 \item Run Q\+M/\+MM simulations.
 \end{DoxyItemize}
 
-Creation of unofficial extensions to the M\+DI Standard is straightforward. Feel free to contact us if your use case requires additions to the M\+DI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the M\+DI Standard.\hypertarget{index_mainpage_getting_started_sec}{}\doxysection{Getting Started}\label{index_mainpage_getting_started_sec}
+More generally, M\+DI can support any use case that can be implemented using the \mbox{\hyperlink{mdi_standard_command_list}{command set}} defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. For use cases that require additional commands, unofficial extensions to the M\+DI Standard can be straightforwardly developed. Feel free to contact us if your use case requires additions to the M\+DI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the M\+DI Standard.\hypertarget{index_mainpage_getting_started_sec}{}\doxysection{Getting Started}\label{index_mainpage_getting_started_sec}
 For guidance on running simulations using M\+D\+I-\/based drivers and engines, please first complete the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}}. Afterwards, please read \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}.
 
 If you intend to develop an M\+D\+I-\/based driver or engine, first do the above. Then, complete the \mbox{\hyperlink{tutorials_aimd_tutorial}{Driver Development Tutorial}} and familiarize yourself with the \mbox{\hyperlink{library_page_functions_sec}{M\+DI Library Functions}}.

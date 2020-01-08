@@ -9,6 +9,7 @@ The MDI Library currently supports the following communication methods:
 
   - TCP
   - MPI
+  - LIB
 
 
 

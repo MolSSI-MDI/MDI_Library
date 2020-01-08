@@ -17,6 +17,18 @@ Acquire the MDI-enabled fork of LAMMPS:
     git clone --branch mdi git@github.com:MolSSI/lammps.git
 
   -#
+Compile the repository's internal MDI distribution by doing:
+
+    cd lammps/lib/mdi
+    python Install.py -m gcc
+
+  -#
+Activate the \c USER-MDI package:
+
+    cd ../../src
+    make yes-user-mdi
+
+  -#
 Compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.
 
   -#
