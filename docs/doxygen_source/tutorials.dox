@@ -4,66 +4,13 @@
 
 In this tutorial we will use an MDI driver to perform a simple <em> Ab Initio </em> Molecular Dynamics (AIMD) simulation, using Quantum ESPRESSO (QE) to calculate forces and LAMMPS to update the atomic coordinates each time step.
 
-\subsection qe_compile Compiling QE
+\subsection tutorial_engine_compile Compiling the Engines
 
-We will now download and compile a fork of QE that is capable of running as an MDI engine.  To download an MDI-capable fork of QE, do:
+We will need access to a QM code and an MM code, both of which must be capable of being run as an MDI engine.
+This tutorial will describe the use of Quantum ESPRESSO (QE) as the QM code and LAMMPS as the MM code; however, you can use any MDI-enabled QM and MM codes you prefer.
+A list of codes that support MDI can be found \ref mdi_ecosystem "here", along with instructions on how to compile them with MDI support.
 
-\code
-git clone --branch mdi git@github.com:MolSSI/q-e.git
-\endcode
-
-You may now compile the code in the normal manner.
-For example:
-
-\code
-cd q-e
-./configure
-make pw
-\endcode
-
-\subsection lammps_compile Compiling LAMMPS
-
-We will now download and compile a fork of LAMMPS that is capable of running as an MDI engine.
-To download an MDI-capable fork of LAMMPS, do:
-
-\code
-git clone --branch mdi git@github.com:MolSSI/lammps.git
-\endcode
-
-Compile the repository's internal MDI distribution by doing:
-
-\code
-cd lammps/lib/mdi
-python Install.py -m gcc
-\endcode
-
-Then activate the \c USER-MDI package:
-
-\code
-cd ../../src
-make yes-user-mdi
-\endcode
-
-From this point, you can compile LAMMPS however you normally would.
-For example, on a machine that does not have MPI or FFTW libraries installed and is running the Mac OS, you could first edit \c lammps/src/MAKE/MACHINES/Makefile.mac to set the \"<c>FFT_INC =       -DFFT_FFTW2</c>\" and \"<c>FFT_LIB =       -lfftw</c>\" lines to \"<c>FFT_INC = </c>\" and \"<c>FFT_LIB = </c>\", respectively.
-Then do:
-
-\code
-make yes-standard
-make no-gpu
-make no-kim
-make no-kokkos
-make no-latte
-make no-meam
-make no-mscg
-make no-poems
-make no-python
-make no-voronoi
-make no-mpiio
-make no-reax
-make mpi-stubs
-make mac
-\endcode
+Before moving to the next step, compile both \ref ecosystem_qe "QE" and \ref ecosystem_lammps "LAMMPS" (or your preferred QM and MM packages) with MDI support by following the \ref ecosystem_overview "instructions provided".
 
 \subsection driver_compile Compiling the AIMD Driver
 
@@ -145,12 +92,12 @@ wait
 The first few lines simply read the location of the codes from the files in MDI_AIMD_Driver/tests/locations and copy the LAMMPS and QE input files into a subdirectory called \c work.
 Then the script launches QE.
 The QE launch command is exactly the same as a normal run of QE, except for the addition of a \c -mdi option.
-All MDI engines and drivers require the presence of this option, which provides information to the MDI Library regarding how the codes will communicate with one another.
-Its argument is a string, which itself provides a series of options that are read by the MDI Library.
+This option provides information to the MDI Library regarding how the codes will communicate with one another.
+Its argument is a string, which itself consists of a series of options that are read by the MDI Library.
 In this case, it provides the following options:
 
-  - role: Either \c ENGINE or \c DRIVER.
-  - name: Identification of the purpose of this engine.  Each MDI driver will expect its engines to be named according to a particular standard.  The MDI_AIMD_Driver engine expects one of the engines to be named "QM" and the other to be named "MM".
+  - role: Indicates whether this code will run as an \c ENGINE or a \c DRIVER.
+  - name: Identifies the purpose of this engine.  Each MDI driver will expect its engines to be named according to a particular standard.  The MDI_AIMD_Driver engine expects one of the engines to be named "QM" and the other to be named "MM".
   - method: The communication method used to transfer information between the driver and the engines.
   - port: The port number that the driver will be listening over.  Only used if the method is \c TCP.
   - hostname: The host name of the driver.  Only used by engines and if the method is \c TCP.
@@ -162,7 +109,7 @@ Finally, the wait command at the end ensures that the driver and the engines are
 You can now execute the \c tcp.sh script, which should print out the energies of LAMMPS and QE for several timesteps of a short AIMD simulation.
 
 If you compiled everything (QE, LAMMPS, MDI_AIMD_Driver, and the internal copies of the MDI Library) with MPI, you can also execute the \c mpi.sh script, which will run the same simulation using MPI for the inter-code communication.
-All of the output from this run can be found in \c work/qe.out.
+The output produced by QE and LAMMPS can be found in \c work/qe.out and \c work/lammps.out, respectively.
 
 \section aimd_tutorial Driver Development Tutorial
 
@@ -239,14 +186,14 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -mdi option was provided
       if ( argc-iarg < 2 ) {
-	throw runtime_error("The -mdi argument was not provided.");
+        throw runtime_error("The -mdi argument was not provided.");
       }
 
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
       int ret = MDI_Init(argv[iarg+1], &world_comm);
       if ( ret != 0 ) {
-	throw runtime_error("The MDI library was not initialized correctly.");
+        throw runtime_error("The MDI library was not initialized correctly.");
       }
       initialized_mdi = true;
       iarg += 2;
@@ -284,21 +231,23 @@ The code also checks for a \c -mdi command line argument, which is used in the c
 After initializing MDI, we need to connect the driver to its engines.
 For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep.
 In the MDI standard, engines request a connection to a driver.
-The driver simply calls the \c MDI_Accept_Communicator() function to accept the connection, like this:
+The driver will need to call the \c MDI_Accept_Communicator() function to accept each connection.
+The general format of this functional call looks like this:
 
 \code
-MDI_Comm comm = MDI_Accept_Communicator();
+MDI_Comm comm;
+MDI_Accept_Communicator(&comm);
 \endcode
 
-The return value of \c MDI_Accept_Communicator is an MDI communicator, which functions very similarly to an MPI communicator and is used in certain MDI function calls to identify which engine is expected to send/receive data to/from the driver.
+This will assign a new MDI communicator to \c comm, which functions very similarly to an MPI communicator and is used in certain MDI function calls to identify which engine is expected to send/receive data to/from the driver.
 Our AIMD driver will connect to two different engines, so we will be calling \c MDI_Accept_Communicator() twice.
 We don't know the order in which the engines will request a connection to the driver, so we will need some way to determine which engine is the QM code and which engine is the MM code.
 
 This can be accomplished through the use of the \"\c <NAME\" command.
 The entire MDI standard is built around the idea that drivers can send "commands" to engines, each of which is defined by the MDI standard and has a specific outcome.
 The \"\c <NAME\" command tells the engine to send the driver a string of length \c MDI_NAME_LENGTH that identifies the engine.
-The user indicates the name of each engine at runtime, using the \c -name command line argument that was described in the \ref user_tutorial.
-As authors of a driver, we will need to decide what we expect any drivers to be named and clearly document that decision for any users.
+The end-user is responsible for indicating the name of each engine at runtime, using the \c -name command line argument that was described in the \ref user_tutorial.
+As authors of a driver, we will need to decide what we expect each of the engines to be named and clearly document that decision for the benefit of the end-users.
 For the purpose of this tutorial, we will expect the quantum mechanics code to be called "QM" and the molecular mechanics code to be named "MM".
 
 Sending the \"\c <NAME\" command to an engine and then receiving the engine's name can be done as follows:
@@ -309,10 +258,8 @@ MDI_Send_Command("<NAME", comm);
 MDI_Recv(code_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 \endcode
 
-
-
 The following code accepts connections from two engines and assigns the communicator from the engine named "MM" to \c mm_comm and assigns the communicator from the engine named "QM" to \c qm_comm.
-Place it immediately after the comment that reads \"<c>Connect to the engines</c>\".
+Place it immediately after the comment that reads \"<c>// Connect to the engines</c>\".
 
 \code
   // Connect to the engines
@@ -320,37 +267,38 @@ Place it immediately after the comment that reads \"<c>Connect to the engines</c
   MDI_Comm qm_comm = MDI_NULL_COMM;
   int nengines = 2;
   for (int iengine=0; iengine < nengines; iengine++) {
-    MDI_Comm comm = MDI_Accept_Communicator();
-
+    MDI_Comm comm;
+    MDI_Accept_Communicator(&comm);
+ 
     // Determine the name of this engine
     char* engine_name = new char[MDI_NAME_LENGTH];
     MDI_Send_Command("<NAME", comm);
     MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
-
+ 
     cout << "Engine name: " << engine_name << endl;
-
+ 
     if ( strcmp(engine_name, "MM") == 0 ) {
       if ( mm_comm != MDI_NULL_COMM ) {
-        throw runtime_error("Accepted a communicator from a second MM engine.");
+	throw runtime_error("Accepted a communicator from a second MM engine.");
       }
       mm_comm = comm;
     }
     else if ( strcmp(engine_name, "QM") == 0 ) {
       if ( qm_comm != MDI_NULL_COMM ) {
-        throw runtime_error("Accepted a communicator from a second QM engine.");
+	throw runtime_error("Accepted a communicator from a second QM engine.");
       }
       qm_comm = comm;
     }
     else {
       throw runtime_error("Unrecognized engine name.");
     }
-
+ 
     delete[] engine_name;
   }
 \endcode
 
 We are now ready to use MDI to orchestrate an AIMD simulation.
-In broad terms, during each dynamics iteration we will send a set of atomic coordinates from the MM engine to the QM engine, order the QM system to compute the atomic forces, send those forces to the MM engine, and order the MM engine to perform a time step.
+In broad terms, during each dynamics iteration we will send a set of atomic coordinates from the MM engine to the QM engine, order the QM engine to send the driver the corresponding atomic forces, send those forces to the MM engine, and order the MM engine to perform a time step.
 
 Keep in mind that the driver doesn't know anything about the simulated system beyond what it can query by sending MDI commands.
 MDI engines initialize basic information about the system using whatever input file format the engine's developer chose.
@@ -386,7 +334,7 @@ You could then update the coordinates of the QM engine's system:
 As we will discuss later in \ref tutorials_using_sec, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.
 
 The following code will handle all of the work associated with driving an AIMD simulation.
-Place it immediately after the comment that reads \"<c>Perform the simulation</c>\".
+Place it immediately after the comment that reads \"<c>// Perform the simulation</c>\".
 
 \code
   // Perform the simulation
@@ -394,54 +342,53 @@ Place it immediately after the comment that reads \"<c>Perform the simulation</c
   int natoms;
   double qm_energy;
   double mm_energy;
-
+ 
   // Receive the number of atoms from the MM engine
   MDI_Send_Command("<NATOMS", mm_comm);
   MDI_Recv(&natoms, 1, MDI_INT, mm_comm);
-
+ 
   // Allocate the arrays for the coordinates and forces
   double coords[3*natoms];
   double forces[3*natoms];
 
-  // Have the MD engine initialize a new MD simulation
+  // Have the MM engine initialize a new MD simulation
   MDI_Send_Command("@INIT_MD", mm_comm);
-
+ 
   // Perform each iteration of the simulation
   for (int iiteration = 0; iiteration < niterations; iiteration++) {
 
     // Receive the coordinates from the MM engine
     MDI_Send_Command("<COORDS", mm_comm);
     MDI_Recv(&coords, 3*natoms, MDI_DOUBLE, mm_comm);
-
+ 
     // Send the coordinates to the QM engine
     MDI_Send_Command(">COORDS", qm_comm);
     MDI_Send(&coords, 3*natoms, MDI_DOUBLE, qm_comm);
-
-    // Have the MM engine proceed to the @PRE-FORCES node
-    MDI_Send_Command("@PRE-FORCES", mm_comm);
-
+ 
+    // Have the MM engine proceed to the @FORCES node
+    MDI_Send_Command("@FORCES", mm_comm);
+ 
     // Get the QM energy
     MDI_Send_Command("<ENERGY", qm_comm);
     MDI_Recv(&qm_energy, 1, MDI_DOUBLE, qm_comm);
-
+ 
     // Get the MM energy
     MDI_Send_Command("<ENERGY", mm_comm);
     MDI_Recv(&mm_energy, 1, MDI_DOUBLE, mm_comm);
-
+ 
     // Receive the forces from the QM engine
     MDI_Send_Command("<FORCES", qm_comm);
     MDI_Recv(&forces, 3*natoms, MDI_DOUBLE, qm_comm);
-
+ 
     // Send the forces to the MM engine
     MDI_Send_Command(">FORCES", mm_comm);
     MDI_Send(&forces, 3*natoms, MDI_DOUBLE, mm_comm);
-
+ 
     // Have the MM engine proceed to the @COORDS node, which completes the timestep
     MDI_Send_Command("@COORDS", mm_comm);
-
-    cout << "timestep: " << iiteration << " " << mm_energy << endl;
+ 
+    cout << "timestep: " << iiteration << " " << mm_energy << " " << qm_energy << endl;
   }
-
 \endcode
 
 The above code does the following:
@@ -449,16 +396,14 @@ The above code does the following:
   -# Orders the MM engine to initialize a new MD simulation
   -# Begins an iterative loop over MD iterations
     -# Receives the atomic coordinates from the MM engine and updates the QM engine with them
-    -# Orders the QM engine to relax the electronic distribution of its system
     -# Receives the energy of the QM and MM systems
     -# Receives the atomic forces from the QM engine and sends them to the MM engine
     -# Orders the MM engine update the atomic coordinates
 
 Finally, we should send an MDI command to cause the engines to exit.
-Add the following immediately after the comment that reads \"<c>Send the "EXIT" command to each of the engines</c>\":
+Add the following immediately after the comment that reads \"<c>// Send the "EXIT" command to each of the engines</c>\":
 
 \code
-  // Send the "EXIT" command to each of the engines
   MDI_Send_Command("EXIT", mm_comm);
   MDI_Send_Command("EXIT", qm_comm);
 \endcode
@@ -487,9 +432,7 @@ You can simply edit MDI_AIMD_Driver/tests/locations/MDI_AIMD_Driver to point to 
 Note that although we used QE as the QM code and LAMMPS as the MM code, we swap out QE for any QM engine with MDI support or LAMMPS for any MM engine with MDI support.
 Furthermore, nothing about our AIMD driver strictly requires that the code named "QM" actually corresponds to a quantum mechanics code.
 You could, for example, use LAMMPS as the QM code, while another instance of LAMMPS serves as the MM code.
-This would look like:
-
-The above script allows you to run a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of LAMMPS.
+Doing so would allow you to run  a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of LAMMPS.
 Although not generally useful for production runs, this can be a good way to benchmark the cost of the computational overhead introduced by using our driver as a middleman between two codes.
 
 In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code.

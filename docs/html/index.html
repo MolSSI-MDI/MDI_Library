@@ -79,13 +79,13 @@ Overview</h1>
 Capabilities</h1>
 <p>MDI is designed to support a wide variety of different calculation types, with the <a class="el" href="mdi_standard.html">MDI Standard</a> defining a variety of simple commands that can be used to develop many drivers for many purposes. Potential application areas for MDI include <em> ab initio</em> molecular dynamics (AIMD), path integral molecular dynamics (PIMD), advanced sampling, forcefield development, and QM/MM. More specifically, here are some examples of what can be accomplished using MDI:</p>
 <ul>
-<li>Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.</li>
+<li>Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechancis (MM) code performs time integration.</li>
 <li>Run an MD simulation in which the nuclear forces include contributions from two different MM codes.</li>
 <li>Implement an advanced sampling technique (<em>i.e.</em> metadynamics, replica exchange, etc.) in a self-contained driver that can use other codes to compute forces.</li>
 <li>Implement a new forcefield in a self-contained engine that is compatible with multiple MM codes.</li>
 <li>Run QM/MM simulations.</li>
 </ul>
-<p>Creation of unofficial extensions to the MDI Standard is straightforward. Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the MDI Standard.</p>
+<p>More generally, MDI can support any use case that can be implemented using the <a class="el" href="mdi_standard.html#command_list">command set</a> defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. For use cases that require additional commands, unofficial extensions to the MDI Standard can be straightforwardly developed. Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process. Extensions that prove useful to the broader community may be considered for official incorporation into the MDI Standard.</p>
 <h1><a class="anchor" id="mainpage_getting_started_sec"></a>
 Getting Started</h1>
 <p>For guidance on running simulations using MDI-based drivers and engines, please first complete the <a class="el" href="tutorials.html#user_tutorial">User Tutorial</a>. Afterwards, please read <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>.</p>

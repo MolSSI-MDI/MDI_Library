@@ -33,13 +33,13 @@ Contents:
 #include "physconst.h"
 
 /*! \brief MDI major version number */
-const int MDI_MAJOR_VERSION = 0;
+const int MDI_MAJOR_VERSION = 1;
 
 /*! \brief MDI minor version number */
-const int MDI_MINOR_VERSION = 6;
+const int MDI_MINOR_VERSION = 0;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 5;
+const int MDI_PATCH_VERSION = 0;
 
 /*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;

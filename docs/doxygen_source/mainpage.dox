@@ -26,13 +26,14 @@ MDI is designed to support a wide variety of different calculation types, with t
 Potential application areas for MDI include <em> ab initio</em> molecular dynamics (AIMD), path integral molecular dynamics (PIMD), advanced sampling, forcefield development, and QM/MM.
 More specifically, here are some examples of what can be accomplished using MDI:
 
-  - Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code calculates nuclear forces and a molecular mechancis (MM) code performs the time integration.
+  - Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechancis (MM) code performs time integration.
   - Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
   - Implement an advanced sampling technique (<em>i.e.</em> metadynamics, replica exchange, etc.) in a self-contained driver that can use other codes to compute forces.
   - Implement a new forcefield in a self-contained engine that is compatible with multiple MM codes.
   - Run QM/MM simulations.
 
-Creation of unofficial extensions to the MDI Standard is straightforward.
+More generally, MDI can support any use case that can be implemented using the \ref command_list "command set" defined by the \ref mdi_standard "MDI Standard".
+For use cases that require additional commands, unofficial extensions to the MDI Standard can be straightforwardly developed.
 Feel free to contact us if your use case requires additions to the MDI Standard, and we may be able to provide advice about the process.
 Extensions that prove useful to the broader community may be considered for official incorporation into the MDI Standard.
 

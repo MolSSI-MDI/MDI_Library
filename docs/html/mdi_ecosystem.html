@@ -74,6 +74,12 @@ LAMMPS</h1>
 <ol type="1">
 <li>Acquire the MDI-enabled fork of LAMMPS: <pre class="fragment">git clone --branch mdi git@github.com:MolSSI/lammps.git
 </pre></li>
+<li>Compile the repository's internal MDI distribution by doing: <pre class="fragment">cd lammps/lib/mdi
+python Install.py -m gcc
+</pre></li>
+<li>Activate the <code>USER-MDI</code> package: <pre class="fragment">cd ../../src
+make yes-user-mdi
+</pre></li>
 <li>Compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.</li>
 <li>Prepare a LAMMPS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings. The file must include the <b>mdi fix</b>. At the end of the input file, call the <b>mdi</b> command, which does not accept any arguments. For example: <pre class="fragment">units           real
 neigh_modify    delay 0 every 1 check yes
