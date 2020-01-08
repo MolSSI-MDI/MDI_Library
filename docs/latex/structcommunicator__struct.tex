@@ -6,6 +6,12 @@
 \mbox{\Hypertarget{structcommunicator__struct_ae15048c78f1d9c895ccf9563519c24fe}\label{structcommunicator__struct_ae15048c78f1d9c895ccf9563519c24fe}} 
 int \mbox{\hyperlink{structcommunicator__struct_ae15048c78f1d9c895ccf9563519c24fe}{method}}
 \begin{DoxyCompactList}\small\item\em Communication method used by this communicator (either M\+D\+I\+\_\+\+T\+CP or M\+D\+I\+\_\+\+M\+PI) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}\label{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}} 
+M\+D\+I\+\_\+\+Comm\+\_\+\+Type \mbox{\hyperlink{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}{id}}
+\begin{DoxyCompactList}\small\item\em M\+P\+I\+\_\+\+Comm handle that corresponds to this communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}\label{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}} 
+int \mbox{\hyperlink{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}{code\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em Handle for the id of the associated code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcommunicator__struct_a9f010a22911cb8a55767c054b0596030}\label{structcommunicator__struct_a9f010a22911cb8a55767c054b0596030}} 
 int \mbox{\hyperlink{structcommunicator__struct_a9f010a22911cb8a55767c054b0596030}{sockfd}}
 \begin{DoxyCompactList}\small\item\em For communicators using the T\+CP communicatiom method, the socket descriptor. \end{DoxyCompactList}\item 
@@ -14,10 +20,19 @@ M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{structcommunicator__struct_a2a65c13dff3a01c
 \begin{DoxyCompactList}\small\item\em For communicators using the M\+PI communicatiom method, the inter-\/code M\+PI communicator. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcommunicator__struct_a72d04b0314ebff74daf08cfc97a7f8ff}\label{structcommunicator__struct_a72d04b0314ebff74daf08cfc97a7f8ff}} 
 int \mbox{\hyperlink{structcommunicator__struct_a72d04b0314ebff74daf08cfc97a7f8ff}{mpi\+\_\+rank}}
-\begin{DoxyCompactList}\small\item\em For communicators using the M\+PI communicatiom method, the rank of this process within the inter-\/code M\+PI communicator. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_a0c6da753b933f0bee6024438aa45a3c8}\label{structcommunicator__struct_a0c6da753b933f0bee6024438aa45a3c8}} 
-double \mbox{\hyperlink{structcommunicator__struct_a0c6da753b933f0bee6024438aa45a3c8}{mdi\+\_\+version}}
-\begin{DoxyCompactList}\small\item\em The M\+DI version of the connected code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em For communicators using the M\+PI communication method, the rank of this process within the inter-\/code M\+PI communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}\label{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}} 
+int \mbox{\hyperlink{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}{mdi\+\_\+version}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em The M\+DI version of the connected code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a82b093f109b29a9762cd6997787f96da}\label{structcommunicator__struct_a82b093f109b29a9762cd6997787f96da}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcommunicator__struct_a82b093f109b29a9762cd6997787f96da}{nodes}}
+\begin{DoxyCompactList}\small\item\em The nodes supported by the connected code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_adc6c749cc986a1c2d93a07ced585796b}\label{structcommunicator__struct_adc6c749cc986a1c2d93a07ced585796b}} 
+void $\ast$ \mbox{\hyperlink{structcommunicator__struct_adc6c749cc986a1c2d93a07ced585796b}{method\+\_\+data}}
+\begin{DoxyCompactList}\small\item\em Method-\/specific information for this communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}\label{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}} 
+int($\ast$ \mbox{\hyperlink{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}{delete}} )(void $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer for method-\/specific deletion operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}

@@ -66,7 +66,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">mdi_general.h File Reference</div>  </div>
 </div><!--header-->
@@ -75,6 +76,7 @@ $(function() {
 <p>Generic MDI function calls.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;mdi.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a>&quot;</code><br />
 </div>
 <p><a href="mdi__general_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -98,6 +100,49 @@ Functions</h2></td></tr>
 <tr class="memitem:aeeda32ecb1993508a73a5ad56a0df791"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#aeeda32ecb1993508a73a5ad56a0df791">general_recv_command</a> (char *buf, MDI_Comm comm)</td></tr>
 <tr class="memdesc:aeeda32ecb1993508a73a5ad56a0df791"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#aeeda32ecb1993508a73a5ad56a0df791">More...</a><br /></td></tr>
 <tr class="separator:aeeda32ecb1993508a73a5ad56a0df791"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2aa020b5f84bf7d5ee4250850a45219"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#ab2aa020b5f84bf7d5ee4250850a45219">general_builtin_command</a> (const char *buf, MDI_Comm comm)</td></tr>
+<tr class="memdesc:ab2aa020b5f84bf7d5ee4250850a45219"><td class="mdescLeft">&#160;</td><td class="mdescRight">Respond to a general built-in command.  <a href="#ab2aa020b5f84bf7d5ee4250850a45219">More...</a><br /></td></tr>
+<tr class="separator:ab2aa020b5f84bf7d5ee4250850a45219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13565a7590af2e05f10a55bb7cf5cbff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a13565a7590af2e05f10a55bb7cf5cbff">register_node</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *node_vec, const char *node_name)</td></tr>
+<tr class="memdesc:a13565a7590af2e05f10a55bb7cf5cbff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a node.  <a href="#a13565a7590af2e05f10a55bb7cf5cbff">More...</a><br /></td></tr>
+<tr class="separator:a13565a7590af2e05f10a55bb7cf5cbff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab039ef24caf27fd91a25b809b24ebccd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#ab039ef24caf27fd91a25b809b24ebccd">register_command</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *node_vec, const char *node_name, const char *command_name)</td></tr>
+<tr class="memdesc:ab039ef24caf27fd91a25b809b24ebccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a command on a specified node.  <a href="#ab039ef24caf27fd91a25b809b24ebccd">More...</a><br /></td></tr>
+<tr class="separator:ab039ef24caf27fd91a25b809b24ebccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25f8f401438a3ea84bc29f60bf7984a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a25f8f401438a3ea84bc29f60bf7984a6">register_callback</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *node_vec, const char *node_name, const char *callback_name)</td></tr>
+<tr class="memdesc:a25f8f401438a3ea84bc29f60bf7984a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a callback on a specified node.  <a href="#a25f8f401438a3ea84bc29f60bf7984a6">More...</a><br /></td></tr>
+<tr class="separator:a25f8f401438a3ea84bc29f60bf7984a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afedcd918694f7cb21f3073eaac161d84"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#afedcd918694f7cb21f3073eaac161d84">send_command_list</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:afedcd918694f7cb21f3073eaac161d84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the list of supported commands.  <a href="#afedcd918694f7cb21f3073eaac161d84">More...</a><br /></td></tr>
+<tr class="separator:afedcd918694f7cb21f3073eaac161d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4443538f2b7bc5ffa79cbefcd9af05f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a4443538f2b7bc5ffa79cbefcd9af05f1">send_callback_list</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a4443538f2b7bc5ffa79cbefcd9af05f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the list of callbacks.  <a href="#a4443538f2b7bc5ffa79cbefcd9af05f1">More...</a><br /></td></tr>
+<tr class="separator:a4443538f2b7bc5ffa79cbefcd9af05f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa6fade25b124310a82f88b44c76d2a3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#aaa6fade25b124310a82f88b44c76d2a3">send_node_list</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:aaa6fade25b124310a82f88b44c76d2a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the list of nodes.  <a href="#aaa6fade25b124310a82f88b44c76d2a3">More...</a><br /></td></tr>
+<tr class="separator:aaa6fade25b124310a82f88b44c76d2a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75d69605e017046bb9e56804a873260d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a75d69605e017046bb9e56804a873260d">send_ncommands</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a75d69605e017046bb9e56804a873260d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the number of supported commands.  <a href="#a75d69605e017046bb9e56804a873260d">More...</a><br /></td></tr>
+<tr class="separator:a75d69605e017046bb9e56804a873260d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a7e2d8eeb3ea738bec8839056c8959b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a6a7e2d8eeb3ea738bec8839056c8959b">send_ncallbacks</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a6a7e2d8eeb3ea738bec8839056c8959b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the number of supported callbacks.  <a href="#a6a7e2d8eeb3ea738bec8839056c8959b">More...</a><br /></td></tr>
+<tr class="separator:a6a7e2d8eeb3ea738bec8839056c8959b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f215c38bbe96f46eeb41677b76a40a5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a2f215c38bbe96f46eeb41677b76a40a5">send_nnodes</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a2f215c38bbe96f46eeb41677b76a40a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the number of supported nodes.  <a href="#a2f215c38bbe96f46eeb41677b76a40a5">More...</a><br /></td></tr>
+<tr class="separator:a2f215c38bbe96f46eeb41677b76a40a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63440a569e9873f6c300b443e98e85dc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a63440a569e9873f6c300b443e98e85dc">get_node_info</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a63440a569e9873f6c300b443e98e85dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get information about the nodes of a particular code.  <a href="#a63440a569e9873f6c300b443e98e85dc">More...</a><br /></td></tr>
+<tr class="separator:a63440a569e9873f6c300b443e98e85dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b1489b20de3fb01aca285b92543c3b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a1b1489b20de3fb01aca285b92543c3b5">get_node_vector</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a1b1489b20de3fb01aca285b92543c3b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the node vector associated with a particular communicator.  <a href="#a1b1489b20de3fb01aca285b92543c3b5">More...</a><br /></td></tr>
+<tr class="separator:a1b1489b20de3fb01aca285b92543c3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="memItemLeft" align="right" valign="top"><a id="a8d9b664d1a8a97ed1354b1fff3ea94eb"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a8d9b664d1a8a97ed1354b1fff3ea94eb">execute_command</a> )(const char *, MDI_Comm)</td></tr>
+<tr class="memdesc:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function pointer to the generic execute_command function. <br /></td></tr>
+<tr class="separator:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Generic MDI function calls. </p>
@@ -119,6 +164,44 @@ Functions</h2></td></tr>
 
 <p>Accept a new MDI communicator. </p>
 <p>The function returns an MDI_Comm that describes a connection between two codes. If no new communicators are available, the function returns <code>MDI_NULL_COMM</code>. </p>
+
+</div>
+</div>
+<a id="ab2aa020b5f84bf7d5ee4250850a45219"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2aa020b5f84bf7d5ee4250850a45219">&#9670;&nbsp;</a></span>general_builtin_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int general_builtin_command </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Respond to a general built-in command. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>1</code> if the command is a built-in command and <code>0</code> otherwise.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">buf</td><td>Pointer to the buffer for the command name. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -333,6 +416,350 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buf</td><td>Pointer to the data to be sent. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a63440a569e9873f6c300b443e98e85dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63440a569e9873f6c300b443e98e85dc">&#9670;&nbsp;</a></span>get_node_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int get_node_info </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get information about the nodes of a particular code. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1b1489b20de3fb01aca285b92543c3b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b1489b20de3fb01aca285b92543c3b5">&#9670;&nbsp;</a></span>get_node_vector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdynamic__array__struct.html">vector</a>* get_node_vector </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the node vector associated with a particular communicator. </p>
+<p>The function returns the node vector for the communicator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will return the node vector for the calling engine. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a25f8f401438a3ea84bc29f60bf7984a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25f8f401438a3ea84bc29f60bf7984a6">&#9670;&nbsp;</a></span>register_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int register_callback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>node_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>node_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>callback_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a callback on a specified node. </p>
+<p>The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_vec</td><td>Vector of nodes, into which the new node will be added. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node on which the callback will be registered. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">callback_name</td><td>Name of the callback. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab039ef24caf27fd91a25b809b24ebccd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab039ef24caf27fd91a25b809b24ebccd">&#9670;&nbsp;</a></span>register_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int register_command </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>node_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>node_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>command_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a command on a specified node. </p>
+<p>The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_vec</td><td>Vector of nodes, into which the new node will be added. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node on which the command will be registered. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">command_name</td><td>Name of the command. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a13565a7590af2e05f10a55bb7cf5cbff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13565a7590af2e05f10a55bb7cf5cbff">&#9670;&nbsp;</a></span>register_node()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int register_node </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>node_vec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>node_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a node. </p>
+<p>The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_vec</td><td>Vector of nodes, into which the new node will be added. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4443538f2b7bc5ffa79cbefcd9af05f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4443538f2b7bc5ffa79cbefcd9af05f1">&#9670;&nbsp;</a></span>send_callback_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_callback_list </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the list of callbacks. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afedcd918694f7cb21f3073eaac161d84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afedcd918694f7cb21f3073eaac161d84">&#9670;&nbsp;</a></span>send_command_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_command_list </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the list of supported commands. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6a7e2d8eeb3ea738bec8839056c8959b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a7e2d8eeb3ea738bec8839056c8959b">&#9670;&nbsp;</a></span>send_ncallbacks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_ncallbacks </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the number of supported callbacks. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a75d69605e017046bb9e56804a873260d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75d69605e017046bb9e56804a873260d">&#9670;&nbsp;</a></span>send_ncommands()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_ncommands </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the number of supported commands. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2f215c38bbe96f46eeb41677b76a40a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f215c38bbe96f46eeb41677b76a40a5">&#9670;&nbsp;</a></span>send_nnodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_nnodes </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the number of supported nodes. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaa6fade25b124310a82f88b44c76d2a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa6fade25b124310a82f88b44c76d2a3">&#9670;&nbsp;</a></span>send_node_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int send_node_list </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send the list of nodes. </p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
   </table>
   </dd>

@@ -78,6 +78,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;errno.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -88,6 +89,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a53e2a90f50c539f8239225d6f39c0213"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a53e2a90f50c539f8239225d6f39c0213">vector_push_back</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, void *element)</td></tr>
 <tr class="memdesc:a53e2a90f50c539f8239225d6f39c0213"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a new element to the end of the vector.  <a href="#a53e2a90f50c539f8239225d6f39c0213">More...</a><br /></td></tr>
 <tr class="separator:a53e2a90f50c539f8239225d6f39c0213"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bab71c9dec13cb06e7d5ae0197a04fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a0bab71c9dec13cb06e7d5ae0197a04fb">vector_delete</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
+<tr class="memdesc:a0bab71c9dec13cb06e7d5ae0197a04fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove an element from a vector.  <a href="#a0bab71c9dec13cb06e7d5ae0197a04fb">More...</a><br /></td></tr>
+<tr class="separator:a0bab71c9dec13cb06e7d5ae0197a04fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4efb113e1a013d1de3065394cde82202"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a4efb113e1a013d1de3065394cde82202">vector_free</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v)</td></tr>
+<tr class="memdesc:a4efb113e1a013d1de3065394cde82202"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free all data associated with a vector.  <a href="#a4efb113e1a013d1de3065394cde82202">More...</a><br /></td></tr>
+<tr class="separator:a4efb113e1a013d1de3065394cde82202"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a75ffb2ad4233613bd0c97d40b1c68611">vector_get</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>
 <tr class="memdesc:a75ffb2ad4233613bd0c97d40b1c68611"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to an element of a vector.  <a href="#a75ffb2ad4233613bd0c97d40b1c68611">More...</a><br /></td></tr>
 <tr class="separator:a75ffb2ad4233613bd0c97d40b1c68611"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -100,24 +107,88 @@ Functions</h2></td></tr>
 <tr class="memitem:a62da6acd5dbe977614e689e6000a3b18"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a62da6acd5dbe977614e689e6000a3b18">get_callback_index</a> (<a class="el" href="structnode__struct.html">node</a> *n, const char *callback_name)</td></tr>
 <tr class="memdesc:a62da6acd5dbe977614e689e6000a3b18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the index of a callback within a node.  <a href="#a62da6acd5dbe977614e689e6000a3b18">More...</a><br /></td></tr>
 <tr class="separator:a62da6acd5dbe977614e689e6000a3b18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa8e15c40e69dda04607b59612c1dc96"><td class="memItemLeft" align="right" valign="top"><a id="afa8e15c40e69dda04607b59612c1dc96"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#afa8e15c40e69dda04607b59612c1dc96">free_node_vector</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v)</td></tr>
+<tr class="memdesc:afa8e15c40e69dda04607b59612c1dc96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the index of a callback within a node. <br /></td></tr>
+<tr class="separator:afa8e15c40e69dda04607b59612c1dc96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85db1717518f106b85b41bb98963a11e"><td class="memItemLeft" align="right" valign="top"><a id="a85db1717518f106b85b41bb98963a11e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a85db1717518f106b85b41bb98963a11e">new_code</a> ()</td></tr>
+<tr class="memdesc:a85db1717518f106b85b41bb98963a11e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new code structure and add it to the list of codes Returns the index of the new code. <br /></td></tr>
+<tr class="separator:a85db1717518f106b85b41bb98963a11e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02b6506a17abd031ad581b63c3101294"><td class="memItemLeft" align="right" valign="top"><a id="a02b6506a17abd031ad581b63c3101294"></a>
+<a class="el" href="structcode__struct.html">code</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a02b6506a17abd031ad581b63c3101294">get_code</a> (int code_id)</td></tr>
+<tr class="memdesc:a02b6506a17abd031ad581b63c3101294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a code from a code handle Returns a pointer to the code. <br /></td></tr>
+<tr class="separator:a02b6506a17abd031ad581b63c3101294"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94f5f8596796093d0b04835f37d2f0bf"><td class="memItemLeft" align="right" valign="top"><a id="a94f5f8596796093d0b04835f37d2f0bf"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a94f5f8596796093d0b04835f37d2f0bf">delete_code</a> (int code_id)</td></tr>
+<tr class="memdesc:a94f5f8596796093d0b04835f37d2f0bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a code Returns 0 on success. <br /></td></tr>
+<tr class="separator:a94f5f8596796093d0b04835f37d2f0bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad59915f6116d24ff6553770ec547ae6f"><td class="memItemLeft" align="right" valign="top"><a id="ad59915f6116d24ff6553770ec547ae6f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ad59915f6116d24ff6553770ec547ae6f">new_communicator</a> (int code_id, int method)</td></tr>
+<tr class="memdesc:ad59915f6116d24ff6553770ec547ae6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new communicator structure and add it to the list of communicators Returns the handle of the new communicator. <br /></td></tr>
+<tr class="separator:ad59915f6116d24ff6553770ec547ae6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3ed0e0f9fb95ecc713383b340d0ff69"><td class="memItemLeft" align="right" valign="top"><a id="ac3ed0e0f9fb95ecc713383b340d0ff69"></a>
+<a class="el" href="structcommunicator__struct.html">communicator</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ac3ed0e0f9fb95ecc713383b340d0ff69">get_communicator</a> (int code_id, MDI_Comm_Type comm_id)</td></tr>
+<tr class="memdesc:ac3ed0e0f9fb95ecc713383b340d0ff69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a communicator from a communicator handle Returns a pointer to the communicator. <br /></td></tr>
+<tr class="separator:ac3ed0e0f9fb95ecc713383b340d0ff69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a828ac5580059f72c76b7335f73a452d9"><td class="memItemLeft" align="right" valign="top"><a id="a828ac5580059f72c76b7335f73a452d9"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a828ac5580059f72c76b7335f73a452d9">delete_communicator</a> (int code_id, MDI_Comm_Type comm_id)</td></tr>
+<tr class="memdesc:a828ac5580059f72c76b7335f73a452d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a communicator Returns 0 on success. <br /></td></tr>
+<tr class="separator:a828ac5580059f72c76b7335f73a452d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee63109d024677e514597584cdb5c70b"><td class="memItemLeft" align="right" valign="top"><a id="aee63109d024677e514597584cdb5c70b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#aee63109d024677e514597584cdb5c70b">communicator_delete</a> (void *comm)</td></tr>
+<tr class="memdesc:aee63109d024677e514597584cdb5c70b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dummy function for method-specific deletion operations for communicator deletion. <br /></td></tr>
+<tr class="separator:aee63109d024677e514597584cdb5c70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a10ceefc902b8eb71e2383d7ac95de2c7">mdi_error</a> (const char *message)</td></tr>
 <tr class="memdesc:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message and exit.  <a href="#a10ceefc902b8eb71e2383d7ac95de2c7">More...</a><br /></td></tr>
 <tr class="separator:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="memItemLeft" align="right" valign="top"><a id="a436cd63cce6bc5fda01cf665c6d3dc3d"></a>
+<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a436cd63cce6bc5fda01cf665c6d3dc3d">codes</a></td></tr>
+<tr class="memdesc:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is LIBRARY. <br /></td></tr>
+<tr class="separator:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf9d1ed5f34468bd87ea673484ea5925"><td class="memItemLeft" align="right" valign="top"><a id="abf9d1ed5f34468bd87ea673484ea5925"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#abf9d1ed5f34468bd87ea673484ea5925">current_code</a> = 0</td></tr>
+<tr class="memdesc:abf9d1ed5f34468bd87ea673484ea5925"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of the active code. <br /></td></tr>
+<tr class="separator:abf9d1ed5f34468bd87ea673484ea5925"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48c9d97f7b8e32d98dc437aae365e8e7"><td class="memItemLeft" align="right" valign="top"><a id="a48c9d97f7b8e32d98dc437aae365e8e7"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a48c9d97f7b8e32d98dc437aae365e8e7">ipi_compatibility</a> = 0</td></tr>
-<tr class="memdesc:a48c9d97f7b8e32d98dc437aae365e8e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether MDI is running in i-PI compatibility mode. <br /></td></tr>
+<tr class="memdesc:a48c9d97f7b8e32d98dc437aae365e8e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for whether MDI is running in i-PI compatibility mode. <br /></td></tr>
 <tr class="separator:a48c9d97f7b8e32d98dc437aae365e8e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae895626c3da244edb20b7ffcca7d05f"><td class="memItemLeft" align="right" valign="top"><a id="aae895626c3da244edb20b7ffcca7d05f"></a>
-<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#aae895626c3da244edb20b7ffcca7d05f">communicators</a></td></tr>
-<tr class="memdesc:aae895626c3da244edb20b7ffcca7d05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all MDI communicators. <br /></td></tr>
-<tr class="separator:aae895626c3da244edb20b7ffcca7d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02d49bc23a9b025e018ff7698670cac3"><td class="memItemLeft" align="right" valign="top"><a id="a02d49bc23a9b025e018ff7698670cac3"></a>
-<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a02d49bc23a9b025e018ff7698670cac3">nodes</a></td></tr>
-<tr class="memdesc:a02d49bc23a9b025e018ff7698670cac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all nodes supported by this code. <br /></td></tr>
-<tr class="separator:a02d49bc23a9b025e018ff7698670cac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a744d9706c873299c528f99016ace9201"><td class="memItemLeft" align="right" valign="top"><a id="a744d9706c873299c528f99016ace9201"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a744d9706c873299c528f99016ace9201">is_initialized</a> = 0</td></tr>
+<tr class="memdesc:a744d9706c873299c528f99016ace9201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for whether MDI has been previously initialized. <br /></td></tr>
+<tr class="separator:a744d9706c873299c528f99016ace9201"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81771e72698989541351fc9fdd75eba6"><td class="memItemLeft" align="right" valign="top"><a id="a81771e72698989541351fc9fdd75eba6"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a81771e72698989541351fc9fdd75eba6">mpi4py_recv_callback</a> )(void *, int, int, int, MDI_Comm_Type)</td></tr>
+<tr class="memdesc:a81771e72698989541351fc9fdd75eba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Recv. <br /></td></tr>
+<tr class="separator:a81771e72698989541351fc9fdd75eba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82a5f280995d31f672679214e1c2826d"><td class="memItemLeft" align="right" valign="top"><a id="a82a5f280995d31f672679214e1c2826d"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a82a5f280995d31f672679214e1c2826d">mpi4py_send_callback</a> )(void *, int, int, int, MDI_Comm_Type)</td></tr>
+<tr class="memdesc:a82a5f280995d31f672679214e1c2826d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Send. <br /></td></tr>
+<tr class="separator:a82a5f280995d31f672679214e1c2826d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae634d1b105d43241fc302bf541ecb40f"><td class="memItemLeft" align="right" valign="top"><a id="ae634d1b105d43241fc302bf541ecb40f"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ae634d1b105d43241fc302bf541ecb40f">mpi4py_gather_names_callback</a> )(void *, void *)</td></tr>
+<tr class="memdesc:ae634d1b105d43241fc302bf541ecb40f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for gathering names. <br /></td></tr>
+<tr class="separator:ae634d1b105d43241fc302bf541ecb40f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fb5147122802109f77955d8fdf870d3"><td class="memItemLeft" align="right" valign="top"><a id="a2fb5147122802109f77955d8fdf870d3"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a2fb5147122802109f77955d8fdf870d3">mpi4py_split_callback</a> )(int, int, MDI_Comm_Type, int)</td></tr>
+<tr class="memdesc:a2fb5147122802109f77955d8fdf870d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Comm_split. <br /></td></tr>
+<tr class="separator:a2fb5147122802109f77955d8fdf870d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a188b31be63b891217d08074fb70a6b"><td class="memItemLeft" align="right" valign="top"><a id="a2a188b31be63b891217d08074fb70a6b"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a2a188b31be63b891217d08074fb70a6b">mpi4py_rank_callback</a> )(int)</td></tr>
+<tr class="memdesc:a2a188b31be63b891217d08074fb70a6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Comm_rank. <br /></td></tr>
+<tr class="separator:a2a188b31be63b891217d08074fb70a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51f8a78036fc7790bdcf0e4d0720bfde"><td class="memItemLeft" align="right" valign="top"><a id="a51f8a78036fc7790bdcf0e4d0720bfde"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a51f8a78036fc7790bdcf0e4d0720bfde">mpi4py_size_callback</a> )(int)</td></tr>
+<tr class="memdesc:a51f8a78036fc7790bdcf0e4d0720bfde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Comm_size. <br /></td></tr>
+<tr class="separator:a51f8a78036fc7790bdcf0e4d0720bfde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab095d42c346d5e0a068f1bc37ac9e2ed"><td class="memItemLeft" align="right" valign="top"><a id="ab095d42c346d5e0a068f1bc37ac9e2ed"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ab095d42c346d5e0a068f1bc37ac9e2ed">mpi4py_barrier_callback</a> )(int)</td></tr>
+<tr class="memdesc:ab095d42c346d5e0a068f1bc37ac9e2ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Comm_barrier. <br /></td></tr>
+<tr class="separator:ab095d42c346d5e0a068f1bc37ac9e2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Global structures used by MDI. </p>
@@ -253,6 +324,69 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">message</td><td>Message printed before exiting. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0bab71c9dec13cb06e7d5ae0197a04fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bab71c9dec13cb06e7d5ae0197a04fb">&#9670;&nbsp;</a></span>vector_delete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vector_delete </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove an element from a vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector from which the element will be removed </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>Index of the element that will be removed from the vector </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4efb113e1a013d1de3065394cde82202"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4efb113e1a013d1de3065394cde82202">&#9670;&nbsp;</a></span>vector_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vector_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Free all data associated with a vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>Pointer to the vector that will be freed </td></tr>
   </table>
   </dd>
 </dl>

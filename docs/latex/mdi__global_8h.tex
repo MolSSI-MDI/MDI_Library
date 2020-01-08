@@ -9,11 +9,13 @@ Global structures used by M\+DI.
 \doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}}
-\item 
 struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}}
 \item 
+struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}}
+\item 
 struct \mbox{\hyperlink{structnode__struct}{node\+\_\+struct}}
+\item 
+struct \mbox{\hyperlink{structcode__struct}{code\+\_\+struct}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
@@ -27,14 +29,20 @@ struct \mbox{\hyperlink{structnode__struct}{node\+\_\+struct}}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}\label{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}} 
-typedef struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}} {\bfseries communicator}
+\mbox{\Hypertarget{mdi__global_8h_a93b8fd83bd9cb3b4afc229d00b38e912}\label{mdi__global_8h_a93b8fd83bd9cb3b4afc229d00b38e912}} 
+typedef int {\bfseries M\+D\+I\+\_\+\+Comm\+\_\+\+Type}
 \item 
 \mbox{\Hypertarget{mdi__global_8h_ae301b80284ed481523c43e095398ba92}\label{mdi__global_8h_ae301b80284ed481523c43e095398ba92}} 
 typedef struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}} {\bfseries vector}
 \item 
+\mbox{\Hypertarget{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}\label{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}} 
+typedef struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}} {\bfseries communicator}
+\item 
 \mbox{\Hypertarget{mdi__global_8h_a13c9ed88cdc71baef95751e0f4b27292}\label{mdi__global_8h_a13c9ed88cdc71baef95751e0f4b27292}} 
 typedef struct \mbox{\hyperlink{structnode__struct}{node\+\_\+struct}} {\bfseries node}
+\item 
+\mbox{\Hypertarget{mdi__global_8h_a8b034cce3e1bb0ed76c0816552f197e6}\label{mdi__global_8h_a8b034cce3e1bb0ed76c0816552f197e6}} 
+typedef struct \mbox{\hyperlink{structcode__struct}{code\+\_\+struct}} {\bfseries code}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -45,26 +53,78 @@ int \mbox{\hyperlink{mdi__global_8h_a53e2a90f50c539f8239225d6f39c0213}{vector\+\
 \begin{DoxyCompactList}\small\item\em Append a new element to the end of the vector. \end{DoxyCompactList}\item 
 void $\ast$ \mbox{\hyperlink{mdi__global_8h_a75ffb2ad4233613bd0c97d40b1c68611}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
 \begin{DoxyCompactList}\small\item\em Return a pointer to an element of a vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8h_a0bab71c9dec13cb06e7d5ae0197a04fb}{vector\+\_\+delete}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
+\begin{DoxyCompactList}\small\item\em Remove an element from a vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8h_a4efb113e1a013d1de3065394cde82202}{vector\+\_\+free}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v)
+\begin{DoxyCompactList}\small\item\em Free all data associated with a vector. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8h_a415a91f77e4336ff2ad6facf61a8f199}{get\+\_\+node\+\_\+index}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, const char $\ast$node\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Determine the index of a node within a vector of nodes. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8h_ada787d01c622249d3bf5b2d68e7243d7}{get\+\_\+command\+\_\+index}} (\mbox{\hyperlink{structnode__struct}{node}} $\ast$n, const char $\ast$command\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Determine the index of a command within a node. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8h_a62da6acd5dbe977614e689e6000a3b18}{get\+\_\+callback\+\_\+index}} (\mbox{\hyperlink{structnode__struct}{node}} $\ast$n, const char $\ast$callback\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Determine the index of a callback within a node. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_afa8e15c40e69dda04607b59612c1dc96}\label{mdi__global_8h_afa8e15c40e69dda04607b59612c1dc96}} 
+int \mbox{\hyperlink{mdi__global_8h_afa8e15c40e69dda04607b59612c1dc96}{free\+\_\+node\+\_\+vector}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v)
+\begin{DoxyCompactList}\small\item\em Determine the index of a callback within a node. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}\label{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}} 
+int \mbox{\hyperlink{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}{new\+\_\+communicator}} (int code\+\_\+id, int method)
+\begin{DoxyCompactList}\small\item\em Create a new communicator structure and add it to the list of communicators Returns the handle of the new communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}\label{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}} 
+\mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$ \mbox{\hyperlink{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}{get\+\_\+communicator}} (int code\+\_\+id, M\+D\+I\+\_\+\+Comm\+\_\+\+Type comm\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get a communicator from a communicator handle Returns a pointer to the communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a828ac5580059f72c76b7335f73a452d9}\label{mdi__global_8h_a828ac5580059f72c76b7335f73a452d9}} 
+int \mbox{\hyperlink{mdi__global_8h_a828ac5580059f72c76b7335f73a452d9}{delete\+\_\+communicator}} (int code\+\_\+id, M\+D\+I\+\_\+\+Comm\+\_\+\+Type comm\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Delete a communicator Returns 0 on success. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a85db1717518f106b85b41bb98963a11e}\label{mdi__global_8h_a85db1717518f106b85b41bb98963a11e}} 
+int \mbox{\hyperlink{mdi__global_8h_a85db1717518f106b85b41bb98963a11e}{new\+\_\+code}} ()
+\begin{DoxyCompactList}\small\item\em Create a new code structure and add it to the list of codes Returns the index of the new code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a02b6506a17abd031ad581b63c3101294}\label{mdi__global_8h_a02b6506a17abd031ad581b63c3101294}} 
+\mbox{\hyperlink{structcode__struct}{code}} $\ast$ \mbox{\hyperlink{mdi__global_8h_a02b6506a17abd031ad581b63c3101294}{get\+\_\+code}} (int code\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get a code from a code handle Returns a pointer to the code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}\label{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}} 
+int \mbox{\hyperlink{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}{delete\+\_\+code}} (int code\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Delete a code Returns 0 on success. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_aee63109d024677e514597584cdb5c70b}\label{mdi__global_8h_aee63109d024677e514597584cdb5c70b}} 
+int \mbox{\hyperlink{mdi__global_8h_aee63109d024677e514597584cdb5c70b}{communicator\+\_\+delete}} (void $\ast$comm)
+\begin{DoxyCompactList}\small\item\em Dummy function for method-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi__global_8h_a10ceefc902b8eb71e2383d7ac95de2c7}{mdi\+\_\+error}} (const char $\ast$message)
 \begin{DoxyCompactList}\small\item\em Print error message and exit. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__global_8h_aae895626c3da244edb20b7ffcca7d05f}\label{mdi__global_8h_aae895626c3da244edb20b7ffcca7d05f}} 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8h_aae895626c3da244edb20b7ffcca7d05f}{communicators}}
-\begin{DoxyCompactList}\small\item\em Vector containing all M\+DI communicators. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__global_8h_a02d49bc23a9b025e018ff7698670cac3}\label{mdi__global_8h_a02d49bc23a9b025e018ff7698670cac3}} 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8h_a02d49bc23a9b025e018ff7698670cac3}{nodes}}
-\begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}\label{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}{codes}}
+\begin{DoxyCompactList}\small\item\em Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is L\+I\+B\+R\+A\+RY. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}\label{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}} 
+int \mbox{\hyperlink{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}{current\+\_\+code}}
+\begin{DoxyCompactList}\small\item\em Index of the active code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8h_a48c9d97f7b8e32d98dc437aae365e8e7}\label{mdi__global_8h_a48c9d97f7b8e32d98dc437aae365e8e7}} 
 int \mbox{\hyperlink{mdi__global_8h_a48c9d97f7b8e32d98dc437aae365e8e7}{ipi\+\_\+compatibility}}
-\begin{DoxyCompactList}\small\item\em Whether M\+DI is running in i-\/\+PI compatibility mode. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Flag for whether M\+DI is running in i-\/\+PI compatibility mode. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a744d9706c873299c528f99016ace9201}\label{mdi__global_8h_a744d9706c873299c528f99016ace9201}} 
+int \mbox{\hyperlink{mdi__global_8h_a744d9706c873299c528f99016ace9201}{is\+\_\+initialized}}
+\begin{DoxyCompactList}\small\item\em Flag for whether M\+DI has been previously initialized. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a81771e72698989541351fc9fdd75eba6}\label{mdi__global_8h_a81771e72698989541351fc9fdd75eba6}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_a81771e72698989541351fc9fdd75eba6}{mpi4py\+\_\+recv\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Recv. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a82a5f280995d31f672679214e1c2826d}\label{mdi__global_8h_a82a5f280995d31f672679214e1c2826d}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_a82a5f280995d31f672679214e1c2826d}{mpi4py\+\_\+send\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Send. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_ae634d1b105d43241fc302bf541ecb40f}\label{mdi__global_8h_ae634d1b105d43241fc302bf541ecb40f}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_ae634d1b105d43241fc302bf541ecb40f}{mpi4py\+\_\+gather\+\_\+names\+\_\+callback}} )(void $\ast$, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for gathering names. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a2fb5147122802109f77955d8fdf870d3}\label{mdi__global_8h_a2fb5147122802109f77955d8fdf870d3}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_a2fb5147122802109f77955d8fdf870d3}{mpi4py\+\_\+split\+\_\+callback}} )(int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+split. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a2a188b31be63b891217d08074fb70a6b}\label{mdi__global_8h_a2a188b31be63b891217d08074fb70a6b}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_a2a188b31be63b891217d08074fb70a6b}{mpi4py\+\_\+rank\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+rank. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a51f8a78036fc7790bdcf0e4d0720bfde}\label{mdi__global_8h_a51f8a78036fc7790bdcf0e4d0720bfde}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_a51f8a78036fc7790bdcf0e4d0720bfde}{mpi4py\+\_\+size\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+size. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_ab095d42c346d5e0a068f1bc37ac9e2ed}\label{mdi__global_8h_ab095d42c346d5e0a068f1bc37ac9e2ed}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8h_ab095d42c346d5e0a068f1bc37ac9e2ed}{mpi4py\+\_\+barrier\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+barrier. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -137,6 +197,38 @@ Print error message and exit.
 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em message} & Message printed before exiting. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8h_a0bab71c9dec13cb06e7d5ae0197a04fb}\label{mdi__global_8h_a0bab71c9dec13cb06e7d5ae0197a04fb}} 
+\index{mdi\_global.h@{mdi\_global.h}!vector\_delete@{vector\_delete}}
+\index{vector\_delete@{vector\_delete}!mdi\_global.h@{mdi\_global.h}}
+\doxysubsubsection{\texorpdfstring{vector\_delete()}{vector\_delete()}}
+{\footnotesize\ttfamily int vector\+\_\+delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v,  }\item[{int}]{index }\end{DoxyParamCaption})}
+
+
+
+Remove an element from a vector. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector from which the element will be removed \\
+\hline
+\mbox{\texttt{ in}}  & {\em index} & Index of the element that will be removed from the vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8h_a4efb113e1a013d1de3065394cde82202}\label{mdi__global_8h_a4efb113e1a013d1de3065394cde82202}} 
+\index{mdi\_global.h@{mdi\_global.h}!vector\_free@{vector\_free}}
+\index{vector\_free@{vector\_free}!mdi\_global.h@{mdi\_global.h}}
+\doxysubsubsection{\texorpdfstring{vector\_free()}{vector\_free()}}
+{\footnotesize\ttfamily int vector\+\_\+free (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{v }\end{DoxyParamCaption})}
+
+
+
+Free all data associated with a vector. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em v} & Pointer to the vector that will be freed \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__global_8h_a75ffb2ad4233613bd0c97d40b1c68611}\label{mdi__global_8h_a75ffb2ad4233613bd0c97d40b1c68611}} 

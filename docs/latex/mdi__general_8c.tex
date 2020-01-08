@@ -11,9 +11,9 @@ Generic M\+DI function calls.
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+general.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+mpi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+tcp.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+lib.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+test.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -28,8 +28,32 @@ int \mbox{\hyperlink{mdi__general_8c_a4eef11edcab5763b906eb5ee84c7ed0c}{general\
 \begin{DoxyCompactList}\small\item\em Receive data through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8c_ac26eef55a46e5a5da1f7a32be5d7bd0f}{general\+\_\+send\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_ab2aa020b5f84bf7d5ee4250850a45219}{general\+\_\+builtin\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Respond to a general built-\/in command. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8c_aeeda32ecb1993508a73a5ad56a0df791}{general\+\_\+recv\+\_\+command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
-\begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a13565a7590af2e05f10a55bb7cf5cbff}{register\+\_\+node}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$node\+\_\+vec, const char $\ast$node\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_ab039ef24caf27fd91a25b809b24ebccd}{register\+\_\+command}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$node\+\_\+vec, const char $\ast$node\+\_\+name, const char $\ast$command\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a command on a specified node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a25f8f401438a3ea84bc29f60bf7984a6}{register\+\_\+callback}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$node\+\_\+vec, const char $\ast$node\+\_\+name, const char $\ast$callback\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Register a callback on a specified node. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_afedcd918694f7cb21f3073eaac161d84}{send\+\_\+command\+\_\+list}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the list of supported commands. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a4443538f2b7bc5ffa79cbefcd9af05f1}{send\+\_\+callback\+\_\+list}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the list of callbacks. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_aaa6fade25b124310a82f88b44c76d2a3}{send\+\_\+node\+\_\+list}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the list of nodes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a75d69605e017046bb9e56804a873260d}{send\+\_\+ncommands}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the number of supported commands. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a6a7e2d8eeb3ea738bec8839056c8959b}{send\+\_\+ncallbacks}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the number of supported callbacks. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a2f215c38bbe96f46eeb41677b76a40a5}{send\+\_\+nnodes}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Send the number of supported nodes. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__general_8c_a63440a569e9873f6c300b443e98e85dc}{get\+\_\+node\+\_\+info}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Get information about the nodes of a particular code. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{mdi__general_8c_a1b1489b20de3fb01aca285b92543c3b5}{get\+\_\+node\+\_\+vector}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Get the node vector associated with a particular communicator. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -48,7 +72,26 @@ Generic M\+DI function calls.
 
 Accept a new M\+DI communicator. 
 
-The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi__general_8c_af2f6b0553a53f438a26b5d4d094007a8}\label{mdi__general_8c_af2f6b0553a53f438a26b5d4d094007a8}} 
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi__general_8c_ab2aa020b5f84bf7d5ee4250850a45219}\label{mdi__general_8c_ab2aa020b5f84bf7d5ee4250850a45219}} 
+\index{mdi\_general.c@{mdi\_general.c}!general\_builtin\_command@{general\_builtin\_command}}
+\index{general\_builtin\_command@{general\_builtin\_command}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{general\_builtin\_command()}{general\_builtin\_command()}}
+{\footnotesize\ttfamily int general\+\_\+builtin\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Respond to a general built-\/in command. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 1} if the command is a built-\/in command and {\ttfamily 0} otherwise.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer for the command name. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_af2f6b0553a53f438a26b5d4d094007a8}\label{mdi__general_8c_af2f6b0553a53f438a26b5d4d094007a8}} 
 \index{mdi\_general.c@{mdi\_general.c}!general\_init@{general\_init}}
 \index{general\_init@{general\_init}!mdi\_general.c@{mdi\_general.c}}
 \doxysubsubsection{\texorpdfstring{general\_init()}{general\_init()}}
@@ -148,6 +191,203 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
 \hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a63440a569e9873f6c300b443e98e85dc}\label{mdi__general_8c_a63440a569e9873f6c300b443e98e85dc}} 
+\index{mdi\_general.c@{mdi\_general.c}!get\_node\_info@{get\_node\_info}}
+\index{get\_node\_info@{get\_node\_info}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{get\_node\_info()}{get\_node\_info()}}
+{\footnotesize\ttfamily int get\+\_\+node\+\_\+info (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Get information about the nodes of a particular code. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a1b1489b20de3fb01aca285b92543c3b5}\label{mdi__general_8c_a1b1489b20de3fb01aca285b92543c3b5}} 
+\index{mdi\_general.c@{mdi\_general.c}!get\_node\_vector@{get\_node\_vector}}
+\index{get\_node\_vector@{get\_node\_vector}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{get\_node\_vector()}{get\_node\_vector()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdynamic__array__struct}{vector}}$\ast$ get\+\_\+node\+\_\+vector (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Get the node vector associated with a particular communicator. 
+
+The function returns the node vector for the communicator.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will return the node vector for the calling engine. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a25f8f401438a3ea84bc29f60bf7984a6}\label{mdi__general_8c_a25f8f401438a3ea84bc29f60bf7984a6}} 
+\index{mdi\_general.c@{mdi\_general.c}!register\_callback@{register\_callback}}
+\index{register\_callback@{register\_callback}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{register\_callback()}{register\_callback()}}
+{\footnotesize\ttfamily int register\+\_\+callback (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{node\+\_\+vec,  }\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{callback\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a callback on a specified node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+vec} & Vector of nodes, into which the new node will be added. \\
+\hline
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the callback will be registered. \\
+\hline
+\mbox{\texttt{ in}}  & {\em callback\+\_\+name} & Name of the callback. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_ab039ef24caf27fd91a25b809b24ebccd}\label{mdi__general_8c_ab039ef24caf27fd91a25b809b24ebccd}} 
+\index{mdi\_general.c@{mdi\_general.c}!register\_command@{register\_command}}
+\index{register\_command@{register\_command}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{register\_command()}{register\_command()}}
+{\footnotesize\ttfamily int register\+\_\+command (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{node\+\_\+vec,  }\item[{const char $\ast$}]{node\+\_\+name,  }\item[{const char $\ast$}]{command\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a command on a specified node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+vec} & Vector of nodes, into which the new node will be added. \\
+\hline
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node on which the command will be registered. \\
+\hline
+\mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the command. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a13565a7590af2e05f10a55bb7cf5cbff}\label{mdi__general_8c_a13565a7590af2e05f10a55bb7cf5cbff}} 
+\index{mdi\_general.c@{mdi\_general.c}!register\_node@{register\_node}}
+\index{register\_node@{register\_node}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{register\_node()}{register\_node()}}
+{\footnotesize\ttfamily int register\+\_\+node (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$}]{node\+\_\+vec,  }\item[{const char $\ast$}]{node\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Register a node. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em node\+\_\+vec} & Vector of nodes, into which the new node will be added. \\
+\hline
+\mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a4443538f2b7bc5ffa79cbefcd9af05f1}\label{mdi__general_8c_a4443538f2b7bc5ffa79cbefcd9af05f1}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_callback\_list@{send\_callback\_list}}
+\index{send\_callback\_list@{send\_callback\_list}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_callback\_list()}{send\_callback\_list()}}
+{\footnotesize\ttfamily int send\+\_\+callback\+\_\+list (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the list of callbacks. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_afedcd918694f7cb21f3073eaac161d84}\label{mdi__general_8c_afedcd918694f7cb21f3073eaac161d84}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_command\_list@{send\_command\_list}}
+\index{send\_command\_list@{send\_command\_list}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_command\_list()}{send\_command\_list()}}
+{\footnotesize\ttfamily int send\+\_\+command\+\_\+list (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the list of supported commands. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a6a7e2d8eeb3ea738bec8839056c8959b}\label{mdi__general_8c_a6a7e2d8eeb3ea738bec8839056c8959b}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_ncallbacks@{send\_ncallbacks}}
+\index{send\_ncallbacks@{send\_ncallbacks}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_ncallbacks()}{send\_ncallbacks()}}
+{\footnotesize\ttfamily int send\+\_\+ncallbacks (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the number of supported callbacks. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a75d69605e017046bb9e56804a873260d}\label{mdi__general_8c_a75d69605e017046bb9e56804a873260d}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_ncommands@{send\_ncommands}}
+\index{send\_ncommands@{send\_ncommands}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_ncommands()}{send\_ncommands()}}
+{\footnotesize\ttfamily int send\+\_\+ncommands (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the number of supported commands. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_a2f215c38bbe96f46eeb41677b76a40a5}\label{mdi__general_8c_a2f215c38bbe96f46eeb41677b76a40a5}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_nnodes@{send\_nnodes}}
+\index{send\_nnodes@{send\_nnodes}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_nnodes()}{send\_nnodes()}}
+{\footnotesize\ttfamily int send\+\_\+nnodes (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the number of supported nodes. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__general_8c_aaa6fade25b124310a82f88b44c76d2a3}\label{mdi__general_8c_aaa6fade25b124310a82f88b44c76d2a3}} 
+\index{mdi\_general.c@{mdi\_general.c}!send\_node\_list@{send\_node\_list}}
+\index{send\_node\_list@{send\_node\_list}!mdi\_general.c@{mdi\_general.c}}
+\doxysubsubsection{\texorpdfstring{send\_node\_list()}{send\_node\_list()}}
+{\footnotesize\ttfamily int send\+\_\+node\+\_\+list (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Send the list of nodes. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
 \hline
 \end{DoxyParams}

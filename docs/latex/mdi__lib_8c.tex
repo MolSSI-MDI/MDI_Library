@@ -1,0 +1,173 @@
+\hypertarget{mdi__lib_8c}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.c File Reference}
+\label{mdi__lib_8c}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.c@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.c}}
+
+
+Implementation of library-\/based communication.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+lib.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+general.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{mdi__lib_8c_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()
+\begin{DoxyCompactList}\small\item\em Perform initialization of a communicator for library-\/based communication. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_aace2263cc5a50162e432fdd1ece07ebd}{library\+\_\+set\+\_\+driver\+\_\+current}} ()
+\begin{DoxyCompactList}\small\item\em Set the driver as the current code. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_a63ecbf6a80c775d9977153e69ada09d1}{library\+\_\+accept\+\_\+communicator}} ()
+\begin{DoxyCompactList}\small\item\em Perform L\+I\+B\+R\+A\+RY method operations upon a call to M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_a18fe86795599d83234e9054e150abb2a}{library\+\_\+get\+\_\+matching\+\_\+handle}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Get the handle to the matching communicator on the code to which comm points. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_a396792d658225d047aeaecc0737596dd}{library\+\_\+set\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Set the next command that will be executed through the library communicator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_a4dc4e78fb4ebf75990666e46dc437b97}{library\+\_\+execute\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Execute a command through a communicator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_abd3c91ddb377fabb1840030cf724c609}{library\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Function to handle sending data through an M\+DI connection, using library-\/based communication. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8c_a2bd5be68ab9eeee27db5f35c27636f61}{library\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Function to handle receiving data through an M\+DI connection, using library-\/based communication. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8c_aec19ca110ab49179a8709637a68124ce}\label{mdi__lib_8c_aec19ca110ab49179a8709637a68124ce}} 
+int \mbox{\hyperlink{mdi__lib_8c_aec19ca110ab49179a8709637a68124ce}{communicator\+\_\+delete\+\_\+lib}} (void $\ast$comm)
+\begin{DoxyCompactList}\small\item\em Function for L\+I\+B\+R\+A\+R\+Y-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of library-\/based communication. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__lib_8c_a63ecbf6a80c775d9977153e69ada09d1}\label{mdi__lib_8c_a63ecbf6a80c775d9977153e69ada09d1}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_accept\_communicator@{library\_accept\_communicator}}
+\index{library\_accept\_communicator@{library\_accept\_communicator}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_accept\_communicator()}{library\_accept\_communicator()}}
+{\footnotesize\ttfamily int library\+\_\+accept\+\_\+communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Perform L\+I\+B\+R\+A\+RY method operations upon a call to M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator. 
+
+\mbox{\Hypertarget{mdi__lib_8c_a4dc4e78fb4ebf75990666e46dc437b97}\label{mdi__lib_8c_a4dc4e78fb4ebf75990666e46dc437b97}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_execute\_command@{library\_execute\_command}}
+\index{library\_execute\_command@{library\_execute\_command}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_execute\_command()}{library\_execute\_command()}}
+{\footnotesize\ttfamily int library\+\_\+execute\+\_\+command (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Execute a command through a communicator. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em command} & Pointer to the command to be executed. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__lib_8c_a18fe86795599d83234e9054e150abb2a}\label{mdi__lib_8c_a18fe86795599d83234e9054e150abb2a}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_get\_matching\_handle@{library\_get\_matching\_handle}}
+\index{library\_get\_matching\_handle@{library\_get\_matching\_handle}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_get\_matching\_handle()}{library\_get\_matching\_handle()}}
+{\footnotesize\ttfamily int library\+\_\+get\+\_\+matching\+\_\+handle (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Get the handle to the matching communicator on the code to which comm points. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the linked code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__lib_8c_a3a7d422a4cce77e23f0f2b0c64431830}\label{mdi__lib_8c_a3a7d422a4cce77e23f0f2b0c64431830}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_initialize@{library\_initialize}}
+\index{library\_initialize@{library\_initialize}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_initialize()}{library\_initialize()}}
+{\footnotesize\ttfamily int library\+\_\+initialize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Perform initialization of a communicator for library-\/based communication. 
+
+\mbox{\Hypertarget{mdi__lib_8c_a2bd5be68ab9eeee27db5f35c27636f61}\label{mdi__lib_8c_a2bd5be68ab9eeee27db5f35c27636f61}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_recv@{library\_recv}}
+\index{library\_recv@{library\_recv}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_recv()}{library\_recv()}}
+{\footnotesize\ttfamily int library\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Function to handle receiving data through an M\+DI connection, using library-\/based communication. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer where the received data will be stored. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__lib_8c_abd3c91ddb377fabb1840030cf724c609}\label{mdi__lib_8c_abd3c91ddb377fabb1840030cf724c609}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_send@{library\_send}}
+\index{library\_send@{library\_send}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_send()}{library\_send()}}
+{\footnotesize\ttfamily int library\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Function to handle sending data through an M\+DI connection, using library-\/based communication. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em buf} & Pointer to the data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em count} & Number of values (integers, double precision floats, characters, etc.) to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__lib_8c_a396792d658225d047aeaecc0737596dd}\label{mdi__lib_8c_a396792d658225d047aeaecc0737596dd}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_set\_command@{library\_set\_command}}
+\index{library\_set\_command@{library\_set\_command}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_set\_command()}{library\_set\_command()}}
+{\footnotesize\ttfamily int library\+\_\+set\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{command,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+
+
+
+Set the next command that will be executed through the library communicator. 
+
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em command} & Pointer to the command to be executed. \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__lib_8c_aace2263cc5a50162e432fdd1ece07ebd}\label{mdi__lib_8c_aace2263cc5a50162e432fdd1ece07ebd}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_set\_driver\_current@{library\_set\_driver\_current}}
+\index{library\_set\_driver\_current@{library\_set\_driver\_current}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_set\_driver\_current()}{library\_set\_driver\_current()}}
+{\footnotesize\ttfamily int library\+\_\+set\+\_\+driver\+\_\+current (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Set the driver as the current code. 
+

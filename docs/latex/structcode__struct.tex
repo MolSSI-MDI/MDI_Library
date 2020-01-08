@@ -1,0 +1,46 @@
+\hypertarget{structcode__struct}{}\doxysection{code\+\_\+struct Struct Reference}
+\label{structcode__struct}\index{code\_struct@{code\_struct}}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structcode__struct_a0666f8083ac872f34453966342a05ef0}\label{structcode__struct_a0666f8083ac872f34453966342a05ef0}} 
+char \mbox{\hyperlink{structcode__struct_a0666f8083ac872f34453966342a05ef0}{name}} \mbox{[}N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH\mbox{]}
+\begin{DoxyCompactList}\small\item\em Name of the driver/engine. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_afbdb208181e10943f51aa0266953dc04}\label{structcode__struct_afbdb208181e10943f51aa0266953dc04}} 
+char \mbox{\hyperlink{structcode__struct_afbdb208181e10943f51aa0266953dc04}{role}} \mbox{[}N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH\mbox{]}
+\begin{DoxyCompactList}\small\item\em Role of the driver/engine. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}\label{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}} 
+int \mbox{\hyperlink{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}{id}}
+\begin{DoxyCompactList}\small\item\em Handle for this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}\label{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}} 
+int \mbox{\hyperlink{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}{returned\+\_\+comms}}
+\begin{DoxyCompactList}\small\item\em The number of communicator handles that have been returned by M\+D\+I\+\_\+\+Accept\+\_\+\+Connection() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}\label{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}} 
+int \mbox{\hyperlink{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}{next\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em The handle of the next communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ade7a49e570c12978d69f01b145a44027}\label{structcode__struct_ade7a49e570c12978d69f01b145a44027}} 
+int \mbox{\hyperlink{structcode__struct_ade7a49e570c12978d69f01b145a44027}{intra\+\_\+rank}}
+\begin{DoxyCompactList}\small\item\em Rank of this process within its associated code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a213cad27fe198175bd7d7ff983f45289}\label{structcode__struct_a213cad27fe198175bd7d7ff983f45289}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a213cad27fe198175bd7d7ff983f45289}{nodes}}
+\begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}\label{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}{comms}}
+\begin{DoxyCompactList}\small\item\em Vector containing all communicators associated with this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}\label{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}{execute\+\_\+command}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer to the generic execute\+\_\+command\+\_\+function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}\label{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}} 
+void $\ast$ \mbox{\hyperlink{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}{execute\+\_\+command\+\_\+obj}}
+\begin{DoxyCompactList}\small\item\em Pointer to the class object that is passed to any call to execute\+\_\+command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_aedd92e09317546c0b5f95b943b69d46c}\label{structcode__struct_aedd92e09317546c0b5f95b943b69d46c}} 
+int \mbox{\hyperlink{structcode__struct_aedd92e09317546c0b5f95b943b69d46c}{is\+\_\+python}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code is Python. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}\label{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}} 
+int \mbox{\hyperlink{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}{is\+\_\+library}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code is being used as a library 0\+: Not a library 1\+: Is an E\+N\+G\+I\+NE library, but has not connected to the driver 2\+: Is an E\+N\+G\+I\+NE library that has connected to the driver. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__global_8h}{mdi\+\_\+global.\+h}}\end{DoxyCompactItemize}

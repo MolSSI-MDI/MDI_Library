@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['world_5frank',['world_rank',['../mdi__mpi_8c.html#a0be0ed3102aab1d72782301d75cf570b',1,'world_rank():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#a0be0ed3102aab1d72782301d75cf570b',1,'world_rank():&#160;mdi_mpi.c']]],
-  ['world_5fsize',['world_size',['../mdi__mpi_8c.html#ab8411355a7d80016be6edcce3437b978',1,'world_size():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#ab8411355a7d80016be6edcce3437b978',1,'world_size():&#160;mdi_mpi.c']]]
+  ['name',['name',['../structnode__struct.html#a6d698e34c7c1bc09a8242e441b872bb8',1,'node_struct::name()'],['../structcode__struct.html#a0666f8083ac872f34453966342a05ef0',1,'code_struct::name()']]],
+  ['next_5fcomm',['next_comm',['../structcode__struct.html#addc15d4f02753bd4ae5c8c8e2bd5b7c2',1,'code_struct']]],
+  ['nodes',['nodes',['../structcommunicator__struct.html#a82b093f109b29a9762cd6997787f96da',1,'communicator_struct::nodes()'],['../structcode__struct.html#a213cad27fe198175bd7d7ff983f45289',1,'code_struct::nodes()']]]
 ];

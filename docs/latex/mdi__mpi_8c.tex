@@ -35,12 +35,8 @@ int \mbox{\hyperlink{mdi__mpi_8c_a314d5aa4402c37f22231a4ba96897de6}{mpi\+\_\+rec
 \mbox{\Hypertarget{mdi__mpi_8c_a94117669fa21b6293d144b9f2ec9bc77}\label{mdi__mpi_8c_a94117669fa21b6293d144b9f2ec9bc77}} 
 M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{mdi__mpi_8c_a94117669fa21b6293d144b9f2ec9bc77}{intra\+\_\+\+M\+P\+I\+\_\+comm}} = 0
 \begin{DoxyCompactList}\small\item\em M\+PI communicator corresponding to all processes created by the same code as this process. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__mpi_8c_ac7c9ae008d0383e5a99af93c0c0a741c}\label{mdi__mpi_8c_ac7c9ae008d0383e5a99af93c0c0a741c}} 
-int \mbox{\hyperlink{mdi__mpi_8c_ac7c9ae008d0383e5a99af93c0c0a741c}{intra\+\_\+rank}} = 0
-\begin{DoxyCompactList}\small\item\em Rank of this process within its associated code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__mpi_8c_a6da60e1bcb42aadfd89405b192a82cf4}\label{mdi__mpi_8c_a6da60e1bcb42aadfd89405b192a82cf4}} 
 int \mbox{\hyperlink{mdi__mpi_8c_a6da60e1bcb42aadfd89405b192a82cf4}{mpi\+\_\+code\+\_\+rank}} = 0
-\begin{DoxyCompactList}\small\item\em Order of this code within all codes represented by M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Rank of this process within its associated code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__mpi_8c_ab8411355a7d80016be6edcce3437b978}\label{mdi__mpi_8c_ab8411355a7d80016be6edcce3437b978}} 
 int \mbox{\hyperlink{mdi__mpi_8c_ab8411355a7d80016be6edcce3437b978}{world\+\_\+size}} = -\/1
 \begin{DoxyCompactList}\small\item\em Size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
@@ -161,3 +157,17 @@ Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD.
 \mbox{\texttt{ in}}  & {\em world\+\_\+size\+\_\+in} & Size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD \\
 \hline
 \end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{mdi__mpi_8c_a6da60e1bcb42aadfd89405b192a82cf4}\label{mdi__mpi_8c_a6da60e1bcb42aadfd89405b192a82cf4}} 
+\index{mdi\_mpi.c@{mdi\_mpi.c}!mpi\_code\_rank@{mpi\_code\_rank}}
+\index{mpi\_code\_rank@{mpi\_code\_rank}!mdi\_mpi.c@{mdi\_mpi.c}}
+\doxysubsubsection{\texorpdfstring{mpi\_code\_rank}{mpi\_code\_rank}}
+{\footnotesize\ttfamily int mpi\+\_\+code\+\_\+rank = 0}
+
+
+
+Rank of this process within its associated code. 
+
+Order of this code within all codes represented by M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD 

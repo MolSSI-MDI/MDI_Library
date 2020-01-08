@@ -1,13 +1,10 @@
 var searchData=
 [
-  ['tcp_5faccept_5fconnection',['tcp_accept_connection',['../mdi__tcp_8c.html#ad9d6ed32787d7fb6cd0a555fd8b63b91',1,'tcp_accept_connection():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#ad9d6ed32787d7fb6cd0a555fd8b63b91',1,'tcp_accept_connection():&#160;mdi_tcp.c']]],
-  ['tcp_5flisten',['tcp_listen',['../mdi__tcp_8c.html#a87d3f43c944c0e9a5d67c9a4157afe71',1,'tcp_listen(int port):&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a87d3f43c944c0e9a5d67c9a4157afe71',1,'tcp_listen(int port):&#160;mdi_tcp.c']]],
-  ['tcp_5frecv',['tcp_recv',['../mdi__tcp_8c.html#ac808d4f5841695e1ea60cbbf23ef77f7',1,'tcp_recv(void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#ac808d4f5841695e1ea60cbbf23ef77f7',1,'tcp_recv(void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_tcp.c']]],
-  ['tcp_5frequest_5fconnection',['tcp_request_connection',['../mdi__tcp_8c.html#a4db9ca27b7a981a696957689cd35b20d',1,'tcp_request_connection(int port, char *hostname_ptr):&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a4db9ca27b7a981a696957689cd35b20d',1,'tcp_request_connection(int port, char *hostname_ptr):&#160;mdi_tcp.c']]],
-  ['tcp_5fsend',['tcp_send',['../mdi__tcp_8c.html#a9a12e10900350ba498b9ac152371fc42',1,'tcp_send(const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a9a12e10900350ba498b9ac152371fc42',1,'tcp_send(const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_tcp.c']]],
-  ['tcp_5fsocket',['tcp_socket',['../mdi__tcp_8c.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a58bcdde21e0687d1b5634b673451357a',1,'tcp_socket():&#160;mdi_tcp.c']]],
-  ['test_5finitialize',['test_initialize',['../mdi__test_8c.html#ae54d986664004625b74db96c978e9765',1,'test_initialize():&#160;mdi_test.c'],['../mdi__test_8h.html#ae54d986664004625b74db96c978e9765',1,'test_initialize():&#160;mdi_test.c']]],
-  ['test_5frecv',['test_recv',['../mdi__test_8c.html#a84f4b606828330e7cabbe76a76f476d5',1,'test_recv(void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_test.c'],['../mdi__test_8h.html#a84f4b606828330e7cabbe76a76f476d5',1,'test_recv(void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_test.c']]],
-  ['test_5fsend',['test_send',['../mdi__test_8c.html#abeca111cdef5cccac0ec9332dc180f00',1,'test_send(const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_test.c'],['../mdi__test_8h.html#abeca111cdef5cccac0ec9332dc180f00',1,'test_send(const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm):&#160;mdi_test.c']]],
-  ['tutorials',['Tutorials',['../tutorials.html',1,'']]]
+  ['id',['id',['../structcommunicator__struct.html#a0f8e3e5700265aad987a0cf96fc15d8f',1,'communicator_struct::id()'],['../structcode__struct.html#a4f7f1d635be40cc03fc03082ff9c35c2',1,'code_struct::id()']]],
+  ['intra_5fmpi_5fcomm',['intra_MPI_comm',['../mdi__mpi_8c.html#a94117669fa21b6293d144b9f2ec9bc77',1,'intra_MPI_comm():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#a94117669fa21b6293d144b9f2ec9bc77',1,'intra_MPI_comm():&#160;mdi_mpi.c']]],
+  ['intra_5frank',['intra_rank',['../structcode__struct.html#ade7a49e570c12978d69f01b145a44027',1,'code_struct']]],
+  ['ipi_5fcompatibility',['ipi_compatibility',['../mdi__global_8c.html#a48c9d97f7b8e32d98dc437aae365e8e7',1,'ipi_compatibility():&#160;mdi_global.c'],['../mdi__global_8h.html#a48c9d97f7b8e32d98dc437aae365e8e7',1,'ipi_compatibility():&#160;mdi_global.c']]],
+  ['is_5finitialized',['is_initialized',['../mdi__global_8c.html#a744d9706c873299c528f99016ace9201',1,'is_initialized():&#160;mdi_global.c'],['../mdi__global_8h.html#a744d9706c873299c528f99016ace9201',1,'is_initialized():&#160;mdi_global.c']]],
+  ['is_5flibrary',['is_library',['../structcode__struct.html#a210ad0ac1c0b05ecdd39d4ebd9d3751c',1,'code_struct']]],
+  ['is_5fpython',['is_python',['../structcode__struct.html#aedd92e09317546c0b5f95b943b69d46c',1,'code_struct']]]
 ];

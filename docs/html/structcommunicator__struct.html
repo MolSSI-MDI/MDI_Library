@@ -75,6 +75,14 @@ Public Attributes</h2></td></tr>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#ae15048c78f1d9c895ccf9563519c24fe">method</a></td></tr>
 <tr class="memdesc:ae15048c78f1d9c895ccf9563519c24fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Communication method used by this communicator (either MDI_TCP or MDI_MPI) <br /></td></tr>
 <tr class="separator:ae15048c78f1d9c895ccf9563519c24fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f8e3e5700265aad987a0cf96fc15d8f"><td class="memItemLeft" align="right" valign="top"><a id="a0f8e3e5700265aad987a0cf96fc15d8f"></a>
+MDI_Comm_Type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a0f8e3e5700265aad987a0cf96fc15d8f">id</a></td></tr>
+<tr class="memdesc:a0f8e3e5700265aad987a0cf96fc15d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">MPI_Comm handle that corresponds to this communicator. <br /></td></tr>
+<tr class="separator:a0f8e3e5700265aad987a0cf96fc15d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b2ae9003dc9eec823cf4342b3ae899d"><td class="memItemLeft" align="right" valign="top"><a id="a5b2ae9003dc9eec823cf4342b3ae899d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a5b2ae9003dc9eec823cf4342b3ae899d">code_id</a></td></tr>
+<tr class="memdesc:a5b2ae9003dc9eec823cf4342b3ae899d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle for the id of the associated code. <br /></td></tr>
+<tr class="separator:a5b2ae9003dc9eec823cf4342b3ae899d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f010a22911cb8a55767c054b0596030"><td class="memItemLeft" align="right" valign="top"><a id="a9f010a22911cb8a55767c054b0596030"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a9f010a22911cb8a55767c054b0596030">sockfd</a></td></tr>
 <tr class="memdesc:a9f010a22911cb8a55767c054b0596030"><td class="mdescLeft">&#160;</td><td class="mdescRight">For communicators using the TCP communicatiom method, the socket descriptor. <br /></td></tr>
@@ -85,12 +93,24 @@ MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="separator:a2a65c13dff3a01c383f0bd306cc9fb4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72d04b0314ebff74daf08cfc97a7f8ff"><td class="memItemLeft" align="right" valign="top"><a id="a72d04b0314ebff74daf08cfc97a7f8ff"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a72d04b0314ebff74daf08cfc97a7f8ff">mpi_rank</a></td></tr>
-<tr class="memdesc:a72d04b0314ebff74daf08cfc97a7f8ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">For communicators using the MPI communicatiom method, the rank of this process within the inter-code MPI communicator. <br /></td></tr>
+<tr class="memdesc:a72d04b0314ebff74daf08cfc97a7f8ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">For communicators using the MPI communication method, the rank of this process within the inter-code MPI communicator. <br /></td></tr>
 <tr class="separator:a72d04b0314ebff74daf08cfc97a7f8ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c6da753b933f0bee6024438aa45a3c8"><td class="memItemLeft" align="right" valign="top"><a id="a0c6da753b933f0bee6024438aa45a3c8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a0c6da753b933f0bee6024438aa45a3c8">mdi_version</a></td></tr>
-<tr class="memdesc:a0c6da753b933f0bee6024438aa45a3c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The MDI version of the connected code. <br /></td></tr>
-<tr class="separator:a0c6da753b933f0bee6024438aa45a3c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8c98472974c670d06dfad888995395a"><td class="memItemLeft" align="right" valign="top"><a id="aa8c98472974c670d06dfad888995395a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#aa8c98472974c670d06dfad888995395a">mdi_version</a> [3]</td></tr>
+<tr class="memdesc:aa8c98472974c670d06dfad888995395a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The MDI version of the connected code. <br /></td></tr>
+<tr class="separator:aa8c98472974c670d06dfad888995395a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82b093f109b29a9762cd6997787f96da"><td class="memItemLeft" align="right" valign="top"><a id="a82b093f109b29a9762cd6997787f96da"></a>
+<a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a82b093f109b29a9762cd6997787f96da">nodes</a></td></tr>
+<tr class="memdesc:a82b093f109b29a9762cd6997787f96da"><td class="mdescLeft">&#160;</td><td class="mdescRight">The nodes supported by the connected code. <br /></td></tr>
+<tr class="separator:a82b093f109b29a9762cd6997787f96da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc6c749cc986a1c2d93a07ced585796b"><td class="memItemLeft" align="right" valign="top"><a id="adc6c749cc986a1c2d93a07ced585796b"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#adc6c749cc986a1c2d93a07ced585796b">method_data</a></td></tr>
+<tr class="memdesc:adc6c749cc986a1c2d93a07ced585796b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method-specific information for this communicator. <br /></td></tr>
+<tr class="separator:adc6c749cc986a1c2d93a07ced585796b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68472a8704d3d0d93fbb8e1ccb682a0c"><td class="memItemLeft" align="right" valign="top"><a id="a68472a8704d3d0d93fbb8e1ccb682a0c"></a>
+int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcommunicator__struct.html#a68472a8704d3d0d93fbb8e1ccb682a0c">delete</a> )(void *)</td></tr>
+<tr class="memdesc:a68472a8704d3d0d93fbb8e1ccb682a0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function pointer for method-specific deletion operations. <br /></td></tr>
+<tr class="separator:a68472a8704d3d0d93fbb8e1ccb682a0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a></li>
