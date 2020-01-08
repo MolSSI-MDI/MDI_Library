@@ -50,6 +50,8 @@ MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 MDI_LIB = ctypes.c_int.in_dll(mdi, "MDI_LIB").value
 MDI_TEST = ctypes.c_int.in_dll(mdi, "MDI_TEST").value
+MDI_DRIVER = ctypes.c_int.in_dll(mdi, "MDI_DRIVER").value
+MDI_ENGINE = ctypes.c_int.in_dll(mdi, "MDI_ENGINE").value
 MDI_MAJOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MAJOR_VERSION").value
 MDI_MINOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MINOR_VERSION").value
 MDI_PATCH_VERSION = ctypes.c_int.in_dll(mdi, "MDI_PATCH_VERSION").value
@@ -587,6 +589,16 @@ def MDI_Conversion_Factor(arg1, arg2):
     if ret != 0:
         raise Exception("MDI Error: MDI_Conversion_Factor failed")
     return conversion.value
+
+# MDI_Get_Role
+mdi.MDI_Get_Role.argtypes = [ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Get_Role.restype = ctypes.c_int
+def MDI_Get_Role():
+    role = ctypes.c_int()
+    ret = mdi.MDI_Get_Role(ctypes.byref(role))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Get_Role failed")
+    return role.value
 
 
 #####################################

@@ -52,15 +52,15 @@ const MDI_Comm MDI_NULL_COMM = 0;
 
 // MDI data types
 /*! \brief integer data type */
-const int MDI_INT          = 0;
+const int MDI_INT          = 1;
 /*! \brief double precision float data type */
-const int MDI_DOUBLE       = 1;
+const int MDI_DOUBLE       = 2;
 /*! \brief character data type */
-const int MDI_CHAR         = 2;
+const int MDI_CHAR         = 3;
 /*! \brief NumPy integer data type */
-const int MDI_INT_NUMPY    = 3;
+const int MDI_INT_NUMPY    = 4;
 /*! \brief NumPy double precision float data type */
-const int MDI_DOUBLE_NUMPY = 4;
+const int MDI_DOUBLE_NUMPY = 5;
 
 // MDI communication types
 /*! \brief TCP/IP communication method */
@@ -71,6 +71,12 @@ const int MDI_MPI    = 2;
 const int MDI_LIB    = 3;
 /*! \brief Test communication method */
 const int MDI_TEST   = 4;
+
+// MDI role types
+/*! \brief Driver role type */
+const int MDI_DRIVER    = 1;
+/*! \brief Engine role type */
+const int MDI_ENGINE    = 2;
 
 
 /*! \brief Initialize communication through the MDI library
@@ -576,6 +582,34 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
   }
 
   *conv = in_conv / out_conv;
+  return 0;
+}
+
+/*! \brief Get the role of the code
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      role
+ *                   Role of the code (either \p MDI_DRIVER or \p MDI_ENGINE)
+ *
+ */
+int MDI_Get_Role(int* role)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_Role called but MDI has not been initialized");
+    return 1;
+  }
+  code* this_code = get_code(current_code);
+  if (strcmp(this_code->role, "DRIVER") == 0) {
+    *role = MDI_DRIVER;
+  }
+  else if (strcmp(this_code->role, "ENGINE") == 0) {
+    *role = MDI_ENGINE;
+  }
+  else {
+    mdi_error("Error in MDI_Get_Role: Unrecognized role");
+    return 1;
+  }
   return 0;
 }
 

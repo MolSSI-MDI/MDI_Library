@@ -12,6 +12,7 @@ IMPLICIT NONE
    INTEGER :: comm
    CHARACTER(len=1024) :: arg, mdi_options, lib_arg
    CHARACTER(len=:), ALLOCATABLE :: message
+   DOUBLE PRECISION :: conv, conv_expected
 
    ALLOCATE( character(MDI_NAME_LENGTH) :: message )
 
@@ -36,6 +37,13 @@ IMPLICIT NONE
 
       iarg = iarg + 1
    END DO
+
+   ! Test the conversion factors
+   conv_expected = 1.8897261254578281
+   call MDI_Conversion_Factor("angstrom", "bohr", conv, ierr)
+   IF ( conv .lt. ( conv_expected - 1.0D-6 ) .or. conv .gt. ( conv_expected + 1.0D-6 ) ) THEN
+      WRITE(6,*)'ERROR: Incorrect conversion factor'
+   END IF
 
    ! Get the MPI rank within world_comm
    call MPI_Comm_rank( world_comm, world_rank, ierr );
