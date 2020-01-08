@@ -295,10 +295,10 @@ The engine sends the atomic number of each element in its system to the driver.
 
 \subsection recv_energy <ENERGY
 
-If the engine is at the \c @GLOBAL node, it calculates and sends its energy to the driver, not including nuclear kinetic energy.
+If the engine is at the \c @GLOBAL node, it calculates and sends its total energy to the driver.
 If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
 
-If the engine is not at the \c @GLOBAL node, it sends its most recently calculated energy to the driver, not including nuclear kinetic energy.
+If the engine is not at the \c @GLOBAL node, it sends its most recently calculated total energy to the driver.
 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>

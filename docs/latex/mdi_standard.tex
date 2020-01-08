@@ -186,9 +186,9 @@ The engine sends the atomic number of each element in its system to the driver.
  {\bfseries{ Format\+: }} Sequentially ascending order of atomic index
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_energy}{}\doxysubsection{$<$\+E\+N\+E\+R\+GY}\label{mdi_standard_recv_energy}
-If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its energy to the driver, not including nuclear kinetic energy. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
+If the engine is at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it calculates and sends its total energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.
 
-If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated energy to the driver, not including nuclear kinetic energy.
+If the engine is not at the {\ttfamily @\+G\+L\+O\+B\+AL}  node, it sends its most recently calculated total energy to the driver.
 
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline

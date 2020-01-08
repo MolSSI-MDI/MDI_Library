@@ -222,8 +222,8 @@ Command List</h1>
  <b> Format: </b> Sequentially ascending order of atomic index</dd></dl>
 <h2><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its energy to the driver, not including nuclear kinetic energy. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated energy to the driver, not including nuclear kinetic energy.</p>
+<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its total energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated total energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="exit_command"></a>
