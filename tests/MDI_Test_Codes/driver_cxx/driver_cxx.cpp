@@ -41,6 +41,13 @@ int main(int argc, char **argv) {
     throw std::runtime_error("The -mdi command line option was not provided.");
   }
 
+  // Confirm that the code is being run as a driver
+  int role;
+  MDI_Get_Role(&role);
+  if ( role != MDI_DRIVER ) {
+    throw std::runtime_error("Must run driver_cxx as a DRIVER");
+  }
+
   // Connect to the engine
   MDI_Comm comm;
   MDI_Accept_Communicator(&comm);

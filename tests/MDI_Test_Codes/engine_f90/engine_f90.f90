@@ -4,7 +4,7 @@ PROGRAM ENGINE_F90
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_DOUBLE, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, &
+       MDI_Set_Execute_Command_Func, MDI_Get_Role, MDI_ENGINE, &
        MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback
 
   IMPLICIT NONE
@@ -13,7 +13,7 @@ PROGRAM ENGINE_F90
 
   LOGICAL :: terminate_flag
 
-  INTEGER :: iarg, ierr
+  INTEGER :: iarg, ierr, role
   INTEGER :: world_comm, world_rank
   INTEGER :: comm
   CHARACTER(len=1024) :: arg, mdi_options
@@ -28,7 +28,7 @@ PROGRAM ENGINE_F90
    ALLOCATE( character(MDI_NAME_LENGTH) :: message )
 
    ! Initialize the MPI environment
-   call MPI_INIT(ierr)
+   call MPI_Init(ierr)
 
    ! Read through all the command line options
    iarg = 0
@@ -48,6 +48,12 @@ PROGRAM ENGINE_F90
 
       iarg = iarg + 1
    END DO
+
+   ! Confirm that the code is being run as an ENGINE
+   call MDI_Get_Role(role, ierr)
+   IF ( role .ne. MDI_ENGINE ) THEN
+      WRITE(6,*)'ERROR: Must run engine_f90 as an ENGINE'
+   END IF
 
    ! Get the MPI rank within world_comm
    CALL MPI_Comm_rank( world_comm, world_rank, ierr )

@@ -66,6 +66,11 @@ class MDIEngine:
             self.mpi_world = mdi.MDI_Get_Intra_Code_MPI_Comm()
             self.world_rank = self.mpi_world.Get_rank()
 
+        # Confirm that this code is being used as an engine
+        role = mdi.MDI_Get_Role()
+        if not role == mdi.MDI_ENGINE:
+            raise Exception("Must run engine_py.py as an ENGINE")
+
         # Register the supported commands
         mdi.MDI_Register_Node("@GLOBAL")
         mdi.MDI_Register_Command("@GLOBAL","EXIT")

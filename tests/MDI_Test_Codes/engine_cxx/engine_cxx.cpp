@@ -74,6 +74,13 @@ int main(int argc, char **argv) {
     throw std::runtime_error("The -mdi command line option was not provided.");
   }
 
+  // Confirm that the code is being run as an engine
+  int role;
+  MDI_Get_Role(&role);
+  if ( role != MDI_ENGINE ) {
+    throw std::runtime_error("Must run engine_cxx as an ENGINE");
+  }
+
   // Set the list of supported commands
   MDI_Register_Node("@GLOBAL");
   MDI_Register_Command("@GLOBAL","EXIT");

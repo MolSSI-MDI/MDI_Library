@@ -225,9 +225,19 @@ MODULE MDI
    INTEGER(KIND=C_INT), PARAMETER :: MDI_NAME_LENGTH    = NAME_LENGTH
    INTEGER(KIND=C_INT), PARAMETER :: MDI_NULL_COMM      = 0
 
-   INTEGER(KIND=C_INT), PARAMETER :: MDI_INT            = 0
-   INTEGER(KIND=C_INT), PARAMETER :: MDI_DOUBLE         = 1
-   INTEGER(KIND=C_INT), PARAMETER :: MDI_CHAR           = 2
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_INT            = 1
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_DOUBLE         = 2
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_CHAR           = 3
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_INT_NUMPY      = 4
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_DOUBLE_NUMPY   = 5
+
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_TCP            = 1
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_MPI            = 2
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_LIB            = 3
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_TEST           = 4
+
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_DRIVER         = 1
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_ENGINE         = 2
 
    INTEGER(KIND=C_INT), PROTECTED, BIND(C, name="MDI_MAJOR_VERSION")         :: MDI_MAJOR_VERSION
    INTEGER(KIND=C_INT), PROTECTED, BIND(C, name="MDI_MINOR_VERSION")         :: MDI_MINOR_VERSION
@@ -293,6 +303,12 @@ MODULE MDI
        TYPE(C_PTR), VALUE                       :: in_unit, out_unit, conv
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
+
+     FUNCTION MDI_Get_Role_(role) bind(c, name="MDI_Get_Role")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: role
+       INTEGER(KIND=C_INT)                      :: MDI_Get_Role_
+     END FUNCTION MDI_Get_Role_
 
      SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
        USE MDI_INTERNAL
@@ -660,6 +676,21 @@ CONTAINS
       ierr = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit), c_loc(cfactor) )
       factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
+
+    SUBROUTINE MDI_Get_Role(role, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Role
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Role
+#endif
+      INTEGER, INTENT(OUT)                     :: role
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: crole
+
+      ierr = MDI_Get_Role_( c_loc(crole) )
+      role = crole
+    END SUBROUTINE MDI_Get_Role
 
     SUBROUTINE MDI_Register_Node(fnode, ierr)
       USE ISO_C_BINDING

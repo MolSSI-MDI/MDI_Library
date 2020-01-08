@@ -32,6 +32,11 @@ if use_mpi4py:
 else:
     world_rank = 0
 
+# Confirm that this code is being used as a driver
+role = mdi.MDI_Get_Role()
+if not role == mdi.MDI_DRIVER:
+    raise Exception("Must run driver_py.py as a DRIVER")
+
 # Connect to the engine
 comm = mdi.MDI_Accept_Communicator()
 

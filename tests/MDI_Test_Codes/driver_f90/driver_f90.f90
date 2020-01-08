@@ -3,15 +3,15 @@ PROGRAM DRIVER_F90
 USE mpi
 USE ISO_C_binding
 USE mdi,              ONLY : MDI_CHAR, MDI_NAME_LENGTH, MDI_COMMAND_LENGTH, &
-     MDI_Send, MDI_Init, &
+     MDI_Send, MDI_Init, MDI_Get_Role, &
      MDI_Accept_Communicator, MDI_Send_Command, MDI_Recv, MDI_Conversion_Factor, &
      MDI_Check_Node_Exists, MDI_Check_Command_Exists, MDI_Check_Callback_Exists, &
      MDI_Get_NNodes, MDI_Get_NCommands, MDI_Get_NCallbacks, &
-     MDI_Get_Node, MDI_Get_Command, MDI_Get_Callback
+     MDI_Get_Node, MDI_Get_Command, MDI_Get_Callback, MDI_DRIVER
 
 IMPLICIT NONE
 
-   INTEGER :: iarg, ierr, exists
+   INTEGER :: iarg, ierr, exists, role
    INTEGER :: world_comm, world_rank
    INTEGER :: comm
    CHARACTER(len=1024) :: arg, mdi_options
@@ -23,7 +23,7 @@ IMPLICIT NONE
    ALLOCATE( character(MDI_COMMAND_LENGTH) :: message )
 
    ! Initialize the MPI environment
-   call MPI_INIT(ierr)
+   call MPI_Init(ierr)
 
    ! Read through all the command line options
    iarg = 0
@@ -43,6 +43,12 @@ IMPLICIT NONE
 
       iarg = iarg + 1
    END DO
+
+   ! Confirm that the code is being run as a driver
+   call MDI_Get_Role(role, ierr)
+   IF ( role .ne. MDI_DRIVER ) THEN
+      WRITE(6,*)'ERROR: Must run driver_f90 as a DRIVER',role,MDI_DRIVER
+   END IF
 
    ! Get the MPI rank within world_comm
    call MPI_Comm_rank( world_comm, world_rank, ierr );
