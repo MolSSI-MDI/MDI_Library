@@ -4,7 +4,9 @@ include(CMakePackageConfigHelpers)
 
 
 #check for MPI
-find_package(MPI)
+if ( NOT ( mpi STREQUAL "OFF") )
+   find_package(MPI)
+endif()
 if( NOT MPI_FOUND )
    if( mpi STREQUAL "ON" )
       message( WARNING "Could not find MPI.  Compiling without MPI support." )
