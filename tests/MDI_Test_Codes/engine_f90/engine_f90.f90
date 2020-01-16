@@ -59,11 +59,11 @@ PROGRAM ENGINE_F90
    CALL MPI_Comm_rank( world_comm, world_rank, ierr )
 
    ! Register the commands
-   CALL MDI_Register_Node("@GLOBAL", ierr)
-   CALL MDI_Register_Command("@GLOBAL", "EXIT", ierr)
-   CALL MDI_Register_Command("@GLOBAL", "<NATOMS", ierr)
-   CALL MDI_Register_Command("@GLOBAL", "<COORDS", ierr)
-   CALL MDI_Register_Command("@GLOBAL", "<FORCES", ierr)
+   CALL MDI_Register_Node("@DEFAULT", ierr)
+   CALL MDI_Register_Command("@DEFAULT", "EXIT", ierr)
+   CALL MDI_Register_Command("@DEFAULT", "<NATOMS", ierr)
+   CALL MDI_Register_Command("@DEFAULT", "<COORDS", ierr)
+   CALL MDI_Register_Command("@DEFAULT", "<FORCES", ierr)
    CALL MDI_Register_Node("@FORCES", ierr)
    CALL MDI_Register_Command("@FORCES", "EXIT", ierr)
    CALL MDI_Register_Command("@FORCES", "<FORCES", ierr)

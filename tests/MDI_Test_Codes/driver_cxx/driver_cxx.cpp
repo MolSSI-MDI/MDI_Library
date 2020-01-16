@@ -52,15 +52,15 @@ int main(int argc, char **argv) {
   MDI_Comm comm;
   MDI_Accept_Communicator(&comm);
 
-  // Confirm that the engine has the @GLOBAL node
+  // Confirm that the engine has the @DEFAULT node
   int exists;
-  MDI_Check_Node_Exists("@GLOBAL", comm, &exists);
+  MDI_Check_Node_Exists("@DEFAULT", comm, &exists);
   if ( exists != 1 ) {
-    throw std::runtime_error("The engine does not have the @GLOBAL node.");
+    throw std::runtime_error("The engine does not have the @DEFAULT node.");
   }
 
   // Confirm that the engine supports the EXIT command
-  MDI_Check_Command_Exists("@GLOBAL", "EXIT", comm, &exists);
+  MDI_Check_Command_Exists("@DEFAULT", "EXIT", comm, &exists);
   if ( exists != 1 ) {
     throw std::runtime_error("The engine does not support the EXIT command.");
   }

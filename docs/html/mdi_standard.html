@@ -75,13 +75,13 @@ Units</h1>
 Nodes</h1>
 <p>One of the powerful features of the MDI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in MDI engines. In particular, the <a class="el" href="mdi_standard.html#init_md">@INIT_MD</a> and <a class="el" href="mdi_standard.html#init_optg">@INIT_OPTG</a> commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain "nodes" and listen for new commands.</p>
 <p>The MDI Standard defines several nodes. Their names and when they occur are as follows:</p>
-<dl class="section user"><dt></dt><dd><b> @GLOBAL </b> - Upon initially connecting to the driver. <br  />
+<dl class="section user"><dt></dt><dd><b> @DEFAULT </b> - Upon initially connecting to the driver. <br  />
  <b> @INIT_MD </b> - Upon initializing a new molecular dynamics simulation. <br  />
  <b> @INIT_OPTG </b> - Upon initializing a new geometry optimization. <br  />
  <b> @PRE-FORCES </b> - After calculating all contributions to the atomic forces, <b>except</b> those associated with a constraint algorithm like SHAKE or RATTLE. <br  />
  <b> @FORCES </b> - After calculating all contributions to the atomic forces. <br  />
  <b> @COORDS </b> - After updating the atomic coordinates.</dd></dl>
-<p>Not all MDI engines are required to support each of these nodes, with the exception of the @GLOBAL node, which every MDI engine must support.</p>
+<p>Not all MDI engines are required to support each of these nodes, with the exception of the @DEFAULT node, which every MDI engine must support.</p>
 <p>Several MDI commands enable a driver to control the program flow of an engine through different nodes. The <a class="el" href="mdi_standard.html#send_node">&lt;@</a> command instructs the engine to send the name of its node, while the <a class="el" href="mdi_standard.html#next_node">@</a> command instructs the engine to proceed in its simulation until it reaches the next node. In addition, there are commands associated with each type of node (<a class="el" href="mdi_standard.html#pre-forces_node">@PRE-FORCES</a>, <a class="el" href="mdi_standard.html#forces_node">@FORCES</a>, <a class="el" href="mdi_standard.html#coords_node">@COORDS</a>) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.</p>
 <p>A typical MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is <b>not</b> guaranteed. Engines are permitted to pass through nodes in whatever order the implementation dictates. When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.</p>
 <h1><a class="anchor" id="standard_constants_sec"></a>
@@ -107,7 +107,7 @@ Command List</h1>
 <p>The following is a list of commands that are officially part of the MDI standard.</p>
 <h2><a class="anchor" id="next_node"></a>
 @</h2>
-<p>The engine proceeds to the next node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is typically not supported at the <code>@GLOBAL</code>  node.</p>
+<p>The engine proceeds to the next node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is typically not supported at the <code>@DEFAULT</code>  node.</p>
 <h2><a class="anchor" id="send_node"></a>
 &lt;@</h2>
 <p>The engine sends the driver a string that corresponds to the name of its current node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>).</p>
@@ -168,7 +168,7 @@ Command List</h1>
  <b> Format: </b> Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order</dd></dl>
 <h2><a class="anchor" id="coords_node"></a>
 @COORDS</h2>
-<p>The engine proceeds to the next <code>@COORDS</code>  node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@GLOBAL</code>  node.</p>
+<p>The engine proceeds to the next <code>@COORDS</code>  node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@DEFAULT</code>  node.</p>
 <h2><a class="anchor" id="send_coords"></a>
 &gt;COORDS</h2>
 <p>The driver sends a set of atomic coordinates to the engine, which replaces its atomic coordinates with those sent by the driver.</p>
@@ -188,6 +188,9 @@ Command List</h1>
 <p>Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the <a class="el" href="mdi_standard.html#send_npotential">&gt;NPOTENTIAL</a> command. It is also necessary that the driver send the values of the grid points via the <a class="el" href="mdi_standard.html#send_cpotential">&gt;CPOTENTIAL</a> command prior to any subsequent scf_command command.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> 3 * NPOTENTIAL </code></dd></dl>
+<h2><a class="anchor" id="default_node"></a>
+@DEFAULT</h2>
+<p>If not already at the <code>@DEFAULT</code>  node, the engine exists whatever simulation (i.e. MD, OPTG, etc.) it is performing (possibly after completing an unfinished time step or geometry optimization step) and returns to the <code>@DEFAULT</code>  node.</p>
 <h2><a class="anchor" id="recv_density"></a>
 &lt;DENSITY</h2>
 <p>The engine sends the value of its electronic density on a set of grid points. This command is intended to be used in conjuction with the <a class="el" href="mdi_standard.html#recv_ndensity">&lt;NDENSITY</a> and <a class="el" href="mdi_standard.html#recv_cdensity">&lt;CDENSITY</a> commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation.</p>
@@ -222,8 +225,8 @@ Command List</h1>
  <b> Format: </b> Sequentially ascending order of atomic index</dd></dl>
 <h2><a class="anchor" id="recv_energy"></a>
 &lt;ENERGY</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its total energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated total energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its total energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated total energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="exit_command"></a>
@@ -231,7 +234,7 @@ EXIT</h2>
 <p>The engine terminates and can no longer be sent commands.</p>
 <h2><a class="anchor" id="forces_node"></a>
 @FORCES</h2>
-<p>The engine proceeds to the next <code>@FORCES</code>  node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@GLOBAL</code>  node.</p>
+<p>The engine proceeds to the next <code>@FORCES</code>  node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@DEFAULT</code>  node.</p>
 <h2><a class="anchor" id="send_forces"></a>
 &gt;FORCES</h2>
 <p>The driver sends a set of atomic forces to the engine, which replaces its internal forces with the forces sent by the driver.</p>
@@ -248,14 +251,11 @@ EXIT</h2>
 </dd></dl>
 <h2><a class="anchor" id="recv_forces"></a>
 &lt;FORCES</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.). If the engine has previously calculated the atomic forces of the system, and no intervening commands from the driver could have changed the atomic forces, the engine is permitted to send the previously calculated atomic forces instead of recalculating them.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated atomic forces to the driver. Depending on the engine's current node, these forces may not include all contributions to the atomic forces. See the descriptions of the different nodes for more details.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its atomic forces to the driver. These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.). If the engine has previously calculated the atomic forces of the system, and no intervening commands from the driver could have changed the atomic forces, the engine is permitted to send the previously calculated atomic forces instead of recalculating them.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated atomic forces to the driver. Depending on the engine's current node, these forces may not include all contributions to the atomic forces. See the descriptions of the different nodes for more details.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> 3 * NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order</dd></dl>
-<h2><a class="anchor" id="global_node"></a>
-@GLOBAL</h2>
-<p>If not already at the <code>@GLOBAL</code>  node, the engine exists whatever simulation (i.e. MD, OPTG, etc.) it is performing (possibly after completing an unfinished time step or geometry optimization step) and returns to the <code>@GLOBAL</code>  node.</p>
 <h2><a class="anchor" id="init_md"></a>
 @INIT_MD</h2>
 <p>The engine performs any initialization operations that are necessary before a molecular dynamics simulation can be performed, proceeding to the @INIT_MD node.</p>
@@ -266,20 +266,20 @@ EXIT</h2>
 <dl class="section user"><dt></dt><dd><b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.</dd></dl>
 <h2><a class="anchor" id="recv_ke"></a>
 &lt;KE</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its total kinetic energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated total kinetic energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its total kinetic energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated total kinetic energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_ke_elec"></a>
 &lt;KE_ELEC</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends the total kinetic energy of all electrons in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated electronic kinetic energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends the total kinetic energy of all electrons in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated electronic kinetic energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_ke_nuc"></a>
 &lt;KE_NUC</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends the total kinetic energy of all nuclei in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated nuclear kinetic energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends the total kinetic energy of all nuclei in its system to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated nuclear kinetic energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="send_lattice"></a>
@@ -335,25 +335,25 @@ EXIT</h2>
  <b> Quantity: </b> <code>NPOTENTIAL</code> </dd></dl>
 <h2><a class="anchor" id="recv_pe"></a>
 &lt;PE</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its total potential energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated total potential energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its total potential energy to the driver. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated total potential energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_pe_elec"></a>
 &lt;PE_ELEC</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its electronic potential energy to the driver. The electronic potential energy is defined as including all interactions between the electrons and any other particles or fields in the system. It also includes the interactions between the electrons and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated electronic potential energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its electronic potential energy to the driver. The electronic potential energy is defined as including all interactions between the electrons and any other particles or fields in the system. It also includes the interactions between the electrons and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated electronic potential energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_pe_nuc"></a>
 &lt;PE_NUC</h2>
-<p>If the engine is at the <code>@GLOBAL</code>  node, it calculates and sends its nuclear potential energy to the driver. The nuclear potential energy is defined as including all interactions between the nuclei and any other particles or fields in the system, excluding any electrons. It also includes the interactions between the nuclei and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
-<p>If the engine is not at the <code>@GLOBAL</code>  node, it sends its most recently calculated electronic potential energy to the driver.</p>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends its nuclear potential energy to the driver. The nuclear potential energy is defined as including all interactions between the nuclei and any other particles or fields in the system, excluding any electrons. It also includes the interactions between the nuclei and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, the engine is permitted to send the previously calculated energy instead of recalculating it.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated electronic potential energy to the driver.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="pre-forces_node"></a>
 @PRE-FORCES</h2>
-<p>The engine proceeds to the next <code> @PRE-FORCES </code> node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@GLOBAL</code>  node.</p>
+<p>The engine proceeds to the next <code> @PRE-FORCES </code> node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@DEFAULT</code>  node.</p>
 <h2><a class="anchor" id="send_stress"></a>
 &lt;STRESS</h2>
 <p>The engine sends its virial stress tensor to the driver.</p>
