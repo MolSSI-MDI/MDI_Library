@@ -56,14 +56,14 @@ IMPLICIT NONE
    ! Connct to the engine
    call MDI_Accept_Communicator(comm, ierr)
 
-   ! Confirm that the engine has the @GLOBAL node
-   CALL MDI_Check_Node_Exists("@GLOBAL", comm, exists, ierr)
+   ! Confirm that the engine has the @DEFAULT node
+   CALL MDI_Check_Node_Exists("@DEFAULT", comm, exists, ierr)
    IF ( exists .ne. 1 ) THEN
-      WRITE(6,*)'ERROR: Engine does not have @GLOBAL node'
+      WRITE(6,*)'ERROR: Engine does not have @DEFAULT node'
    END IF
 
    ! Confirm that the engine supports the EXIT command
-   CALL MDI_Check_Command_Exists("@GLOBAL", "EXIT", comm, exists, ierr)
+   CALL MDI_Check_Command_Exists("@DEFAULT", "EXIT", comm, exists, ierr)
    IF ( exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not support the EXIT command'
    END IF

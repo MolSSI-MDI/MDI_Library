@@ -46,12 +46,12 @@ name = mdi.MDI_Recv(mdi.MDI_NAME_LENGTH, mdi.MDI_CHAR, comm)
 
 print(" Engine name: " + str(name))
 
-# Check if the engine has the @GLOBAL node
-if ( not mdi.MDI_Check_Node_Exists("@GLOBAL",comm) ):
-    raise Exception("Engine does not have the @GLOBAL node")
+# Check if the engine has the @DEFAULT node
+if ( not mdi.MDI_Check_Node_Exists("@DEFAULT",comm) ):
+    raise Exception("Engine does not have the @DEFAULT node")
 
 # Check if the engine supports the EXIT command
-if ( not mdi.MDI_Check_Command_Exists("@GLOBAL","EXIT",comm) ):
+if ( not mdi.MDI_Check_Command_Exists("@DEFAULT","EXIT",comm) ):
     raise Exception("Engine does not support the EXIT command")
 
 # Test the node, command, and callback inquiry functions

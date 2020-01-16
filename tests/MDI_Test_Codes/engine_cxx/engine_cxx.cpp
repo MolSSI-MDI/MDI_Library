@@ -82,11 +82,11 @@ int main(int argc, char **argv) {
   }
 
   // Set the list of supported commands
-  MDI_Register_Node("@GLOBAL");
-  MDI_Register_Command("@GLOBAL","EXIT");
-  MDI_Register_Command("@GLOBAL","<NATOMS");
-  MDI_Register_Command("@GLOBAL","<COORDS");
-  MDI_Register_Command("@GLOBAL","<FORCES");
+  MDI_Register_Node("@DEFAULT");
+  MDI_Register_Command("@DEFAULT","EXIT");
+  MDI_Register_Command("@DEFAULT","<NATOMS");
+  MDI_Register_Command("@DEFAULT","<COORDS");
+  MDI_Register_Command("@DEFAULT","<FORCES");
   MDI_Register_Node("@FORCES");
   MDI_Register_Command("@FORCES","EXIT");
   MDI_Register_Command("@FORCES","<FORCES");

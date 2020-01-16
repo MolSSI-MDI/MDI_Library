@@ -72,11 +72,11 @@ class MDIEngine:
             raise Exception("Must run engine_py.py as an ENGINE")
 
         # Register the supported commands
-        mdi.MDI_Register_Node("@GLOBAL")
-        mdi.MDI_Register_Command("@GLOBAL","EXIT")
-        mdi.MDI_Register_Command("@GLOBAL","<NATOMS")
-        mdi.MDI_Register_Command("@GLOBAL","<COORDS")
-        mdi.MDI_Register_Command("@GLOBAL","<FORCES")
+        mdi.MDI_Register_Node("@DEFAULT")
+        mdi.MDI_Register_Command("@DEFAULT","EXIT")
+        mdi.MDI_Register_Command("@DEFAULT","<NATOMS")
+        mdi.MDI_Register_Command("@DEFAULT","<COORDS")
+        mdi.MDI_Register_Command("@DEFAULT","<FORCES")
         mdi.MDI_Register_Node("@FORCES")
         mdi.MDI_Register_Command("@FORCES","EXIT")
         mdi.MDI_Register_Command("@FORCES","<FORCES")
