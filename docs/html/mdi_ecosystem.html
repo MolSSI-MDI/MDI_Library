@@ -115,6 +115,18 @@ mdi
 <li>Launch LAMMPS using the "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">lammps -in lammps.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
 </pre></li>
 </ol>
+<h1><a class="anchor" id="ecosystem_openmm"></a>
+OpenMM</h1>
+<p><a href="https://github.com/taylor-a-barnes/MDI_OpenMM_Plugin">An MDI plugin</a> for <a href="http://openmm.org/">OpenMM</a> is available that enables OpenMM to be run as an MDI engine. To use OpenMM as an engine, follow these steps:</p>
+<ol type="1">
+<li>Install OpenMM</li>
+<li>Install the OpenMM MDI plugin</li>
+<li>Prepare OpenMM input files that specify the initial molecular geometry of the system and any other desired settings.</li>
+<li>In the OpenMM run script, replace the normal call to <code>Simulation</code> with a call to <code>MDISimulation</code>, which requires a new argument that corresponds to the MDI runtime options. For example: <pre class="fragment">simulation = MDISimulation("-name MM -role ENGINE -method TCP -port 8021 -hostname localhost", pdb.topology, system, integrator, platform)
+</pre></li>
+<li>At the end of the run script (or at whatever point OpenMM should begin accepting commands from the driver) call the <code>runMDI()</code> function on the <code>MDISimulation</code> object you created in the last step: <pre class="fragment">simulation.runMDI()
+</pre></li>
+</ol>
 <h1><a class="anchor" id="ecosystem_psi4"></a>
 Psi4</h1>
 <p>MolSSI provides <a href="https://github.com/MolSSI/psi4/tree/mdi">an MDI-enabled fork</a> of <a href="http://www.psicode.org/">Psi4</a> that can be run as an MDI engine. To use Psi4 as an engine, follow these steps:</p>
@@ -165,6 +177,17 @@ Quantum ESPRESSO</h1>
 <li>Compile pw.x, following the <a href="https://www.quantum-espresso.org/Doc/user_guide/node10.html">QE build guide</a>.</li>
 <li>Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.</li>
 <li>Launch QE using the "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
+</pre></li>
+</ol>
+<h1><a class="anchor" id="ecosystem_tinker"></a>
+Tinker</h1>
+<p><a href="https://github.com/taylor-a-barnes/Tinker/tree/mdi">An MDI-enabled fork</a> of <a href="https://dasher.wustl.edu/tinker/">Tinker</a> is available that can be run as an MDI engine. To use Tinker as an engine, follow these steps:</p>
+<ol type="1">
+<li>Acquire the MDI-enabled fork of Tinker: <pre class="fragment">git clone --branch mdi git@github.com:taylor-a-barnes/Tinker.git
+</pre></li>
+<li>Compile dynamic.x, following the <a href="https://dasher.wustl.edu/tinker/downloads/guide.pdf">Tinker build guide</a>.</li>
+<li>Prepare Tinker input files that specify the initial molecular geometry of the system and any other desired settings.</li>
+<li>Launch Tinker using the "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">time dynamic.x input -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" 1000 1.0 10.0 2 298.0 778.0
 </pre> </li>
 </ol>
 </div></div><!-- PageDoc -->

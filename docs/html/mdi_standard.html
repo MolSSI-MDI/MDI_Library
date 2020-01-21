@@ -78,12 +78,27 @@ Nodes</h1>
 <dl class="section user"><dt></dt><dd><b> @DEFAULT </b> - Upon initially connecting to the driver. <br  />
  <b> @INIT_MD </b> - Upon initializing a new molecular dynamics simulation. <br  />
  <b> @INIT_OPTG </b> - Upon initializing a new geometry optimization. <br  />
- <b> @PRE-FORCES </b> - After calculating all contributions to the atomic forces, <b>except</b> those associated with a constraint algorithm like SHAKE or RATTLE. <br  />
+</dd></dl>
+<p>Not all MDI engines are required to support each of these nodes, with the exception of the @DEFAULT node, which every MDI engine must support. Additional nodes may be defined by individual codes. Examples of possible code-specific nodes include:</p>
+<dl class="section user"><dt></dt><dd><b> @PRE-FORCES </b> - After calculating all contributions to the atomic forces, <b>except</b> those associated with a constraint algorithm like SHAKE or RATTLE. <br  />
  <b> @FORCES </b> - After calculating all contributions to the atomic forces. <br  />
  <b> @COORDS </b> - After updating the atomic coordinates.</dd></dl>
-<p>Not all MDI engines are required to support each of these nodes, with the exception of the @DEFAULT node, which every MDI engine must support.</p>
 <p>Several MDI commands enable a driver to control the program flow of an engine through different nodes. The <a class="el" href="mdi_standard.html#send_node">&lt;@</a> command instructs the engine to send the name of its node, while the <a class="el" href="mdi_standard.html#next_node">@</a> command instructs the engine to proceed in its simulation until it reaches the next node. In addition, there are commands associated with each type of node (<a class="el" href="mdi_standard.html#pre-forces_node">@PRE-FORCES</a>, <a class="el" href="mdi_standard.html#forces_node">@FORCES</a>, <a class="el" href="mdi_standard.html#coords_node">@COORDS</a>) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.</p>
-<p>A typical MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is <b>not</b> guaranteed. Engines are permitted to pass through nodes in whatever order the implementation dictates. When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.</p>
+<p>A specific MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is <b>not</b> guaranteed. Engines are permitted to pass through nodes in whatever order the implementation dictates. When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.</p>
+<p>The MDI Library provides several functions that allow codes to define and communicate information about which nodes are supported:</p>
+<ul>
+<li><a class="el" href="mdi_8c.html#ada45c73f15462764df0ac9e733b7d18e" title="Register a node.">MDI_Register_Node()</a></li>
+<li><a class="el" href="mdi_8c.html#aeddcd7109a1206ce89a187960bfb3069" title="Check whether a node is supported on a specified engine.">MDI_Check_Node_Exists()</a></li>
+<li><a class="el" href="mdi_8c.html#aa5988eb94d4e447720c3728f2ce1e310" title="Get the number of nodes on a specified engine.">MDI_Get_NNodes()</a></li>
+<li><a class="el" href="mdi_8c.html#a45bec162cf811d5f6411abd143e26af4" title="Get the name of a node on a specified engine.">MDI_Get_Node()</a></li>
+</ul>
+<p>Engines are not required to support every MDI command at every node. The MDI Library provides several functions that allow codes to define and communicate information about which commands are supported at specific nodes:</p>
+<ul>
+<li><a class="el" href="mdi_8c.html#a8eade50fb64b5bf5919b35cc2071952d" title="Register a command on a specified node.">MDI_Register_Command()</a></li>
+<li><a class="el" href="mdi_8c.html#a013856347b9026a7eb01e7803b3dc9b5" title="Check whether a command is supported on specified node on a specified engine.">MDI_Check_Command_Exists()</a></li>
+<li><a class="el" href="mdi_8c.html#a82ee6d49380e2c24428aa6e5447c4567" title="Get the number of commands supported for a specified node on a specified engine.">MDI_Get_NCommands()</a></li>
+<li><a class="el" href="mdi_8c.html#a632b49a3e745b7b381b60de530699298" title="Get the name of a command on a specified node on a specified engine.">MDI_Get_Command()</a></li>
+</ul>
 <h1><a class="anchor" id="standard_constants_sec"></a>
 Constants</h1>
 <p>The following constants are defined by the MDI Standard and are accessible through the <a class="el" href="library_page.html">MDI Library</a>:</p>

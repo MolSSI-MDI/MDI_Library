@@ -76,6 +76,33 @@ For example:
 
 
 
+\section ecosystem_openmm OpenMM
+
+<a href="https://github.com/taylor-a-barnes/MDI_OpenMM_Plugin">An MDI plugin</a> for <a href="http://openmm.org/">OpenMM</a> is available that enables OpenMM to be run as an MDI engine.
+To use OpenMM as an engine, follow these steps:
+
+  -#
+Install OpenMM
+
+  -#
+Install the OpenMM MDI plugin
+
+  -#
+Prepare OpenMM input files that specify the initial molecular geometry of the system and any other desired settings.
+
+  -#
+In the OpenMM run script, replace the normal call to \c Simulation  with a call to \c MDISimulation, which requires a new argument that corresponds to the MDI runtime options.
+For example:
+
+    simulation = MDISimulation("-name MM -role ENGINE -method TCP -port 8021 -hostname localhost", pdb.topology, system, integrator, platform)
+
+  -#
+At the end of the run script (or at whatever point OpenMM should begin accepting commands from the driver) call the \c runMDI() function on the \c MDISimulation object you created in the last step:
+
+    simulation.runMDI()
+
+
+
 \section ecosystem_psi4 Psi4
 
 MolSSI provides <a href="https://github.com/MolSSI/psi4/tree/mdi">an MDI-enabled fork</a> of <a href="http://www.psicode.org/">Psi4</a> that can be run as an MDI engine.
@@ -170,5 +197,29 @@ Launch QE using the \"\c -mdi\" runtime option, which is described in \ref libra
 For example:
 
     pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+
+
+
+\section ecosystem_tinker Tinker
+
+<a href="https://github.com/taylor-a-barnes/Tinker/tree/mdi">An MDI-enabled fork</a> of <a href="https://dasher.wustl.edu/tinker/">Tinker</a> is available that can be run as an MDI engine.
+To use Tinker as an engine, follow these steps:
+
+  -#
+Acquire the MDI-enabled fork of Tinker:
+
+    git clone --branch mdi git@github.com:taylor-a-barnes/Tinker.git
+
+  -#
+Compile dynamic.x, following the <a href="https://dasher.wustl.edu/tinker/downloads/guide.pdf">Tinker build guide</a>.
+
+  -#
+Prepare Tinker input files that specify the initial molecular geometry of the system and any other desired settings.
+
+  -#
+Launch Tinker using the \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
+For example:
+
+    time dynamic.x input -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" 1000 1.0 10.0 2 298.0 778.0
 
 **/

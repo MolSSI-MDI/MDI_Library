@@ -32,19 +32,38 @@ Their names and when they occur are as follows:
 <b> @DEFAULT </b> - Upon initially connecting to the driver. <br>
 <b> @INIT_MD </b> - Upon initializing a new molecular dynamics simulation. <br>
 <b> @INIT_OPTG </b> - Upon initializing a new geometry optimization. <br>
+
+Not all MDI engines are required to support each of these nodes, with the exception of the @DEFAULT node, which every MDI engine must support.
+Additional nodes may be defined by individual codes.
+Examples of possible code-specific nodes include:
+
+\par
 <b> @PRE-FORCES </b> - After calculating all contributions to the atomic forces, \b except those associated with a constraint algorithm like SHAKE or RATTLE. <br>
 <b> @FORCES </b> - After calculating all contributions to the atomic forces. <br>
 <b> @COORDS </b> - After updating the atomic coordinates.
-
-Not all MDI engines are required to support each of these nodes, with the exception of the @DEFAULT node, which every MDI engine must support.
 
 Several MDI commands enable a driver to control the program flow of an engine through different nodes.
 The \ref send_node command instructs the engine to send the name of its node, while the \ref next_node command instructs the engine to proceed in its simulation until it reaches the next node.
 In addition, there are commands associated with each type of node (\ref pre-forces_node, \ref forces_node, \ref coords_node) which instruct the engine to proceed in its simulation until it reaches the next node of that particular type.
 
-A typical MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is \b not guaranteed.
+A specific MD implementation might progress from a @PRE-FORCES node, to the @FORCES node, to the @COORDS node, and then repeat the cycle; however, this behavior is \b not guaranteed.
 Engines are permitted to pass through nodes in whatever order the implementation dictates.
 When writing drivers, it is a best practice to avoid assumptions about the ordering or frequency of nodes.
+
+The MDI Library provides several functions that allow codes to define and communicate information about which nodes are supported:
+
+  - MDI_Register_Node()
+  - MDI_Check_Node_Exists()
+  - MDI_Get_NNodes()
+  - MDI_Get_Node()
+
+Engines are not required to support every MDI command at every node.
+The MDI Library provides several functions that allow codes to define and communicate information about which commands are supported at specific nodes:
+
+  - MDI_Register_Command()
+  - MDI_Check_Command_Exists()
+  - MDI_Get_NCommands()
+  - MDI_Get_Command()
 
 
 

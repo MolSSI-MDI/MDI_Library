@@ -67,7 +67,8 @@ $(function() {
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="mainpage_overview_sec"></a>
 Overview</h1>
-<p>The MolSSI Driver Interface (MDI) seeks to simplify the process of interoperating computational molecular sciences codes. MDI uses a driver/engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. The process of communicating commands and other data between codes is handled by the <a class="el" href="index.html#mainpage_overview_sec">MDI Library</a>.</p>
+<p>The MolSSI Driver Interface (MDI) project provides a <a class="el" href="mdi_standard.html">standardized API</a> for fast, on-the-fly communication between computational chemistry codes. This greatly simplifies the process of implementing methods that require the cooperation of multiple software packages and enables developers to write a single implementation that works across many different codes. The API is sufficiently general to support a wide variety of techniques, including QM/MM, ab initio MD, machine learning, advanced sampling, and path integral MD, while also being straightforwardly extensible. Communication between codes is handled by the MDI Library, which enables tight coupling between codes using either the MPI or TCP/IP methods.</p>
+<p>MDI uses a driver/engine paradigm in which <a class="el" href="index.html#main_doc_drivers_sec">drivers</a> orchestrate complex simulations by controlling <a class="el" href="index.html#main_doc_engines_sec">engines</a> through the use of an API-like command set that is defined by the <a class="el" href="mdi_standard.html">MDI Standard</a>. A driver will typically implement one or more high-level methods, such as advanced sampling or QM/MM, while relying on one or more engines to perform lower-level operations, such as energy and force evaluation.</p>
 <p>In total, MDI consists of the following components:</p>
 <ul>
 <li><a class="el" href="index.html#main_doc_drivers_sec">Drivers</a>, which are codes that control the high-level program flow of one or more other codes.</li>
@@ -79,7 +80,7 @@ Overview</h1>
 Capabilities</h1>
 <p>MDI is designed to support a wide variety of different calculation types, with the <a class="el" href="mdi_standard.html">MDI Standard</a> defining a variety of simple commands that can be used to develop many drivers for many purposes. Potential application areas for MDI include <em> ab initio</em> molecular dynamics (AIMD), path integral molecular dynamics (PIMD), advanced sampling, forcefield development, and QM/MM. More specifically, here are some examples of what can be accomplished using MDI:</p>
 <ul>
-<li>Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechancis (MM) code performs time integration.</li>
+<li>Run an <em> ab initio</em> molecular dynamics (AIMD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechanics (MM) code performs time integration.</li>
 <li>Run an MD simulation in which the nuclear forces include contributions from two different MM codes.</li>
 <li>Implement an advanced sampling technique (<em>i.e.</em> metadynamics, replica exchange, etc.) in a self-contained driver that can use other codes to compute forces.</li>
 <li>Implement a new forcefield in a self-contained engine that is compatible with multiple MM codes.</li>
@@ -93,7 +94,7 @@ Getting Started</h1>
 <p>For lists of available MDI-based drivers and engines, see <a class="el" href="index.html#main_doc_drivers_sec">Drivers</a> and <a class="el" href="index.html#main_doc_engines_sec">Engines</a>.</p>
 <h1><a class="anchor" id="source_sec"></a>
 Source Code</h1>
-<p>The source code of the MDI library is available at GitHub at <a href="https://github.com/MolSSI/MDI_Library">https://github.com/MolSSI/MDI_Library</a></p>
+<p>The source code of the MDI library is available at GitHub at <a href="https://github.com/MolSSI/MDI_Library">https://github.com/MolSSI/MDI_Library</a>.</p>
 <h1><a class="anchor" id="main_doc_sec"></a>
 Main Documentation</h1>
 <ul>
@@ -110,16 +111,21 @@ Engines</h1>
 <p>The following codes can be directly run as MDI engines:</p>
 <ul>
 <li><a class="el" href="mdi_ecosystem.html#ecosystem_lammps">LAMMPS</a></li>
+<li><a class="el" href="mdi_ecosystem.html#ecosystem_openmm">OpenMM</a></li>
 <li><a class="el" href="mdi_ecosystem.html#ecosystem_psi4">Psi4</a></li>
 <li><a class="el" href="mdi_ecosystem.html#ecosystem_qcengine">QCEngine</a></li>
 <li><a class="el" href="mdi_ecosystem.html#ecosystem_qe">Quantum ESPRESSO</a></li>
+<li><a class="el" href="mdi_ecosystem.html#ecosystem_tinker">Tinker</a></li>
 </ul>
 <p>Through <a class="el" href="mdi_ecosystem.html#ecosystem_qcengine">QCEngine</a>, it is additionally possible to control the following codes via MDI:</p>
 <ul>
+<li><a href="https://www.chemie.uni-bonn.de/pctc/mulliken-center/software/dft-d3/">DFT-D3</a></li>
+<li><a href="https://www.entos.info/">entos</a></li>
 <li><a href="http://www.petachem.com/">PetaChem</a></li>
 <li><a href="https://www.molpro.net/">Molpro</a></li>
-<li><a href="https://github.com/aiqm/torchani">TorchANI</a></li>
+<li><a href="http://openmopac.net/">MOPAC</a></li>
 <li><a href="http://rdkit.org/">RDKit</a></li>
+<li><a href="https://github.com/aiqm/torchani">TorchANI</a></li>
 </ul>
 <p>The following codes support <a href="http://ipi-code.org/">i-PI</a>, with which MDI is compatible (see the <a class="el" href="library_page.html#library_launching_sec">-ipi</a> option). Note that the i-PI command set is different from that of the MDI Standard.</p>
 <ul>

@@ -1,5 +1,7 @@
 \hypertarget{index_mainpage_overview_sec}{}\doxysection{Overview}\label{index_mainpage_overview_sec}
-The Mol\+S\+SI Driver Interface (M\+DI) seeks to simplify the process of interoperating computational molecular sciences codes. M\+DI uses a driver/engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. The process of communicating commands and other data between codes is handled by the \mbox{\hyperlink{index_mainpage_overview_sec}{M\+DI Library}}.
+The Mol\+S\+SI Driver Interface (M\+DI) project provides a \mbox{\hyperlink{mdi_standard}{standardized A\+PI}} for fast, on-\/the-\/fly communication between computational chemistry codes. This greatly simplifies the process of implementing methods that require the cooperation of multiple software packages and enables developers to write a single implementation that works across many different codes. The A\+PI is sufficiently general to support a wide variety of techniques, including Q\+M/\+MM, ab initio MD, machine learning, advanced sampling, and path integral MD, while also being straightforwardly extensible. Communication between codes is handled by the M\+DI Library, which enables tight coupling between codes using either the M\+PI or T\+C\+P/\+IP methods.
+
+M\+DI uses a driver/engine paradigm in which \mbox{\hyperlink{index_main_doc_drivers_sec}{drivers}} orchestrate complex simulations by controlling \mbox{\hyperlink{index_main_doc_engines_sec}{engines}} through the use of an A\+P\+I-\/like command set that is defined by the \mbox{\hyperlink{mdi_standard}{M\+DI Standard}}. A driver will typically implement one or more high-\/level methods, such as advanced sampling or Q\+M/\+MM, while relying on one or more engines to perform lower-\/level operations, such as energy and force evaluation.
 
 In total, M\+DI consists of the following components\+:
 
@@ -14,7 +16,7 @@ M\+DI is designed to support a wide variety of different calculation types, with
 
 
 \begin{DoxyItemize}
-\item Run an {\itshape  ab initio} molecular dynamics (A\+I\+MD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechancis (MM) code performs time integration.
+\item Run an {\itshape  ab initio} molecular dynamics (A\+I\+MD) calculation in which a quantum mechanics (QM) code evaluates nuclear forces and a molecular mechanics (MM) code performs time integration.
 \item Run an MD simulation in which the nuclear forces include contributions from two different MM codes.
 \item Implement an advanced sampling technique ({\itshape i.\+e.} metadynamics, replica exchange, etc.) in a self-\/contained driver that can use other codes to compute forces.
 \item Implement a new forcefield in a self-\/contained engine that is compatible with multiple MM codes.
@@ -27,7 +29,7 @@ For guidance on running simulations using M\+D\+I-\/based drivers and engines, p
 If you intend to develop an M\+D\+I-\/based driver or engine, first do the above. Then, complete the \mbox{\hyperlink{tutorials_aimd_tutorial}{Driver Development Tutorial}} and familiarize yourself with the \mbox{\hyperlink{library_page_functions_sec}{M\+DI Library Functions}}.
 
 For lists of available M\+D\+I-\/based drivers and engines, see \mbox{\hyperlink{index_main_doc_drivers_sec}{Drivers}} and \mbox{\hyperlink{index_main_doc_engines_sec}{Engines}}.\hypertarget{index_source_sec}{}\doxysection{Source Code}\label{index_source_sec}
-The source code of the M\+DI library is available at Git\+Hub at \href{https://github.com/MolSSI/MDI_Library}{\texttt{ https\+://github.\+com/\+Mol\+S\+S\+I/\+M\+D\+I\+\_\+\+Library}}\hypertarget{index_main_doc_sec}{}\doxysection{Main Documentation}\label{index_main_doc_sec}
+The source code of the M\+DI library is available at Git\+Hub at \href{https://github.com/MolSSI/MDI_Library}{\texttt{ https\+://github.\+com/\+Mol\+S\+S\+I/\+M\+D\+I\+\_\+\+Library}}.\hypertarget{index_main_doc_sec}{}\doxysection{Main Documentation}\label{index_main_doc_sec}
 
 \begin{DoxyItemize}
 \item \mbox{\hyperlink{tutorials}{Tutorials}}
@@ -43,19 +45,24 @@ The following codes can be directly run as M\+DI engines\+:
 
 \begin{DoxyItemize}
 \item \mbox{\hyperlink{mdi_ecosystem_ecosystem_lammps}{L\+A\+M\+M\+PS}}
+\item \mbox{\hyperlink{mdi_ecosystem_ecosystem_openmm}{Open\+MM}}
 \item \mbox{\hyperlink{mdi_ecosystem_ecosystem_psi4}{Psi4}}
 \item \mbox{\hyperlink{mdi_ecosystem_ecosystem_qcengine}{Q\+C\+Engine}}
 \item \mbox{\hyperlink{mdi_ecosystem_ecosystem_qe}{Quantum E\+S\+P\+R\+E\+S\+SO}}
+\item \mbox{\hyperlink{mdi_ecosystem_ecosystem_tinker}{Tinker}}
 \end{DoxyItemize}
 
 Through \mbox{\hyperlink{mdi_ecosystem_ecosystem_qcengine}{Q\+C\+Engine}}, it is additionally possible to control the following codes via M\+DI\+:
 
 
 \begin{DoxyItemize}
+\item \href{https://www.chemie.uni-bonn.de/pctc/mulliken-center/software/dft-d3/}{\texttt{ D\+F\+T-\/\+D3}}
+\item \href{https://www.entos.info/}{\texttt{ entos}}
 \item \href{http://www.petachem.com/}{\texttt{ Peta\+Chem}}
 \item \href{https://www.molpro.net/}{\texttt{ Molpro}}
-\item \href{https://github.com/aiqm/torchani}{\texttt{ Torch\+A\+NI}}
+\item \href{http://openmopac.net/}{\texttt{ M\+O\+P\+AC}}
 \item \href{http://rdkit.org/}{\texttt{ R\+D\+Kit}}
+\item \href{https://github.com/aiqm/torchani}{\texttt{ Torch\+A\+NI}}
 \end{DoxyItemize}
 
 The following codes support \href{http://ipi-code.org/}{\texttt{ i-\/\+PI}}, with which M\+DI is compatible (see the \mbox{\hyperlink{library_page_library_launching_sec}{-\/ipi}} option). Note that the i-\/\+PI command set is different from that of the M\+DI Standard.

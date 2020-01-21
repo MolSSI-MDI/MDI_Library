@@ -51,6 +51,20 @@ mdi
 \item Launch L\+A\+M\+M\+PS using the "{\ttfamily -\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}lammps -in lammps.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
 \end{DoxyVerb}
 
+\end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_openmm}{}\doxysection{Open\+MM}\label{mdi_ecosystem_ecosystem_openmm}
+\href{https://github.com/taylor-a-barnes/MDI_OpenMM_Plugin}{\texttt{ An M\+DI plugin}} for \href{http://openmm.org/}{\texttt{ Open\+MM}} is available that enables Open\+MM to be run as an M\+DI engine. To use Open\+MM as an engine, follow these steps\+:
+
+
+\begin{DoxyEnumerate}
+\item Install Open\+MM
+\item Install the Open\+MM M\+DI plugin
+\item Prepare Open\+MM input files that specify the initial molecular geometry of the system and any other desired settings.
+\item In the Open\+MM run script, replace the normal call to {\ttfamily Simulation} with a call to {\ttfamily M\+D\+I\+Simulation}, which requires a new argument that corresponds to the M\+DI runtime options. For example\+: \begin{DoxyVerb}simulation = MDISimulation("-name MM -role ENGINE -method TCP -port 8021 -hostname localhost", pdb.topology, system, integrator, platform)
+\end{DoxyVerb}
+
+\item At the end of the run script (or at whatever point Open\+MM should begin accepting commands from the driver) call the {\ttfamily run\+M\+D\+I()} function on the {\ttfamily M\+D\+I\+Simulation} object you created in the last step\+: \begin{DoxyVerb}simulation.runMDI()
+\end{DoxyVerb}
+
 \end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_psi4}{}\doxysection{Psi4}\label{mdi_ecosystem_ecosystem_psi4}
 Mol\+S\+SI provides \href{https://github.com/MolSSI/psi4/tree/mdi}{\texttt{ an M\+D\+I-\/enabled fork}} of \href{http://www.psicode.org/}{\texttt{ Psi4}} that can be run as an M\+DI engine. To use Psi4 as an engine, follow these steps\+:
 
@@ -107,6 +121,19 @@ Mol\+S\+SI provides \href{https://github.com/MolSSI/q-e/tree/mdi}{\texttt{ an M\
 \item Compile pw.\+x, following the \href{https://www.quantum-espresso.org/Doc/user_guide/node10.html}{\texttt{ QE build guide}}.
 \item Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.
 \item Launch QE using the "{\ttfamily -\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+\end{DoxyVerb}
+
+\end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_tinker}{}\doxysection{Tinker}\label{mdi_ecosystem_ecosystem_tinker}
+\href{https://github.com/taylor-a-barnes/Tinker/tree/mdi}{\texttt{ An M\+D\+I-\/enabled fork}} of \href{https://dasher.wustl.edu/tinker/}{\texttt{ Tinker}} is available that can be run as an M\+DI engine. To use Tinker as an engine, follow these steps\+:
+
+
+\begin{DoxyEnumerate}
+\item Acquire the M\+D\+I-\/enabled fork of Tinker\+: \begin{DoxyVerb}git clone --branch mdi git@github.com:taylor-a-barnes/Tinker.git
+\end{DoxyVerb}
+
+\item Compile dynamic.\+x, following the \href{https://dasher.wustl.edu/tinker/downloads/guide.pdf}{\texttt{ Tinker build guide}}.
+\item Prepare Tinker input files that specify the initial molecular geometry of the system and any other desired settings.
+\item Launch Tinker using the "{\ttfamily -\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}time dynamic.x input -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" 1000 1.0 10.0 2 298.0 778.0
 \end{DoxyVerb}
  
 \end{DoxyEnumerate}

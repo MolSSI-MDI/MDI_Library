@@ -4,12 +4,10 @@
 
 The MDI Library enables inter-code communication in a manner compliant with the \ref mdi_standard.
 
-
 The MDI Library currently supports the following communication methods:
 
-  - TCP
-  - MPI
-  - LIB
+  - \ref tcp_launch "TCP"
+  - \ref mpi_launch "MPI"
 
 
 
