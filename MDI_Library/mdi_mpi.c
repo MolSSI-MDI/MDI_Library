@@ -287,7 +287,7 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       MPI_Send(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 1, this->mpi_comm);
     }
     else {
-      mpi4py_send_callback( (void*)header_buf, nheader, MDI_INT_NUMPY, (this->mpi_rank+1)%2, this->id );
+      mpi4py_send_callback( (void*)header_buf, nheader, MDI_INT, (this->mpi_rank+1)%2, this->id );
     }
 
   }
@@ -366,7 +366,7 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       MPI_Recv(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 1, this->mpi_comm, MPI_STATUS_IGNORE);
     }
     else {
-      mpi4py_recv_callback( header_buf, nheader, MDI_INT_NUMPY, (this->mpi_rank+1)%2, this->id );
+      mpi4py_recv_callback( header_buf, nheader, MDI_INT, (this->mpi_rank+1)%2, this->id );
     }
 
     // get the header information
