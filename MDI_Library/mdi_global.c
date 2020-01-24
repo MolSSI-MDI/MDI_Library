@@ -416,7 +416,7 @@ int communicator_delete(void* comm) {
  */
 void mdi_error(const char* message) {
   if ( errno == 0 || errno == ENOTTY ) {
-    fprintf( stderr, message );
+    fprintf( stderr, "%s", message );
     fprintf( stderr, "\n" );
   }
   else {
