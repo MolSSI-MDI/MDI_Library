@@ -291,13 +291,14 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
     // prepare message header information
     // only do this if communicating with MDI version 1.1 or higher
-    int nheader = 0;
+    int nheader_actual = 0; // actual number of elements of nheader that will be sent
+    int nheader = 4;
+    int header[nheader];
     void* header_buf = NULL;
     if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
 
       // prepare the header information
-      nheader = 4;
-      int header[nheader];
+      nheader_actual = 4;
       header[0] = 0;        // error flag
       header[1] = 0;        // placeholder
       header[2] = datatype; // datatype
@@ -307,12 +308,12 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     }
 
     // allocate the memory required for the send
-    libd->buf = malloc( ( nheader * sizeof(int) ) + ( datasize * count ) );
+    libd->buf = malloc( ( nheader_actual * sizeof(int) ) + ( datasize * count ) );
     libd->buf_allocated = 1;
 
     // copy the contents of buf into libd->buf
-    memcpy(libd->buf, header_buf, nheader * sizeof(int));
-    memcpy(libd->buf + nheader * sizeof(int), buf, datasize * count);
+    memcpy(libd->buf, header_buf, nheader_actual * sizeof(int));
+    memcpy(libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
 
   }
 
