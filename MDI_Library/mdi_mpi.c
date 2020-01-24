@@ -272,7 +272,7 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
     // prepare buffer to hold header information
-    size_t nheader = 4;
+    int nheader = 4;
     int header[nheader];
     void* header_buf = &header[0];
 
@@ -282,7 +282,14 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     header[2] = datatype; // datatype
     header[3] = count;    // count
 
-    MPI_Send(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+    // send the data
+    if ( this_code->is_python == 0 ) {
+      MPI_Send(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 1, this->mpi_comm);
+    }
+    else {
+      mpi4py_send_callback( (void*)header_buf, nheader, datatype, (this->mpi_rank+1)%2, this->id );
+    }
+
   }
 
   // determine the datatype of the send buffer
@@ -351,11 +358,16 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
     // prepare buffer to hold header information
-    size_t nheader = 4;
+    int nheader = 4;
     int header[nheader];
     void* header_buf = &header[0];
 
-    MPI_Recv(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
+    if ( this_code->is_python == 0 ) {
+      MPI_Recv(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 1, this->mpi_comm, MPI_STATUS_IGNORE);
+    }
+    else {
+      mpi4py_recv_callback( header_buf, nheader, MDI_INT, (this->mpi_rank+1)%2, this->id );
+    }
 
     // get the header information
     int error_flag = header[0];
@@ -376,7 +388,7 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     }
 
     // verify agreement regarding the count
-    if ( send_count != count + 1 ) {
+    if ( send_count != count ) {
       mdi_error("Error in MDI_Recv: inconsistent count");
       return 1;
     }
