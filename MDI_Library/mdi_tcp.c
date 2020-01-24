@@ -264,8 +264,8 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     size_t nheader = 4;
     int header[nheader];
     header[0] = 0;        // error flag
-    header[1] = 0;        // place holder
-    header[2] = datatype; // data type
+    header[1] = 0;        // placeholder
+    header[2] = datatype; // datatype
     header[3] = count;    // count
     void* header_buf = &header[0];
 
@@ -389,7 +389,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     }
 
     // verify agreement regarding the count
-    if ( send_count != count + 1 ) {
+    if ( send_count != count ) {
       mdi_error("Error in MDI_Recv: inconsistent count");
       return 1;
     }
