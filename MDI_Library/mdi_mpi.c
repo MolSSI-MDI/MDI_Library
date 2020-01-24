@@ -268,6 +268,23 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   communicator* this = get_communicator(current_code, comm);
 
+  // send message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+    // prepare buffer to hold header information
+    size_t nheader = 4;
+    int header[nheader];
+    void* header_buf = &header[0];
+
+    // get the header information
+    header[0] = 0;        // error flag
+    header[1] = 0;        // placeholder
+    header[2] = datatype; // datatype
+    header[3] = count;    // count
+
+    MPI_Send(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm);
+  }
+
   // determine the datatype of the send buffer
   MPI_Datatype mpi_type;
   if (datatype == MDI_INT) {
@@ -329,6 +346,41 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   communicator* this = get_communicator(current_code, comm);
+
+  // receive message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+    // prepare buffer to hold header information
+    size_t nheader = 4;
+    int header[nheader];
+    void* header_buf = &header[0];
+
+    MPI_Recv(header_buf, nheader, MPI_INT, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
+
+    // get the header information
+    int error_flag = header[0];
+    int placeholder = header[1];
+    int send_datatype = header[2];
+    int send_count = header[3];
+
+    // verify that the error flag is zero
+    if ( error_flag != 0 ) {
+      mdi_error("Error in MDI_Recv: nonzero error flag received");
+      return error_flag;
+    }
+
+    // verify agreement regarding the datatype
+    if ( send_datatype != datatype ) {
+      mdi_error("Error in MDI_Recv: inconsistent datatype");
+      return 1;
+    }
+
+    // verify agreement regarding the count
+    if ( send_count != count + 1 ) {
+      mdi_error("Error in MDI_Recv: inconsistent count");
+      return 1;
+    }
+  }
 
   // determine the datatype of the receive buffer
   MPI_Datatype mpi_type;
