@@ -251,13 +251,43 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     return 0;
   }
 
-  int n = 0;
   communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
+
+  // send message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  int n = 0;
   size_t total_sent = 0;
+  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+
+    // prepare the header information
+    size_t nheader = 4;
+    int header[nheader];
+    header[0] = 0;        // error flag
+    header[1] = 0;        // placeholder
+    header[2] = datatype; // datatype
+    header[3] = count;    // count
+    void* header_buf = &header[0];
+
+    while ( n >= 0 && total_sent < nheader*sizeof(int) ) {
+#ifdef _WIN32
+      n = send(this->sockfd, (char*)header_buf+total_sent, nheader*sizeof(int)-total_sent, 0);
+#else
+      n = write(this->sockfd, header_buf+total_sent, nheader*sizeof(int)-total_sent);
+#endif
+      total_sent += n;
+    }
+    if (n < 0) { 
+      mdi_error("Error writing to socket: server has quit or connection broke");
+      return 1;
+    }
+  }
+
 
   // determine the byte size of the data type being sent
   size_t datasize;
+  n = 0;
+  total_sent = 0;
   if (datatype == MDI_INT) {
     datasize = sizeof(int);
   }
@@ -310,6 +340,61 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   size_t n, nr;
   communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
+
+  // receive message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+
+    // prepare buffer to hold header information
+    size_t nheader = 4;
+    int header[nheader];
+    void* header_buf = &header[0];
+
+#ifdef _WIN32
+    n = nr = recv(this->sockfd,(char*)header_buf,nheader*sizeof(int),0);
+#else
+    n = nr = read(this->sockfd,header_buf,nheader*sizeof(int));
+#endif
+
+    while (nr>0 && n<nheader*sizeof(int) ) {
+#ifdef _WIN32
+      nr=recv(this->sockfd,(char*)header_buf+n,nheader*sizeof(int)-n,0);
+#else
+      nr=read(this->sockfd,header_buf+n,nheader*sizeof(int)-n);
+#endif
+      n+=nr;
+    }
+
+    if (n == 0) { 
+      mdi_error("Error reading from socket: server has quit or connection broke");
+      return 1;
+    }
+
+    // get the header information
+    int error_flag = header[0];
+    int placeholder = header[1];
+    int send_datatype = header[2];
+    int send_count = header[3];
+
+    // verify that the error flag is zero
+    if ( error_flag != 0 ) {
+      mdi_error("Error in MDI_Recv: nonzero error flag received");
+      return error_flag;
+    }
+
+    // verify agreement regarding the datatype
+    if ( send_datatype != datatype ) {
+      mdi_error("Error in MDI_Recv: inconsistent datatype");
+      return 1;
+    }
+
+    // verify agreement regarding the count
+    if ( send_count != count ) {
+      mdi_error("Error in MDI_Recv: inconsistent count");
+      return 1;
+    }
+
+  }
 
   // determine the byte size of the data type being sent
   size_t datasize;

@@ -22,6 +22,11 @@ int library_initialize() {
   communicator* new_comm = get_communicator(this_code->id, comm_id);
   new_comm->delete = communicator_delete_lib;
 
+  // set the MDI version number of the new communicator
+  new_comm->mdi_version[0] = MDI_MAJOR_VERSION;
+  new_comm->mdi_version[1] = MDI_MINOR_VERSION;
+  new_comm->mdi_version[2] = MDI_PATCH_VERSION;
+
   // allocate the method data
   library_data* libd = malloc(sizeof(library_data));
   libd->connected_code = -1;
@@ -284,12 +289,31 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       return 1;
     }
 
+    // prepare message header information
+    // only do this if communicating with MDI version 1.1 or higher
+    int nheader_actual = 0; // actual number of elements of nheader that will be sent
+    int nheader = 4;
+    int header[nheader];
+    void* header_buf = NULL;
+    if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+
+      // prepare the header information
+      nheader_actual = 4;
+      header[0] = 0;        // error flag
+      header[1] = 0;        // placeholder
+      header[2] = datatype; // datatype
+      header[3] = count;    // count
+      header_buf = &header[0];
+
+    }
+
     // allocate the memory required for the send
-    libd->buf = malloc( datasize * count );
+    libd->buf = malloc( ( nheader_actual * sizeof(int) ) + ( datasize * count ) );
     libd->buf_allocated = 1;
 
     // copy the contents of buf into libd->buf
-    memcpy(libd->buf, buf, datasize * count);
+    memcpy(libd->buf, header_buf, nheader_actual * sizeof(int));
+    memcpy(libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
 
   }
 
@@ -362,8 +386,45 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     return 1;
   }
 
+  // receive message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  int nheader = 0;
+  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+
+    // prepare buffer to hold header information
+    nheader = 4;
+    int header[nheader];
+    void* header_buf = &header[0];
+
+    // get the header information
+    memcpy(header_buf, other_lib->buf, nheader * sizeof(int));
+    int error_flag = header[0];
+    int placeholder = header[1];
+    int send_datatype = header[2];
+    int send_count = header[3];
+
+    // verify that the error flag is zero 
+    if ( error_flag != 0 ) {
+      mdi_error("Error in MDI_Recv: nonzero error flag received");
+      return error_flag;
+    }
+
+    // verify agreement regarding the datatype
+    if ( send_datatype != datatype ) {
+      mdi_error("Error in MDI_Recv: inconsistent datatype");
+      return 1;
+    }
+
+    // verify agreement regarding the count
+    if ( send_count != count ) {
+      mdi_error("Error in MDI_Recv: inconsistent count");
+      return 1;
+    }
+
+  }
+
   // copy the contents of libd->buf into buf
-  memcpy(buf, other_lib->buf, datasize * count);
+  memcpy(buf, other_lib->buf + nheader*sizeof(int), datasize * count);
 
   // free the memory of libd->buf
   free( other_lib->buf );

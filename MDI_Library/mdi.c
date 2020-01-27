@@ -36,7 +36,7 @@ Contents:
 const int MDI_MAJOR_VERSION = 1;
 
 /*! \brief MDI minor version number */
-const int MDI_MINOR_VERSION = 0;
+const int MDI_MINOR_VERSION = 1;
 
 /*! \brief MDI patch version number */
 const int MDI_PATCH_VERSION = 0;

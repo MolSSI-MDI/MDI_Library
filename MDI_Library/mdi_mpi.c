@@ -62,7 +62,7 @@ int set_world_rank(int world_rank_in) {
  *                   In that case, the Python wrapper code will do the split instead.
  */
 int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm) {
-  int i, j;
+  int i, j, ret;
   int driver_rank;
   int nunique_names = 0;
   code* this_code = get_code(current_code);
@@ -101,7 +101,11 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
 		  MPI_CHAR, world_comm);
   }
   else {
-    mpi4py_gather_names_callback(buffer, names);
+    ret = mpi4py_gather_names_callback(buffer, names);
+    if ( ret != 0 ) {
+      mdi_error("Error in mpi4py_gather_names_callback");
+      return ret;
+    }
   }
 
   // determine which rank corresponds to rank 0 of the driver
