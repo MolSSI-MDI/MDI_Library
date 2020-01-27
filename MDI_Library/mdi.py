@@ -146,7 +146,7 @@ def mpi4py_recv_callback(buf, count, datatype, source, mdi_comm):
             raise Exception("MDI Error: MDI type not recognized")
 
         # get a numpy representation of the data
-        nparray = np.ctypeslib.as_array(buf, shape=[ count * datasize ])
+        nparray = np.ctypeslib.as_array(buf, shape=tuple([ count * datasize ]))
 
         comm = mpi4py_comms[mdi_comm]
         comm.Recv([nparray, mpi_type], source=source)
@@ -199,7 +199,7 @@ def mpi4py_send_callback(buf, count, datatype, destination, mdi_comm):
             raise Exception("MDI Error: MDI type not recognized")
 
         # get a numpy representation of the data
-        nparray = np.ctypeslib.as_array(buf, shape=[ count * datasize ])
+        nparray = np.ctypeslib.as_array(buf, shape=tuple([ count * datasize ]))
 
         comm = mpi4py_comms[mdi_comm]
         comm.Send([nparray, mpi_type], dest=destination)
@@ -290,18 +290,18 @@ def mpi4py_gather_names_callback(buf, names):
         global world_comm
         world_size = world_comm.Get_size()
 
-        # Create numpy arrays from the C pointers
-        buf_np = np.ctypeslib.as_array(buf, shape=[MDI_NAME_LENGTH])
-        names_np = np.ctypeslib.as_array(names, shape=[MDI_NAME_LENGTH * world_size])
+       # Create numpy arrays from the C pointers
+        buf_shape = tuple( [MDI_NAME_LENGTH] )
+        buf_np = np.ctypeslib.as_array(buf, shape=buf_shape)
+        names_shape = tuple( [MDI_NAME_LENGTH * world_size] )
+        names_np = np.ctypeslib.as_array(names, shape=names_shape)
 
-        # Gather the names
+       # Gather the names
         world_comm.Allgather([buf_np, MPI.CHAR], [names_np, MPI.CHAR])
 
         return 0
 
     except Exception:
-
-        print("MDI Error in mpi4py_gather_names_callback")
         return -1
 
 # define the python function that will set the callback function in c
