@@ -4,6 +4,7 @@ import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 import ctypes
+import sys
 
 # attempt to import numpy
 try:
@@ -152,9 +153,10 @@ def mpi4py_recv_callback(buf, count, datatype, source, mdi_comm):
         comm.Recv([nparray, mpi_type], source=source)
         return 0
 
-    except Exception:
+    except Exception as e:
 
-        print("MDI Error in mpi4py_recv_callback")
+        sys.stderr.write("MDI Error in mpi4py_recv_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -205,9 +207,10 @@ def mpi4py_send_callback(buf, count, datatype, destination, mdi_comm):
         comm.Send([nparray, mpi_type], dest=destination)
         return 0
 
-    except:
+    except Exception as e:
 
-        print("MDI Error in mpi4py_send_callback")
+        sys.stderr.write("MDI Error in mpi4py_send_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -231,10 +234,14 @@ mdi.MDI_Set_Mpi4py_Size_Callback.argtypes = [mpi4py_size_func_type]
 # define the python callback function
 def mpi4py_size_callback(comm_flag):
     try:
+
         comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_size()
-    except Exception:
-        print("MDI Error in mpi4py_size_callback")
+
+    except Exception as e:
+
+        sys.stderr.write("MDI Error in mpi4py_size_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -258,10 +265,14 @@ mdi.MDI_Set_Mpi4py_Rank_Callback.argtypes = [mpi4py_rank_func_type]
 # define the python callback function
 def mpi4py_rank_callback(comm_flag):
     try:
+
         comm = get_mpi_comm_from_flag( comm_flag )
         return comm.Get_rank()
-    except Exception:
-        print("MDI Error in mpi4py_rank_callback")
+
+    except Exception as e:
+
+        sys.stderr.write("MDI Error in mpi4py_rank_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -301,7 +312,10 @@ def mpi4py_gather_names_callback(buf, names):
 
         return 0
 
-    except Exception:
+    except Exception as e:
+
+        sys.stderr.write("MDI Error in mpi4py_gather_names_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -344,9 +358,10 @@ def mpi4py_barrier_callback(comm_flag):
 
         return 0
 
-    except Exception:
+    except Exception as e:
 
-        print("MDI Error in mpi4py_barrier_callback")
+        sys.stderr.write("MDI Error in mpi4py_barrier_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
@@ -387,9 +402,10 @@ def mpi4py_split_callback(color, key, mdi_comm, comm_flag):
 
         return 0
 
-    except Exception:
+    except Exception as e:
 
-        print("MDI Error in mpi4py_split_callback")
+        sys.stderr.write("MDI Error in mpi4py_split_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
         return -1
 
 # define the python function that will set the callback function in c
