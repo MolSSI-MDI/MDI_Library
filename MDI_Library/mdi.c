@@ -57,10 +57,6 @@ const int MDI_INT          = 1;
 const int MDI_DOUBLE       = 2;
 /*! \brief character data type */
 const int MDI_CHAR         = 3;
-/*! \brief NumPy integer data type */
-const int MDI_INT_NUMPY    = 4;
-/*! \brief NumPy double precision float data type */
-const int MDI_DOUBLE_NUMPY = 5;
 
 // MDI communication types
 /*! \brief TCP/IP communication method */
