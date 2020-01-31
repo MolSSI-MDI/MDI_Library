@@ -111,6 +111,26 @@ def c_ptr_to_py_str(in_ptr, length):
     presult = presult.decode('utf-8')
     return presult
 
+def mpi4py_get_np_array(buf, count, datatype):
+    # determine the data type
+    if datatype == MDI_INT:
+        mpi_type = MPI.INT
+        datasize = ctypes.sizeof( ctypes.c_int )
+    elif datatype == MDI_DOUBLE:
+        mpi_type = MPI.DOUBLE
+        datasize = ctypes.sizeof( ctypes.c_double )
+    elif datatype == MDI_CHAR:
+        mpi_type = MPI.CHAR
+        datasize = ctypes.sizeof( ctypes.c_char )
+    else:
+        raise Exception("MDI Error: MDI type not recognized")
+
+    # get a numpy representation of the data
+    nparray = np.ctypeslib.as_array(buf, shape=tuple([ count * datasize ]))
+
+    return (nparray, mpi_type)
+
+
 ##################################################
 # MPI4Py Recv Callback                           #
 ##################################################
@@ -133,24 +153,9 @@ def mpi4py_recv_callback(buf, count, datatype, source, mdi_comm):
 
         global mpi4py_comms
 
-        # determine the data type
-        if datatype == MDI_INT_NUMPY or datatype == MDI_INT:
-            mpi_type = MPI.INT
-            datasize = ctypes.sizeof( ctypes.c_int )
-        elif datatype == MDI_DOUBLE_NUMPY or datatype == MDI_DOUBLE:
-            mpi_type = MPI.DOUBLE
-            datasize = ctypes.sizeof( ctypes.c_double )
-        elif datatype == MDI_CHAR:
-            mpi_type = MPI.CHAR
-            datasize = ctypes.sizeof( ctypes.c_char )
-        else:
-            raise Exception("MDI Error: MDI type not recognized")
-
-        # get a numpy representation of the data
-        nparray = np.ctypeslib.as_array(buf, shape=tuple([ count * datasize ]))
-
+        recv_buf = mpi4py_get_np_array(buf, count, datatype)
         comm = mpi4py_comms[mdi_comm]
-        comm.Recv([nparray, mpi_type], source=source)
+        comm.Recv(recv_buf, source=source)
         return 0
 
     except Exception as e:
@@ -187,24 +192,9 @@ def mpi4py_send_callback(buf, count, datatype, destination, mdi_comm):
 
         global mpi4py_comms
 
-        # determine the data type
-        if datatype == MDI_INT_NUMPY or datatype == MDI_INT:
-            mpi_type = MPI.INT
-            datasize = ctypes.sizeof( ctypes.c_int )
-        elif datatype == MDI_DOUBLE_NUMPY or datatype == MDI_DOUBLE:
-            mpi_type = MPI.DOUBLE
-            datasize = ctypes.sizeof( ctypes.c_double )
-        elif datatype == MDI_CHAR:
-            mpi_type = MPI.CHAR
-            datasize = ctypes.sizeof( ctypes.c_char )
-        else:
-            raise Exception("MDI Error: MDI type not recognized")
-
-        # get a numpy representation of the data
-        nparray = np.ctypeslib.as_array(buf, shape=tuple([ count * datasize ]))
-
+        send_buf = mpi4py_get_np_array(buf, count, datatype)
         comm = mpi4py_comms[mdi_comm]
-        comm.Send([nparray, mpi_type], dest=destination)
+        comm.Send(send_buf, dest=destination)
         return 0
 
     except Exception as e:
