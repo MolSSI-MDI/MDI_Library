@@ -536,7 +536,7 @@ def MDI_Recv(arg2, arg3, arg4, buf = None):
         raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
     if (arg3 == MDI_INT):
         if use_numpy:
-            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS'), 
+            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.int32, flags='C_CONTIGUOUS'), 
                                      ctypes.c_int, ctypes.c_int, ctypes.c_int]
         else:
             mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
@@ -544,7 +544,7 @@ def MDI_Recv(arg2, arg3, arg4, buf = None):
         mdi_type = MDI_INT
     elif (arg3 == MDI_DOUBLE):
         if use_numpy:
-            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'), 
+            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, flags='C_CONTIGUOUS'), 
                                      ctypes.c_int, ctypes.c_int, ctypes.c_int]
         else:
             mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
