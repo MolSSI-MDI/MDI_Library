@@ -80,7 +80,8 @@ print("NATOMS: " + str(natoms))
 # Send the "<COORDS" command to the engine
 mdi.MDI_Send_Command("<COORDS", comm)
 if use_numpy:
-    coords_temp = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm, use_numpy = True)
+    coords_temp = np.zeros(3 * natoms, dtype='float64')
+    mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm, buf = coords_temp)
 else:
     coords_temp = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm)
 coords = [ str( round(coords_temp[icoord], 10) ) for icoord in range( 3 * natoms ) ]

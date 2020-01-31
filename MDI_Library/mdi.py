@@ -527,7 +527,11 @@ def MDI_Send(arg1, arg2, arg3, arg4):
 
 # MDI_Recv
 mdi.MDI_Recv.restype = ctypes.c_int
-def MDI_Recv(arg2, arg3, arg4, use_numpy = False):
+def MDI_Recv(arg2, arg3, arg4, buf = None):
+    if buf is None:
+        use_numpy = False
+    else:
+        use_numpy = True
     if use_numpy and not found_numpy:
         raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
     if (arg3 == MDI_INT):
@@ -553,25 +557,18 @@ def MDI_Recv(arg2, arg3, arg4, use_numpy = False):
     else:
         raise Exception("MDI Error: Unrecognized datatype in MDI_Recv")
 
-    if use_numpy:
-        if arg3 == MDI_INT:
-            arg1 = np.zeros(arg2, dtype='int32')
-        elif arg3 == MDI_DOUBLE:
-            arg1 = np.zeros(arg2, dtype='float64')
-        else:
-            raise Exception("MDI Error: Unsupported datatype when using NumPy in MDI_Recv")
-    else:
+    if not use_numpy:
         arg_size = ctypes.sizeof(arg_type)
-        arg1 = (ctypes.c_char*(arg2*arg_size))()
+        buf = (ctypes.c_char*(arg2*arg_size))()
 
-    ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(mdi_type), arg4)
+    ret = mdi.MDI_Recv(buf, arg2, ctypes.c_int(mdi_type), arg4)
     if ret != 0:
         raise Exception("MDI Error: MDI_Recv failed")
 
     if use_numpy:
-        return arg1
+        return None
 
-    result = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
+    result = ctypes.cast(buf, ctypes.POINTER(arg_type*arg2)).contents
 
     if (arg3 == MDI_CHAR):
         # if this is an MDI_CHAR, convert it to a python string
