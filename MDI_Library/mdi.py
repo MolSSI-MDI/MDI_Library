@@ -9,9 +9,9 @@ import sys
 # attempt to import numpy
 try:
     import numpy as np
-    use_numpy = True
+    found_numpy = True
 except ImportError:
-    use_numpy = False
+    found_numpy = False
 
 # attempt to import mpi4py
 try:
@@ -464,7 +464,7 @@ def MDI_Init(arg1, comm):
 
     # if using MPI, ensure that numpy is available
     if mdi_method == "MPI":
-        if not use_numpy:
+        if not found_numpy:
             raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
     # call MDI_Init
@@ -492,29 +492,26 @@ def MDI_Accept_Communicator():
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
 mdi.MDI_Send.restype = ctypes.c_int
 def MDI_Send(arg1, arg2, arg3, arg4):
+    use_numpy = False
+    if found_numpy:
+        if type(arg1) is np.ndarray:
+            use_numpy = True
+
     if (arg3 == MDI_INT):
         arg_type = ctypes.c_int
         mdi_type = MDI_INT
+        if use_numpy:
+            data = arg1.astype(np.int32)
+            data = data.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_DOUBLE):
         arg_type = ctypes.c_double
         mdi_type = MDI_DOUBLE
+        if use_numpy:
+            data = arg1.astype(np.float64)
+            data = data.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_CHAR):
         arg_type = ctypes.c_char
         mdi_type = MDI_CHAR
-    elif (arg3 == MDI_INT_NUMPY):
-        if not use_numpy:
-            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
-        arg_type = ctypes.c_int
-        data = arg1.astype(np.int32)
-        data = data.ctypes.data_as(ctypes.c_char_p)
-        mdi_type = MDI_INT
-    elif (arg3 == MDI_DOUBLE_NUMPY):
-        if not use_numpy:
-            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
-        arg_type = ctypes.c_double
-        data = arg1.astype(np.float64)
-        data = data.ctypes.data_as(ctypes.c_char_p)
-        mdi_type = MDI_DOUBLE
     else:
         raise Exception("MDI Error: Unrecognized datatype in MDI_Send")
 
@@ -522,7 +519,7 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         data_temp = arg1.encode('utf-8')
         data = ctypes.c_char_p(data_temp)
 
-    elif arg3 == MDI_INT or arg3 == MDI_DOUBLE:
+    elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE) and not use_numpy:
         if not isinstance(arg1, list):
             if arg2 == 1:
                 if arg3 == MDI_DOUBLE:
@@ -542,50 +539,48 @@ def MDI_Send(arg1, arg2, arg3, arg4):
 
 # MDI_Recv
 mdi.MDI_Recv.restype = ctypes.c_int
-def MDI_Recv(arg2, arg3, arg4):
+def MDI_Recv(arg2, arg3, arg4, use_numpy = False):
+    if use_numpy and not found_numpy:
+        raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
     if (arg3 == MDI_INT):
-        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        if use_numpy:
+            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS'), 
+                                     ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        else:
+            mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_int
         mdi_type = MDI_INT
     elif (arg3 == MDI_DOUBLE):
-        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        if use_numpy:
+            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'), 
+                                     ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        else:
+            mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_double
         mdi_type = MDI_DOUBLE
     elif (arg3 == MDI_CHAR):
         mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_char
         mdi_type = MDI_CHAR
-    elif (arg3 == MDI_INT_NUMPY):
-        if not use_numpy:
-            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
-        mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags='C_CONTIGUOUS'), 
-                                 ctypes.c_int, ctypes.c_int, ctypes.c_int]
-        arg_type = ctypes.c_int
-        mdi_type = MDI_INT
-    elif (arg3 == MDI_DOUBLE_NUMPY):
-        if not use_numpy:
-            raise Exception("MDI Error: Attempting to use a Numpy array, but the Numpy package was not found")
-        mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.float64, ndim=1, flags='C_CONTIGUOUS'), 
-                                 ctypes.c_int, ctypes.c_int, ctypes.c_int]
-        arg_type = ctypes.c_double
-        mdi_type = MDI_DOUBLE
-
-    if (arg3 == MDI_DOUBLE_NUMPY):
-        arg1 = np.zeros(arg2, dtype='float64')
-    elif (arg3 == MDI_INT_NUMPY):
-        arg1 = np.zeros(arg2, dtype='int32')
-    elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_CHAR):
-        arg_size = ctypes.sizeof(arg_type)
-        arg1 = (ctypes.c_char*(arg2*arg_size))()
     else:
         raise Exception("MDI Error: Unrecognized datatype in MDI_Recv")
+
+    if use_numpy:
+        if arg3 == MDI_INT:
+            arg1 = np.zeros(arg2, dtype='int32')
+        elif arg3 == MDI_DOUBLE:
+            arg1 = np.zeros(arg2, dtype='float64')
+        else:
+            raise Exception("MDI Error: Unsupported datatype when using NumPy in MDI_Recv")
+    else:
+        arg_size = ctypes.sizeof(arg_type)
+        arg1 = (ctypes.c_char*(arg2*arg_size))()
+
     ret = mdi.MDI_Recv(arg1, arg2, ctypes.c_int(mdi_type), arg4)
     if ret != 0:
         raise Exception("MDI Error: MDI_Recv failed")
 
-    if (arg3 == MDI_INT_NUMPY):
-        return arg1
-    elif (arg3 == MDI_DOUBLE_NUMPY):
+    if use_numpy:
         return arg1
 
     result = ctypes.cast(arg1, ctypes.POINTER(arg_type*arg2)).contents
