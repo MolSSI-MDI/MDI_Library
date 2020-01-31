@@ -67,6 +67,7 @@ ncallbacks = mdi.MDI_Get_NCallbacks(second_node, comm)
 print("NCALLBACKS: " + str(ncallbacks))
 first_callback = mdi.MDI_Get_Callback(second_node, 0, comm)
 print("CALLBACK: " + str(first_callback))
+
 # Check if the engine supports >FORCES callback
 if ( not mdi.MDI_Check_Callback_Exists("@FORCES",">FORCES",comm) ):
     raise Exception("Engine does not support the >FORCES command")
@@ -79,7 +80,8 @@ print("NATOMS: " + str(natoms))
 # Send the "<COORDS" command to the engine
 mdi.MDI_Send_Command("<COORDS", comm)
 if use_numpy:
-    coords_temp = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE_NUMPY, comm)
+    coords_temp = np.zeros(3 * natoms, dtype='float64')
+    mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm, buf = coords_temp)
 else:
     coords_temp = mdi.MDI_Recv(3 * natoms, mdi.MDI_DOUBLE, comm)
 coords = [ str( round(coords_temp[icoord], 10) ) for icoord in range( 3 * natoms ) ]

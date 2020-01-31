@@ -6,6 +6,7 @@ coverage:
     project:
       default:
         threshold: 80%
+	target: 0%
 comment:
   layout: "header"
   require_changes: false

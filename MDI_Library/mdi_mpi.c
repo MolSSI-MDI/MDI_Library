@@ -283,20 +283,6 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   else if (datatype == MDI_CHAR) {
     mpi_type = MPI_CHAR;
   }
-  else if ( datatype == MDI_INT_NUMPY ) {
-    if ( this_code->is_python == 0 ) {
-      mdi_error("MDI_INT_NUMPY datatype only permitted if using Python");
-      return 1;
-    }
-    mpi_type = MPI_INT;
-  }
-  else if ( datatype == MDI_DOUBLE_NUMPY ) {
-    if ( this_code->is_python == 0 ) {
-      mdi_error("MDI_DOUBLE_NUMPY datatype only permitted if using Python");
-      return 1;
-    }
-    mpi_type = MPI_DOUBLE;
-  }
   else {
     mdi_error("MDI data type not recognized in mpi_send");
     return 1;
@@ -344,20 +330,6 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
   else if (datatype == MDI_CHAR) {
     mpi_type = MPI_CHAR;
-  }
-  else if ( datatype == MDI_INT_NUMPY ) {
-    if ( this_code->is_python == 0 ) {
-      mdi_error("MDI_INT_NUMPY datatype only permitted if using Python");
-      return 1;
-    }
-    mpi_type = MPI_INT;
-  }
-  else if ( datatype == MDI_DOUBLE_NUMPY ) {
-    if ( this_code->is_python == 0 ) {
-      mdi_error("MDI_DOUBLE_NUMPY datatype only permitted if using Python");
-      return 1;
-    }
-    mpi_type = MPI_DOUBLE;
   }
   else {
     mdi_error("MDI data type not recognized in mpi_send");

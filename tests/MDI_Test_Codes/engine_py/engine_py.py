@@ -27,11 +27,7 @@ def execute_command(command, comm, self):
     elif command == "<COORDS":
         mdi.MDI_Send(self.coords, 3 * self.natoms, mdi.MDI_DOUBLE, comm)
     elif command == "<FORCES":
-        if use_numpy:
-            datatype = mdi.MDI_DOUBLE_NUMPY
-        else:
-            datatype = mdi.MDI_DOUBLE
-        mdi.MDI_Send(self.forces, 3 * self.natoms, datatype, comm)
+        mdi.MDI_Send(self.forces, 3 * self.natoms, mdi.MDI_DOUBLE, comm)
     else:
         raise Exception("Error in engine_py.py: MDI command not recognized")
 
