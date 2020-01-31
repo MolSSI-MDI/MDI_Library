@@ -67,6 +67,7 @@ ncallbacks = mdi.MDI_Get_NCallbacks(second_node, comm)
 print("NCALLBACKS: " + str(ncallbacks))
 first_callback = mdi.MDI_Get_Callback(second_node, 0, comm)
 print("CALLBACK: " + str(first_callback))
+
 # Check if the engine supports >FORCES callback
 if ( not mdi.MDI_Check_Callback_Exists("@FORCES",">FORCES",comm) ):
     raise Exception("Engine does not support the >FORCES command")
