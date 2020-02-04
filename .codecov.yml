@@ -2,11 +2,12 @@ coverage:
   ignore:
     - tests/.*
   status:
-    patch: false
+    patch:
+      default:
+	target: 50%
     project:
       default:
         threshold: 80%
-	target: 0%
 comment:
   layout: "header"
   require_changes: false
