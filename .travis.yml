@@ -119,7 +119,7 @@ install:
 
 script:
   - cd ../tests
-  - pytest --cov-report=xml --cov=MDI_Library -k "${TESTS}"
+  - pytest -vv --cov-report=xml --cov=MDI_Library -k "${TESTS}"
 
 after_success:
   # get code coverage
