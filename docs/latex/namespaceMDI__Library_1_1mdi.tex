@@ -14,6 +14,9 @@ def {\bfseries get\+\_\+mpi\+\_\+comm\+\_\+from\+\_\+flag} (comm\+\_\+flag)
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a20b1c9e98b2b0301379f8328c7779967}\label{namespaceMDI__Library_1_1mdi_a20b1c9e98b2b0301379f8328c7779967}} 
 def {\bfseries c\+\_\+ptr\+\_\+to\+\_\+py\+\_\+str} (in\+\_\+ptr, length)
 \item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a12d210562f0a74fa44a7cb3cfe83ab56}\label{namespaceMDI__Library_1_1mdi_a12d210562f0a74fa44a7cb3cfe83ab56}} 
+def {\bfseries mpi4py\+\_\+get\+\_\+np\+\_\+array} (buf, count, datatype, mdi\+\_\+comm)
+\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a460628b1f493f3817d80619ae76e1c96}\label{namespaceMDI__Library_1_1mdi_a460628b1f493f3817d80619ae76e1c96}} 
 def {\bfseries mpi4py\+\_\+recv\+\_\+callback} (buf, count, datatype, source, mdi\+\_\+comm)
 \item 
@@ -68,8 +71,8 @@ def {\bfseries M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator} ()
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a5c920ec54a5e8e4728ef70d6c9d7a354}\label{namespaceMDI__Library_1_1mdi_a5c920ec54a5e8e4728ef70d6c9d7a354}} 
 def {\bfseries M\+D\+I\+\_\+\+Send} (arg1, arg2, arg3, arg4)
 \item 
-\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ac0803b589ad3f718cfdba3ccbd801de3}\label{namespaceMDI__Library_1_1mdi_ac0803b589ad3f718cfdba3ccbd801de3}} 
-def {\bfseries M\+D\+I\+\_\+\+Recv} (arg2, arg3, arg4)
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ae195ad20572a640014a4373cc53205cb}\label{namespaceMDI__Library_1_1mdi_ae195ad20572a640014a4373cc53205cb}} 
+def {\bfseries M\+D\+I\+\_\+\+Recv} (arg2, arg3, arg4, buf=None)
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ad1be6d2a1a677eadfe3f1053dad88c64}\label{namespaceMDI__Library_1_1mdi_ad1be6d2a1a677eadfe3f1053dad88c64}} 
 def {\bfseries M\+D\+I\+\_\+\+Send\+\_\+\+Command} (arg1, arg2)
@@ -131,8 +134,8 @@ def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+\+Callback} (node\+\_\+name, index, arg2)
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a36e64a9de02d5098f49724b61adaa043}\label{namespaceMDI__Library_1_1mdi_a36e64a9de02d5098f49724b61adaa043}} 
 {\bfseries dir\+\_\+path} = os.\+path.\+dirname(os.\+path.\+realpath(\+\_\+\+\_\+file\+\_\+\+\_\+))
 \item 
-\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a32d68579cb0eff9b01a7f20fe58a3157}\label{namespaceMDI__Library_1_1mdi_a32d68579cb0eff9b01a7f20fe58a3157}} 
-bool {\bfseries use\+\_\+numpy} = True
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a91254bc2e29a5cb3f85b1f6de1efef42}\label{namespaceMDI__Library_1_1mdi_a91254bc2e29a5cb3f85b1f6de1efef42}} 
+bool {\bfseries found\+\_\+numpy} = True
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a9e4a0eca806b846248c7ce679b5e6d0a}\label{namespaceMDI__Library_1_1mdi_a9e4a0eca806b846248c7ce679b5e6d0a}} 
 bool {\bfseries use\+\_\+mpi4py} = True
@@ -167,12 +170,6 @@ string {\bfseries mdi\+\_\+path} = dir\+\_\+path + \char`\"{}/\char`\"{} + mdi\+
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa2cd3ffb7429608e6a1c6a6210c66458}\label{namespaceMDI__Library_1_1mdi_aa2cd3ffb7429608e6a1c6a6210c66458}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_aa2cd3ffb7429608e6a1c6a6210c66458}{M\+D\+I\+\_\+\+C\+H\+AR}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+H\+AR\char`\"{}).value
 \begin{DoxyCompactList}\small\item\em character data type \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a1129249c7328d5dc89054573da7c41d7}\label{namespaceMDI__Library_1_1mdi_a1129249c7328d5dc89054573da7c41d7}} 
-\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a1129249c7328d5dc89054573da7c41d7}{M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+I\+N\+T\+\_\+\+N\+U\+M\+PY\char`\"{}).value
-\begin{DoxyCompactList}\small\item\em Num\+Py integer data type. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa75b6ec252a05fb48b6660f73eebc3e6}\label{namespaceMDI__Library_1_1mdi_aa75b6ec252a05fb48b6660f73eebc3e6}} 
-\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_aa75b6ec252a05fb48b6660f73eebc3e6}{M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+N\+U\+M\+PY\char`\"{}).value
-\begin{DoxyCompactList}\small\item\em Num\+Py double precision float data type. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a11d827fa270b741392e65eb88b22242f}\label{namespaceMDI__Library_1_1mdi_a11d827fa270b741392e65eb88b22242f}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a11d827fa270b741392e65eb88b22242f}{M\+D\+I\+\_\+\+T\+CP}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+T\+CP\char`\"{}).value
 \begin{DoxyCompactList}\small\item\em T\+C\+P/\+IP communication method. \end{DoxyCompactList}\item 
