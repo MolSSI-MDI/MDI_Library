@@ -488,14 +488,14 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         arg_type = ctypes.c_int
         mdi_type = MDI_INT
         if use_numpy:
-            data = arg1.astype(np.int32)
-            data = data.ctypes.data_as(ctypes.c_char_p)
+            data_temp = arg1.astype(np.int32)
+            data = data_temp.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_DOUBLE):
         arg_type = ctypes.c_double
         mdi_type = MDI_DOUBLE
         if use_numpy:
-            data = arg1.astype(np.float64)
-            data = data.ctypes.data_as(ctypes.c_char_p)
+            data_temp = arg1.astype(np.float64)
+            data = data_temp.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_CHAR):
         arg_type = ctypes.c_char
         mdi_type = MDI_CHAR
