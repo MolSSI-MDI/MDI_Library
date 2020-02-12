@@ -1,5 +1,6 @@
 if ( use_CXX )
    add_subdirectory(driver_cxx)
+   add_subdirectory(driver_cxx_serial)
    add_subdirectory(engine_cxx)
    add_subdirectory(lib_cxx)
 endif()
