@@ -38,7 +38,7 @@ int general_init(const char* options, void* world_comm) {
   code* this_code = get_code(current_code);
 
   char* strtol_ptr;
-  int i;
+  int i, ret;
 
   int mpi_initialized = 0;
 
@@ -175,6 +175,55 @@ int general_init(const char* options, void* world_comm) {
     }
   }
 
+  // ensure the -role option was provided
+  if ( has_role == 0 ) {
+    mdi_error("Error in MDI_Init: -role option not provided");
+    return 1;
+  }
+
+  // ensure the -name option was provided
+  if ( has_name == 0 ) {
+    mdi_error("Error in MDI_Init: -name option not provided");
+    return 1;
+  }
+
+  // ensure the -method option was provided
+  if ( has_method == 0 ) {
+    mdi_error("Error in MDI_Init: -method option not provided");
+    return 1;
+  }
+
+  // if using the MPI method, check if MPI has been initialized
+  // currently, this is not supported for Python
+  if ( strcmp(method, "MPI") == 0 && strcmp(language, "Python") != 0 ) {
+
+    int mpi_init_flag = 0;
+    ret = MPI_Initialized(&mpi_init_flag);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init: MPI_Initialized failed");
+      return ret;
+    }
+
+    if ( mpi_init_flag == 0 ) {
+
+      // Initialize MPI
+      int mpi_argc = 0;
+      char** mpi_argv;
+      ret = MPI_Init( &mpi_argc, &mpi_argv );
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Init failed");
+	return ret;
+      }
+
+      // get the world_comm
+      mdi_mpi_comm_world = MPI_COMM_WORLD;
+      world_comm = &mdi_mpi_comm_world;
+      initialized_mpi = 1;
+
+    }
+
+  }
+
   // get the MPI rank
   MPI_Comm mpi_communicator;
   int mpi_rank = 0;
@@ -245,36 +294,18 @@ int general_init(const char* options, void* world_comm) {
     }
   }
 
-  // ensure the -role option was provided
-  if ( has_role == 0 ) {
-    mdi_error("Error in MDI_Init: -role option not provided");
-    return 1;
-  }
-
-  // ensure the -name option was provided
-  if ( has_name == 0 ) {
-    mdi_error("Error in MDI_Init: -name option not provided");
-    return 1;
-  }
-
-  // ensure the -method option was provided
-  if ( has_method == 0 ) {
-    mdi_error("Error in MDI_Init: -method option not provided");
-    return 1;
-  }
-
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
-  int do_split = 1;
-  if ( strcmp(language, "Python") == 0 ) {
+  int use_mpi4py = 0;
+  if ( strcmp(language, "Python") == 0 && initialized_mpi != 1 ) {
     this_code->is_python = 1;
-    do_split = 0;
+    use_mpi4py = 1;
   }
 
   if ( strcmp(role, "DRIVER") == 0 ) {
     // initialize this code as a driver
 
     if ( strcmp(method, "MPI") == 0 ) {
-      mpi_identify_codes("", do_split, mpi_communicator);
+      mpi_identify_codes("", use_mpi4py, mpi_communicator);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -303,7 +334,7 @@ int general_init(const char* options, void* world_comm) {
 
     if ( strcmp(method, "MPI") == 0 ) {
       code* this_code = get_code(current_code);
-      mpi_identify_codes(this_code->name, do_split, mpi_communicator);
+      mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
       mpi_initialized = 1;
     }
     else if ( strcmp(method, "TCP") == 0 ) {
@@ -343,7 +374,7 @@ int general_init(const char* options, void* world_comm) {
 
   // set the MPI communicator correctly
   if ( mpi_initialized == 1 ) {
-    if ( do_split == 1 ) {
+    if ( use_mpi4py == 0 ) {
       if ( strcmp(language, "Fortran") == 0 ) {
 	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
 	mpi_update_world_comm( (void*) &mpi_communicator);

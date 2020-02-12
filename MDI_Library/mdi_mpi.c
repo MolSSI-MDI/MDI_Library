@@ -49,26 +49,26 @@ int set_world_rank(int world_rank_in) {
 
 /*! \brief Identify groups of processes belonging to the same codes
  *
- * If do_split == 1, this function will call MPI_Comm_split to create an intra-code communicator for each code.
+ * If use_mpi4py == 0, this function will call MPI_Comm_split to create an intra-code communicator for each code.
  *
  * \param [in]       code_name
  *                   MDI name of the code associated with this process, indicated by the user with the -name 
  *                   runtime option.
- * \param [in]       do_split
+ * \param [in]       use_mpi4py
  *                   Flag to indicate whether MPI_Comm_split should be called in order to create an intra-code
  *                   communicator for each code.
- *                   The intra-code communicators are created only if do_split == 1.
- *                   Should normally be set to 1, unless the code associated with this process is a Python code.
+ *                   The intra-code communicators are created only if use_mpi4py == 0.
+ *                   Should normally be set to 0, unless the code associated with this process is a Python code.
  *                   In that case, the Python wrapper code will do the split instead.
  */
-int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm) {
+int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_comm) {
   int i, j, ret;
   int driver_rank;
   int nunique_names = 0;
   code* this_code = get_code(current_code);
 
   // get the number of processes
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Comm_size(world_comm, &world_size);
   }
   else {
@@ -77,7 +77,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   }
 
   // get the rank of this process
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Comm_rank(world_comm, &world_rank);
   }
   else {
@@ -96,7 +96,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
 
   // gather the name of the code associated with each rank
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
 		  MPI_CHAR, world_comm);
   }
@@ -165,7 +165,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
 	color = 1;
 	key = 1;
       }
-      if ( do_split == 1 ) {
+      if ( use_mpi4py == 0 ) {
 	MPI_Comm_split(world_comm, color, key, &new_mpi_comm);
       }
       else {
@@ -185,7 +185,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   }
 
   // create the intra-code communicators
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Comm_split(world_comm, mpi_code_rank, world_rank, &intra_MPI_comm);
   }
   else {
@@ -193,7 +193,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   }
 
   // get the intra-code rank
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Comm_rank(intra_MPI_comm, &this_code->intra_rank);
   }
   else {
@@ -201,7 +201,7 @@ int mpi_identify_codes(const char* code_name, int do_split, MPI_Comm world_comm)
   }
 
   // Barrier
-  if ( do_split == 1 ) {
+  if ( use_mpi4py == 0 ) {
     MPI_Barrier(world_comm);
   }
   else {
@@ -289,7 +289,7 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // send the data
-  if ( this_code->is_python == 0 ) {
+  if ( this_code->is_python == 0 && initialized_mpi != 1 ) {
     MPI_Send((void*)buf, count, mpi_type, (this->mpi_rank+1)%2, 0, this->mpi_comm);
   }
   else {
@@ -337,7 +337,7 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // receive the data
-  if ( this_code->is_python == 0 ) {
+  if ( this_code->is_python == 0 && initialized_mpi != 1 ) {
     MPI_Recv(buf, count, mpi_type, (this->mpi_rank+1)%2, 0, this->mpi_comm, MPI_STATUS_IGNORE);
   }
   else {

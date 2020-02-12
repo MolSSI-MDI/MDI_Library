@@ -100,6 +100,12 @@ extern int ipi_compatibility;
 /*! \brief Flag for whether MDI has been previously initialized */
 extern int is_initialized;
 
+/*! \brief Flag for whether MDI called MPI_Init */
+extern int initialized_mpi;
+
+/*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
+extern MPI_Comm mdi_mpi_comm_world;
+
 /*! \brief Python callback pointer for MPI_Recv */
 extern int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
 
