@@ -18,9 +18,9 @@ include_directories( ${mdi_include_path} )
 
 # Compile the driver
 
-add_executable(driver_cxx_serial
-               driver_cxx_serial.cpp)
-target_link_libraries(driver_cxx_serial mdi
+add_executable(driver_serial_cxx
+               driver_serial_cxx.cpp)
+target_link_libraries(driver_serial_cxx mdi
                       ${MPI_LIBRARIES})
-set_target_properties(driver_cxx_serial PROPERTIES
+set_target_properties(driver_serial_cxx PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")

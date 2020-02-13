@@ -182,7 +182,7 @@ def test_cxx_cxx_mpi():
 
 def test_cxx_cxx_mpi_serial():
     # get the names of the driver and engine codes, which include a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_cxx_serial*")[0]
+    driver_name = glob.glob("../build/driver_serial_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
