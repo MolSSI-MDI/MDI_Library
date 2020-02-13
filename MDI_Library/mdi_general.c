@@ -206,13 +206,25 @@ int general_init(const char* options, void* world_comm) {
 
     if ( mpi_init_flag == 0 ) {
 
-      // Initialize MPI
+      // initialize MPI
       int mpi_argc = 0;
       char** mpi_argv;
       ret = MPI_Init( &mpi_argc, &mpi_argv );
       if ( ret != 0 ) {
 	mdi_error("Error in MDI_Init: MPI_Init failed");
 	return ret;
+      }
+
+      // confirm that MPI is now initialized
+      // if it isn't, that indicates that the MPI stubs are being used
+      ret = MPI_Initialized(&mpi_init_flag);
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Initialized failed");
+	return ret;
+      }
+      if ( mpi_init_flag == 0 ) {
+	mdi_error("Error in MDI_Init: Failed to initialize MPI. Check that the MDI Library is linked to an MPI library.");
+	return 1;
       }
 
       // get the world_comm
