@@ -614,6 +614,12 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
     send_nnodes(comm);
     ret = 1;
   }
+  else if ( strcmp( buf, "EXIT" ) == 0 ) {
+    // if the MDI Library called MPI_Init, call MPI_Finalize now
+    if ( initialized_mpi == 1 ) {
+      MPI_Finalize();
+    }
+  }
   return ret;
 }
 
