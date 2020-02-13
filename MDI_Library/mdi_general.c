@@ -194,7 +194,6 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // if using the MPI method, check if MPI has been initialized
-  // currently, this is not supported for Python
   if ( strcmp(method, "MPI") == 0 && strcmp(language, "Python") != 0 ) {
 
     int mpi_init_flag = 0;
@@ -308,7 +307,7 @@ int general_init(const char* options, void* world_comm) {
 
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
   int use_mpi4py = 0;
-  if ( strcmp(language, "Python") == 0 && initialized_mpi != 1 ) {
+  if ( strcmp(language, "Python") == 0 ) {
     this_code->is_python = 1;
     use_mpi4py = 1;
   }
