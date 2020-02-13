@@ -556,6 +556,14 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   // if the command was "EXIT", delete this communicator
   if ( strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
+
+    // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
+    if ( initialized_mpi == 1 ) {
+      code* this_code = get_code(current_code);
+      if ( this_code->comms->size == 0 ) {
+	MPI_Finalize();
+      }
+    }
   }
 
   free( command );
