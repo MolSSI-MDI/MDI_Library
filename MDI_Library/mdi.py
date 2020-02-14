@@ -13,7 +13,12 @@ try:
 except ImportError:
     found_numpy = False
 
-MPI = None
+# attempt to import mpi4py
+try:
+    from mpi4py import MPI
+    use_mpi4py = True
+except ImportError:
+    use_mpi4py = False
 
 # get the path to the MDI Library
 try: # Unix
@@ -402,7 +407,6 @@ def set_mpi4py_split_callback():
 mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p]
 mdi.MDI_Init.restype = ctypes.c_int
 def MDI_Init(arg1, comm):
-    global MPI
     global world_comm
     global intra_code_comm
 
@@ -418,28 +422,19 @@ def MDI_Init(arg1, comm):
     if not mdi_method:
         raise Exception("MDI Error: Unable to find -method option")
 
-    # check if mpi4py has been previously imported
-    if 'mpi4py' in sys.modules:
-        mpi4py_already_initialized = True
-    else:
-        mpi4py_already_initialized = False
-
-    # attempt to import mpi4py
-    try:
-        from mpi4py import MPI
-        use_mpi4py = True
-    except ImportError:
-        use_mpi4py = False
-
     if mdi_method == "MPI":
+        # ensure that mpi4py is available
+        if not use_mpi4py:
+            raise Exception("MDI Error: When using the MPI communication method, mpi4py must be available")
+
         # ensure that numpy is available
         if not found_numpy:
             raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
+
         # check if MDI was responsible for initializing MPI
-        if not mpi4py_already_initialized:
+        if comm is None:
             comm = MPI.COMM_WORLD
 
-    command = arg1.encode('utf-8')
     if comm is None:
         mpi_communicator_ptr = None
     else:
@@ -467,6 +462,7 @@ def MDI_Init(arg1, comm):
     set_mpi4py_split_callback()
 
     # call MDI_Init
+    command = arg1.encode('utf-8')
     ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")
