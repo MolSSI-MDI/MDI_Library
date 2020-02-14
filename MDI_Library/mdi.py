@@ -413,7 +413,28 @@ def MDI_Init(arg1, comm):
     # prepend the _language option, so that MDI knows this is a Python code
     arg1 = "_language Python " + arg1
 
-    command = arg1.encode('utf-8')
+    # determine the communication method
+    args = arg1.split()
+    mdi_method = None
+    for i in range(len(args)):
+        if args[i] == "-method" and i < len(args) - 1:
+            mdi_method = args[i+1]
+    if not mdi_method:
+        raise Exception("MDI Error: Unable to find -method option")
+
+    if mdi_method == "MPI":
+        # ensure that mpi4py is available
+        if not use_mpi4py:
+            raise Exception("MDI Error: When using the MPI communication method, mpi4py must be available")
+
+        # ensure that numpy is available
+        if not found_numpy:
+            raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
+
+        # check if MDI was responsible for initializing MPI
+        if comm is None:
+            comm = MPI.COMM_WORLD
+
     if comm is None:
         mpi_communicator_ptr = None
     else:
@@ -431,15 +452,6 @@ def MDI_Init(arg1, comm):
         else:
             raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but MPI4Py is not found")
 
-    # determine if the communication method is MPI
-    args = arg1.split()
-    mdi_method = None
-    for i in range(len(args)):
-        if args[i] == "-method" and i < len(args) - 1:
-            mdi_method = args[i+1]
-    if not mdi_method:
-        raise Exception("MDI Error: Unable to find -method option")
-
     # set the MPI4Py callback functions
     set_mpi4py_recv_callback()
     set_mpi4py_send_callback()
@@ -449,12 +461,8 @@ def MDI_Init(arg1, comm):
     set_mpi4py_barrier_callback()
     set_mpi4py_split_callback()
 
-    # if using MPI, ensure that numpy is available
-    if mdi_method == "MPI":
-        if not found_numpy:
-            raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
-
     # call MDI_Init
+    command = arg1.encode('utf-8')
     ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")

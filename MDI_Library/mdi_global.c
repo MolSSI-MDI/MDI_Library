@@ -22,6 +22,12 @@ int ipi_compatibility = 0;
 /*! \brief Flag for whether MDI has been previously initialized */
 int is_initialized = 0;
 
+/*! \brief Flag for whether MDI called MPI_Init */
+int initialized_mpi = 0;
+
+/*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
+MPI_Comm mdi_mpi_comm_world;
+
 /*! \brief Python callback pointer for MPI_Recv */
 int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
 

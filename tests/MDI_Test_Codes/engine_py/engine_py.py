@@ -12,11 +12,20 @@ try:
 except ImportError:
     use_numpy = False
 
-try:
-    from mpi4py import MPI
-    use_mpi4py = True
-except ImportError:
-    use_mpi4py = False
+# Check for a -nompi argument
+# This argument prevents the code from importing MPI
+nompi_flag = False
+for arg in sys.argv:
+    if arg == "-nompi":
+        nompi_flag = True
+
+use_mpi4py = False
+if not nompi_flag:
+    try:
+        from mpi4py import MPI
+        use_mpi4py = True
+    except ImportError:
+        pass
 
 def execute_command(command, comm, self):
 

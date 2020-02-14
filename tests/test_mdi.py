@@ -180,6 +180,24 @@ def test_cxx_cxx_mpi():
     assert driver_out == " Engine name: MM\n"
     assert driver_err == ""
 
+def test_cxx_cxx_mpi_serial():
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_serial_cxx*")[0]
+    engine_name = glob.glob("../build/engine_cxx*")[0]
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                    "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_out == " Engine name: MM\n"
+    assert driver_err == ""
+
 def test_cxx_f90_mpi():
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -318,6 +336,24 @@ def test_py_py_mpi():
     # run the calculation
     driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+ 
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_py
+
+def test_py_py_mpi_serial():
+    global driver_out_expected_py
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", 
+                                    "-mdi", "-role DRIVER -name driver -method MPI","-nompi",":",
+                                    "-n","1",sys.executable,"engine_py.py",
+                                    "-mdi","-role ENGINE -name MM -method MPI","-nompi"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 

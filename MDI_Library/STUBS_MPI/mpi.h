@@ -17,6 +17,7 @@ typedef int MPI_Fint;
 #define MPI_CHAR 5
 
 static int MPI_Init( int *argc, char ***argv) { return 0;};
+static int MPI_Initialized( int *flag ) { *flag = 0; return 0;};
 static int MPI_Finalize(void) { return 0; };
 static int MPI_Get_processor_name( char *name, int *resultlen ) {return 0;};
 
