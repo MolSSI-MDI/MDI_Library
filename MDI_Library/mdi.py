@@ -41,7 +41,7 @@ except (ValueError, AttributeError):
 # MDI Variables
 MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 MDI_NAME_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_NAME_LENGTH").value
-MDI_NULL_COMM = ctypes.c_int.in_dll(mdi, "MDI_NULL_COMM").value
+MDI_COMM_NULL = ctypes.c_int.in_dll(mdi, "MDI_COMM_NULL").value
 MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
 MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
 MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value

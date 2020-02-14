@@ -96,9 +96,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a0639f31fe7860f028614354b78b22205"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a0639f31fe7860f028614354b78b22205">set_world_rank</a> (int world_rank_in)</td></tr>
 <tr class="memdesc:a0639f31fe7860f028614354b78b22205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rank of this process in MPI_COMM_WORLD.  <a href="#a0639f31fe7860f028614354b78b22205">More...</a><br /></td></tr>
 <tr class="separator:a0639f31fe7860f028614354b78b22205"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3701d036ed2e7bf59b85553c4596305d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a3701d036ed2e7bf59b85553c4596305d">mpi_identify_codes</a> (const char *code_name, int do_split, MPI_Comm world_comm)</td></tr>
-<tr class="memdesc:a3701d036ed2e7bf59b85553c4596305d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identify groups of processes belonging to the same codes.  <a href="#a3701d036ed2e7bf59b85553c4596305d">More...</a><br /></td></tr>
-<tr class="separator:a3701d036ed2e7bf59b85553c4596305d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44c7d40baf40b4ece1ab6208dab790eb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a44c7d40baf40b4ece1ab6208dab790eb">mpi_identify_codes</a> (const char *code_name, int use_mpi4py, MPI_Comm world_comm)</td></tr>
+<tr class="memdesc:a44c7d40baf40b4ece1ab6208dab790eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identify groups of processes belonging to the same codes.  <a href="#a44c7d40baf40b4ece1ab6208dab790eb">More...</a><br /></td></tr>
+<tr class="separator:a44c7d40baf40b4ece1ab6208dab790eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66fead66748e44e6c85283f44b98a15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#ae66fead66748e44e6c85283f44b98a15">mpi_update_world_comm</a> (void *world_comm)</td></tr>
 <tr class="memdesc:ae66fead66748e44e6c85283f44b98a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a pointer to MPI_COMM_WORLD to instead point to the intra-code MPI communicator.  <a href="#ae66fead66748e44e6c85283f44b98a15">More...</a><br /></td></tr>
 <tr class="separator:ae66fead66748e44e6c85283f44b98a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,8 +130,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>MPI communication implementation. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a3701d036ed2e7bf59b85553c4596305d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3701d036ed2e7bf59b85553c4596305d">&#9670;&nbsp;</a></span>mpi_identify_codes()</h2>
+<a id="a44c7d40baf40b4ece1ab6208dab790eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44c7d40baf40b4ece1ab6208dab790eb">&#9670;&nbsp;</a></span>mpi_identify_codes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +146,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>do_split</em>, </td>
+          <td class="paramname"><em>use_mpi4py</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -163,11 +163,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 </div><div class="memdoc">
 
 <p>Identify groups of processes belonging to the same codes. </p>
-<p>If do_split == 1, this function will call MPI_Comm_split to create an intra-code communicator for each code.</p>
+<p>If use_mpi4py == 0, this function will call MPI_Comm_split to create an intra-code communicator for each code.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">code_name</td><td>MDI name of the code associated with this process, indicated by the user with the -name runtime option. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">do_split</td><td>Flag to indicate whether MPI_Comm_split should be called in order to create an intra-code communicator for each code. The intra-code communicators are created only if do_split == 1. Should normally be set to 1, unless the code associated with this process is a Python code. In that case, the Python wrapper code will do the split instead. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">use_mpi4py</td><td>Flag to indicate whether MPI_Comm_split should be called in order to create an intra-code communicator for each code. The intra-code communicators are created only if use_mpi4py == 0. Should normally be set to 0, unless the code associated with this process is a Python code. In that case, the Python wrapper code will do the split instead. </td></tr>
   </table>
   </dd>
 </dl>

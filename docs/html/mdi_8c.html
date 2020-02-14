@@ -206,10 +206,10 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a8ca47e903a62de4298767ef3d446901d">MDI_NAME_LENGTH</a> = 12</td></tr>
 <tr class="memdesc:a8ca47e903a62de4298767ef3d446901d"><td class="mdescLeft">&#160;</td><td class="mdescRight">length of an MDI name in characters <br /></td></tr>
 <tr class="separator:a8ca47e903a62de4298767ef3d446901d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96172c3cbab16d7b9e80288a7c94f241"><td class="memItemLeft" align="right" valign="top"><a id="a96172c3cbab16d7b9e80288a7c94f241"></a>
-const MDI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a96172c3cbab16d7b9e80288a7c94f241">MDI_NULL_COMM</a> = 0</td></tr>
-<tr class="memdesc:a96172c3cbab16d7b9e80288a7c94f241"><td class="mdescLeft">&#160;</td><td class="mdescRight">value of a null communicator <br /></td></tr>
-<tr class="separator:a96172c3cbab16d7b9e80288a7c94f241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01e277b0239a7304055c883adb759280"><td class="memItemLeft" align="right" valign="top"><a id="a01e277b0239a7304055c883adb759280"></a>
+const MDI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a01e277b0239a7304055c883adb759280">MDI_COMM_NULL</a> = 0</td></tr>
+<tr class="memdesc:a01e277b0239a7304055c883adb759280"><td class="mdescLeft">&#160;</td><td class="mdescRight">value of a null communicator <br /></td></tr>
+<tr class="separator:a01e277b0239a7304055c883adb759280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab88e0bb1563ba9fa73ffc49a704e43ad"><td class="memItemLeft" align="right" valign="top"><a id="ab88e0bb1563ba9fa73ffc49a704e43ad"></a>
 const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ab88e0bb1563ba9fa73ffc49a704e43ad">MDI_INT</a> = 1</td></tr>
 <tr class="memdesc:ab88e0bb1563ba9fa73ffc49a704e43ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">integer data type <br /></td></tr>
@@ -267,7 +267,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 </div><div class="memdoc">
 
 <p>Accept a new MDI communicator. </p>
-<p>The function returns an MDI_Comm that describes a connection between two codes. If no new communicators are available, the function returns <code>MDI_NULL_COMM</code>. </p>
+<p>The function returns an MDI_Comm that describes a connection between two codes. If no new communicators are available, the function returns <code>MDI_COMM_NULL</code>. </p>
 
 </div>
 </div>
@@ -315,7 +315,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the callbacks's node. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">command_name</td><td>Name of the callback. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">flag</td><td>On return, 1 if the callback is supported and 0 otherwise. </td></tr>
   </table>
   </dd>
@@ -367,7 +367,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the command's node. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">command_name</td><td>Name of the command. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">flag</td><td>On return, 1 if the command is supported and 0 otherwise. </td></tr>
   </table>
   </dd>
@@ -412,7 +412,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">flag</td><td>On return, 1 if the node is supported and 0 otherwise. </td></tr>
   </table>
   </dd>
@@ -561,7 +561,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node on which the callback is located. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>Index of the callback on the specified node. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">name</td><td>On return, the name of the callback </td></tr>
   </table>
   </dd>
@@ -613,7 +613,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node on which the command is located. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>Index of the command on the specified node. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">name</td><td>On return, the name of the command </td></tr>
   </table>
   </dd>
@@ -677,7 +677,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">ncallbacks</td><td>On return, the number of callbacks on the specified node on the specified engine. </td></tr>
   </table>
   </dd>
@@ -722,7 +722,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">node_name</td><td>Name of the node. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">nnodes</td><td>On return, the number of commands supported on the specified engine on the specified node. </td></tr>
   </table>
   </dd>
@@ -760,7 +760,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <p>The function returns <code>0</code> on a success.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">nnodes</td><td>On return, the number of nodes supported by the engine. </td></tr>
   </table>
   </dd>
@@ -805,7 +805,7 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">index</td><td>Index of the node on the specified engine. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_NULL_COMM, the function will check for the calling engine. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator of the engine. If comm is set to MDI_COMM_NULL, the function will check for the calling engine. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">name</td><td>On return, the name of the node </td></tr>
   </table>
   </dd>

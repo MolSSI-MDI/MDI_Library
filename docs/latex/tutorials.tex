@@ -228,8 +228,8 @@ The following code accepts connections from two engines and assigns the communic
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{// Connect to the engines}}
-\DoxyCodeLine{MDI\_Comm mm\_comm = \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}};}
-\DoxyCodeLine{MDI\_Comm qm\_comm = \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}};}
+\DoxyCodeLine{MDI\_Comm mm\_comm = MDI\_NULL\_COMM;}
+\DoxyCodeLine{MDI\_Comm qm\_comm = MDI\_NULL\_COMM;}
 \DoxyCodeLine{\textcolor{keywordtype}{int} nengines = 2;}
 \DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} iengine=0; iengine < nengines; iengine++) \{}
 \DoxyCodeLine{  MDI\_Comm comm;}
@@ -243,13 +243,13 @@ The following code accepts connections from two engines and assigns the communic
 \DoxyCodeLine{  cout << \textcolor{stringliteral}{"Engine name: "} << engine\_name << endl;}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"MM"}) == 0 ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}} ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( mm\_comm != MDI\_NULL\_COMM ) \{}
 \DoxyCodeLine{  \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second MM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    mm\_comm = comm;}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{  \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} ( strcmp(engine\_name, \textcolor{stringliteral}{"QM"}) == 0 ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{MDI\_NULL\_COMM}} ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( qm\_comm != MDI\_NULL\_COMM ) \{}
 \DoxyCodeLine{  \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Accepted a communicator from a second QM engine."});}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    qm\_comm = comm;}

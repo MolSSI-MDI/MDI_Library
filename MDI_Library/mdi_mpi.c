@@ -149,7 +149,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       }
 
       // if this is rank 0 on either the driver or the engine, create a new communicator
-      MDI_Comm comm_id = MDI_NULL_COMM;
+      MDI_Comm comm_id = MDI_COMM_NULL;
       if ( world_rank == driver_rank || world_rank == i ) {
 	comm_id = new_communicator(this_code->id, MDI_MPI);
       }

@@ -409,7 +409,7 @@ int general_init(const char* options, void* world_comm) {
 /*! \brief Accept a new MDI communicator
  *
  * The function returns an MDI_Comm that describes a connection between two codes.
- * If no new communicators are available, the function returns \p MDI_NULL_COMM.
+ * If no new communicators are available, the function returns \p MDI_COMM_NULL.
  *
  */
 int general_accept_communicator() {
@@ -438,7 +438,7 @@ int general_accept_communicator() {
   }
 
   // unable to accept any connections
-  return MDI_NULL_COMM;
+  return MDI_COMM_NULL;
 }
 
 
@@ -1274,13 +1274,13 @@ int get_node_info(MDI_Comm comm) {
  *
  * \param [in]       comm
  *                   MDI communicator of the engine.  If comm is set to 
- *                   MDI_NULL_COMM, the function will return the node vector for the calling engine.
+ *                   MDI_COMM_NULL, the function will return the node vector for the calling engine.
  */
 vector* get_node_vector(MDI_Comm comm) {
   // get the vector of nodes associated with the communicator
   vector* node_vec;
   code* this_code = get_code(current_code);
-  if ( comm == MDI_NULL_COMM ) {
+  if ( comm == MDI_COMM_NULL ) {
     node_vec = this_code->nodes;
   }
   else {

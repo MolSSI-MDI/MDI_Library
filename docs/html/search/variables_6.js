@@ -1,6 +1,7 @@
 var searchData=
 [
   ['mdi_5fchar',['MDI_CHAR',['../mdi_8c.html#a508f568d6a6cba24d6015347d6c1469e',1,'MDI_CHAR():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#aa2cd3ffb7429608e6a1c6a6210c66458',1,'MDI_Library.mdi.MDI_CHAR()']]],
+  ['mdi_5fcomm_5fnull',['MDI_COMM_NULL',['../mdi_8c.html#a01e277b0239a7304055c883adb759280',1,'MDI_COMM_NULL():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a593a56401a39e9a114ad8a40564b4495',1,'MDI_Library.mdi.MDI_COMM_NULL()']]],
   ['mdi_5fcommand_5flength',['MDI_COMMAND_LENGTH',['../mdi_8c.html#ae5fcebdb64c7844358e07e880bcb15c2',1,'MDI_COMMAND_LENGTH():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a0710a54c5275d6bfefbfb38d885034a4',1,'MDI_Library.mdi.MDI_COMMAND_LENGTH()']]],
   ['mdi_5fdouble',['MDI_DOUBLE',['../mdi_8c.html#a3d0c16831c941e5b870461394bfe5c82',1,'MDI_DOUBLE():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a264ef5cd57131f826535cce779aee061',1,'MDI_Library.mdi.MDI_DOUBLE()']]],
   ['mdi_5fdriver',['MDI_DRIVER',['../mdi_8c.html#a3b915c702251d2418e8daec9f923313a',1,'MDI_DRIVER():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a7bcdccfb04b974d48ca2e24213abf0b5',1,'MDI_Library.mdi.MDI_DRIVER()']]],
@@ -10,8 +11,8 @@ var searchData=
   ['mdi_5fmajor_5fversion',['MDI_MAJOR_VERSION',['../mdi_8c.html#a06174f1b52ec94b7d1d99f08c95a700e',1,'MDI_MAJOR_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a26dafbcfcb11d788c915686a2806eab4',1,'MDI_Library.mdi.MDI_MAJOR_VERSION()']]],
   ['mdi_5fminor_5fversion',['MDI_MINOR_VERSION',['../mdi_8c.html#a7e0c4c97de3c0fd94385a569bb34fff1',1,'MDI_MINOR_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ad595a2c75147fb944131cd600250a582',1,'MDI_Library.mdi.MDI_MINOR_VERSION()']]],
   ['mdi_5fmpi',['MDI_MPI',['../mdi_8c.html#ac9eaa23189e2bf8a92c2136ee0112a87',1,'MDI_MPI():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#af04c7fd0d5579c49735c7c7f0fce4f19',1,'MDI_Library.mdi.MDI_MPI()']]],
+  ['mdi_5fmpi_5fcomm_5fworld',['mdi_mpi_comm_world',['../mdi__global_8c.html#a66bb70e3c3f8e140995b0c7aed39f72f',1,'mdi_mpi_comm_world():&#160;mdi_global.c'],['../mdi__global_8h.html#a66bb70e3c3f8e140995b0c7aed39f72f',1,'mdi_mpi_comm_world():&#160;mdi_global.c']]],
   ['mdi_5fname_5flength',['MDI_NAME_LENGTH',['../mdi_8c.html#a8ca47e903a62de4298767ef3d446901d',1,'MDI_NAME_LENGTH():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ae231959ce59ce1e0090a0d1089777d09',1,'MDI_Library.mdi.MDI_NAME_LENGTH()']]],
-  ['mdi_5fnull_5fcomm',['MDI_NULL_COMM',['../mdi_8c.html#a96172c3cbab16d7b9e80288a7c94f241',1,'MDI_NULL_COMM():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a6ba0c61c87ecb582304e92198e6bd8f6',1,'MDI_Library.mdi.MDI_NULL_COMM()']]],
   ['mdi_5fpatch_5fversion',['MDI_PATCH_VERSION',['../mdi_8c.html#a147d2caf02b6d41347bac14abf8deff0',1,'MDI_PATCH_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#aa4a6b782f7f388a007fa5ab5f6c4c016',1,'MDI_Library.mdi.MDI_PATCH_VERSION()']]],
   ['mdi_5ftcp',['MDI_TCP',['../mdi_8c.html#aa69d77aeaab908058636a4420b02ae90',1,'MDI_TCP():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a11d827fa270b741392e65eb88b22242f',1,'MDI_Library.mdi.MDI_TCP()']]],
   ['mdi_5ftest',['MDI_TEST',['../mdi_8c.html#ab0752d8d30929c35fa8297e1a3127068',1,'MDI_TEST():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#accb0538047d61d30f261889693a08f4c',1,'MDI_Library.mdi.MDI_TEST()']]],

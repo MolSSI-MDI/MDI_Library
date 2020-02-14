@@ -24,7 +24,7 @@ with pytest.raises(Exception):
 # Test registering a node correctly
 mdi.MDI_Register_Node("REALNODE")
 
-comm = mdi.MDI_NULL_COMM
+comm = mdi.MDI_COMM_NULL
 long_name = "LONG_NAME_________________________________________________________"
 
 # Test invalid node names

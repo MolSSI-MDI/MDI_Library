@@ -97,8 +97,8 @@ const int \mbox{\hyperlink{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}{M\+D\+I\+\_
 \mbox{\Hypertarget{mdi_8c_a8ca47e903a62de4298767ef3d446901d}\label{mdi_8c_a8ca47e903a62de4298767ef3d446901d}} 
 const int \mbox{\hyperlink{mdi_8c_a8ca47e903a62de4298767ef3d446901d}{M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH}} = 12
 \begin{DoxyCompactList}\small\item\em length of an M\+DI name in characters \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}\label{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}} 
-const M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a96172c3cbab16d7b9e80288a7c94f241}{M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}} = 0
+\mbox{\Hypertarget{mdi_8c_a01e277b0239a7304055c883adb759280}\label{mdi_8c_a01e277b0239a7304055c883adb759280}} 
+const M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}} = 0
 \begin{DoxyCompactList}\small\item\em value of a null communicator \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}\label{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}} 
 const int \mbox{\hyperlink{mdi_8c_ab88e0bb1563ba9fa73ffc49a704e43ad}{M\+D\+I\+\_\+\+I\+NT}} = 1
@@ -145,7 +145,7 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 
 Accept a new M\+DI communicator. 
 
-The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM}. \mbox{\Hypertarget{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}\label{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}} 
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}. \mbox{\Hypertarget{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}\label{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}} 
 \index{mdi.c@{mdi.c}!MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}}
 \index{MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Check\_Callback\_Exists()}{MDI\_Check\_Callback\_Exists()}}
@@ -163,7 +163,7 @@ The function returns {\ttfamily 0} on a success.
 \hline
 \mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the callback. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the callback is supported and 0 otherwise. \\
 \hline
@@ -186,7 +186,7 @@ The function returns {\ttfamily 0} on a success.
 \hline
 \mbox{\texttt{ in}}  & {\em command\+\_\+name} & Name of the command. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the command is supported and 0 otherwise. \\
 \hline
@@ -207,7 +207,7 @@ The function returns {\ttfamily 0} on a success.
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em flag} & On return, 1 if the node is supported and 0 otherwise. \\
 \hline
@@ -308,7 +308,7 @@ The function returns {\ttfamily 0} on a success.
 \hline
 \mbox{\texttt{ in}}  & {\em index} & Index of the callback on the specified node. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em name} & On return, the name of the callback \\
 \hline
@@ -331,7 +331,7 @@ The function returns {\ttfamily 0} on a success.
 \hline
 \mbox{\texttt{ in}}  & {\em index} & Index of the command on the specified node. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em name} & On return, the name of the command \\
 \hline
@@ -362,7 +362,7 @@ The function returns {\ttfamily 0} on a success.
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em ncallbacks} & On return, the number of callbacks on the specified node on the specified engine. \\
 \hline
@@ -383,7 +383,7 @@ The function returns {\ttfamily 0} on a success.
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em node\+\_\+name} & Name of the node. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em nnodes} & On return, the number of commands supported on the specified engine on the specified node. \\
 \hline
@@ -402,7 +402,7 @@ The function returns {\ttfamily 0} on a success.
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em nnodes} & On return, the number of nodes supported by the engine. \\
 \hline
@@ -423,7 +423,7 @@ The function returns {\ttfamily 0} on a success.
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em index} & Index of the node on the specified engine. \\
 \hline
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+N\+U\+L\+L\+\_\+\+C\+O\+MM, the function will check for the calling engine. \\
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator of the engine. If comm is set to M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL, the function will check for the calling engine. \\
 \hline
 \mbox{\texttt{ out}}  & {\em name} & On return, the name of the node \\
 \hline
