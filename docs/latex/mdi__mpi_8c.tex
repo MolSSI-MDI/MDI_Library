@@ -21,7 +21,7 @@ int \mbox{\hyperlink{mdi__mpi_8c_a027fc7cf6eb7e67c2b54a6091ee4ebd5}{set\+\_\+wor
 \begin{DoxyCompactList}\small\item\em Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__mpi_8c_a0639f31fe7860f028614354b78b22205}{set\+\_\+world\+\_\+rank}} (int world\+\_\+rank\+\_\+in)
 \begin{DoxyCompactList}\small\item\em Set the rank of this process in M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__mpi_8c_a3701d036ed2e7bf59b85553c4596305d}{mpi\+\_\+identify\+\_\+codes}} (const char $\ast$code\+\_\+name, int do\+\_\+split, M\+P\+I\+\_\+\+Comm world\+\_\+comm)
+int \mbox{\hyperlink{mdi__mpi_8c_a44c7d40baf40b4ece1ab6208dab790eb}{mpi\+\_\+identify\+\_\+codes}} (const char $\ast$code\+\_\+name, int use\+\_\+mpi4py, M\+P\+I\+\_\+\+Comm world\+\_\+comm)
 \begin{DoxyCompactList}\small\item\em Identify groups of processes belonging to the same codes. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__mpi_8c_ae66fead66748e44e6c85283f44b98a15}{mpi\+\_\+update\+\_\+world\+\_\+comm}} (void $\ast$world\+\_\+comm)
 \begin{DoxyCompactList}\small\item\em Update a pointer to M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD to instead point to the intra-\/code M\+PI communicator. \end{DoxyCompactList}\item 
@@ -51,23 +51,23 @@ M\+PI communication implementation.
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{mdi__mpi_8c_a3701d036ed2e7bf59b85553c4596305d}\label{mdi__mpi_8c_a3701d036ed2e7bf59b85553c4596305d}} 
+\mbox{\Hypertarget{mdi__mpi_8c_a44c7d40baf40b4ece1ab6208dab790eb}\label{mdi__mpi_8c_a44c7d40baf40b4ece1ab6208dab790eb}} 
 \index{mdi\_mpi.c@{mdi\_mpi.c}!mpi\_identify\_codes@{mpi\_identify\_codes}}
 \index{mpi\_identify\_codes@{mpi\_identify\_codes}!mdi\_mpi.c@{mdi\_mpi.c}}
 \doxysubsubsection{\texorpdfstring{mpi\_identify\_codes()}{mpi\_identify\_codes()}}
-{\footnotesize\ttfamily int mpi\+\_\+identify\+\_\+codes (\begin{DoxyParamCaption}\item[{const char $\ast$}]{code\+\_\+name,  }\item[{int}]{do\+\_\+split,  }\item[{M\+P\+I\+\_\+\+Comm}]{world\+\_\+comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int mpi\+\_\+identify\+\_\+codes (\begin{DoxyParamCaption}\item[{const char $\ast$}]{code\+\_\+name,  }\item[{int}]{use\+\_\+mpi4py,  }\item[{M\+P\+I\+\_\+\+Comm}]{world\+\_\+comm }\end{DoxyParamCaption})}
 
 
 
 Identify groups of processes belonging to the same codes. 
 
-If do\+\_\+split == 1, this function will call M\+P\+I\+\_\+\+Comm\+\_\+split to create an intra-\/code communicator for each code.
+If use\+\_\+mpi4py == 0, this function will call M\+P\+I\+\_\+\+Comm\+\_\+split to create an intra-\/code communicator for each code.
 
 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em code\+\_\+name} & M\+DI name of the code associated with this process, indicated by the user with the -\/name runtime option. \\
 \hline
-\mbox{\texttt{ in}}  & {\em do\+\_\+split} & Flag to indicate whether M\+P\+I\+\_\+\+Comm\+\_\+split should be called in order to create an intra-\/code communicator for each code. The intra-\/code communicators are created only if do\+\_\+split == 1. Should normally be set to 1, unless the code associated with this process is a Python code. In that case, the Python wrapper code will do the split instead. \\
+\mbox{\texttt{ in}}  & {\em use\+\_\+mpi4py} & Flag to indicate whether M\+P\+I\+\_\+\+Comm\+\_\+split should be called in order to create an intra-\/code communicator for each code. The intra-\/code communicators are created only if use\+\_\+mpi4py == 0. Should normally be set to 0, unless the code associated with this process is a Python code. In that case, the Python wrapper code will do the split instead. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__mpi_8c_a314d5aa4402c37f22231a4ba96897de6}\label{mdi__mpi_8c_a314d5aa4402c37f22231a4ba96897de6}} 
