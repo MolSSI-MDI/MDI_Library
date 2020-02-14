@@ -655,7 +655,7 @@ def test_unit_conversions_py():
 ##########################
 
 def test_uninitialized():
-    comm = mdi.MDI_NULL_COMM
+    comm = mdi.MDI_COMM_NULL
 
     # Test exceptions when MDI is not initialized
     with pytest.raises(Exception):
