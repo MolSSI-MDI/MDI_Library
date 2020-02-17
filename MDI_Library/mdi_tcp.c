@@ -20,7 +20,12 @@
 #include "mdi_tcp.h"
 #include "mdi_global.h"
 
+#ifdef _WIN32
+static SOCKET sigint_sockfd;
+#else
 static int sigint_sockfd;
+#endif
+
 /*! \brief SIGINT handler to ensure the socket is closed on termination
  *
  * \param [in]       dummy
@@ -44,14 +49,17 @@ int tcp_socket = -1;
  */
 int tcp_listen(int port) {
   int ret;
-  int sockfd;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
 
 #ifdef _WIN32
+  SOCKET sockfd;
+
   // initialize Winsock
   WSADATA wsa_data;
   ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
+#else
+  int sockfd;
 #endif
 
   // create the socket
@@ -204,7 +212,11 @@ int tcp_request_connection(int port, char* hostname_ptr) {
 /*! \brief Accept a TCP connection request
  */
 int tcp_accept_connection() {
+#ifdef _WIN32
+  SOCKET connection;
+#else
   int connection;
+#endif
   code* this_code = get_code(current_code);
 
   connection = accept(tcp_socket, NULL, NULL);

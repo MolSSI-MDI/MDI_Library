@@ -36,8 +36,13 @@ typedef struct communicator_struct {
   MDI_Comm_Type id;
   /*! \brief Handle for the id of the associated code */
   int code_id;
-  /*! \brief For communicators using the TCP communicatiom method, the socket descriptor */
+#ifdef _WIN32
+  /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (WINDOWS) */
+  SOCKET sockfd;
+#else
+  /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (POSIX) */
   int sockfd;
+#endif
   /*! \brief For communicators using the MPI communicatiom method, the inter-code MPI 
   communicator */
   MPI_Comm mpi_comm;
