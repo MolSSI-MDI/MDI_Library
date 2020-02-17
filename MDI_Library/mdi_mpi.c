@@ -87,7 +87,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 
   //create the name of this process
   char* buffer = malloc( sizeof(char) * MDI_NAME_LENGTH );
-  strcpy(buffer, code_name);
+  snprintf(buffer, NAME_LENGTH, "%s", code_name);
 
   char* names = NULL;
   names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);

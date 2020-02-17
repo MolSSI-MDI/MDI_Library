@@ -7,8 +7,9 @@
 #define MDI_TCP_IMPL
 
 #include "mdi.h"
+#include "mdi_global.h"
 
-extern int tcp_socket;
+extern sock_t tcp_socket;
 
 void sigint_handler(int dummy);
 

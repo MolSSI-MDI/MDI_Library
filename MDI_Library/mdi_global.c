@@ -81,7 +81,7 @@ int vector_init(vector* v, size_t stride) {
 int vector_push_back(vector* v, void* element) {
   //grow the vector
   if (v->size >= v->capacity) {
-    int new_capacity;
+    size_t new_capacity;
     if ( v->capacity > 0 ) {
       new_capacity = 2 * v->capacity;
     }
@@ -116,7 +116,7 @@ int vector_delete(vector* v, int index) {
 
   // shrink the vector
   if (v->size <= v->capacity / 2) {
-    int new_capacity = v->capacity / 2;
+    size_t new_capacity = v->capacity / 2;
     void* new_data = malloc( v->stride * new_capacity );
     memcpy(new_data, v->data, v->size * v->stride);
     free(v->data);
@@ -212,7 +212,7 @@ int get_callback_index(node* n, const char* callback_name) {
  */
 int free_node_vector(vector* v) {
   int inode = 0;
-  int nnodes = v->size;
+  size_t nnodes = v->size;
   for ( inode = 0; inode < nnodes; inode++ ) {
     node* this_node = vector_get(v, inode);
 
@@ -248,7 +248,7 @@ int new_code() {
 
   new_code.is_python = 0;
   new_code.is_library = 0;
-  new_code.id = codes.size;
+  new_code.id = (int)codes.size;
   new_code.intra_rank = 0;
 
   // Set the MPI callbacks
@@ -259,7 +259,7 @@ int new_code() {
   vector_push_back( &codes, &new_code );
 
   // return the index of the new code
-  return codes.size - 1;
+  return (int)codes.size - 1;
 }
 
 
@@ -297,7 +297,7 @@ int delete_code(int code_id) {
       code_index = icode;
 
       // stop searching
-      icode = codes.size;
+      icode = (int)codes.size;
     }
   }
   if ( code_found != 1 ) {
@@ -310,9 +310,9 @@ int delete_code(int code_id) {
 
   // delete the comms vector
   int icomm;
-  int ncomms = this_code->comms->size;
+  size_t ncomms = this_code->comms->size;
   for (icomm = 0; icomm < ncomms; icomm++) {
-    communicator* this_comm = vector_get( this_code->comms, this_code->comms->size - 1 );
+    communicator* this_comm = vector_get( this_code->comms, (int)this_code->comms->size - 1 );
     delete_communicator(code_id, this_comm->id);
   }
   vector_free( this_code->comms );
@@ -377,11 +377,11 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
   communicator* this_comm = get_communicator(code_id, comm_id);
 
   // Search through all of the communicators for the one that matches comm_id
-  int icomm;
-  int comm_index;
+  size_t icomm;
+  size_t comm_index;
   int comm_found = 0;
   for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
-    communicator* comm = vector_get(this_code->comms, icomm);
+    communicator* comm = vector_get(this_code->comms, (int)icomm);
     if ( comm->id == comm_id ) {
       comm_found = 1;
       comm_index = icomm;
@@ -402,7 +402,7 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
   free_node_vector(this_comm->nodes);
 
   // delete the data for this communicator from the code's vector of communicators
-  vector_delete(this_code->comms, comm_index);
+  vector_delete(this_code->comms, (int)comm_index);
 
   return 0;
 }
@@ -421,12 +421,5 @@ int communicator_delete(void* comm) {
  *                   Message printed before exiting.
  */
 void mdi_error(const char* message) {
-  if ( errno == 0 || errno == ENOTTY ) {
-    fprintf( stderr, "%s", message );
-    fprintf( stderr, "\n" );
-  }
-  else {
-    perror(message);
-  }
-  //exit(1);
+  fprintf( stderr, "%s\n", message );
 }

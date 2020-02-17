@@ -20,7 +20,8 @@
 #include "mdi_tcp.h"
 #include "mdi_global.h"
 
-static int sigint_sockfd;
+static sock_t sigint_sockfd;
+
 /*! \brief SIGINT handler to ensure the socket is closed on termination
  *
  * \param [in]       dummy
@@ -35,7 +36,7 @@ void sigint_handler(int dummy) {
 }
 
 /*! \brief Socket over which a driver will listen for incoming connections */
-int tcp_socket = -1;
+sock_t tcp_socket = -1;
 
 /*! \brief Begin listening for incoming TCP connections
  *
@@ -44,9 +45,9 @@ int tcp_socket = -1;
  */
 int tcp_listen(int port) {
   int ret;
-  int sockfd;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
+  sock_t sockfd;
 
 #ifdef _WIN32
   // initialize Winsock
@@ -108,7 +109,8 @@ int tcp_listen(int port) {
  *                   Hostname of the driver
  */
 int tcp_request_connection(int port, char* hostname_ptr) {
-  int ret, sockfd;
+  int ret;
+  sock_t sockfd;
 
 #ifdef _WIN32
   // initialize Winsock
@@ -204,7 +206,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
 /*! \brief Accept a TCP connection request
  */
 int tcp_accept_connection() {
-  int connection;
+  sock_t connection;
   code* this_code = get_code(current_code);
 
   connection = accept(tcp_socket, NULL, NULL);
@@ -256,24 +258,24 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   // send message header information
   // only do this if communicating with MDI version 1.1 or higher
-  int n = 0;
+  size_t n = 0;
   size_t total_sent = 0;
   if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
 
     // prepare the header information
     size_t nheader = 4;
-    int header[nheader];
+    int* header = (int*) malloc( nheader * sizeof(int) );
     header[0] = 0;        // error flag
     header[1] = 0;        // placeholder
     header[2] = datatype; // datatype
     header[3] = count;    // count
-    void* header_buf = &header[0];
+    void* header_buf = header;
 
     while ( n >= 0 && total_sent < nheader*sizeof(int) ) {
 #ifdef _WIN32
-      n = send(this->sockfd, (char*)header_buf+total_sent, nheader*sizeof(int)-total_sent, 0);
+      n = send(this->sockfd, (char*)header_buf+total_sent, (int)(nheader*sizeof(int)-total_sent), 0);
 #else
-      n = write(this->sockfd, header_buf+total_sent, nheader*sizeof(int)-total_sent);
+      n = write(this->sockfd, (char*)header_buf+total_sent, nheader*sizeof(int)-total_sent);
 #endif
       total_sent += n;
     }
@@ -281,6 +283,8 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       mdi_error("Error writing to socket: server has quit or connection broke");
       return 1;
     }
+
+    free( header );
   }
 
 
@@ -304,9 +308,9 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   while ( n >= 0 && total_sent < count_t*datasize ) {
 #ifdef _WIN32
-    n = send(this->sockfd, (char*)buf+total_sent, count_t*datasize-total_sent, 0);
+    n = send(this->sockfd, (char*)buf+total_sent, (int)(count_t*datasize-total_sent), 0);
 #else
-    n = write(this->sockfd, buf+total_sent, count_t*datasize-total_sent);
+    n = write(this->sockfd, (char*)buf+total_sent, count_t*datasize-total_sent);
 #endif
     total_sent += n;
   }
@@ -347,20 +351,20 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
     // prepare buffer to hold header information
     size_t nheader = 4;
-    int header[nheader];
-    void* header_buf = &header[0];
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    void* header_buf = header;
 
 #ifdef _WIN32
-    n = nr = recv(this->sockfd,(char*)header_buf,nheader*sizeof(int),0);
+    n = nr = recv(this->sockfd,(char*)header_buf,(int)(nheader*sizeof(int)),0);
 #else
-    n = nr = read(this->sockfd,header_buf,nheader*sizeof(int));
+    n = nr = read(this->sockfd,(char*)header_buf,nheader*sizeof(int));
 #endif
 
     while (nr>0 && n<nheader*sizeof(int) ) {
 #ifdef _WIN32
-      nr=recv(this->sockfd,(char*)header_buf+n,nheader*sizeof(int)-n,0);
+      nr=recv(this->sockfd,(char*)header_buf+n,(int)(nheader*sizeof(int)-n),0);
 #else
-      nr=read(this->sockfd,header_buf+n,nheader*sizeof(int)-n);
+      nr=read(this->sockfd,(char*)header_buf+n,nheader*sizeof(int)-n);
 #endif
       n+=nr;
     }
@@ -394,6 +398,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       return 1;
     }
 
+    free( header );
   }
 
   // determine the byte size of the data type being sent
@@ -413,16 +418,16 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
 #ifdef _WIN32
-  n = nr = recv(this->sockfd,(char*)buf,count_t*datasize,0);
+  n = nr = recv(this->sockfd,(char*)buf,(int)(count_t*datasize),0);
 #else
-  n = nr = read(this->sockfd,buf,count_t*datasize);
+  n = nr = read(this->sockfd,(char*)buf,count_t*datasize);
 #endif
 
   while (nr>0 && n<count_t*datasize ) {
 #ifdef _WIN32
-    nr=recv(this->sockfd,(char*)buf+n,count_t*datasize-n,0);
+    nr=recv(this->sockfd,(char*)buf+n,(int)(count_t*datasize-n),0);
 #else
-    nr=read(this->sockfd,buf+n,count_t*datasize-n);
+    nr=read(this->sockfd,(char*)buf+n,count_t*datasize-n);
 #endif
     n+=nr;
   }

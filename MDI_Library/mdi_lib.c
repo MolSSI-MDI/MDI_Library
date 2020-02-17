@@ -185,7 +185,7 @@ int library_set_command(const char* command, MDI_Comm comm) {
 
   // set the command
   library_data* engine_lib = (library_data*) engine_comm->method_data;
-  strncpy(engine_lib->command, command, MDI_COMMAND_LENGTH);
+  snprintf(engine_lib->command, COMMAND_LENGTH, "%s", command);
 
   return 0;
 }
@@ -293,7 +293,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     // only do this if communicating with MDI version 1.1 or higher
     int nheader_actual = 0; // actual number of elements of nheader that will be sent
     int nheader = 4;
-    int header[nheader];
+    int* header = (int*) malloc( nheader * sizeof(int) );
     void* header_buf = NULL;
     if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
 
@@ -303,7 +303,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       header[1] = 0;        // placeholder
       header[2] = datatype; // datatype
       header[3] = count;    // count
-      header_buf = &header[0];
+      header_buf = header;
 
     }
 
@@ -313,7 +313,8 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
     // copy the contents of buf into libd->buf
     memcpy(libd->buf, header_buf, nheader_actual * sizeof(int));
-    memcpy(libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
+    memcpy((char*)libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
+    free( header );
 
   }
 
@@ -393,8 +394,8 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
     // prepare buffer to hold header information
     nheader = 4;
-    int header[nheader];
-    void* header_buf = &header[0];
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    void* header_buf = header;
 
     // get the header information
     memcpy(header_buf, other_lib->buf, nheader * sizeof(int));
@@ -421,10 +422,12 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       return 1;
     }
 
+    free( header );
+
   }
 
   // copy the contents of libd->buf into buf
-  memcpy(buf, other_lib->buf + nheader*sizeof(int), datasize * count);
+  memcpy(buf, (char*)other_lib->buf + nheader*sizeof(int), datasize * count);
 
   // free the memory of libd->buf
   free( other_lib->buf );

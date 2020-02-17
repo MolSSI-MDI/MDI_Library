@@ -8,6 +8,19 @@
 
 #include <mpi.h>
 
+#ifdef _WIN32
+  #include <winsock2.h>
+  #define sock_t SOCKET
+#else
+  #define sock_t int
+#endif
+
+#ifdef _WIN32
+  #define mdi_strdup _strdup
+#else
+  #define mdi_strdup strdup
+#endif
+
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
 typedef int MDI_Comm_Type;
@@ -30,8 +43,8 @@ typedef struct communicator_struct {
   MDI_Comm_Type id;
   /*! \brief Handle for the id of the associated code */
   int code_id;
-  /*! \brief For communicators using the TCP communicatiom method, the socket descriptor */
-  int sockfd;
+  /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (WINDOWS) */
+  sock_t sockfd;
   /*! \brief For communicators using the MPI communicatiom method, the inter-code MPI 
   communicator */
   MPI_Comm mpi_comm;
