@@ -421,12 +421,5 @@ int communicator_delete(void* comm) {
  *                   Message printed before exiting.
  */
 void mdi_error(const char* message) {
-  if ( errno == 0 || errno == ENOTTY ) {
-    fprintf( stderr, "%s", message );
-    fprintf( stderr, "\n" );
-  }
-  else {
-    perror(message);
-  }
-  //exit(1);
+  fprintf( stderr, "%s\n", message );
 }
