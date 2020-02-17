@@ -36,7 +36,7 @@ void sigint_handler(int dummy) {
 }
 
 /*! \brief Socket over which a driver will listen for incoming connections */
-int tcp_socket = -1;
+sock_t tcp_socket = -1;
 
 /*! \brief Begin listening for incoming TCP connections
  *
@@ -109,7 +109,8 @@ int tcp_listen(int port) {
  *                   Hostname of the driver
  */
 int tcp_request_connection(int port, char* hostname_ptr) {
-  int ret, sockfd;
+  int ret;
+  sock_t sockfd;
 
 #ifdef _WIN32
   // initialize Winsock
