@@ -1,7 +1,7 @@
 jobs:
 
   # Configure, build, install, and test job
-  - job: 'build'
+  - job: 'vs_build'
     pool:
       vmImage: 'vs2015-win2012r2'
     timeoutInMinutes: 360
