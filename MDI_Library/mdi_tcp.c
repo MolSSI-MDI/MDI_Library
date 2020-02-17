@@ -262,12 +262,12 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
     // prepare the header information
     size_t nheader = 4;
-    int header[nheader];
+    int* header = (int*) malloc( nheader * sizeof(int) );
     header[0] = 0;        // error flag
     header[1] = 0;        // placeholder
     header[2] = datatype; // datatype
     header[3] = count;    // count
-    void* header_buf = &header[0];
+    void* header_buf = header;
 
     while ( n >= 0 && total_sent < nheader*sizeof(int) ) {
 #ifdef _WIN32
@@ -281,6 +281,8 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       mdi_error("Error writing to socket: server has quit or connection broke");
       return 1;
     }
+
+    free( header );
   }
 
 
@@ -347,8 +349,8 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
     // prepare buffer to hold header information
     size_t nheader = 4;
-    int header[nheader];
-    void* header_buf = &header[0];
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    void* header_buf = header;
 
 #ifdef _WIN32
     n = nr = recv(this->sockfd,(char*)header_buf,nheader*sizeof(int),0);
@@ -394,6 +396,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
       return 1;
     }
 
+    free( header );
   }
 
   // determine the byte size of the data type being sent
