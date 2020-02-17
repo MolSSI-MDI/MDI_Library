@@ -185,7 +185,7 @@ int library_set_command(const char* command, MDI_Comm comm) {
 
   // set the command
   library_data* engine_lib = (library_data*) engine_comm->method_data;
-  strncpy(engine_lib->command, command, MDI_COMMAND_LENGTH);
+  snprintf(engine_lib->command, COMMAND_LENGTH, "%s", command);
 
   return 0;
 }

@@ -8,6 +8,12 @@
 
 #include <mpi.h>
 
+#ifdef _WIN32
+  #define mdi_strdup _strdup
+#else
+  #define mdi_strdup strdup
+#endif
+
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
 typedef int MDI_Comm_Type;

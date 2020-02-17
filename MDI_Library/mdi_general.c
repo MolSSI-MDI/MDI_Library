@@ -59,7 +59,7 @@ int general_init(const char* options, void* world_comm) {
   int has_output_file = 0;
 
   // calculate argc
-  char* argv_line = strdup(options);
+  char* argv_line = mdi_strdup(options);
   char* token = strtok(argv_line, " ");
   int argc = 0;
   while (token != NULL) {
@@ -69,7 +69,7 @@ int general_init(const char* options, void* world_comm) {
 
   // calculate argv
   char** argv = malloc( argc * sizeof(char*) );
-  argv_line = strdup(options);
+  argv_line = mdi_strdup(options);
   token = strtok(argv_line, " ");
   for (i=0; i<argc; i++) {
     argv[i] = token;
@@ -541,7 +541,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
   int ret;
 
-  strncpy(command, buf, MDI_COMMAND_LENGTH);
+  snprintf(command, COMMAND_LENGTH, "%s", buf);
   if ( method == MDI_LIB ) {
     // set the command for the engine to execute
     library_set_command(command, comm);
@@ -824,14 +824,14 @@ int send_command_list(MDI_Comm comm) {
     return 1;
   }
   int ncommands = 0;
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int inode, icommand;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node = vector_get(this_code->nodes, inode);
-    ncommands += this_node->commands->size;
+    ncommands += (int)this_node->commands->size;
   }
 
   // allocate memory for the commands list
@@ -843,7 +843,7 @@ int send_command_list(MDI_Comm comm) {
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
-    int length = strlen(this_node->name);
+    int length = (int)strlen(this_node->name);
     snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
@@ -860,7 +860,7 @@ int send_command_list(MDI_Comm comm) {
     // add the commands for this node
     for (icommand = 0; icommand < this_node->commands->size; icommand++) {
       char* command = vector_get(this_node->commands, icommand);
-      length = strlen(command);
+      length = (int)strlen(command);
       snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
 	snprintf(&commands[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
@@ -896,14 +896,14 @@ int send_callback_list(MDI_Comm comm) {
     return 1;
   }
   int ncallbacks = 0;
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int inode, icallback;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of callbakcs
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node = vector_get(this_code->nodes, inode);
-    ncallbacks += this_node->callbacks->size;
+    ncallbacks += (int)this_node->callbacks->size;
   }
 
   // allocate memory for the callbacks list
@@ -915,7 +915,7 @@ int send_callback_list(MDI_Comm comm) {
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
-    int length = strlen(this_node->name);
+    int length = (int)strlen(this_node->name);
     snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
@@ -932,7 +932,7 @@ int send_callback_list(MDI_Comm comm) {
     // add the callbacks for this node
     for (icallback = 0; icallback < this_node->callbacks->size; icallback++) {
       char* callback = vector_get(this_node->callbacks, icallback);
-      length = strlen(callback);
+      length = (int)strlen(callback);
       snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
 	snprintf(&callbacks[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
@@ -967,7 +967,7 @@ int send_node_list(MDI_Comm comm) {
     mdi_error("Attempting to send node information from the incorrect rank");
     return 1;
   }
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
@@ -979,7 +979,7 @@ int send_node_list(MDI_Comm comm) {
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
-    int length = strlen(this_node->name);
+    int length = (int)strlen(this_node->name);
     snprintf(&node_list[ inode * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
@@ -1009,14 +1009,14 @@ int send_ncommands(MDI_Comm comm) {
     return 1;
   }
   int ncommands = 0;
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node = vector_get(this_code->nodes, inode);
-    ncommands += this_node->commands->size;
+    ncommands += (int)this_node->commands->size;
   }
 
   int ret = general_send( &ncommands, 1, MDI_INT, comm );
@@ -1039,14 +1039,14 @@ int send_ncallbacks(MDI_Comm comm) {
     return 1;
   }
   int ncallbacks = 0;
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int inode;
   int stride = MDI_COMMAND_LENGTH + 1;
 
   // determine the number of callbacks
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node = vector_get(this_code->nodes, inode);
-    ncallbacks += this_node->callbacks->size;
+    ncallbacks += (int)this_node->callbacks->size;
   }
 
   int ret = general_send( &ncallbacks, 1, MDI_INT, comm );
@@ -1068,7 +1068,7 @@ int send_nnodes(MDI_Comm comm) {
     mdi_error("Attempting to send callback information from the incorrect rank");
     return 1;
   }
-  int nnodes = this_code->nodes->size;
+  int nnodes = (int)this_code->nodes->size;
   int ret = general_send( &nnodes, 1, MDI_INT, comm );
   return ret;
 }
@@ -1097,7 +1097,7 @@ int get_node_info(MDI_Comm comm) {
   size_t list_size = nnodes * stride * sizeof(char);
   char* node_list = malloc( list_size );
   MDI_Send_Command("<NODES",comm);
-  MDI_Recv(node_list, nnodes * stride, MDI_CHAR, comm);
+  MDI_Recv(node_list, (int)(nnodes * stride), MDI_CHAR, comm);
 
   // register the nodes
   int inode;
@@ -1111,7 +1111,7 @@ int get_node_info(MDI_Comm comm) {
       name_length = MDI_COMMAND_LENGTH;
     }
     else {
-      name_length = name_end - name_start;
+      name_length = (int)(name_end - name_start);
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse node name");
@@ -1120,7 +1120,7 @@ int get_node_info(MDI_Comm comm) {
 
     // construct the name of the node
     char* node_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( node_name, name_start, name_length );
+    snprintf(node_name, COMMAND_LENGTH, "%s", name_start);
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       node_name[ichar] = '\0';
     }
@@ -1138,7 +1138,7 @@ int get_node_info(MDI_Comm comm) {
   MDI_Recv(&ncommands, 1, MDI_INT, comm);
 
   // get the list of commands
-  int count = ( ncommands + nnodes ) * stride;
+  int count = (int)( ( ncommands + nnodes ) * stride );
   char* commands = malloc( count * sizeof(char) );
   MDI_Send_Command("<COMMANDS",comm);
   MDI_Recv(commands, count, MDI_CHAR, comm);
@@ -1154,7 +1154,7 @@ int get_node_info(MDI_Comm comm) {
       name_length = MDI_COMMAND_LENGTH;
     }
     else {
-      name_length = name_end - name_start;
+      name_length = (int)(name_end - name_start);
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse command name");
@@ -1163,7 +1163,7 @@ int get_node_info(MDI_Comm comm) {
 
     // construct the name
     char* command_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( command_name, name_start, name_length );
+    snprintf(command_name, COMMAND_LENGTH, "%s", name_start);
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       command_name[ichar] = '\0';
     }
@@ -1201,7 +1201,7 @@ int get_node_info(MDI_Comm comm) {
   MDI_Recv(&ncallbacks, 1, MDI_INT, comm);
 
   // get the list of callbacks
-  count = ( ncallbacks + nnodes ) * stride;
+  count = (int)( ( ncallbacks + nnodes ) * stride );
   char* callbacks = malloc( count * sizeof(char) );
   MDI_Send_Command("<CALLBACKS",comm);
   MDI_Recv(callbacks, count, MDI_CHAR, comm);
@@ -1218,7 +1218,7 @@ int get_node_info(MDI_Comm comm) {
       name_length = MDI_COMMAND_LENGTH;
     }
     else {
-      name_length = name_end - name_start;
+      name_length = (int)(name_end - name_start);
     }
     if ( name_length > MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse callback name");
@@ -1227,7 +1227,7 @@ int get_node_info(MDI_Comm comm) {
 
     // construct the name
     char* callback_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    strncpy( callback_name, name_start, name_length );
+    snprintf(callback_name, COMMAND_LENGTH, "%s", name_start);
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       callback_name[ichar] = '\0';
     }

@@ -378,10 +378,10 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
 
   // Search through all of the communicators for the one that matches comm_id
   size_t icomm;
-  int comm_index;
+  size_t comm_index;
   int comm_found = 0;
   for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
-    communicator* comm = vector_get(this_code->comms, icomm);
+    communicator* comm = vector_get(this_code->comms, (int)icomm);
     if ( comm->id == comm_id ) {
       comm_found = 1;
       comm_index = icomm;
@@ -402,7 +402,7 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
   free_node_vector(this_comm->nodes);
 
   // delete the data for this communicator from the code's vector of communicators
-  vector_delete(this_code->comms, comm_index);
+  vector_delete(this_code->comms, (int)comm_index);
 
   return 0;
 }
