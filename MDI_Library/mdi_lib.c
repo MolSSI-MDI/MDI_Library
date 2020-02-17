@@ -313,7 +313,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
     // copy the contents of buf into libd->buf
     memcpy(libd->buf, header_buf, nheader_actual * sizeof(int));
-    memcpy(libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
+    memcpy((char*)libd->buf + nheader_actual * sizeof(int), buf, datasize * count);
     free( header );
 
   }
@@ -427,7 +427,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // copy the contents of libd->buf into buf
-  memcpy(buf, other_lib->buf + nheader*sizeof(int), datasize * count);
+  memcpy(buf, (char*)other_lib->buf + nheader*sizeof(int), datasize * count);
 
   // free the memory of libd->buf
   free( other_lib->buf );
