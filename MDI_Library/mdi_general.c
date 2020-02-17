@@ -87,7 +87,7 @@ int general_init(const char* options, void* world_comm) {
 	return 1;
       }
       role = argv[iarg+1];
-      strcpy(this_code->role, role);
+      snprintf(this_code->role, NAME_LENGTH, "%s", role);
       has_role = 1;
       iarg += 2;
     }
@@ -107,11 +107,11 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: Argument missing from -name option");
 	return 1;
       }
-      if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH ) {
+      if ( strlen(argv[iarg+1]) > NAME_LENGTH ) {
 	mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
 	return 1;
       }
-      strcpy(this_code->name, argv[iarg+1]);
+      snprintf(this_code->name, NAME_LENGTH, "%s", argv[iarg+1]);
       has_name = 1;
       iarg += 2;
     }
@@ -598,7 +598,7 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
   // check if this command corresponds to one of MDI's standard built-in commands
   if ( strcmp( buf, "<NAME" ) == 0 ) {
     code* this_code = get_code(current_code);
-    MDI_Send(this_code->name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+    MDI_Send(this_code->name, NAME_LENGTH, MDI_CHAR, comm);
     ret = 1;
   }
   else if ( strcmp( buf, "<VERSION" ) == 0 ) {
@@ -705,7 +705,7 @@ int register_node(vector* node_vec, const char* node_name)
   vector_init(callback_vec, sizeof(char[COMMAND_LENGTH]));
   new_node.commands = command_vec;
   new_node.callbacks = callback_vec;
-  strcpy(new_node.name, node_name);
+  snprintf(new_node.name, COMMAND_LENGTH, "%s", node_name);
   vector_push_back(node_vec, &new_node);
   return 0;
 }
@@ -753,7 +753,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
 
   // register this command
   char new_command[COMMAND_LENGTH];
-  strcpy(new_command, command_name);
+  snprintf(new_command, COMMAND_LENGTH, "%s", command_name);
   vector_push_back( target_node->commands, &new_command );
 
   return 0;
@@ -802,7 +802,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
 
   // register this callback
   char new_callback[COMMAND_LENGTH];
-  strcpy(new_callback, callback_name);
+  snprintf(new_callback, COMMAND_LENGTH, "%s", callback_name);
   vector_push_back( target_node->callbacks, &new_callback );
 
   return 0;
@@ -844,16 +844,16 @@ int send_command_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
-    strcpy(&commands[ islot * stride ], this_node->name);
+    snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      strcpy( &commands[ islot * stride + ichar ], " " );
+      snprintf(&commands[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
     }
     if ( this_node->commands->size > 0 ) {
-      strcpy( &commands[ islot * stride + stride - 1 ], "," );
+      snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
     }
     else {
-      strcpy( &commands[ islot * stride + stride - 1 ], ";" );
+      snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
     }
     islot++;
 
@@ -861,15 +861,15 @@ int send_command_list(MDI_Comm comm) {
     for (icommand = 0; icommand < this_node->commands->size; icommand++) {
       char* command = vector_get(this_node->commands, icommand);
       length = strlen(command);
-      strcpy(&commands[ islot * stride ], command);
+      snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
-	strcpy( &commands[ islot * stride + ichar ], " " );
+	snprintf(&commands[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
       }
       if ( icommand == this_node->commands->size - 1 ) {
-	strcpy( &commands[ islot * stride + stride - 1], ";");
+	snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
       }
       else {
-	strcpy( &commands[ islot * stride + stride - 1], ",");
+	snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
       }
       islot++;
     }
@@ -916,16 +916,16 @@ int send_callback_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
-    strcpy(&callbacks[ islot * stride ], this_node->name);
+    snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      strcpy( &callbacks[ islot * stride + ichar ], " " );
+      snprintf(&callbacks[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
     }
     if ( this_node->callbacks->size > 0 ) {
-      strcpy( &callbacks[ islot * stride + stride - 1 ], "," );
+      snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
     }
     else {
-      strcpy( &callbacks[ islot * stride + stride - 1 ], ";" );
+      snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
     }
     islot++;
 
@@ -933,15 +933,15 @@ int send_callback_list(MDI_Comm comm) {
     for (icallback = 0; icallback < this_node->callbacks->size; icallback++) {
       char* callback = vector_get(this_node->callbacks, icallback);
       length = strlen(callback);
-      strcpy(&callbacks[ islot * stride ], callback);
+      snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
-	strcpy( &callbacks[ islot * stride + ichar ], " " );
+	snprintf(&callbacks[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
       }
       if ( icallback == this_node->callbacks->size - 1 ) {
-	strcpy( &callbacks[ islot * stride + stride - 1], ";");
+	snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
       }
       else {
-	strcpy( &callbacks[ islot * stride + stride - 1], ",");
+	snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
       }
       islot++;
     }
@@ -980,12 +980,12 @@ int send_node_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = strlen(this_node->name);
-    strcpy(&node_list[ inode * stride ], this_node->name);
+    snprintf(&node_list[ inode * stride ], COMMAND_LENGTH, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      strcpy( &node_list[ inode * stride + ichar ], " " );
+      snprintf(&node_list[ inode * stride + ichar ], COMMAND_LENGTH, "%c", ' ');
     }
-    strcpy( &node_list[ inode * stride + stride - 1 ], "," );
+    snprintf(&node_list[ inode * stride + stride - 1 ], COMMAND_LENGTH, "%c", ',');
   }
 
   int ret = general_send( node_list, count, MDI_CHAR, comm );
@@ -1171,7 +1171,7 @@ int get_node_info(MDI_Comm comm) {
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      strcpy( current_node, command_name );
+      snprintf(current_node, COMMAND_LENGTH, "%s", command_name);
     }
     else { // command
       // register this command
@@ -1235,7 +1235,7 @@ int get_node_info(MDI_Comm comm) {
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      strcpy( current_node, callback_name );
+      snprintf(current_node, COMMAND_LENGTH, "%s", callback_name);
     }
     else { // callback
       // register this callback

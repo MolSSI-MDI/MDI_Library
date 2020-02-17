@@ -848,7 +848,7 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
   }
   node* target_node = vector_get(node_vec, node_index);
 
-  *ncommands = target_node->commands->size;
+  *ncommands = (int)target_node->commands->size;
   return 0;
 }
 
@@ -1001,7 +1001,7 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
   }
   node* target_node = vector_get(node_vec, node_index);
 
-  *ncallbacks = target_node->callbacks->size;
+  *ncallbacks = (int)target_node->callbacks->size;
   return 0;
 }
 
@@ -1042,7 +1042,7 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
   }
 
   char* target_callback = vector_get( target_node->callbacks, index );
-  strcpy(name, target_callback);
+  snprintf(name, MDI_NAME_LENGTH, "%s", target_callback);
   return 0;
 }
 
