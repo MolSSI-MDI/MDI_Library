@@ -11,5 +11,5 @@ variables:
   conda.build_type: Debug
 
 jobs:
-  #- template: ./.azure-pipelines/azure-pipelines-simple.yml
+  - template: ./.azure-pipelines/azure-pipelines-simple.yml
   - template: ./.azure-pipelines/azure-pipelines-vs.yml
