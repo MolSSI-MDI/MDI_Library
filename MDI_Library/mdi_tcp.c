@@ -255,10 +255,14 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
+#ifdef _WIN32
+  int n = 0;
+#else
+  ssize_t n = 0;
+#endif
 
   // send message header information
   // only do this if communicating with MDI version 1.1 or higher
-  size_t n = 0;
   size_t total_sent = 0;
   if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
 
@@ -341,7 +345,11 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     return 0;
   }
 
-  size_t n, nr;
+#ifdef _WIN32
+  int n, nr;
+#else
+  ssize_t n, nr;
+#endif
   communicator* this = get_communicator(current_code, comm);
   size_t count_t = count;
 
