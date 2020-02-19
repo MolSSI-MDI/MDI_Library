@@ -33,7 +33,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 0.6.5
+        VERSION 1.1.3
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 add_subdirectory(MDI_Library)
