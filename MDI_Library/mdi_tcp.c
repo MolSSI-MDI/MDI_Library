@@ -264,13 +264,15 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   // send message header information
   // only do this if communicating with MDI version 1.1 or higher
   size_t total_sent = 0;
-  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
 
     // prepare the header information
     size_t nheader = 4;
     int* header = (int*) malloc( nheader * sizeof(int) );
     header[0] = 0;        // error flag
-    header[1] = 0;        // placeholder
+    header[1] = 0;        // header type
     header[2] = datatype; // datatype
     header[3] = count;    // count
     void* header_buf = header;
@@ -355,7 +357,9 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
-  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
 
     // prepare buffer to hold header information
     size_t nheader = 4;
@@ -384,7 +388,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
 
     // get the header information
     int error_flag = header[0];
-    int placeholder = header[1];
+    int header_type = header[1];
     int send_datatype = header[2];
     int send_count = header[3];
 
