@@ -295,12 +295,14 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     int nheader = 4;
     int* header = (int*) malloc( nheader * sizeof(int) );
     void* header_buf = NULL;
-    if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+    if ( ( this->mdi_version[0] > 1 ||
+	   ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+	 && ipi_compatibility != 1 ) {
 
       // prepare the header information
       nheader_actual = 4;
       header[0] = 0;        // error flag
-      header[1] = 0;        // placeholder
+      header[1] = 0;        // header type
       header[2] = datatype; // datatype
       header[3] = count;    // count
       header_buf = header;
@@ -390,7 +392,9 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
   int nheader = 0;
-  if ( ( this->mdi_version[0] >= 1 && this->mdi_version[1] >= 1 ) && ipi_compatibility != 1 ) {
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
 
     // prepare buffer to hold header information
     nheader = 4;
@@ -400,7 +404,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     // get the header information
     memcpy(header_buf, other_lib->buf, nheader * sizeof(int));
     int error_flag = header[0];
-    int placeholder = header[1];
+    int header_type = header[1];
     int send_datatype = header[2];
     int send_count = header[3];
 

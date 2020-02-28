@@ -460,7 +460,7 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   communicator* this = get_communicator(current_code, comm);
 
   if ( this->method == MDI_MPI ) {
-    mpi_send(buf, count, datatype, comm);
+    mpi_send_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
     tcp_send(buf, count, datatype, comm);
@@ -499,7 +499,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   communicator* this = get_communicator(current_code, comm);
 
   if ( this->method == MDI_MPI ) {
-    mpi_recv(buf, count, datatype, comm);
+    mpi_recv_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
     tcp_recv(buf, count, datatype, comm);

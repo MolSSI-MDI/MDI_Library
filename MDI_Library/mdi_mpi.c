@@ -15,9 +15,6 @@
 /*! \brief MPI communicator corresponding to all processes created by the same code as this process */
 MPI_Comm intra_MPI_comm = 0;
 
-/*! \brief Rank of this process within its associated code */
-//int intra_rank = 0;
-
 /*! \brief Order of this code within all codes represented by MPI_COMM_WORLD */
 int mpi_code_rank = 0;
 
@@ -26,6 +23,7 @@ int world_size = -1;
 
 /*! \brief Rank of this process within MPI_COMM_WORLD */
 int world_rank = -1;
+
 
 /*! \brief Set the size of MPI_COMM_WORLD
  *
@@ -37,6 +35,7 @@ int set_world_size(int world_size_in) {
   return 0;
 }
 
+
 /*! \brief Set the rank of this process in MPI_COMM_WORLD
  *
  * \param [in]       world_rank_in
@@ -46,6 +45,7 @@ int set_world_rank(int world_rank_in) {
   world_rank = world_rank_in;
   return 0;
 }
+
 
 /*! \brief Identify groups of processes belonging to the same codes
  *
@@ -249,7 +249,53 @@ int mpi_update_world_comm(void* world_comm) {
 }
 
 
+/*! \brief Send a message, including header information, using MPI
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
+int mpi_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  // only send from rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
 
+  communicator* this = get_communicator(current_code, comm);
+
+  // send message header information
+  // only do this if communicating with MDI version 1.1.4 or higher
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] > 1 ) ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] == 1 && this->mdi_version[2] >= 4 ) )
+       && ipi_compatibility != 1 ) {
+
+    // prepare the header information
+    size_t nheader = 4;
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    header[0] = 0;        // error flag
+    header[1] = 0;        // header type
+    header[2] = datatype; // datatype
+    header[3] = count;    // count
+    void* header_buf = header;
+
+    // send the header
+    mpi_send((void*)header, (int)nheader, MDI_INT, comm);
+
+    free( header );
+  }
+
+  // send the data
+  mpi_send(buf, count, datatype, comm);
+
+  return 0;
+}
 
 
 /*! \brief Send data through an MDI connection, using MPI
@@ -295,6 +341,74 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   else {
     mpi4py_send_callback( (void*)buf, count, datatype, (this->mpi_rank+1)%2, this->id );
   }
+
+  return 0;
+}
+
+
+/*! \brief Receive a message, including header information, using MPI
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int mpi_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  // only recv from rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
+  communicator* this = get_communicator(current_code, comm);
+
+  // send message header information
+  // only do this if communicating with MDI version 1.1.4 or higher
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] > 1 ) ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] == 1 && this->mdi_version[2] >= 4 ) )
+       && ipi_compatibility != 1 ) {
+
+    // prepare buffer to hold header information
+    size_t nheader = 4;
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    void* header_buf = header;
+
+    // receive the header
+    mpi_recv((void*)header, (int)nheader, MDI_INT, comm);
+
+    int error_flag = header[0];
+    int header_type = header[1];
+    int send_datatype = header[2];
+    int send_count = header[3];
+
+    // verify that the error flag is zero
+    if ( error_flag != 0 ) {
+      mdi_error("Error in MDI_Recv: nonzero error flag received");
+      return error_flag;
+    }
+
+    // verify agreement regarding the datatype
+    if ( send_datatype != datatype ) {
+      mdi_error("Error in MDI_Recv: inconsistent datatype");
+      return 1;
+    }
+
+    // verify agreement regarding the count
+    if ( send_count != count ) {
+      mdi_error("Error in MDI_Recv: inconsistent count");
+      return 1;
+    }
+
+    free( header );
+  }
+
+  // receive the data
+  mpi_recv(buf, count, datatype, comm);
 
   return 0;
 }
