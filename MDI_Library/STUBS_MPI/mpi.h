@@ -15,6 +15,7 @@ typedef int MPI_Fint;
 #define MPI_INT 1
 #define MPI_DOUBLE 4
 #define MPI_CHAR 5
+#define MPI_BYTE 6
 
 static int MPI_Init( int *argc, char ***argv) { return 0;};
 static int MPI_Initialized( int *flag ) { *flag = 0; return 0;};
