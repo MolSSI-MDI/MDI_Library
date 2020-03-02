@@ -186,6 +186,8 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
   communicator* new_comm = get_communicator(this_code->id, comm_id);
   new_comm->sockfd = sockfd;
+  new_comm->send = tcp_send;
+  new_comm->recv = tcp_recv;
 
 
   // communicate the version number between codes
@@ -195,8 +197,8 @@ int tcp_request_connection(int port, char* hostname_ptr) {
     version[0] = MDI_MAJOR_VERSION;
     version[1] = MDI_MINOR_VERSION;
     version[2] = MDI_PATCH_VERSION;
-    tcp_send(&version[0], 3, MDI_INT, new_comm->id);
-    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id);
+    tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
+    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
   }
 
   return 0;
@@ -218,6 +220,8 @@ int tcp_accept_connection() {
   MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
   communicator* new_comm = get_communicator(this_code->id, comm_id);
   new_comm->sockfd = connection;
+  new_comm->send = tcp_send;
+  new_comm->recv = tcp_recv;
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
@@ -226,8 +230,8 @@ int tcp_accept_connection() {
     version[0] = MDI_MAJOR_VERSION;
     version[1] = MDI_MINOR_VERSION;
     version[2] = MDI_PATCH_VERSION;
-    tcp_send(&version[0], 3, MDI_INT, new_comm->id);
-    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id);
+    tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
+    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
   }
 
   return 0;
@@ -245,8 +249,13 @@ int tcp_accept_connection() {
  *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
  * \param [in]       comm
  *                   MDI communicator associated with the intended recipient code.
+ * \param [in]       msg_flag
+ *                   Type of role this data has within a message.
+ *                   0: Not part of a message.
+ *                   1: The header of a message.
+ *                   2: The body (data) of a message.
  */
-int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   // only send from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -336,14 +345,14 @@ int tcp_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     void* header_buf = header;
 
     // send the header
-    ret = tcp_send((void*)header, (int)nheader, MDI_INT, comm);
+    ret = tcp_send((void*)header, (int)nheader, MDI_INT, comm, 1);
     if ( ret != 0 ) { return ret; }
 
     free( header );
   }
 
   // send the data
-  ret = tcp_send(buf, count, datatype, comm);
+  ret = tcp_send(buf, count, datatype, comm, 2);
   if ( ret != 0 ) { return ret; }
 
   return 0;
@@ -360,8 +369,13 @@ int tcp_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
  *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
+ * \param [in]       msg_flag
+ *                   Type of role this data has within a message.
+ *                   0: Not part of a message.
+ *                   1: The header of a message.
+ *                   2: The body (data) of a message.
  */
-int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   // only recv from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -450,7 +464,7 @@ int tcp_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     void* header_buf = header;
 
     // receive the header
-    ret = tcp_recv((void*)header, (int)nheader, MDI_INT, comm);
+    ret = tcp_recv((void*)header, (int)nheader, MDI_INT, comm, 1);
     if ( ret != 0 ) { return ret; }
 
     // get the header information
@@ -481,7 +495,7 @@ int tcp_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // receive the data
-  ret = tcp_recv(buf, count, datatype, comm);
+  ret = tcp_recv(buf, count, datatype, comm, 2);
   if ( ret != 0 ) { return ret; }
 
   return 0;

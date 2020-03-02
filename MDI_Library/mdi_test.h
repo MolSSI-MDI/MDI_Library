@@ -9,7 +9,7 @@
 #include "mdi.h"
 
 int test_initialize();
-int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
-int test_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
+int test_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
 
 #endif
