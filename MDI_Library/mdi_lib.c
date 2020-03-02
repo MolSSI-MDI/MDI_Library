@@ -315,7 +315,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 	body_stride = sizeof(char);
       }
 
-      int msg_bytes = ( datasize * count ) + ( (int)body_stride * body_size );
+      int msg_bytes = ( (int)datasize * count ) + ( (int)body_stride * body_size );
 
       // allocate the memory required for the entire message
       libd->buf = malloc( msg_bytes );
