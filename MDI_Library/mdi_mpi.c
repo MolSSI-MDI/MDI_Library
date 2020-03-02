@@ -179,6 +179,8 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 	communicator* new_comm = get_communicator(this_code->id, comm_id);
 	new_comm->mpi_comm = new_mpi_comm;
 	new_comm->mpi_rank = key;
+	new_comm->send = mpi_send;
+	new_comm->recv = mpi_recv;
       }
     }
 
@@ -219,8 +221,8 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 	version[0] = MDI_MAJOR_VERSION;
 	version[1] = MDI_MINOR_VERSION;
 	version[2] = MDI_PATCH_VERSION;
-	mpi_send(&version[0], 3, MDI_INT, this_comm->id);
-	mpi_recv(&this_comm->mdi_version[0], 3, MDI_INT, this_comm->id);
+	mpi_send(&version[0], 3, MDI_INT, this_comm->id, 0);
+	mpi_recv(&this_comm->mdi_version[0], 3, MDI_INT, this_comm->id, 0);
       }
     }
   }
@@ -286,13 +288,13 @@ int mpi_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     void* header_buf = header;
 
     // send the header
-    mpi_send((void*)header, (int)nheader, MDI_INT, comm);
+    mpi_send((void*)header, (int)nheader, MDI_INT, comm, 1);
 
     free( header );
   }
 
   // send the data
-  mpi_send(buf, count, datatype, comm);
+  mpi_send(buf, count, datatype, comm, 2);
 
   return 0;
 }
@@ -308,8 +310,13 @@ int mpi_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
  *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
  * \param [in]       comm
  *                   MDI communicator associated with the intended recipient code.
+ * \param [in]       msg_flag
+ *                   Type of role this data has within a message.
+ *                   0: Not part of a message.
+ *                   1: The header of a message.
+ *                   2: The body (data) of a message.
  */
-int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   // only send from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -379,7 +386,7 @@ int mpi_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     void* header_buf = header;
 
     // receive the header
-    mpi_recv((void*)header, (int)nheader, MDI_INT, comm);
+    mpi_recv((void*)header, (int)nheader, MDI_INT, comm, 1);
 
     int error_flag = header[0];
     int header_type = header[1];
@@ -408,7 +415,7 @@ int mpi_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // receive the data
-  mpi_recv(buf, count, datatype, comm);
+  mpi_recv(buf, count, datatype, comm, 2);
 
   return 0;
 }
@@ -424,8 +431,13 @@ int mpi_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
+ * \param [in]       msg_flag
+ *                   Type of role this data has within a message.
+ *                   0: Not part of a message.
+ *                   1: The header of a message.
+ *                   2: The body (data) of a message.
  */
-int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   // only recv from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {

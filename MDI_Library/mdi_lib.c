@@ -21,6 +21,8 @@ int library_initialize() {
   MDI_Comm comm_id = new_communicator(this_code->id, MDI_LIB);
   communicator* new_comm = get_communicator(this_code->id, comm_id);
   new_comm->delete = communicator_delete_lib;
+  new_comm->send = library_send;
+  new_comm->recv = library_recv;
 
   // set the MDI version number of the new communicator
   new_comm->mdi_version[0] = MDI_MAJOR_VERSION;
