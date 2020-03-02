@@ -368,58 +368,6 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
 
 
-/*! \brief Function to handle sending a message through an MDI connection, using library-based communication
- *
- * \param [in]       buf
- *                   Pointer to the data to be sent.
- * \param [in]       count
- *                   Number of values (integers, double precision floats, characters, etc.) to be sent.
- * \param [in]       datatype
- *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent.
- * \param [in]       comm
- *                   MDI communicator associated with the intended recipient code.
- */
-int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
-    mdi_error("MDI data type not recognized in library_send");
-    return 1;
-  }
-
-  communicator* this = get_communicator(current_code, comm);
-
-  // prepare message header information
-  // only do this if communicating with MDI version 1.1 or higher
-  int nheader_actual = 0; // actual number of elements of nheader that will be sent
-  int nheader = 4;
-  int* header = (int*) malloc( nheader * sizeof(int) );
-  void* header_buf = NULL;
-  if ( ( this->mdi_version[0] > 1 ||
-	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
-       && ipi_compatibility != 1 ) {
-
-    // prepare the header information
-    nheader_actual = 4;
-    header[0] = 0;        // error flag
-    header[1] = 0;        // header type
-    header[2] = datatype; // datatype
-    header[3] = count;    // count
-    header_buf = header;
-
-    // send the header
-    library_send((void*)header, nheader, MDI_INT, comm, 1);
-
-    free( header );
-
-  }
-
-  // send the data
-  library_send(buf, count, datatype, comm, 2);
-
-  return 0;
-}
-
-
-
 /*! \brief Function to handle receiving data through an MDI connection, using library-based communication
  *
  * \param [in]       buf
@@ -521,68 +469,6 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
   return 0;
 }
 
-
-
-/*! \brief Function to handle receiving a message through an MDI connection, using library-based communication
- *
- * \param [in]       buf
- *                   Pointer to the buffer where the received data will be stored.
- * \param [in]       count
- *                   Number of values (integers, double precision floats, characters, etc.) to be received.
- * \param [in]       datatype
- *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
- * \param [in]       comm
- *                   MDI communicator associated with the connection to the sending code.
- */
-int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-  communicator* this = get_communicator(current_code, comm);
-
-  // receive message header information
-  // only do this if communicating with MDI version 1.1 or higher
-  int nheader = 0;
-  if ( ( this->mdi_version[0] > 1 ||
-	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
-       && ipi_compatibility != 1 ) {
-
-    // prepare buffer to hold header information
-    nheader = 4;
-    int* header = (int*) malloc( nheader * sizeof(int) );
-
-    // receive message header
-    library_recv((void*)header, nheader, MDI_INT, comm, 1);
-
-    int error_flag = header[0];
-    int header_type = header[1];
-    int send_datatype = header[2];
-    int send_count = header[3];
-
-    // verify that the error flag is zero 
-    if ( error_flag != 0 ) {
-      mdi_error("Error in MDI_Recv: nonzero error flag received");
-      return error_flag;
-    }
-
-    // verify agreement regarding the datatype
-    if ( send_datatype != datatype ) {
-      mdi_error("Error in MDI_Recv: inconsistent datatype");
-      return 1;
-    }
-
-    // verify agreement regarding the count
-    if ( send_count != count ) {
-      mdi_error("Error in MDI_Recv: inconsistent count");
-      return 1;
-    }
-
-    free( header );
-
-  }
-
-  // receive message data
-  library_recv(buf, count, datatype, comm, 2);
-
-  return 0;
-}
 
 
 /*! \brief Function for LIBRARY-specific deletion operations for communicator deletion
