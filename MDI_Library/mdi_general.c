@@ -519,6 +519,13 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     size_t nheader = 4;
     int* header = (int*) malloc( nheader * sizeof(int) );
 
+    // initialize the header with the expected data
+    // this is important when ranks other than 0 call this function
+    header[0] = 0;
+    header[1] = 0;
+    header[2] = datatype;
+    header[3] = count;
+
     // receive the header
     ret = this->recv((void*)header, (int)nheader, MDI_INT, comm, 1);
     if ( ret != 0 ) { return ret; }
