@@ -315,7 +315,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 	body_stride = sizeof(char);
       }
 
-      int msg_bytes = ( datasize * count ) + ( body_stride * body_size );
+      int msg_bytes = ( datasize * count ) + ( (int)body_stride * body_size );
 
       // allocate the memory required for the entire message
       libd->buf = malloc( msg_bytes );
@@ -431,16 +431,9 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
 
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
-  int nheader = 0;
   if ( ( this->mdi_version[0] > 1 ||
 	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
        && ipi_compatibility != 1 ) {
-
-    // prepare buffer to hold header information
-    nheader = 4;
-    int* header = (int*) malloc( nheader * sizeof(int) );
-    void* header_buf = header;
-
 
     if ( msg_flag == 1 ) { // message header
 
@@ -449,8 +442,9 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
     }
     else if ( msg_flag == 2 ) { // message body
 
+      int nheader = 4;
       int offset = nheader * sizeof(int);
-      memcpy(buf, other_lib->buf + offset, count * datasize);
+      memcpy(buf, (char*)other_lib->buf + offset, count * datasize);
 
       // free the memory of libd->buf
       free( other_lib->buf );
