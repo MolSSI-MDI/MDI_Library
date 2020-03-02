@@ -290,10 +290,6 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
     int nheader_actual = 4; // actual number of elements of nheader that were sent
 
-
-
-
-
     if ( msg_flag == 1 ) { // message header
 
       // confirm that libd->buf is not already allocated
@@ -358,7 +354,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     }
     else {
 
-      mdi_error("MDI library unknown msg_flag\n");
+      mdi_error("MDI library unknown msg_flag in send\n");
       return 1;
 
     }
@@ -421,7 +417,8 @@ int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm
 }
 
 
-/*! \brief Function to handle receiving a message through an MDI connection, using library-based communication
+
+/*! \brief Function to handle receiving data through an MDI connection, using library-based communication
  *
  * \param [in]       buf
  *                   Pointer to the buffer where the received data will be stored.
@@ -431,8 +428,13 @@ int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm
  *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
+ * \param [in]       msg_flag
+ *                   Type of role this data has within a message.
+ *                   0: Not part of a message.
+ *                   1: The header of a message.
+ *                   2: The body (data) of a message.
  */
-int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
   library_data* libd = (library_data*) this->method_data;
@@ -489,8 +491,64 @@ int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
     int* header = (int*) malloc( nheader * sizeof(int) );
     void* header_buf = header;
 
-    // get the header information
-    memcpy(header_buf, other_lib->buf, nheader * sizeof(int));
+
+    if ( msg_flag == 1 ) { // message header
+
+      memcpy(buf, other_lib->buf, count * datasize);
+
+    }
+    else if ( msg_flag == 2 ) { // message body
+
+      int offset = nheader * sizeof(int);
+      memcpy(buf, other_lib->buf + offset, count * datasize);
+
+      // free the memory of libd->buf
+      free( other_lib->buf );
+      other_lib->buf_allocated = 0;
+
+    }
+    else {
+
+      mdi_error("MDI library unknown msg_flag in send\n");
+      return 1;
+
+    }
+
+  }
+
+  return 0;
+}
+
+
+
+/*! \brief Function to handle receiving a message through an MDI connection, using library-based communication
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       count
+ *                   Number of values (integers, double precision floats, characters, etc.) to be received.
+ * \param [in]       datatype
+ *                   MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  communicator* this = get_communicator(current_code, comm);
+
+  // receive message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  int nheader = 0;
+  if ( ( this->mdi_version[0] > 1 ||
+	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
+
+    // prepare buffer to hold header information
+    nheader = 4;
+    int* header = (int*) malloc( nheader * sizeof(int) );
+
+    // receive message header
+    library_recv((void*)header, nheader, MDI_INT, comm, 1);
+
     int error_flag = header[0];
     int header_type = header[1];
     int send_datatype = header[2];
@@ -518,12 +576,8 @@ int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 
   }
 
-  // copy the contents of libd->buf into buf
-  memcpy(buf, (char*)other_lib->buf + nheader*sizeof(int), datasize * count);
-
-  // free the memory of libd->buf
-  free( other_lib->buf );
-  other_lib->buf_allocated = 0;
+  // receive message data
+  library_recv(buf, count, datatype, comm, 2);
 
   return 0;
 }
