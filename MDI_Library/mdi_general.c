@@ -466,7 +466,7 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     tcp_send_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_LIB ) {
-    library_send(buf, count, datatype, comm);
+    library_send_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TEST ) {
     test_send(buf, count, datatype, comm);
@@ -505,7 +505,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     tcp_recv_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_LIB ) {
-    library_recv(buf, count, datatype, comm);
+    library_recv_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TEST ) {
     test_recv(buf, count, datatype, comm);
