@@ -30,7 +30,7 @@ int library_get_matching_handle(MDI_Comm comm);
 int library_set_command(const char* command, MDI_Comm comm);
 int library_execute_command(MDI_Comm comm);
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
-int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
+int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
 int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 
