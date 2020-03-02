@@ -24,6 +24,7 @@
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
 typedef int MDI_Comm_Type;
+typedef int MDI_Datatype_Type;
 
 typedef struct dynamic_array_struct {
   /*! \brief The elements stored by this vector */
@@ -57,6 +58,10 @@ typedef struct communicator_struct {
   vector* nodes;
   /*! \brief Method-specific information for this communicator */
   void* method_data;
+  /*! \brief Function pointer for method-specific send operations */
+  int (*send)(const void*, int, MDI_Datatype_Type, MDI_Comm_Type, int);
+  /*! \brief Function pointer for method-specific receive operations */
+  int (*recv)(void*, int, MDI_Datatype_Type, MDI_Comm_Type, int);
   /*! \brief Function pointer for method-specific deletion operations */
   int (*delete)(void*);
 } communicator;

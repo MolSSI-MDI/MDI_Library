@@ -442,7 +442,7 @@ int general_accept_communicator() {
 }
 
 
-/*! \brief Send data through the MDI connection
+/*! \brief Send a message through the MDI connection
  *
  * If running with MPI, this function must be called only by rank \p 0.
  * The function returns \p 0 on a success.
@@ -457,31 +457,40 @@ int general_accept_communicator() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  int ret = 0;
+
   communicator* this = get_communicator(current_code, comm);
 
-  if ( this->method == MDI_MPI ) {
-    mpi_send_msg(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_TCP ) {
-    tcp_send(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_LIB ) {
-    library_send(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_TEST ) {
-    test_send(buf, count, datatype, comm);
-  }
-  else {
-    mdi_error("MDI method not recognized in communicator_send");
-    return 1;
+  // send message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  if ( ( this->mdi_version[0] > 1 ||
+         ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
+
+    // prepare the header information
+    size_t nheader = 4;
+    int* header = (int*) malloc( nheader * sizeof(int) );
+    header[0] = 0;        // error flag
+    header[1] = 0;        // header type
+    header[2] = datatype; // datatype
+    header[3] = count;    // count
+
+    // send the header
+    ret = this->send((void*)header, (int)nheader, MDI_INT, comm, 1);
+    if ( ret != 0 ) { return ret; }
+
+    free( header );
   }
 
+  // send the data
+  ret = this->send(buf, count, datatype, comm, 2);
+  if ( ret != 0 ) { return ret; }
 
   return 0;
 }
 
 
-/*! \brief Receive data through the MDI connection
+/*! \brief Receive a message through the MDI connection
  *
  * If running with MPI, this function must be called only by rank \p 0.
  * The function returns \p 0 on a success.
@@ -496,25 +505,67 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
  *                   MDI communicator associated with the connection to the sending code.
  */
 int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
+  int ret = 0;
+
   communicator* this = get_communicator(current_code, comm);
 
-  if ( this->method == MDI_MPI ) {
-    mpi_recv_msg(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_TCP ) {
-    tcp_recv(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_LIB ) {
-    library_recv(buf, count, datatype, comm);
-  }
-  else if ( this->method == MDI_TEST ) {
-    test_recv(buf, count, datatype, comm);
-  }
-  else {
-    mdi_error("MDI method not recognized in communicator_send");
-    return 1;
+  // receive message header information
+  // only do this if communicating with MDI version 1.1 or higher
+  if ( ( this->mdi_version[0] > 1 ||
+         ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+       && ipi_compatibility != 1 ) {
+
+    // prepare buffer to hold header information
+    size_t nheader = 4;
+    int* header = (int*) malloc( nheader * sizeof(int) );
+
+    // initialize the header with the expected data
+    // this is important when ranks other than 0 call this function
+    header[0] = 0;
+    header[1] = 0;
+    header[2] = datatype;
+    header[3] = count;
+
+    // receive the header
+    ret = this->recv((void*)header, (int)nheader, MDI_INT, comm, 1);
+    if ( ret != 0 ) { return ret; }
+
+    // analyze the header information
+    int error_flag = header[0];
+    int header_type = header[1];
+    int send_datatype = header[2];
+    int send_count = header[3];
+
+    // verify that the error flag is zero
+    if ( error_flag != 0 ) {
+      mdi_error("Error in MDI_Recv: nonzero error flag received");
+      return error_flag;
+    }
+
+    // verify that the header type is zero
+    if ( header_type != 0 ) {
+      mdi_error("Error in MDI_Recv: unsupported header type");
+      return error_flag;
+    }
+
+    // verify agreement regarding the datatype
+    if ( send_datatype != datatype ) {
+      mdi_error("Error in MDI_Recv: inconsistent datatype");
+      return 1;
+    }
+
+    // verify agreement regarding the count
+    if ( send_count != count ) {
+      mdi_error("Error in MDI_Recv: inconsistent count");
+      return 1;
+    }
+
+    free( header );
   }
 
+  // receive the data
+  ret = this->recv(buf, count, datatype, comm, 2);
+  if ( ret != 0 ) { return ret; }
 
   return 0;
 }
