@@ -45,6 +45,7 @@ MDI_COMM_NULL = ctypes.c_int.in_dll(mdi, "MDI_COMM_NULL").value
 MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
 MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
 MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
+MDI_BYTE = ctypes.c_int.in_dll(mdi, "MDI_BYTE").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 MDI_LIB = ctypes.c_int.in_dll(mdi, "MDI_LIB").value
@@ -121,6 +122,9 @@ def mpi4py_get_np_array(buf, count, datatype, mdi_comm):
         datasize = ctypes.sizeof( ctypes.c_double )
     elif datatype == MDI_CHAR:
         mpi_type = MPI.CHAR
+        datasize = ctypes.sizeof( ctypes.c_char )
+    elif datatype == MDI_BYTE:
+        mpi_type = MPI.BYTE
         datasize = ctypes.sizeof( ctypes.c_char )
     else:
         raise Exception("MDI Error: MDI type not recognized")
@@ -504,6 +508,12 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         if use_numpy:
             data_temp = arg1.astype(np.float64)
             data = data_temp.ctypes.data_as(ctypes.c_char_p)
+    elif (arg3 == MDI_BYTE):
+        arg_type = ctypes.c_char
+        mdi_type = MDI_BYTE
+        if use_numpy:
+            data_temp = arg1.astype(np.byte)
+            data = data_temp.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_CHAR):
         arg_type = ctypes.c_char
         mdi_type = MDI_CHAR
@@ -514,13 +524,15 @@ def MDI_Send(arg1, arg2, arg3, arg4):
         data_temp = arg1.encode('utf-8')
         data = ctypes.c_char_p(data_temp)
 
-    elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE) and not use_numpy:
+    elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_BYTE) and not use_numpy:
         if not isinstance(arg1, list):
             if arg2 == 1:
                 if arg3 == MDI_DOUBLE:
                     data_temp = ctypes.pointer((ctypes.c_double)(arg1))
                 elif arg3 == MDI_INT:
                     data_temp = ctypes.pointer((ctypes.c_int)(arg1))
+                elif arg3 == MDI_BYTE:
+                    data_temp = ctypes.pointer((ctypes.c_char)(arg1))
                 data = ctypes.cast(data_temp, ctypes.POINTER(ctypes.c_char))
             else:
                 raise Exception("MDI Error: MDI_Send requires a list if length != 1 and datatype = MDI_INT or MDI_DOUBLE")
@@ -557,6 +569,14 @@ def MDI_Recv(arg2, arg3, arg4, buf = None):
             mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_double
         mdi_type = MDI_DOUBLE
+    elif (arg3 == MDI_BYTE):
+        if use_numpy:
+            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.byte, flags='C_CONTIGUOUS'), 
+                                     ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        else:
+            mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        arg_type = ctypes.c_char
+        mdi_type = MDI_BYTE
     elif (arg3 == MDI_CHAR):
         mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_char

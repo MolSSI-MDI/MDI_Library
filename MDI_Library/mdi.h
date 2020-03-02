@@ -54,8 +54,7 @@ DllExport extern const MDI_Comm MDI_COMM_NULL;
 DllExport extern const int MDI_INT;
 DllExport extern const int MDI_DOUBLE;
 DllExport extern const int MDI_CHAR;
-DllExport extern const int MDI_INT_NUMPY;
-DllExport extern const int MDI_DOUBLE_NUMPY;
+DllExport extern const int MDI_BYTE;
 
 // MDI communication types
 DllExport extern const int MDI_TCP;
