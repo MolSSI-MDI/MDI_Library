@@ -463,7 +463,7 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     mpi_send_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
-    tcp_send(buf, count, datatype, comm);
+    tcp_send_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_LIB ) {
     library_send(buf, count, datatype, comm);
@@ -502,7 +502,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     mpi_recv_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_TCP ) {
-    tcp_recv(buf, count, datatype, comm);
+    tcp_recv_msg(buf, count, datatype, comm);
   }
   else if ( this->method == MDI_LIB ) {
     library_recv(buf, count, datatype, comm);
