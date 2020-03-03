@@ -511,9 +511,6 @@ def MDI_Send(arg1, arg2, arg3, arg4):
     elif (arg3 == MDI_BYTE):
         arg_type = ctypes.c_char
         mdi_type = MDI_BYTE
-        if use_numpy:
-            data_temp = arg1.astype(np.byte)
-            data = data_temp.ctypes.data_as(ctypes.c_char_p)
     elif (arg3 == MDI_CHAR):
         arg_type = ctypes.c_char
         mdi_type = MDI_CHAR
@@ -523,6 +520,8 @@ def MDI_Send(arg1, arg2, arg3, arg4):
     if arg3 == MDI_CHAR:
         data_temp = arg1.encode('utf-8')
         data = ctypes.c_char_p(data_temp)
+    elif arg3 == MDI_BYTE:
+        data = ctypes.c_char_p(arg1)
 
     elif (arg3 == MDI_INT or arg3 == MDI_DOUBLE or arg3 == MDI_BYTE) and not use_numpy:
         if not isinstance(arg1, list):
@@ -570,11 +569,7 @@ def MDI_Recv(arg2, arg3, arg4, buf = None):
         arg_type = ctypes.c_double
         mdi_type = MDI_DOUBLE
     elif (arg3 == MDI_BYTE):
-        if use_numpy:
-            mdi.MDI_Recv.argtypes = [np.ctypeslib.ndpointer(dtype=np.byte, flags='C_CONTIGUOUS'), 
-                                     ctypes.c_int, ctypes.c_int, ctypes.c_int]
-        else:
-            mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
+        mdi.MDI_Recv.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
         arg_type = ctypes.c_char
         mdi_type = MDI_BYTE
     elif (arg3 == MDI_CHAR):

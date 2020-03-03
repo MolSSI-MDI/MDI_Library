@@ -4,7 +4,7 @@ PROGRAM ENGINE_F90
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_DOUBLE, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, MDI_Get_Role, MDI_ENGINE, &
+       MDI_Set_Execute_Command_Func, MDI_Get_Role, MDI_ENGINE, MDI_BYTE, &
        MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback
 
   IMPLICIT NONE
@@ -64,6 +64,7 @@ PROGRAM ENGINE_F90
    CALL MDI_Register_Command("@DEFAULT", "<NATOMS", ierr)
    CALL MDI_Register_Command("@DEFAULT", "<COORDS", ierr)
    CALL MDI_Register_Command("@DEFAULT", "<FORCES", ierr)
+   CALL MDI_Register_Command("@DEFAULT", "<FORCES_B", ierr)
    CALL MDI_Register_Node("@FORCES", ierr)
    CALL MDI_Register_Command("@FORCES", "EXIT", ierr)
    CALL MDI_Register_Command("@FORCES", "<FORCES", ierr)
@@ -101,7 +102,7 @@ PROGRAM ENGINE_F90
        INTEGER, INTENT(OUT)          :: ierr
 
        INTEGER                       :: icoord
-       INTEGER                       :: natoms
+       INTEGER                       :: natoms, count
        DOUBLE PRECISION, ALLOCATABLE :: coords(:), forces(:)
 
        ! set dummy molecular properties
@@ -124,6 +125,9 @@ PROGRAM ENGINE_F90
           CALL MDI_Send(coords, 3 * natoms, MDI_DOUBLE, comm, ierr)
        CASE( "<FORCES" )
           CALL MDI_Send(forces, 3 * natoms, MDI_DOUBLE, comm, ierr)
+       CASE( "<FORCES_B" )
+          count = 3 * natoms * sizeof(1.d0)
+          CALL MDI_Send(forces, count, MDI_BYTE, comm, ierr)
        CASE DEFAULT
           WRITE(6,*)'Error: command not recognized'
        END SELECT
