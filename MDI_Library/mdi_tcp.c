@@ -283,6 +283,9 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
   else if (datatype == MDI_CHAR) {
     datasize = sizeof(char);
   }
+  else if (datatype == MDI_BYTE) {
+    datasize = sizeof(char);
+  }
   else {
     mdi_error("MDI data type not recognized in tcp_send"); 
     return 1;
@@ -346,6 +349,9 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
     datasize = sizeof(double);
   }
   else if (datatype == MDI_CHAR) {
+    datasize = sizeof(char);
+  }
+  else if (datatype == MDI_BYTE) {
     datasize = sizeof(char);
   }
   else {

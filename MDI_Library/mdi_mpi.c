@@ -287,6 +287,9 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
   else if (datatype == MDI_CHAR) {
     mpi_type = MPI_CHAR;
   }
+  else if (datatype == MDI_BYTE) {
+    mpi_type = MPI_BYTE;
+  }
   else {
     mdi_error("MDI data type not recognized in mpi_send");
     return 1;
@@ -339,6 +342,9 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
   }
   else if (datatype == MDI_CHAR) {
     mpi_type = MPI_CHAR;
+  }
+  else if (datatype == MDI_BYTE) {
+    mpi_type = MPI_BYTE;
   }
   else {
     mdi_error("MDI data type not recognized in mpi_send");

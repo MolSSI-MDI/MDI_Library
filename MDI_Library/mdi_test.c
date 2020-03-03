@@ -43,7 +43,8 @@ int test_initialize() {
  */
 int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
+  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR 
+       && datatype != MDI_BYTE) {
     mdi_error("MDI data type not recognized in test_send");
     return 1;
   }
@@ -70,7 +71,8 @@ int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, 
  */
 int test_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
+  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR 
+       && datatype != MDI_BYTE) {
     mdi_error("MDI data type not recognized in test_send");
     return 1;
   }

@@ -104,5 +104,19 @@ for iforce in range( 3 * natoms ):
     forces[iforce] = str( round(forces[iforce], 10) )
 print("FORCES: " + '[%s]' % ', '.join(map(str, forces)) )
 
+if use_numpy:
+    mdi.MDI_Send_Command("<FORCES_B", comm)
+    double_size = np.dtype(np.float64).itemsize
+    forces_double = np.zeros((natoms,3), dtype='float64')
+    type_name = forces_double.dtype.name
+    forces_bytes = forces_double.tobytes()
+    mdi.MDI_Recv(3 * natoms * double_size, mdi.MDI_BYTE, comm, buf = forces_bytes)
+    forces_b = np.frombuffer(forces_bytes, dtype = type_name)
+    forces_print = [ str( round(forces_b[iforce], 10) ) for iforce in range( 3 * natoms ) ]
+else:
+    forces_print = forces
+
+print("FORCES_B: " + '[%s]' % ', '.join(map(str, forces_print)) )
+
 # Send the "EXIT" command to the engine
 mdi.MDI_Send_Command("EXIT", comm)

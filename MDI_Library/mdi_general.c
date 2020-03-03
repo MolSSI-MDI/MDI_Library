@@ -657,7 +657,7 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
     version[0] = MDI_MAJOR_VERSION;
     version[1] = MDI_MINOR_VERSION;
     version[2] = MDI_PATCH_VERSION;
-    MDI_Send(&version[0], 3, MDI_DOUBLE, comm);
+    MDI_Send(&version[0], 3, MDI_INT, comm);
     ret = 1;
   }
   else if ( strcmp( buf, "<COMMANDS" ) == 0 ) {

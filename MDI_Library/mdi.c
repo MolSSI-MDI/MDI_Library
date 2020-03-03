@@ -57,6 +57,8 @@ const int MDI_INT          = 1;
 const int MDI_DOUBLE       = 2;
 /*! \brief character data type */
 const int MDI_CHAR         = 3;
+/*! \brief character data type */
+const int MDI_BYTE         = 6;
 
 // MDI communication types
 /*! \brief TCP/IP communication method */

@@ -289,6 +289,13 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     else if (datatype == MDI_CHAR) {
       datasize = sizeof(char);
     }
+    else if (datatype == MDI_BYTE) {
+      datasize = sizeof(char);
+    }
+    else {
+      mdi_error("MDI Error: Unrecognized data type");
+      return 1;
+    }
 
     int nheader_actual = 4; // actual number of elements of nheader that were sent
 
@@ -313,6 +320,12 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       }
       else if (datatype == MDI_CHAR) {
 	body_stride = sizeof(char);
+      }
+      else if (datatype == MDI_BYTE) {
+	body_stride = sizeof(char);
+      }
+      else {
+	mdi_error("MDI Error: Unrecognized data type");
       }
 
       int msg_bytes = ( (int)datasize * count ) + ( (int)body_stride * body_size );
@@ -421,6 +434,12 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
   }
   else if (datatype == MDI_CHAR) {
     datasize = sizeof(char);
+  }
+  else if (datatype == MDI_BYTE) {
+    datasize = sizeof(char);
+  }
+  else {
+    mdi_error("MDI Error: Unrecognized data type");
   }
 
   // confirm that libd->buf is initialized
