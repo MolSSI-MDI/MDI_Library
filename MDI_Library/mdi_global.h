@@ -38,20 +38,14 @@ typedef struct dynamic_array_struct {
 } vector;
 
 typedef struct communicator_struct {
-  /*! \brief Communication method used by this communicator (either MDI_TCP or MDI_MPI) */
+  /*! \brief Communication method used by this communicator */
   int method;
-  /*! \brief MPI_Comm handle that corresponds to this communicator */
+  /*! \brief MDI_Comm handle that corresponds to this communicator */
   MDI_Comm_Type id;
   /*! \brief Handle for the id of the associated code */
   int code_id;
   /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (WINDOWS) */
   sock_t sockfd;
-  /*! \brief For communicators using the MPI communicatiom method, the inter-code MPI 
-  communicator */
-  MPI_Comm mpi_comm;
-  /*! \brief For communicators using the MPI communication method, the rank of this 
-  process within the inter-code MPI communicator */
-  int mpi_rank;
   /*! \brief The MDI version of the connected code */
   int mdi_version[3];
   /*! \brief The nodes supported by the connected code */
