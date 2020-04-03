@@ -246,7 +246,6 @@ int new_code() {
   vector_init(comms_vec, sizeof(communicator));
   new_code.comms = comms_vec;
 
-  new_code.is_python = 0;
   new_code.is_library = 0;
   new_code.id = (int)codes.size;
   new_code.intra_rank = 0;

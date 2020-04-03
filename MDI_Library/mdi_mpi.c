@@ -301,7 +301,7 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
   }
 
   // send the data
-  if ( this_code->is_python == 0 ) {
+  if ( method_data->use_mpi4py == 0 ) {
     MPI_Send((void*)buf, count, mpi_type, (method_data->mpi_rank+1)%2, 0, method_data->mpi_comm);
   }
   else {
@@ -358,7 +358,7 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
   }
 
   // receive the data
-  if ( this_code->is_python == 0 ) {
+  if ( method_data->use_mpi4py == 0 ) {
     MPI_Recv(buf, count, mpi_type, (method_data->mpi_rank+1)%2, 0, method_data->mpi_comm, MPI_STATUS_IGNORE);
   }
   else {
