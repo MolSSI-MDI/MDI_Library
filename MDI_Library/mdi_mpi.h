@@ -9,8 +9,16 @@
 #include <mpi.h>
 #include "mdi.h"
 
+typedef struct mpi_data_struct {
+  /*! \brief Inter-code MPI communicator */
+  MPI_Comm mpi_comm;
+  /*! \brief The rank of this process within the inter-code MPI communicator */
+  int mpi_rank;
+  /*! \brief Flag whether to use mpi4py instead of the linked MPI library */
+  int use_mpi4py;
+} mpi_method_data;
+
 extern MPI_Comm intra_MPI_comm;
-extern int mpi_code_rank;
 extern int world_size;
 extern int world_rank;
 
@@ -23,5 +31,7 @@ int mpi_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 int mpi_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
 int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
+
+int communicator_delete_mpi(void* comm);
 
 #endif

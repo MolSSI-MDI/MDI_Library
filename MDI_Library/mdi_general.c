@@ -243,19 +243,21 @@ int general_init(const char* options, void* world_comm) {
     mpi_rank = 0;
   }
   else {
-    if ( world_rank == -1 ) {
-      if ( strcmp(language, "Fortran") == 0 ) {
-	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
-      }
-      else {
-	mpi_communicator = *(MPI_Comm*) world_comm;
-      }
-      MPI_Comm_rank(mpi_communicator, &mpi_rank);
-    }
-    else {
+    if ( strcmp(language, "Python") == 0 ) {
       // Python case
       mpi_rank = world_rank;
     }
+    else if ( strcmp(language, "Fortran") == 0 ) {
+      // Fortran case
+      mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
+      MPI_Comm_rank(mpi_communicator, &mpi_rank);
+    }
+    else {
+      // C and C++ case
+      mpi_communicator = *(MPI_Comm*) world_comm;
+      MPI_Comm_rank(mpi_communicator, &mpi_rank);
+    }
+
     // for now, set the intra rank to the world rank
     // if using MPI for communication, it may change this
     this_code->intra_rank = mpi_rank;
@@ -308,7 +310,6 @@ int general_init(const char* options, void* world_comm) {
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
   int use_mpi4py = 0;
   if ( strcmp(language, "Python") == 0 ) {
-    this_code->is_python = 1;
     use_mpi4py = 1;
   }
 
