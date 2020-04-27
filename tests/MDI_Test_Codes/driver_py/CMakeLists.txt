@@ -1,1 +1,1 @@
-configure_file(${CMAKE_SOURCE_DIR}/tests/MDI_Test_Codes/driver_py/driver_py.py ${CMAKE_BINARY_DIR}/driver_py.py COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/driver_py.py ${CMAKE_CURRENT_BINARY_DIR}/../../../driver_py.py COPYONLY)

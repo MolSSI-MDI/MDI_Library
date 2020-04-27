@@ -1,1 +1,1 @@
-configure_file(${CMAKE_SOURCE_DIR}/tests/MDI_Test_Codes/engine_py/engine_py.py ${CMAKE_BINARY_DIR}/engine_py.py COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/engine_py.py ${CMAKE_CURRENT_BINARY_DIR}/../../../engine_py.py COPYONLY)
