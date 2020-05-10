@@ -255,7 +255,7 @@ int library_execute_command(MDI_Comm comm) {
  *                   2: The body (data) of a message.
  */
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
+  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
     mdi_error("MDI data type not recognized in library_send");
     return 1;
   }
@@ -419,7 +419,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
     return 0;
   }
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR ) {
+  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
     mdi_error("MDI data type not recognized in library_send");
     return 1;
   }
