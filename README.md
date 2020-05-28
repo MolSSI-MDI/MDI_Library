@@ -13,7 +13,7 @@ The MolSSI Driver Interface (MDI) project provides a standardized API for fast, 
 
 ## Documentation
 
-Complete documentation can be found at https://molssi.github.io/MDI_Library
+Complete documentation can be found at https://molssi-mdi.github.io/MDI_Library
 
 ## License
 
