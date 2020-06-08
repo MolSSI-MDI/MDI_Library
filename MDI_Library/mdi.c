@@ -39,7 +39,7 @@ const int MDI_MAJOR_VERSION = 1;
 const int MDI_MINOR_VERSION = 1;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 4;
+const int MDI_PATCH_VERSION = 5;
 
 /*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;

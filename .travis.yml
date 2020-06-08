@@ -82,11 +82,11 @@ matrix:
         - mingw32-make install
       before_script:
         - ls
-        - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library
-        - export PATH=$PATH:~/build/MolSSI/MDI_Library/build/install/include/MDI_Library
+        - export PATH=$PATH:~/build/MolSSI-MDI/MDI_Library/build/install/lib/MDI_Library
+        - export PATH=$PATH:~/build/MolSSI-MDI/MDI_Library/build/install/include/MDI_Library
 
         # Fortran executables don't seem to search the $PATH variable
-        - cp ~/build/MolSSI/MDI_Library/build/install/lib/MDI_Library/*.dll* .
+        - cp ~/build/MolSSI-MDI/MDI_Library/build/install/lib/MDI_Library/*.dll* .
         - ls tests/MDI_Test_Codes/STUBS_MPI
         - cp tests/MDI_Test_Codes/STUBS_MPI/*.dll* .
         - ls
