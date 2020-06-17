@@ -601,6 +601,10 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     if ( command[0] == '<' ) {
       // execute the command, so that the data from the engine can be received later by the driver
       ret = library_execute_command(comm);
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
+	return ret;
+      }
     }
     else if ( command[0] == '>' ) {
       // flag the command to be executed after the next call to MDI_Send
@@ -610,10 +614,18 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     else {
       // this is a command that neither sends nor receives data, so execute it now
       ret = library_execute_command(comm);
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+	return ret;
+      }
     }
   }
   else {
     ret = general_send( command, count, MDI_CHAR, comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      return ret;
+    }
   }
 
   // if the command was "EXIT", delete this communicator
@@ -715,11 +727,19 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int datatype = MDI_CHAR;
 
   int ret = general_recv( buf, count, datatype, comm );
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Recv_Command: Unable to receive command");
+    return ret;
+  }
 
   // check if this command corresponds to one of MDI's standard built-in commands
   int builtin_flag = general_builtin_command(buf, comm);
   if ( builtin_flag == 1 ) {
     return general_recv_command(buf, comm);
+  }
+  else if ( builtin_flag != 0 ) {
+    mdi_error("Error in MDI_Recv_Command: Unable to respond to builtin command");
+    return builtin_flag;
   }
 
   return ret;
