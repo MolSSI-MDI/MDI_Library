@@ -204,7 +204,7 @@ int library_set_command(const char* command, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int library_execute_command(MDI_Comm comm) {
-  int ret;
+  int ret = 0;
 
   int idriver = current_code;
   communicator* this = get_communicator(current_code, comm);
