@@ -49,7 +49,7 @@ IMPLICIT NONE
    call MPI_Comm_rank( world_comm, world_rank, ierr );
 
    ! Create an instance of the engine library
-   lib_arg = "-role ENGINE -name MM -method LIB -driver_name driver"
+   lib_arg = "-role ENGINE -name MM -method LINK -driver_name driver"
    call engine_lib_f90_create(lib_arg, world_comm)
 
    ! Connct to the engine

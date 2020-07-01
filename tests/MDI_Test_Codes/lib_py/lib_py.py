@@ -98,17 +98,17 @@ else:
     task_rank = 0
 
 # Check if this connection uses the LIBRARY method
-method = mdi.MDI_LIB
+method = mdi.MDI_LINK
 
 niterations = 10
 for iiteration in range(niterations):
 
     # Create and connect to a library instance that spans the MPI task communicator
-    MDIEngine("-role ENGINE -name MM -method LIB -driver_name driver", mpi_task_comm)
+    MDIEngine("-role ENGINE -name MM -method LINK -driver_name driver", mpi_task_comm)
     comm = mdi.MDI_Accept_Communicator()
 
     # Create and connect to a library instance that spans MPI_COMM_WORLD
-    MDIEngine("-role ENGINE -name unsplit -method LIB -driver_name driver", mpi_world)
+    MDIEngine("-role ENGINE -name unsplit -method LINK -driver_name driver", mpi_world)
     comm_unsplit = mdi.MDI_Accept_Communicator()
 
     # Communicate with the library instance that spans the MPI task communicator

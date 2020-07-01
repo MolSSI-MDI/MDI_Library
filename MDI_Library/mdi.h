@@ -59,7 +59,7 @@ DllExport extern const int MDI_BYTE;
 // MDI communication types
 DllExport extern const int MDI_TCP;
 DllExport extern const int MDI_MPI;
-DllExport extern const int MDI_LIB;
+DllExport extern const int MDI_LINK;
 DllExport extern const int MDI_TEST;
 
 // MDI role types

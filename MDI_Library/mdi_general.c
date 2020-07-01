@@ -269,7 +269,7 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // if the method is not LIB, ensure that MDI has not been previously initialized
-  if ( strcmp(method, "LIB") != 0 ) {
+  if ( strcmp(method, "LINK") != 0 ) {
     if ( is_initialized == 1 ) {
       mdi_error("MDI_Init called after MDI was already initialized");
       return 1;
@@ -289,7 +289,7 @@ int general_init(const char* options, void* world_comm) {
 
   // Check if this is an engine being used as a library
   if (strcmp(this_code->role, "ENGINE") == 0) {
-    if ( strcmp(method, "LIB") == 0 ) {
+    if ( strcmp(method, "LINK") == 0 ) {
       this_code->is_library = 1;
     }
   }
@@ -329,7 +329,7 @@ int general_init(const char* options, void* world_comm) {
 	tcp_listen(port);
       }
     }
-    else if ( strcmp(method, "LIB") == 0 ) {
+    else if ( strcmp(method, "LINK") == 0 ) {
       //library_initialize();
     }
     else if ( strcmp(method, "TEST") == 0 ) {
@@ -362,7 +362,7 @@ int general_init(const char* options, void* world_comm) {
 	tcp_request_connection(port, hostname);
       }
     }
-    else if ( strcmp(method, "LIB") == 0 ) {
+    else if ( strcmp(method, "LINK") == 0 ) {
       if ( has_driver_name == 0 ) {
 	mdi_error("Error in MDI_Init: -driver_name option not provided");
 	return 1;
@@ -594,7 +594,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   int ret;
 
   snprintf(command, COMMAND_LENGTH, "%s", buf);
-  if ( method == MDI_LIB ) {
+  if ( method == MDI_LINK ) {
     // set the command for the engine to execute
     library_set_command(command, comm);
 

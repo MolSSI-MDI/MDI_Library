@@ -66,7 +66,7 @@ const int MDI_TCP    = 1;
 /*! \brief MPI communication method */
 const int MDI_MPI    = 2;
 /*! \brief Library communication method */
-const int MDI_LIB    = 3;
+const int MDI_LINK    = 3;
 /*! \brief Test communication method */
 const int MDI_TEST   = 4;
 

@@ -18,7 +18,7 @@
 int library_initialize() {
   code* this_code = get_code(current_code);
 
-  MDI_Comm comm_id = new_communicator(this_code->id, MDI_LIB);
+  MDI_Comm comm_id = new_communicator(this_code->id, MDI_LINK);
   communicator* new_comm = get_communicator(this_code->id, comm_id);
   new_comm->delete = communicator_delete_lib;
   new_comm->send = library_send;

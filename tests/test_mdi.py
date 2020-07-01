@@ -58,7 +58,7 @@ def test_cxx_cxx_lib():
     driver_name = glob.glob("../build/driver_lib_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LIB"],
+    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     driver_tup = driver_proc.communicate()
 
@@ -74,7 +74,7 @@ def test_f90_f90_lib():
     driver_name = glob.glob("../build/driver_lib_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LIB"],
+    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     driver_tup = driver_proc.communicate()
 
@@ -87,7 +87,7 @@ def test_f90_f90_lib():
 
 def test_py_py_lib():
     # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LIB"],
+    driver_proc = subprocess.Popen([sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LINK"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
@@ -123,7 +123,7 @@ NATOMS: 10
 
 def test_py_py_lib_mpi():
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","2",sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LIB"],
+    driver_proc = subprocess.Popen(["mpiexec","-n","2",sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LINK"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
