@@ -29,7 +29,7 @@ elseif( language STREQUAL "Python" )
    set(use_C "C")
    set(use_Python "Python")
 else()
-   message( FATAL_ERROR "Language not supported.  Supported languages: C, Fortran, Python" )
+   message( FATAL_ERROR "Language not supported.  Supported languages: C, CXX, Fortran, Python" )
 endif()
 
 project(mdi
