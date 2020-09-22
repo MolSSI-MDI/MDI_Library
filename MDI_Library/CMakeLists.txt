@@ -15,8 +15,8 @@ if( NOT MPI_FOUND )
 endif()
 
 #confirm that "language" is a valid value
-if( language AND (NOT language STREQUAL "C") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
-   message( FATAL_ERROR "Value of language not recognized. Accepted values are: C; Fortran; Python." )
+if( language AND (NOT language STREQUAL "C") AND (NOT language STREQUAL "CXX") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
+   message( FATAL_ERROR "Value of language not recognized. Accepted values are: C; CXX; Fortran; Python." )
 endif()
 
 #determine whether this is a SHARED or STATIC build
