@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi_mpi.c File Reference</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/mdi_mpi.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -102,12 +102,16 @@ Functions</h2></td></tr>
 <tr class="memitem:ae66fead66748e44e6c85283f44b98a15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#ae66fead66748e44e6c85283f44b98a15">mpi_update_world_comm</a> (void *world_comm)</td></tr>
 <tr class="memdesc:ae66fead66748e44e6c85283f44b98a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a pointer to MPI_COMM_WORLD to instead point to the intra-code MPI communicator.  <a href="#ae66fead66748e44e6c85283f44b98a15">More...</a><br /></td></tr>
 <tr class="separator:ae66fead66748e44e6c85283f44b98a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d66b1817b94f69720226726dd96f652"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a6d66b1817b94f69720226726dd96f652">mpi_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a6d66b1817b94f69720226726dd96f652"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through an MDI connection, using MPI.  <a href="#a6d66b1817b94f69720226726dd96f652">More...</a><br /></td></tr>
-<tr class="separator:a6d66b1817b94f69720226726dd96f652"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a314d5aa4402c37f22231a4ba96897de6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a314d5aa4402c37f22231a4ba96897de6">mpi_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a314d5aa4402c37f22231a4ba96897de6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through an MDI connection, using MPI.  <a href="#a314d5aa4402c37f22231a4ba96897de6">More...</a><br /></td></tr>
-<tr class="separator:a314d5aa4402c37f22231a4ba96897de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a43a4b83b8dd21effd6ea28d9168d57"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a1a43a4b83b8dd21effd6ea28d9168d57">mpi_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:a1a43a4b83b8dd21effd6ea28d9168d57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through an MDI connection, using MPI.  <a href="#a1a43a4b83b8dd21effd6ea28d9168d57">More...</a><br /></td></tr>
+<tr class="separator:a1a43a4b83b8dd21effd6ea28d9168d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec3b930e313d9f1294ddf87c85bd3b2a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#aec3b930e313d9f1294ddf87c85bd3b2a">mpi_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:aec3b930e313d9f1294ddf87c85bd3b2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through an MDI connection, using MPI.  <a href="#aec3b930e313d9f1294ddf87c85bd3b2a">More...</a><br /></td></tr>
+<tr class="separator:aec3b930e313d9f1294ddf87c85bd3b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23dac41bb73dc520d2786da835507b50"><td class="memItemLeft" align="right" valign="top"><a id="a23dac41bb73dc520d2786da835507b50"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a23dac41bb73dc520d2786da835507b50">communicator_delete_mpi</a> (void *comm)</td></tr>
+<tr class="memdesc:a23dac41bb73dc520d2786da835507b50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for MPI-specific deletion operations for communicator deletion. <br /></td></tr>
+<tr class="separator:a23dac41bb73dc520d2786da835507b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -115,9 +119,6 @@ Variables</h2></td></tr>
 MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a94117669fa21b6293d144b9f2ec9bc77">intra_MPI_comm</a> = 0</td></tr>
 <tr class="memdesc:a94117669fa21b6293d144b9f2ec9bc77"><td class="mdescLeft">&#160;</td><td class="mdescRight">MPI communicator corresponding to all processes created by the same code as this process. <br /></td></tr>
 <tr class="separator:a94117669fa21b6293d144b9f2ec9bc77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6da60e1bcb42aadfd89405b192a82cf4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#a6da60e1bcb42aadfd89405b192a82cf4">mpi_code_rank</a> = 0</td></tr>
-<tr class="memdesc:a6da60e1bcb42aadfd89405b192a82cf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rank of this process within its associated code.  <a href="#a6da60e1bcb42aadfd89405b192a82cf4">More...</a><br /></td></tr>
-<tr class="separator:a6da60e1bcb42aadfd89405b192a82cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8411355a7d80016be6edcce3437b978"><td class="memItemLeft" align="right" valign="top"><a id="ab8411355a7d80016be6edcce3437b978"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8c.html#ab8411355a7d80016be6edcce3437b978">world_size</a> = -1</td></tr>
 <tr class="memdesc:ab8411355a7d80016be6edcce3437b978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of MPI_COMM_WORLD. <br /></td></tr>
@@ -174,8 +175,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 
 </div>
 </div>
-<a id="a314d5aa4402c37f22231a4ba96897de6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a314d5aa4402c37f22231a4ba96897de6">&#9670;&nbsp;</a></span>mpi_recv()</h2>
+<a id="aec3b930e313d9f1294ddf87c85bd3b2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec3b930e313d9f1294ddf87c85bd3b2a">&#9670;&nbsp;</a></span>mpi_recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,7 +203,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -219,14 +226,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a6d66b1817b94f69720226726dd96f652"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d66b1817b94f69720226726dd96f652">&#9670;&nbsp;</a></span>mpi_send()</h2>
+<a id="a1a43a4b83b8dd21effd6ea28d9168d57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a43a4b83b8dd21effd6ea28d9168d57">&#9670;&nbsp;</a></span>mpi_send()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,7 +261,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -270,6 +284,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>
@@ -351,24 +366,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a6da60e1bcb42aadfd89405b192a82cf4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6da60e1bcb42aadfd89405b192a82cf4">&#9670;&nbsp;</a></span>mpi_code_rank</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int mpi_code_rank = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Rank of this process within its associated code. </p>
-<p>Order of this code within all codes represented by MPI_COMM_WORLD </p>
 
 </div>
 </div>

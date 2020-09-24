@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['mdi_5fbyte',['MDI_BYTE',['../mdi_8c.html#a75761ac21c03622719a105c10d5171b4',1,'MDI_BYTE():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a18b7fa15c43f788ac72e2a44ade2a7a1',1,'MDI_Library.mdi.MDI_BYTE()']]],
   ['mdi_5fchar',['MDI_CHAR',['../mdi_8c.html#a508f568d6a6cba24d6015347d6c1469e',1,'MDI_CHAR():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#aa2cd3ffb7429608e6a1c6a6210c66458',1,'MDI_Library.mdi.MDI_CHAR()']]],
   ['mdi_5fcomm_5fnull',['MDI_COMM_NULL',['../mdi_8c.html#a01e277b0239a7304055c883adb759280',1,'MDI_COMM_NULL():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a593a56401a39e9a114ad8a40564b4495',1,'MDI_Library.mdi.MDI_COMM_NULL()']]],
   ['mdi_5fcommand_5flength',['MDI_COMMAND_LENGTH',['../mdi_8c.html#ae5fcebdb64c7844358e07e880bcb15c2',1,'MDI_COMMAND_LENGTH():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a0710a54c5275d6bfefbfb38d885034a4',1,'MDI_Library.mdi.MDI_COMMAND_LENGTH()']]],
@@ -7,7 +8,7 @@ var searchData=
   ['mdi_5fdriver',['MDI_DRIVER',['../mdi_8c.html#a3b915c702251d2418e8daec9f923313a',1,'MDI_DRIVER():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a7bcdccfb04b974d48ca2e24213abf0b5',1,'MDI_Library.mdi.MDI_DRIVER()']]],
   ['mdi_5fengine',['MDI_ENGINE',['../mdi_8c.html#aa3a524bd924c365be0f92734d66af39f',1,'MDI_ENGINE():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#aa055ad935d8f97ce99de7bc524ab4da2',1,'MDI_Library.mdi.MDI_ENGINE()']]],
   ['mdi_5fint',['MDI_INT',['../mdi_8c.html#ab88e0bb1563ba9fa73ffc49a704e43ad',1,'MDI_INT():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a8c682f798ce039e84e455631e708f695',1,'MDI_Library.mdi.MDI_INT()']]],
-  ['mdi_5flib',['MDI_LIB',['../mdi_8c.html#a26c98853643269eedefaa89ce0730022',1,'MDI_LIB():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ad27be674f24eb002a3085b9db33cbaa7',1,'MDI_Library.mdi.MDI_LIB()']]],
+  ['mdi_5flink',['MDI_LINK',['../mdi_8c.html#ac545ac5cbde8c46c65c073000d395d51',1,'MDI_LINK():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ab86765c8fb3f9312ff42897b4f59af07',1,'MDI_Library.mdi.MDI_LINK()']]],
   ['mdi_5fmajor_5fversion',['MDI_MAJOR_VERSION',['../mdi_8c.html#a06174f1b52ec94b7d1d99f08c95a700e',1,'MDI_MAJOR_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a26dafbcfcb11d788c915686a2806eab4',1,'MDI_Library.mdi.MDI_MAJOR_VERSION()']]],
   ['mdi_5fminor_5fversion',['MDI_MINOR_VERSION',['../mdi_8c.html#a7e0c4c97de3c0fd94385a569bb34fff1',1,'MDI_MINOR_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ad595a2c75147fb944131cd600250a582',1,'MDI_Library.mdi.MDI_MINOR_VERSION()']]],
   ['mdi_5fmpi',['MDI_MPI',['../mdi_8c.html#ac9eaa23189e2bf8a92c2136ee0112a87',1,'MDI_MPI():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#af04c7fd0d5579c49735c7c7f0fce4f19',1,'MDI_Library.mdi.MDI_MPI()']]],
@@ -33,7 +34,6 @@ var searchData=
   ['mpi4py_5fsize_5ffunc_5ftype',['mpi4py_size_func_type',['../namespaceMDI__Library_1_1mdi.html#adebd580c9498a80576120488c71ba9e6',1,'MDI_Library::mdi']]],
   ['mpi4py_5fsplit_5fcallback',['mpi4py_split_callback',['../mdi__global_8c.html#a2fb5147122802109f77955d8fdf870d3',1,'mpi4py_split_callback():&#160;mdi_global.c'],['../mdi__global_8h.html#a2fb5147122802109f77955d8fdf870d3',1,'mpi4py_split_callback():&#160;mdi_global.c']]],
   ['mpi4py_5fsplit_5ffunc_5ftype',['mpi4py_split_func_type',['../namespaceMDI__Library_1_1mdi.html#aab5aee33007a01724ccee012cce25eb1',1,'MDI_Library::mdi']]],
-  ['mpi_5fcode_5frank',['mpi_code_rank',['../mdi__mpi_8c.html#a6da60e1bcb42aadfd89405b192a82cf4',1,'mpi_code_rank():&#160;mdi_mpi.c'],['../mdi__mpi_8h.html#a6da60e1bcb42aadfd89405b192a82cf4',1,'mpi_code_rank():&#160;mdi_mpi.c']]],
-  ['mpi_5fcomm',['mpi_comm',['../structcommunicator__struct.html#a2a65c13dff3a01c383f0bd306cc9fb4b',1,'communicator_struct']]],
-  ['mpi_5frank',['mpi_rank',['../structcommunicator__struct.html#a72d04b0314ebff74daf08cfc97a7f8ff',1,'communicator_struct']]]
+  ['mpi_5fcomm',['mpi_comm',['../structmpi__data__struct.html#a30dbf4540fb4bb59dfe21c2776eeeca9',1,'mpi_data_struct']]],
+  ['mpi_5frank',['mpi_rank',['../structmpi__data__struct.html#a008756bcdf1899652d5c1a5f3a378f23',1,'mpi_data_struct']]]
 ];

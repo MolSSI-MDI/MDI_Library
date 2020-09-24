@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi_tcp.c File Reference</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/mdi_tcp.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -106,19 +106,19 @@ Functions</h2></td></tr>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ad9d6ed32787d7fb6cd0a555fd8b63b91">tcp_accept_connection</a> ()</td></tr>
 <tr class="memdesc:ad9d6ed32787d7fb6cd0a555fd8b63b91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a TCP connection request. <br /></td></tr>
 <tr class="separator:ad9d6ed32787d7fb6cd0a555fd8b63b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a12e10900350ba498b9ac152371fc42"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a9a12e10900350ba498b9ac152371fc42">tcp_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a9a12e10900350ba498b9ac152371fc42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through an MDI connection, using TCP.  <a href="#a9a12e10900350ba498b9ac152371fc42">More...</a><br /></td></tr>
-<tr class="separator:a9a12e10900350ba498b9ac152371fc42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac808d4f5841695e1ea60cbbf23ef77f7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ac808d4f5841695e1ea60cbbf23ef77f7">tcp_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:ac808d4f5841695e1ea60cbbf23ef77f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through an MDI connection, using TCP.  <a href="#ac808d4f5841695e1ea60cbbf23ef77f7">More...</a><br /></td></tr>
-<tr class="separator:ac808d4f5841695e1ea60cbbf23ef77f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a813e2b1b10b9c069227b6a4afac0e2ed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a813e2b1b10b9c069227b6a4afac0e2ed">tcp_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:a813e2b1b10b9c069227b6a4afac0e2ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through an MDI connection, using TCP.  <a href="#a813e2b1b10b9c069227b6a4afac0e2ed">More...</a><br /></td></tr>
+<tr class="separator:a813e2b1b10b9c069227b6a4afac0e2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1debb8c0b825d277a70db864450d1ac0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a1debb8c0b825d277a70db864450d1ac0">tcp_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:a1debb8c0b825d277a70db864450d1ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through an MDI connection, using TCP.  <a href="#a1debb8c0b825d277a70db864450d1ac0">More...</a><br /></td></tr>
+<tr class="separator:a1debb8c0b825d277a70db864450d1ac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a58bcdde21e0687d1b5634b673451357a"><td class="memItemLeft" align="right" valign="top"><a id="a58bcdde21e0687d1b5634b673451357a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a58bcdde21e0687d1b5634b673451357a">tcp_socket</a> = -1</td></tr>
-<tr class="memdesc:a58bcdde21e0687d1b5634b673451357a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket over which a driver will listen for incoming connections. <br /></td></tr>
-<tr class="separator:a58bcdde21e0687d1b5634b673451357a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="memItemLeft" align="right" valign="top"><a id="ab6f3723dc8b08cb2534fa22a58cf7553"></a>
+sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ab6f3723dc8b08cb2534fa22a58cf7553">tcp_socket</a> = -1</td></tr>
+<tr class="memdesc:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket over which a driver will listen for incoming connections. <br /></td></tr>
+<tr class="separator:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>TCP communication implementation. </p>
@@ -175,8 +175,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 
 </div>
 </div>
-<a id="ac808d4f5841695e1ea60cbbf23ef77f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac808d4f5841695e1ea60cbbf23ef77f7">&#9670;&nbsp;</a></span>tcp_recv()</h2>
+<a id="a1debb8c0b825d277a70db864450d1ac0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1debb8c0b825d277a70db864450d1ac0">&#9670;&nbsp;</a></span>tcp_recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -203,7 +203,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -220,6 +226,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>
@@ -263,8 +270,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 
 </div>
 </div>
-<a id="a9a12e10900350ba498b9ac152371fc42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a12e10900350ba498b9ac152371fc42">&#9670;&nbsp;</a></span>tcp_send()</h2>
+<a id="a813e2b1b10b9c069227b6a4afac0e2ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a813e2b1b10b9c069227b6a4afac0e2ed">&#9670;&nbsp;</a></span>tcp_send()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,7 +298,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -308,6 +321,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>

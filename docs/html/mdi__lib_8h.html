@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi_lib.h File Reference</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/mdi_lib.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -115,12 +115,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a4dc4e78fb4ebf75990666e46dc437b97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a4dc4e78fb4ebf75990666e46dc437b97">library_execute_command</a> (MDI_Comm comm)</td></tr>
 <tr class="memdesc:a4dc4e78fb4ebf75990666e46dc437b97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute a command through a communicator.  <a href="#a4dc4e78fb4ebf75990666e46dc437b97">More...</a><br /></td></tr>
 <tr class="separator:a4dc4e78fb4ebf75990666e46dc437b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd3c91ddb377fabb1840030cf724c609"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#abd3c91ddb377fabb1840030cf724c609">library_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:abd3c91ddb377fabb1840030cf724c609"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to handle sending data through an MDI connection, using library-based communication.  <a href="#abd3c91ddb377fabb1840030cf724c609">More...</a><br /></td></tr>
-<tr class="separator:abd3c91ddb377fabb1840030cf724c609"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bd5be68ab9eeee27db5f35c27636f61"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a2bd5be68ab9eeee27db5f35c27636f61">library_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a2bd5be68ab9eeee27db5f35c27636f61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to handle receiving data through an MDI connection, using library-based communication.  <a href="#a2bd5be68ab9eeee27db5f35c27636f61">More...</a><br /></td></tr>
-<tr class="separator:a2bd5be68ab9eeee27db5f35c27636f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab37ea0386655641a3f07f9ea14863c11"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#ab37ea0386655641a3f07f9ea14863c11">library_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:ab37ea0386655641a3f07f9ea14863c11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to handle sending data through an MDI connection, using library-based communication.  <a href="#ab37ea0386655641a3f07f9ea14863c11">More...</a><br /></td></tr>
+<tr class="separator:ab37ea0386655641a3f07f9ea14863c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6088e90893c28807b1b147a2db1995e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#af6088e90893c28807b1b147a2db1995e">library_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
+<tr class="memdesc:af6088e90893c28807b1b147a2db1995e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to handle receiving data through an MDI connection, using library-based communication.  <a href="#af6088e90893c28807b1b147a2db1995e">More...</a><br /></td></tr>
+<tr class="separator:af6088e90893c28807b1b147a2db1995e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73476e43cb31496601ffe2f24f413713"><td class="memItemLeft" align="right" valign="top"><a id="a73476e43cb31496601ffe2f24f413713"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>library_send_msg</b> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
+<tr class="separator:a73476e43cb31496601ffe2f24f413713"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfa2b70d4efd8deed1be7d5a2cb73e11"><td class="memItemLeft" align="right" valign="top"><a id="adfa2b70d4efd8deed1be7d5a2cb73e11"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>library_recv_msg</b> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
+<tr class="separator:adfa2b70d4efd8deed1be7d5a2cb73e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec19ca110ab49179a8709637a68124ce"><td class="memItemLeft" align="right" valign="top"><a id="aec19ca110ab49179a8709637a68124ce"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#aec19ca110ab49179a8709637a68124ce">communicator_delete_lib</a> (void *comm)</td></tr>
 <tr class="memdesc:aec19ca110ab49179a8709637a68124ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for LIBRARY-specific deletion operations for communicator deletion. <br /></td></tr>
@@ -222,8 +228,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 
 </div>
 </div>
-<a id="a2bd5be68ab9eeee27db5f35c27636f61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2bd5be68ab9eeee27db5f35c27636f61">&#9670;&nbsp;</a></span>library_recv()</h2>
+<a id="af6088e90893c28807b1b147a2db1995e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6088e90893c28807b1b147a2db1995e">&#9670;&nbsp;</a></span>library_recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,7 +256,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -267,14 +279,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be received. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="abd3c91ddb377fabb1840030cf724c609"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd3c91ddb377fabb1840030cf724c609">&#9670;&nbsp;</a></span>library_send()</h2>
+<a id="ab37ea0386655641a3f07f9ea14863c11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab37ea0386655641a3f07f9ea14863c11">&#9670;&nbsp;</a></span>library_send()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,7 +314,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -318,6 +337,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
     <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>Number of values (integers, double precision floats, characters, etc.) to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI handle (MDI_INT, MDI_DOUBLE, MDI_CHAR, etc.) corresponding to the type of data to be sent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the intended recipient code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">msg_flag</td><td>Type of role this data has within a message. 0: Not part of a message. 1: The header of a message. 2: The body (data) of a message. </td></tr>
   </table>
   </dd>
 </dl>
