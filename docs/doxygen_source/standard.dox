@@ -11,6 +11,15 @@ The MDI standard defines the \ref standard_units "units", data types, and format
 
 
 
+\section standard_extension Extending the MDI Standard
+
+Although the MDI Standard has been designed to enable a wide range of potential applications, it is inevitable that some use cases will require functionality that is not yet supported by the standard.
+Typically, supporting such use cases will simply require addition of one or more new \ref command_list "commands" to the MDI Standard.
+Users who find themselves in need of a new MDI command are encouraged to create an <a href="https://github.com/MolSSI-MDI/MDI_Library/issues">issue</a> describing their needs or submit a <a href="https://github.com/MolSSI-MDI/MDI_Library/pulls">pull request</a> suggesting a solution.
+
+
+
+
 \section standard_units Units
 
 All physical quantities communicated through MDI must be expressed in atomic units.
@@ -677,7 +686,6 @@ The engine sends the version number of the MDI Library to which it is linked to 
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 1 </c> <br>
-
 
 
 

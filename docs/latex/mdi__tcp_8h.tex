@@ -1,11 +1,12 @@
-\hypertarget{mdi__tcp_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.h File Reference}
-\label{mdi__tcp_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.h}}
+\hypertarget{mdi__tcp_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/docker/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.h File Reference}
+\label{mdi__tcp_8h}\index{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_tcp.h@{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_tcp.h}}
 
 
 T\+CP communication implementation.  
 
 
 {\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -18,15 +19,15 @@ int \mbox{\hyperlink{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}{tcp\+\_\+req
 \mbox{\Hypertarget{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}\label{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}} 
 int \mbox{\hyperlink{mdi__tcp_8h_ad9d6ed32787d7fb6cd0a555fd8b63b91}{tcp\+\_\+accept\+\_\+connection}} ()
 \begin{DoxyCompactList}\small\item\em Accept a T\+CP connection request. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}{tcp\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__tcp_8h_a813e2b1b10b9c069227b6a4afac0e2ed}{tcp\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm, int msg\+\_\+flag)
 \begin{DoxyCompactList}\small\item\em Send data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}{tcp\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__tcp_8h_a1debb8c0b825d277a70db864450d1ac0}{tcp\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm, int msg\+\_\+flag)
 \begin{DoxyCompactList}\small\item\em Receive data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}\label{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}} 
-int \mbox{\hyperlink{mdi__tcp_8h_a58bcdde21e0687d1b5634b673451357a}{tcp\+\_\+socket}}
+\mbox{\Hypertarget{mdi__tcp_8h_ab6f3723dc8b08cb2534fa22a58cf7553}\label{mdi__tcp_8h_ab6f3723dc8b08cb2534fa22a58cf7553}} 
+sock\+\_\+t \mbox{\hyperlink{mdi__tcp_8h_ab6f3723dc8b08cb2534fa22a58cf7553}{tcp\+\_\+socket}}
 \begin{DoxyCompactList}\small\item\em Socket over which a driver will listen for incoming connections. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -66,11 +67,11 @@ Begin listening for incoming T\+CP connections.
 \mbox{\texttt{ in}}  & {\em port} & Port to listen over \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}\label{mdi__tcp_8h_ac808d4f5841695e1ea60cbbf23ef77f7}} 
+\mbox{\Hypertarget{mdi__tcp_8h_a1debb8c0b825d277a70db864450d1ac0}\label{mdi__tcp_8h_a1debb8c0b825d277a70db864450d1ac0}} 
 \index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_recv@{tcp\_recv}}
 \index{tcp\_recv@{tcp\_recv}!mdi\_tcp.h@{mdi\_tcp.h}}
 \doxysubsubsection{\texorpdfstring{tcp\_recv()}{tcp\_recv()}}
-{\footnotesize\ttfamily int tcp\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int tcp\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int}]{msg\+\_\+flag }\end{DoxyParamCaption})}
 
 
 
@@ -85,6 +86,8 @@ Receive data through an M\+DI connection, using T\+CP.
 \mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be received. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\mbox{\texttt{ in}}  & {\em msg\+\_\+flag} & Type of role this data has within a message. 0\+: Not part of a message. 1\+: The header of a message. 2\+: The body (data) of a message. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8h_a4db9ca27b7a981a696957689cd35b20d}} 
@@ -104,11 +107,11 @@ Request a connection over T\+CP.
 \mbox{\texttt{ in}}  & {\em hostname\+\_\+ptr} & Hostname of the driver \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}\label{mdi__tcp_8h_a9a12e10900350ba498b9ac152371fc42}} 
+\mbox{\Hypertarget{mdi__tcp_8h_a813e2b1b10b9c069227b6a4afac0e2ed}\label{mdi__tcp_8h_a813e2b1b10b9c069227b6a4afac0e2ed}} 
 \index{mdi\_tcp.h@{mdi\_tcp.h}!tcp\_send@{tcp\_send}}
 \index{tcp\_send@{tcp\_send}!mdi\_tcp.h@{mdi\_tcp.h}}
 \doxysubsubsection{\texorpdfstring{tcp\_send()}{tcp\_send()}}
-{\footnotesize\ttfamily int tcp\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int tcp\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int}]{msg\+\_\+flag }\end{DoxyParamCaption})}
 
 
 
@@ -123,5 +126,7 @@ Send data through an M\+DI connection, using T\+CP.
 \mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\mbox{\texttt{ in}}  & {\em msg\+\_\+flag} & Type of role this data has within a message. 0\+: Not part of a message. 1\+: The header of a message. 2\+: The body (data) of a message. \\
 \hline
 \end{DoxyParams}

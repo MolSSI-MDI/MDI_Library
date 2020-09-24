@@ -1,5 +1,5 @@
-\hypertarget{mdi__general_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+general.h File Reference}
-\label{mdi__general_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_general.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_general.h}}
+\hypertarget{mdi__general_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/docker/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+general.h File Reference}
+\label{mdi__general_8h}\index{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_general.h@{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_general.h}}
 
 
 Generic M\+DI function calls.  
@@ -15,9 +15,9 @@ int \mbox{\hyperlink{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}{general\
 int \mbox{\hyperlink{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}{general\+\_\+accept\+\_\+communicator}} ()
 \begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a4df1892a55f407c2620357941c60bc03}{general\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\begin{DoxyCompactList}\small\item\em Send data through the M\+DI connection. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Send a message through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}{general\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
-\begin{DoxyCompactList}\small\item\em Receive data through the M\+DI connection. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Receive a message through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}{general\+\_\+send\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}{general\+\_\+recv\+\_\+command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
@@ -116,7 +116,7 @@ If using the \char`\"{}-\/method M\+P\+I\char`\"{} option, this function must be
 
 
 
-Receive data through the M\+DI connection. 
+Receive a message through the M\+DI connection. 
 
 If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 
@@ -158,7 +158,7 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 
 
 
-Send data through the M\+DI connection. 
+Send a message through the M\+DI connection. 
 
 If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
 

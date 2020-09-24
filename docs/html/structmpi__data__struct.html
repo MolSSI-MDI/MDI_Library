@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: dynamic_array_struct Struct Reference</title>
+<title>Molssi Driver Interface Library: mpi_data_struct Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,33 +66,29 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structdynamic__array__struct-members.html">List of all members</a>  </div>
+<a href="structmpi__data__struct-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">dynamic_array_struct Struct Reference</div>  </div>
+<div class="title">mpi_data_struct Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:acdf8715c6be1adbb6ab128b47290df75"><td class="memItemLeft" align="right" valign="top"><a id="acdf8715c6be1adbb6ab128b47290df75"></a>
-unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html#acdf8715c6be1adbb6ab128b47290df75">data</a></td></tr>
-<tr class="memdesc:acdf8715c6be1adbb6ab128b47290df75"><td class="mdescLeft">&#160;</td><td class="mdescRight">The elements stored by this vector. <br /></td></tr>
-<tr class="separator:acdf8715c6be1adbb6ab128b47290df75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a954737a27d8650b96e8a7167545fc87c"><td class="memItemLeft" align="right" valign="top"><a id="a954737a27d8650b96e8a7167545fc87c"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html#a954737a27d8650b96e8a7167545fc87c">stride</a></td></tr>
-<tr class="memdesc:a954737a27d8650b96e8a7167545fc87c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of each element. <br /></td></tr>
-<tr class="separator:a954737a27d8650b96e8a7167545fc87c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c21af687047cf2776e01e0c051f8da7"><td class="memItemLeft" align="right" valign="top"><a id="a0c21af687047cf2776e01e0c051f8da7"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html#a0c21af687047cf2776e01e0c051f8da7">capacity</a></td></tr>
-<tr class="memdesc:a0c21af687047cf2776e01e0c051f8da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total number of elements that can be stored by this vector. <br /></td></tr>
-<tr class="separator:a0c21af687047cf2776e01e0c051f8da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c9b2cb6c298d0c5e63458e47ed7fb8e"><td class="memItemLeft" align="right" valign="top"><a id="a4c9b2cb6c298d0c5e63458e47ed7fb8e"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html#a4c9b2cb6c298d0c5e63458e47ed7fb8e">size</a></td></tr>
-<tr class="memdesc:a4c9b2cb6c298d0c5e63458e47ed7fb8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of elements actually stored. <br /></td></tr>
-<tr class="separator:a4c9b2cb6c298d0c5e63458e47ed7fb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30dbf4540fb4bb59dfe21c2776eeeca9"><td class="memItemLeft" align="right" valign="top"><a id="a30dbf4540fb4bb59dfe21c2776eeeca9"></a>
+MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmpi__data__struct.html#a30dbf4540fb4bb59dfe21c2776eeeca9">mpi_comm</a></td></tr>
+<tr class="memdesc:a30dbf4540fb4bb59dfe21c2776eeeca9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inter-code MPI communicator. <br /></td></tr>
+<tr class="separator:a30dbf4540fb4bb59dfe21c2776eeeca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008756bcdf1899652d5c1a5f3a378f23"><td class="memItemLeft" align="right" valign="top"><a id="a008756bcdf1899652d5c1a5f3a378f23"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmpi__data__struct.html#a008756bcdf1899652d5c1a5f3a378f23">mpi_rank</a></td></tr>
+<tr class="memdesc:a008756bcdf1899652d5c1a5f3a378f23"><td class="mdescLeft">&#160;</td><td class="mdescRight">The rank of this process within the inter-code MPI communicator. <br /></td></tr>
+<tr class="separator:a008756bcdf1899652d5c1a5f3a378f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0b3a5479e3e6c2e74ca7904e2dc6b70"><td class="memItemLeft" align="right" valign="top"><a id="ab0b3a5479e3e6c2e74ca7904e2dc6b70"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmpi__data__struct.html#ab0b3a5479e3e6c2e74ca7904e2dc6b70">use_mpi4py</a></td></tr>
+<tr class="memdesc:ab0b3a5479e3e6c2e74ca7904e2dc6b70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag whether to use mpi4py instead of the linked MPI library. <br /></td></tr>
+<tr class="separator:ab0b3a5479e3e6c2e74ca7904e2dc6b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a></li>
+<li>/Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/<a class="el" href="mdi__mpi_8h_source.html">mdi_mpi.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.16-->

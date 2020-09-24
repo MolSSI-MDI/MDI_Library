@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi_general.h File Reference</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/docker/MDI_Library/MDI_Library/mdi_general.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -92,10 +92,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a29ba5cd8b9eb5fc5e1fcbe3576333dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a new MDI communicator.  <a href="#a29ba5cd8b9eb5fc5e1fcbe3576333dec">More...</a><br /></td></tr>
 <tr class="separator:a29ba5cd8b9eb5fc5e1fcbe3576333dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4df1892a55f407c2620357941c60bc03"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a4df1892a55f407c2620357941c60bc03">general_send</a> (const void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a4df1892a55f407c2620357941c60bc03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send data through the MDI connection.  <a href="#a4df1892a55f407c2620357941c60bc03">More...</a><br /></td></tr>
+<tr class="memdesc:a4df1892a55f407c2620357941c60bc03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a message through the MDI connection.  <a href="#a4df1892a55f407c2620357941c60bc03">More...</a><br /></td></tr>
 <tr class="separator:a4df1892a55f407c2620357941c60bc03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4eef11edcab5763b906eb5ee84c7ed0c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a4eef11edcab5763b906eb5ee84c7ed0c">general_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm)</td></tr>
-<tr class="memdesc:a4eef11edcab5763b906eb5ee84c7ed0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through the MDI connection.  <a href="#a4eef11edcab5763b906eb5ee84c7ed0c">More...</a><br /></td></tr>
+<tr class="memdesc:a4eef11edcab5763b906eb5ee84c7ed0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a message through the MDI connection.  <a href="#a4eef11edcab5763b906eb5ee84c7ed0c">More...</a><br /></td></tr>
 <tr class="separator:a4eef11edcab5763b906eb5ee84c7ed0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac26eef55a46e5a5da1f7a32be5d7bd0f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#ac26eef55a46e5a5da1f7a32be5d7bd0f">general_send_command</a> (const char *buf, MDI_Comm comm)</td></tr>
 <tr class="memdesc:ac26eef55a46e5a5da1f7a32be5d7bd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="#ac26eef55a46e5a5da1f7a32be5d7bd0f">More...</a><br /></td></tr>
@@ -284,7 +284,7 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
       </table>
 </div><div class="memdoc">
 
-<p>Receive data through the MDI connection. </p>
+<p>Receive a message through the MDI connection. </p>
 <p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -374,7 +374,7 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
       </table>
 </div><div class="memdoc">
 
-<p>Send data through the MDI connection. </p>
+<p>Send a message through the MDI connection. </p>
 <p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on a success.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

@@ -1,5 +1,5 @@
-\hypertarget{mdi__lib_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
-\label{mdi__lib_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h}}
+\hypertarget{mdi__lib_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/docker/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
+\label{mdi__lib_8h}\index{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_lib.h@{/Users/tbarnes/Documents/mdi/docker/MDI\_Library/MDI\_Library/mdi\_lib.h}}
 
 
 Implementation of library-\/based communication.  
@@ -33,10 +33,16 @@ int \mbox{\hyperlink{mdi__lib_8h_a396792d658225d047aeaecc0737596dd}{library\+\_\
 \begin{DoxyCompactList}\small\item\em Set the next command that will be executed through the library communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a4dc4e78fb4ebf75990666e46dc437b97}{library\+\_\+execute\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Execute a command through a communicator. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__lib_8h_abd3c91ddb377fabb1840030cf724c609}{library\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__lib_8h_ab37ea0386655641a3f07f9ea14863c11}{library\+\_\+send}} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm, int msg\+\_\+flag)
 \begin{DoxyCompactList}\small\item\em Function to handle sending data through an M\+DI connection, using library-\/based communication. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__lib_8h_a2bd5be68ab9eeee27db5f35c27636f61}{library\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}{library\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm, int msg\+\_\+flag)
 \begin{DoxyCompactList}\small\item\em Function to handle receiving data through an M\+DI connection, using library-\/based communication. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_a73476e43cb31496601ffe2f24f413713}\label{mdi__lib_8h_a73476e43cb31496601ffe2f24f413713}} 
+int {\bfseries library\+\_\+send\+\_\+msg} (const void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\item 
+\mbox{\Hypertarget{mdi__lib_8h_adfa2b70d4efd8deed1be7d5a2cb73e11}\label{mdi__lib_8h_adfa2b70d4efd8deed1be7d5a2cb73e11}} 
+int {\bfseries library\+\_\+recv\+\_\+msg} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
+\item 
 \mbox{\Hypertarget{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}\label{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}} 
 int \mbox{\hyperlink{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}{communicator\+\_\+delete\+\_\+lib}} (void $\ast$comm)
 \begin{DoxyCompactList}\small\item\em Function for L\+I\+B\+R\+A\+R\+Y-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -104,11 +110,11 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 
 Perform initialization of a communicator for library-\/based communication. 
 
-\mbox{\Hypertarget{mdi__lib_8h_a2bd5be68ab9eeee27db5f35c27636f61}\label{mdi__lib_8h_a2bd5be68ab9eeee27db5f35c27636f61}} 
+\mbox{\Hypertarget{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}\label{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}} 
 \index{mdi\_lib.h@{mdi\_lib.h}!library\_recv@{library\_recv}}
 \index{library\_recv@{library\_recv}!mdi\_lib.h@{mdi\_lib.h}}
 \doxysubsubsection{\texorpdfstring{library\_recv()}{library\_recv()}}
-{\footnotesize\ttfamily int library\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int library\+\_\+recv (\begin{DoxyParamCaption}\item[{void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int}]{msg\+\_\+flag }\end{DoxyParamCaption})}
 
 
 
@@ -124,12 +130,14 @@ Function to handle receiving data through an M\+DI connection, using library-\/b
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
 \hline
+\mbox{\texttt{ in}}  & {\em msg\+\_\+flag} & Type of role this data has within a message. 0\+: Not part of a message. 1\+: The header of a message. 2\+: The body (data) of a message. \\
+\hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__lib_8h_abd3c91ddb377fabb1840030cf724c609}\label{mdi__lib_8h_abd3c91ddb377fabb1840030cf724c609}} 
+\mbox{\Hypertarget{mdi__lib_8h_ab37ea0386655641a3f07f9ea14863c11}\label{mdi__lib_8h_ab37ea0386655641a3f07f9ea14863c11}} 
 \index{mdi\_lib.h@{mdi\_lib.h}!library\_send@{library\_send}}
 \index{library\_send@{library\_send}!mdi\_lib.h@{mdi\_lib.h}}
 \doxysubsubsection{\texorpdfstring{library\_send()}{library\_send()}}
-{\footnotesize\ttfamily int library\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int library\+\_\+send (\begin{DoxyParamCaption}\item[{const void $\ast$}]{buf,  }\item[{int}]{count,  }\item[{M\+D\+I\+\_\+\+Datatype}]{datatype,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int}]{msg\+\_\+flag }\end{DoxyParamCaption})}
 
 
 
@@ -144,6 +152,8 @@ Function to handle sending data through an M\+DI connection, using library-\/bas
 \mbox{\texttt{ in}}  & {\em datatype} & M\+DI handle (M\+D\+I\+\_\+\+I\+NT, M\+D\+I\+\_\+\+D\+O\+U\+B\+LE, M\+D\+I\+\_\+\+C\+H\+AR, etc.) corresponding to the type of data to be sent. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
+\hline
+\mbox{\texttt{ in}}  & {\em msg\+\_\+flag} & Type of role this data has within a message. 0\+: Not part of a message. 1\+: The header of a message. 2\+: The body (data) of a message. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__lib_8h_a396792d658225d047aeaecc0737596dd}\label{mdi__lib_8h_a396792d658225d047aeaecc0737596dd}} 
