@@ -3,6 +3,7 @@ import sys
 import glob
 import subprocess
 import pytest
+import time
 try: # Check for local build
     sys.path.append('../build')
     import MDI_Library as mdi
@@ -549,6 +550,41 @@ def test_py_py_tcp():
     assert driver_err == ""
 #    assert driver_out == " Engine name: MM\n"
     assert driver_out == driver_out_expected_py
+
+
+
+##########################
+# i-PI Tests             #
+##########################
+
+@pytest.mark.skipif(os.name == 'nt',
+                    reason="the i-PI engine does not work on Windows")
+def test_py_cxx_ipi():
+    global driver_out_expected_py
+
+    # get the name of the engine code, which includes a .exe extension on Windows
+    engine_name = glob.glob("../build/engine_ipi_cxx*")[0]
+
+    # start the driver subprocess
+    driver_proc = subprocess.Popen([sys.executable, "../build/driver_ipicomp_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021 -ipi"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+
+    # Ensure that the driver has started, since i-PI requires that the driver is listening when the engines attempt to connect
+    time.sleep(3)
+
+    # start the engine subprocess
+    engine_proc = subprocess.Popen([engine_name, "-port", "8021", "-hostname", "localhost"])
+
+    # receive the output from the subprocesses
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    #assert driver_out == driver_out_expected_py
 
 
 
