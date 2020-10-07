@@ -499,17 +499,6 @@ The engine sends the driver the number of atoms in the engine's system.
 
 
 
-\subsection recv_ncommands <NCOMMANDS
-
-The engine sends the driver the number of commands the engine supports.
-See also the \c <COMMANDS command.
-
-\par
-<b> Data Type: </b> \c MDI_INT <br>
-<b> Quantity: </b> 1
-
-
-
 \subsection recv_ndensity <NDENSITY
 
 The engine sends the number of grid points it is using to represent its electronic density on a grid.

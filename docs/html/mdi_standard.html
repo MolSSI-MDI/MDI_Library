@@ -326,11 +326,6 @@ EXIT</h2>
 <p>The engine sends the driver the number of atoms in the engine's system.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
  <b> Quantity: </b> 1</dd></dl>
-<h2><a class="anchor" id="recv_ncommands"></a>
-&lt;NCOMMANDS</h2>
-<p>The engine sends the driver the number of commands the engine supports. See also the <code>&lt;COMMANDS</code> command.</p>
-<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
- <b> Quantity: </b> 1</dd></dl>
 <h2><a class="anchor" id="recv_ndensity"></a>
 &lt;NDENSITY</h2>
 <p>The engine sends the number of grid points it is using to represent its electronic density on a grid. This command is intended to be used in conjuction with the <a class="el" href="mdi_standard.html#recv_cdensity">&lt;CDENSITY</a> and <a class="el" href="mdi_standard.html#recv_density">&lt;DENSITY</a> commands; these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation. See the <a class="el" href="mdi_standard.html#recv_density">&lt;DENSITY</a> command for more details.</p>
