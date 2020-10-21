@@ -8,6 +8,32 @@ from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
 
+# Get version number information
+base_path = os.path.dirname(os.path.realpath(__file__))
+file_path = os.path.join( base_path, 'MDI_Library', 'mdi.c' )
+found_major_version = False
+found_minor_version = False
+found_patch_version = False
+with open( file_path ) as mdi_file:
+    line = mdi_file.readline()
+    while line and ( not found_major_version or not found_minor_version or not found_patch_version ):
+        print("line: " + str(line) )
+        sline = line.split()
+        if line.startswith( 'const int MDI_MAJOR_VERSION = ' ):
+            major_version = sline[4][:-1]
+            found_major_version = True
+        elif line.startswith( 'const int MDI_MINOR_VERSION = ' ):
+            minor_version = sline[4][:-1]
+            found_minor_version = True
+        elif line.startswith( 'const int MDI_PATCH_VERSION = ' ):
+            patch_version = sline[4][:-1]
+            found_patch_version = True
+        line = mdi_file.readline()
+if not found_major_version or not found_minor_version or not found_patch_version:
+    raise RuntimeError("Unable to identify package version number")
+mdi_version = major_version + '.' + minor_version + '.' + patch_version
+
+
 class CMakeExtension(Extension):
     def __init__(self, name, source_dir=''):
         Extension.__init__(self, name, sources=[])
@@ -58,7 +84,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='pymdi',
-    version='1.1.6',
+    version=mdi_version,
     description='A library that enables code interoperability via the MolSSI Driver Interface.',
     long_description='',
     url='https://github.com/MolSSI-MDI/MDI_Library',
