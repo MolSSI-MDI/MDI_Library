@@ -217,15 +217,18 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>found_numpy</b> = Tru
 <tr class="memitem:a9e4a0eca806b846248c7ce679b5e6d0a"><td class="memItemLeft" align="right" valign="top"><a id="a9e4a0eca806b846248c7ce679b5e6d0a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True</td></tr>
 <tr class="separator:a9e4a0eca806b846248c7ce679b5e6d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0a970a41ee51c2796a9722dd5826d8c"><td class="memItemLeft" align="right" valign="top"><a id="ab0a970a41ee51c2796a9722dd5826d8c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_path</b> = os.path.join( dir_path, &quot;mdi_name&quot; )</td></tr>
+<tr class="separator:ab0a970a41ee51c2796a9722dd5826d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6259c063555b036982db5308ed19bbc"><td class="memItemLeft" align="right" valign="top"><a id="ad6259c063555b036982db5308ed19bbc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_file</b> = open(dir_path + &quot;/mdi_name&quot;,&quot;r&quot;)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_file</b> = open( mdi_name_path, &quot;r&quot; )</td></tr>
 <tr class="separator:ad6259c063555b036982db5308ed19bbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a699d640ade0ef06a2e869938d0f967cf"><td class="memItemLeft" align="right" valign="top"><a id="a699d640ade0ef06a2e869938d0f967cf"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name</b> = mdi_name_file.read()</td></tr>
 <tr class="separator:a699d640ade0ef06a2e869938d0f967cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ef2454ecfd744259a32bb638151a21d"><td class="memItemLeft" align="right" valign="top"><a id="a3ef2454ecfd744259a32bb638151a21d"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_path</b> = dir_path + &quot;/&quot; + mdi_name</td></tr>
-<tr class="separator:a3ef2454ecfd744259a32bb638151a21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d669372de0f0bc48a3a57da74b65d0c"><td class="memItemLeft" align="right" valign="top"><a id="a6d669372de0f0bc48a3a57da74b65d0c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_path</b> = os.path.join( dir_path, mdi_name )</td></tr>
+<tr class="separator:a6d669372de0f0bc48a3a57da74b65d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95785436e5114a22d0ded423da84b1d"><td class="memItemLeft" align="right" valign="top"><a id="aa95785436e5114a22d0ded423da84b1d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>mdi</b> = ctypes.CDLL(mdi_path)</td></tr>
 <tr class="separator:aa95785436e5114a22d0ded423da84b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -237,6 +240,10 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>mdi_path</b> = dir_
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#ae231959ce59ce1e0090a0d1089777d09">MDI_NAME_LENGTH</a> = ctypes.c_int.in_dll(mdi, &quot;MDI_NAME_LENGTH&quot;).value</td></tr>
 <tr class="memdesc:ae231959ce59ce1e0090a0d1089777d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">length of an MDI name in characters <br /></td></tr>
 <tr class="separator:ae231959ce59ce1e0090a0d1089777d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab38b057bbc65450a3301894311713ff2"><td class="memItemLeft" align="right" valign="top"><a id="ab38b057bbc65450a3301894311713ff2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#ab38b057bbc65450a3301894311713ff2">MDI_LABEL_LENGTH</a> = ctypes.c_int.in_dll(mdi, &quot;MDI_LABEL_LENGTH&quot;).value</td></tr>
+<tr class="memdesc:ab38b057bbc65450a3301894311713ff2"><td class="mdescLeft">&#160;</td><td class="mdescRight">length of an MDI label in characters <br /></td></tr>
+<tr class="separator:ab38b057bbc65450a3301894311713ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593a56401a39e9a114ad8a40564b4495"><td class="memItemLeft" align="right" valign="top"><a id="a593a56401a39e9a114ad8a40564b4495"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#a593a56401a39e9a114ad8a40564b4495">MDI_COMM_NULL</a> = ctypes.c_int.in_dll(mdi, &quot;MDI_COMM_NULL&quot;).value</td></tr>
 <tr class="memdesc:a593a56401a39e9a114ad8a40564b4495"><td class="mdescLeft">&#160;</td><td class="mdescRight">value of a null communicator <br /></td></tr>

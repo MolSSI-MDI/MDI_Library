@@ -288,6 +288,15 @@ If the engine is not at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node, it sends its
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
+\hypertarget{mdi_standard_send_stress}{}\doxysubsection{$<$\+L\+A\+B\+E\+LS}\label{mdi_standard_send_stress}
+The engine sends a label for each atom in its system. \char`\"{}\+Labels\char`\"{} are intended primarily for the purpose of providing a human-\/readable identifier for each of the atoms, and do not have a standardized physical meaning. It is recommended that the labels correspond to the element of each atom (i.\+e., \char`\"{}\+H\char`\"{}, \char`\"{}\+He\char`\"{}, \char`\"{}\+Li\char`\"{}, etc.), a name associated with atoms of a particular type (i.\+e., \char`\"{}\+Carboxyl\+\_\+\+Hydrogen\char`\"{}, \char`\"{}\+Methyl\+\_\+\+Hydrogen\char`\"{}), or a similarly descriptive term. The atom labels may correspond to a number identifier (i.\+e., \char`\"{}1\char`\"{}, \char`\"{}2\char`\"{}, \char`\"{}3\char`\"{}, etc.) in cases where more descriptive labels are not practical, but note that such labels must be represented using the {\ttfamily M\+D\+I\+\_\+\+C\+H\+AR} data type, as indicated below. It is required that atoms having different physical properties (i.\+e., different force field terms in a molecular mechanics simulation or different nuclear charges in a quantum chemistry simulation) have different labels.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+C\+H\+AR} ~\newline
+ {\bfseries{ Quantity\+: }} M\+D\+I\+\_\+\+L\+A\+B\+E\+L\+\_\+\+L\+E\+N\+G\+TH $\ast$ N\+A\+T\+O\+MS ~\newline
+ {\bfseries{ Format\+: }} An array of characters corresponding to the label of each atom in ascending order of atomic index, with each label consisting of M\+D\+I\+\_\+\+L\+A\+B\+E\+L\+\_\+\+L\+E\+N\+G\+TH characters and being padded with spaces (\char`\"{} \char`\"{}) where necessary ~\newline
+
+\end{DoxyParagraph}
 \hypertarget{mdi_standard_send_lattice}{}\doxysubsection{$>$\+L\+A\+T\+T\+I\+CE}\label{mdi_standard_send_lattice}
 This command, along with the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} and {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE} commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. After sending this command, the driver sends the charges of each of the point charges to the engine. Prior to sending this command, the driver must have set the number of point charges using the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE} command.
 
@@ -381,7 +390,7 @@ If the engine is not at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node, it sends its
  {\bfseries{ Quantity\+: }} 1
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_pre-forces_node}{}\doxysubsection{@\+P\+R\+E-\/\+F\+O\+R\+C\+ES}\label{mdi_standard_pre-forces_node}
-The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node.\hypertarget{mdi_standard_send_stress}{}\doxysubsection{$<$\+S\+T\+R\+E\+SS}\label{mdi_standard_send_stress}
+The engine proceeds to the next {\ttfamily  @\+P\+RE-\/F\+O\+R\+C\+ES } node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node.\hypertarget{mdi_standard_send_stress}{}\doxysubsection{$<$\+L\+A\+B\+E\+LS}\label{mdi_standard_send_stress}
 The engine sends its virial stress tensor to the driver.
 
 \begin{DoxyParagraph}{}
