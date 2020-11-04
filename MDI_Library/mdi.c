@@ -39,13 +39,16 @@ const int MDI_MAJOR_VERSION = 1;
 const int MDI_MINOR_VERSION = 1;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 6;
+const int MDI_PATCH_VERSION = 7;
 
 /*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;
 
 /*! \brief length of an MDI name in characters */
 const int MDI_NAME_LENGTH = 12;
+
+/*! \brief length of an MDI label in characters */
+const int MDI_LABEL_LENGTH = 64;
 
 /*! \brief value of a null communicator */
 const MDI_Comm MDI_COMM_NULL = 0;

@@ -449,6 +449,21 @@ If the engine is not at the \c @DEFAULT node, it sends its most recently calcula
 
 
 
+\subsection send_stress <LABELS
+
+The engine sends a label for each atom in its system.
+"Labels" are intended primarily for the purpose of providing a human-readable identifier for each of the atoms, and do not have a standardized physical meaning.
+It is recommended that the labels correspond to the element of each atom (i.e., "H", "He", "Li", etc.), a name associated with atoms of a particular type (i.e., "Carboxyl_Hydrogen", "Methyl_Hydrogen"), or a similarly descriptive term.
+The atom labels may correspond to a number identifier (i.e., "1", "2", "3", etc.) in cases where more descriptive labels are not practical, but note that such labels must be represented using the \c MDI_CHAR data type, as indicated below.
+It is required that atoms having different physical properties (i.e., different force field terms in a molecular mechanics simulation or different nuclear charges in a quantum chemistry simulation) have different labels.
+
+\par
+<b> Data Type: </b> \c MDI_CHAR <br>
+<b> Quantity: </b> MDI_LABEL_LENGTH * NATOMS <br>
+<b> Format: </b> An array of characters corresponding to the label of each atom in ascending order of atomic index, with each label consisting of MDI_LABEL_LENGTH characters and being padded with spaces (" ") where necessary <br>
+
+
+
 \subsection send_lattice >LATTICE
 
 This command, along with the \c >NLATTICE and \c >CLATTICE commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations.

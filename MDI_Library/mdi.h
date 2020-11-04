@@ -47,6 +47,9 @@ DllExport extern const int MDI_COMMAND_LENGTH;
 // length of an MDI name in characters
 DllExport extern const int MDI_NAME_LENGTH;
 
+// length of an MDI label in characters
+DllExport extern const int MDI_LABEL_LENGTH;
+
 // value of a null communicator
 DllExport extern const MDI_Comm MDI_COMM_NULL;
 

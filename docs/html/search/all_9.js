@@ -32,6 +32,7 @@ var searchData=
   ['mdi_5fglobal_2eh',['mdi_global.h',['../mdi__global_8h.html',1,'']]],
   ['mdi_5finit',['MDI_Init',['../mdi_8c.html#ae05ae377fa8de592f62c696c041b7d0a',1,'mdi.c']]],
   ['mdi_5fint',['MDI_INT',['../mdi_8c.html#ab88e0bb1563ba9fa73ffc49a704e43ad',1,'MDI_INT():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#a8c682f798ce039e84e455631e708f695',1,'MDI_Library.mdi.MDI_INT()']]],
+  ['mdi_5flabel_5flength',['MDI_LABEL_LENGTH',['../mdi_8c.html#ae0d41f32f57bee11feab8e76854bb1c4',1,'MDI_LABEL_LENGTH():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ab38b057bbc65450a3301894311713ff2',1,'MDI_Library.mdi.MDI_LABEL_LENGTH()']]],
   ['mdi_5flib_2ec',['mdi_lib.c',['../mdi__lib_8c.html',1,'']]],
   ['mdi_5flib_2eh',['mdi_lib.h',['../mdi__lib_8h.html',1,'']]],
   ['mdi_5flink',['MDI_LINK',['../mdi_8c.html#ac545ac5cbde8c46c65c073000d395d51',1,'MDI_LINK():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ab86765c8fb3f9312ff42897b4f59af07',1,'MDI_Library.mdi.MDI_LINK()']]],
