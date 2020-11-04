@@ -56,3 +56,6 @@ dkms.conf
 
 # MacOS
 .DS_Store
+
+# pip
+*.egg-info
