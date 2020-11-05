@@ -459,8 +459,8 @@ It is required that atoms having different physical properties (i.e., different 
 
 \par
 <b> Data Type: </b> \c MDI_CHAR <br>
-<b> Quantity: </b> MDI_LABEL_LENGTH * NATOMS <br>
-<b> Format: </b> An array of characters corresponding to the label of each atom in ascending order of atomic index, with each label consisting of MDI_LABEL_LENGTH characters and being padded with spaces (" ") where necessary <br>
+<b> Quantity: </b> \c MDI_LABEL_LENGTH * \c NATOMS <br>
+<b> Format: </b> An array of characters corresponding to the label of each atom in ascending order of atomic index, with each label consisting of \c MDI_LABEL_LENGTH characters and being padded with spaces (" ") where necessary <br>
 
 
 
