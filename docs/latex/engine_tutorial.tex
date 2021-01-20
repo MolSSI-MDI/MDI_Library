@@ -1,0 +1,110 @@
+\hypertarget{engine_tutorial_engine_tutorial_intro}{}\doxysection{Introduction}\label{engine_tutorial_engine_tutorial_intro}
+This tutorial will guide you through the process of implementing a support for M\+DI in an existing engine.
+
+\hypertarget{engine_tutorial_engine_tutorial_link}{}\doxysection{Step 8\+: Make the M\+D\+I Library Available to the Engine}\label{engine_tutorial_engine_tutorial_link}
+In this step, we will ensure that M\+DI functions can be called from your engine.
+
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\end{DoxyCode}
+ The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
+
+You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir -\/p lib/mdi/build}
+\DoxyCodeLine{cd lib/mdi/build}
+\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=C -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
+\DoxyCodeLine{make}
+\DoxyCodeLine{make install}
+\end{DoxyCode}
+ The following C\+Make configuration options are likely to be useful\+:
+\begin{DoxyItemize}
+\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
+\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
+\end{DoxyItemize}
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
+
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\end{DoxyCode}
+ The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
+
+You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir -\/p lib/mdi/build}
+\DoxyCodeLine{cd lib/mdi/build}
+\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=Fortran -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
+\DoxyCodeLine{make}
+\DoxyCodeLine{make install}
+\end{DoxyCode}
+ The following C\+Make configuration options are likely to be useful\+:
+\begin{DoxyItemize}
+\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
+\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
+\end{DoxyItemize}
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
+
+ First, install the M\+DI Library during the {\ttfamily build\+\_\+image} step in {\ttfamily mdimechanic.\+yml}. This can be done trivially using {\ttfamily pip} ({\itshape e.\+g.} {\ttfamily pip install pymdi}). Your engine can then import the M\+DI Library where needed ({\itshape e.\+g.} {\ttfamily import mdi}). \hypertarget{engine_tutorial_engine_tutorial_input}{}\doxysection{Step 9\+: Support User Input of the M\+D\+I Options}\label{engine_tutorial_engine_tutorial_input}
+In this step, we will ensure that M\+DI functions can be called from your engine.
+
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\end{DoxyCode}
+ The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
+
+You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir -\/p lib/mdi/build}
+\DoxyCodeLine{cd lib/mdi/build}
+\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=C -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
+\DoxyCodeLine{make}
+\DoxyCodeLine{make install}
+\end{DoxyCode}
+ The following C\+Make configuration options are likely to be useful\+:
+\begin{DoxyItemize}
+\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
+\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
+\end{DoxyItemize}
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
+
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\end{DoxyCode}
+ The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
+
+You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir -\/p lib/mdi/build}
+\DoxyCodeLine{cd lib/mdi/build}
+\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=Fortran -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
+\DoxyCodeLine{make}
+\DoxyCodeLine{make install}
+\end{DoxyCode}
+ The following C\+Make configuration options are likely to be useful\+:
+\begin{DoxyItemize}
+\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
+\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
+\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
+\end{DoxyItemize}
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
+
+ Test   

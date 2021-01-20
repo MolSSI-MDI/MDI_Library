@@ -1,0 +1,305 @@
+/** \page engine_tutorial Engine Tutorial
+
+\section engine_tutorial_intro Introduction
+
+This tutorial will guide you through the process of implementing a support for MDI in an existing engine.
+
+\htmlonly
+<style>
+code
+{
+    color: #733;
+}
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #b1bfde;
+}
+
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+.tab button:hover {
+  background-color: #a2b6e1;
+}
+
+.tab button.active {
+  background-color: #96ade0;
+}
+
+.tab button.cxx, button.fortran, button.python {
+}
+
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: #e1e7f6;
+}
+.tabcontent.cxx, .tabcontent.fortran, .tabcontent.python {
+}
+</style>
+<script>
+function revealTabContent(evt, code_name) {
+  var i, tabcontent, tabbuttons;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tabbuttons = document.getElementsByClassName("tabbuttons");
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+  }
+
+  var content_name = "tabcontent";
+  content_name = content_name.concat(" ");
+  content_name = content_name.concat(code_name);
+  var contents = document.getElementsByClassName(content_name);
+  for (i = 0; i < contents.length; i++) {
+    contents[i].style.display = "block";
+  }
+
+  var button_name = "tabbuttons";
+  button_name = button_name.concat(" ");
+  button_name = button_name.concat(code_name);
+  tabbuttons = document.getElementsByClassName(button_name);
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].className += " active";
+  }
+}
+</script>
+\endhtmlonly
+
+
+
+
+
+
+
+\section engine_tutorial_link Step 8: Make the MDI Library Available to the Engine
+
+In this step, we will ensure that MDI functions can be called from your engine.
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *MDI-report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=C -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *MDI-report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=Fortran -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+First, install the MDI Library during the `build_image` step in `mdimechanic.yml`.
+This can be done trivially using `pip` (*e.g.* `pip install pymdi`).
+Your engine can then import the MDI Library where needed (*e.g.* `import mdi`).
+\htmlonly
+</div>
+\endhtmlonly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section engine_tutorial_input Step 9: Support User Input of the MDI Options
+
+In this step, we will ensure that MDI functions can be called from your engine.
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *MDI-report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=C -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *MDI-report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=Fortran -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+Test
+</div>
+\endhtmlonly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**/
