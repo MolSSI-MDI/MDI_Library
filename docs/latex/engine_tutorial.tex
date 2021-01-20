@@ -1,10 +1,106 @@
 \hypertarget{engine_tutorial_engine_tutorial_intro}{}\doxysection{Introduction}\label{engine_tutorial_engine_tutorial_intro}
 This tutorial will guide you through the process of implementing a support for M\+DI in an existing engine.
 
-\hypertarget{engine_tutorial_engine_tutorial_link}{}\doxysection{Step 8\+: Make the M\+D\+I Library Available to the Engine}\label{engine_tutorial_engine_tutorial_link}
+If you just want a quick tl;dr summary of the minimum steps involved in implementing an M\+DI interface, see the following\+:
+\begin{DoxyEnumerate}
+\item If your engine is written in a compiled language, build and link your engine against M\+DI just like any other library. If it is written in Python, just import the M\+DI Library.
+\item Add a way for end-\/users of your engine to send runtime options to the M\+DI Library, preferably through a {\ttfamily -\/mdi} command-\/line option.
+\item Call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}} as early as possible in your engine.
+\item Add some server-\/like code that allows your engine to listen for commands via M\+DI and respond to them appropriately.
+\item If your engine uses the Message Passing Interface (M\+PI), be aware that the M\+DI Library provides a replacement for M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD, and that some M\+DI functions should only be called by {\ttfamily rank 0}.
+\end{DoxyEnumerate}
+
+\hypertarget{engine_tutorial_engine_tutorial_dependencies}{}\doxysection{Step 1\+: Prepare basic requirements}\label{engine_tutorial_engine_tutorial_dependencies}
+In order to simplify the process of implementing, testing, and analyzing the capabilities of an M\+DI engine in a portable environment, this tutorial makes use of several tools. These tools include Git, Git\+Hub, M\+DI Mechanic, and Docker. Please install each of these tools now\+:
+\begin{DoxyItemize}
+\item If you don\textquotesingle{}t already have a Git\+Hub account, create one now.
+\item If you have never used Git, you may wish to work through \href{https://education.molssi.org/python_scripting_cms/09-version-control/index.html}{\texttt{ a quick tutorial on Git}}, first.
+\item Install M\+DI Mechanic. This can be done using pip, ({\itshape i.\+e.} {\ttfamily pip install mdimechanic}).
+\item Install Docker and launch Docker Desktop, if applicable. You don\textquotesingle{}t need to create a Docker\+Hub account. You also don\textquotesingle{}t need to know much about using Docker, as M\+DI Mechanic will handle those details for you.
+\end{DoxyItemize}
+
+Note that although the above are requirements of this tutorial, none of them are required of end-\/users running your code.\hypertarget{engine_tutorial_engine_tutorial_repo}{}\doxysection{Step 2\+: Initialize an M\+D\+I report repository}\label{engine_tutorial_engine_tutorial_repo}
+In this step of the tutorial, we will create a new Git\+Hub repository to assist in the process of implementing, testing, and maintaining M\+DI support in your code. This new repository will be separate and independent from any repositories already associated with your code, and will henceforth be referred to as your {\bfseries{report repository}}.
+
+Create your report repository by making a new repository on Git\+Hub. This repository does {\bfseries{not}} need to include the source code of your engine, so you can make this repository publically accessible even if your source code is maintained privately. Don\textquotesingle{}t initialize the repository with a {\ttfamily R\+E\+A\+D\+ME} file or a {\ttfamily .gitignore} file. You can select whatever license you prefer; since this repository is separate from the repository that holds your engine\textquotesingle{}s source code, it does not need to be the same license governing your engine\textquotesingle{}s code.
+
+Clone the newly created repository onto your local machine\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone git@github.com:<organization>/<repo\_name>.git}
+\DoxyCodeLine{cd <repo\_name>}
+\end{DoxyCode}
+
+
+Now use M\+DI Mechanic to create the initial structure for this report repository\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd <repo\_name>}
+\DoxyCodeLine{mdimechanic startproject -\/-\/enginereport}
+\end{DoxyCode}
+ This will add several new files to your report repository, including one called {\ttfamily mdimechanic.\+yml}.\hypertarget{engine_tutorial_engine_tutorial_yaml}{}\doxysection{Step 3\+: Configure the M\+D\+I Mechanic Y\+A\+M\+L file}\label{engine_tutorial_engine_tutorial_yaml}
+The {\ttfamily mdimechanic.\+yml} file created in the previous step is used by M\+DI Mechanic to build your engine and to test and analyze its functionality as an M\+DI engine. If you have used continuous integration (CI) testing services in the past, you will likely recognize many similarities between {\ttfamily mdimechanic.\+yml} and the Y\+A\+ML files that are often used by those services. Open {\ttfamily mdimechanic.\+yml} in your favorite text editor, and you will see that M\+DI Mechanic pre-\/populated this file with a basic template.
+
+This tutorial will go over each field in {\ttfamily mdimechanic.\+yml} in detail, but the following is a quick summary\+:
+\begin{DoxyItemize}
+\item {\bfseries{code\+\_\+name\+:}} The name of your code, which is used when printing out information.
+\item {\bfseries{image\+\_\+name\+:}} M\+DI Mechanic will create an Docker image, which will contain a highly portable environment that can be used to reproducibly build and run your engine. This field sets the name of the engine M\+DI Mechanic will create.
+\item {\bfseries{build\+\_\+image}}\+: This provides a script that is used to build the Docker image that M\+DI Mechanic builds. It corresponds to the steps required to prepare an environment with all of your engine\textquotesingle{}s dependencies, and is comparable to a {\ttfamily before\+\_\+install} step in some CI services.
+\item {\bfseries{build\+\_\+engine}}\+: This provides a script to build your engine. It is executed within the context of the Docker image built by M\+DI Mechanic, and is comparable to an {\ttfamily install} step in some CI services.
+\item {\bfseries{validate\+\_\+engine}}\+: This provides a script to verify that your engine has been built successfully. It is comparable to a {\ttfamily script} step in some CI services.
+\item {\bfseries{engine\+\_\+tests}}\+: This provides scripts used to test M\+DI functionality in your engine.
+\end{DoxyItemize}
+
+For now, just replace the value of {\ttfamily code\+\_\+name} with the name of your engine, and set the value of {\ttfamily image\+\_\+name} to something appropriate. The naming convention for Docker images is {\ttfamily $<$organization\+\_\+name$>$/$<$image\+\_\+name$>$}, and we recommend that you follow this convention when setting {\ttfamily image\+\_\+name}. If in doubt, you can set {\ttfamily image\+\_\+name} to {\ttfamily $<$engine\+\_\+name$>$/mdi\+\_\+report}.\hypertarget{engine_tutorial_engine_tutorial_image}{}\doxysection{Step 4\+: Define your engine\textquotesingle{}s build environment using M\+D\+I Mechanic}\label{engine_tutorial_engine_tutorial_image}
+This tutorial uses M\+DI Mechanic, which in turn runs your code within the context of a Docker image. In crude terms, you can think of an image as being a simulated duplicate of another computer, which has a different environment from yours ({\itshape i.\+e.} different installed libraries and system settings), and might be running an entirely different operating system. The image created by M\+DI Mechanic is based on the Ubunto Linux distribution. Starting from the basic Linux environment, M\+DI Mechanic installs some basic compilers (gcc, g++, and gfortran), an M\+PI library (M\+P\+I\+CH), Python 3, and a handful of other dependencies (make and openssh). To finish building the image, M\+DI Mechanic executes whatever script you\textquotesingle{}ve provided in the {\ttfamily build\+\_\+image} section of {\ttfamily mdimechanic.\+yml}.
+
+You should now fill out {\ttfamily build\+\_\+image} with an appropriate script that installs any dependencies necessary to compile your engine (if your engine is written in a compiled language) or to run your engine (if your engine is written in an interpreted language). To do this, imagine that someone handed you a Linux computer that is completely new and unused, except that the compilers and libraries mentioned in the preceeding paragraph have been installed on it. What would you need to do in order to install all the dependencies for your code? The answer to this question corresponds to the script you need to provide to {\ttfamily build\+\_\+image}.\hypertarget{engine_tutorial_engine_tutorial_build}{}\doxysection{Step 5\+: Build your engine using M\+D\+I Mechanic}\label{engine_tutorial_engine_tutorial_build}
+After you\textquotesingle{}ve finished with the {\ttfamily build\+\_\+image} script, it is time to write the {\ttfamily build\+\_\+engine} script. This script will be executed within the context of the image you described in the {\ttfamily build\+\_\+image} script, so it will have access to any dependencies you installed in that script (and {\itshape only} those dependencies). To write the {\ttfamily build\+\_\+engine} script, ask yourself \char`\"{}\+What would someone need to type into their terminal to acquire a copy of my code\textquotesingle{}s source and compile it?\char`\"{}; the answer to this question corresponds to the script you need to provide to {\ttfamily build\+\_\+engine}. Here are a few important details to keep in mind as you write the {\ttfamily build\+\_\+engine} script\+:
+\begin{DoxyItemize}
+\item The initial working directory for the {\ttfamily build\+\_\+engine} script is the top-\/level directory of your report repository.
+\item The {\ttfamily build\+\_\+engine} script can access and manipulate any files within your report repository, including creating new files and subdirectories. It does not have access to any other files or directories on you filesystem (for Docker afficianados\+: the report repository\textquotesingle{}s top-\/level directory is mounted within the image to {\ttfamily /repo}).
+\item It is recommended that your {\ttfamily build\+\_\+engine} script should download your engine repository\textquotesingle{}s source code to a {\ttfamily source} subdirectory within your report repository.
+\item It is recommended that your {\ttfamily build\+\_\+engine} script should build/install your engine repository\textquotesingle{}s source code to a {\ttfamily build} subdirectory within your report repository.
+\item If your engine is {\bfseries{not}} open-\/source, it may not be possible to simply download the source code via a command like {\ttfamily git clone}. In this case, you should write the {\ttfamily build\+\_\+engine} script with the assumption that your engine\textquotesingle{}s source code has been manually copied by the end-\/user into a {\ttfamily source} subdirectory within the report repository\textquotesingle{}s top-\/level directory. Uponing cloning the report repository, it will be the responsibility of the user to copy your engine\textquotesingle{}s source code into the correct location, assuming they have access to it. Note that you {\bfseries{absolutely should not}} include any private information ({\itshape i.\+e.} software keys, private ssh keys, private source code, {\itshape etc.}) in {\ttfamily mdimechanic.\+yml} or any other file that is commited to your report repository. The {\ttfamily build} and {\ttfamily source} directories are included in the {\ttfamily .gitignore} file of the report; this prevents source code that is temporarily stored in those locations from being accidentally committed, unless {\ttfamily .gitignore} is overridden. Override {\ttfamily .gitignore} at your peril, and always be aware of anything you are committing to the repository.
+\end{DoxyItemize}
+
+At this point, you can execute {\ttfamily mdimechanic build} in the top-\/level directory of your report repository. If this command executes successfully, great! If not, work to correct any problems with the build process before continuing to the next step.\hypertarget{engine_tutorial_engine_tutorial_validate}{}\doxysection{Step 6\+: Validate the engine build}\label{engine_tutorial_engine_tutorial_validate}
+At this point, modify the {\ttfamily validate\+\_\+engine} field in {\ttfamily mdimechanic.\+yml} so that it performs a simple test to confirm that the engine was actually built. The script should return a non-\/zero exit code upon failure. If your code is written in a compiled language, this can be as simple as a check to confirm the existence of the executable file\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{validate\_engine:}
+\DoxyCodeLine{  -\/ ENGINE\_EXECUTABLE\_PATH="build/<engine\_exectuable\_name>"}
+\DoxyCodeLine{  -\/ |}
+\DoxyCodeLine{    if test -\/f "\$ENGINE\_EXECUTABLE\_PATH"; then}
+\DoxyCodeLine{      echo "\$ENGINE\_EXECUTABLE\_PATH exists"}
+\DoxyCodeLine{    else}
+\DoxyCodeLine{      echo "Could not find engine executable: \$ENGINE\_EXECUTABLE\_PATH"}
+\DoxyCodeLine{      exit 1}
+\DoxyCodeLine{    fi}
+\end{DoxyCode}
+ If your code is written in Python, you might instead confim that your code can be imported ({\itshape i.\+e.} {\ttfamily python -\/c \char`\"{}import $<$engine\+\_\+name$>$\char`\"{}}).
+
+After providing a {\ttfamily validate\+\_\+engine} script, run {\ttfamily mdimechanic report} in the top-\/level directory of your M\+P\+I-\/report repository. This will perform a series of tests to confirm whether your engine supports M\+DI correctly. The first of these tests simply runs the {\ttfamily validate\+\_\+engine} script. Since we haven\textquotesingle{}t even started implementing M\+DI functionality in your engine yet, it is expected that M\+DI Mechanic will report errors shortly after starting. After {\ttfamily mdimechanic report} stops (most likely throwing an error), you should find that there is a new {\ttfamily R\+E\+A\+D\+M\+E.\+md} file in your M\+D\+I-\/report repository. This file contains the full report from M\+DI Mechanic. To properly view the file, you can either commit the file and push it to Git\+Hub, where it can be viewed at your M\+D\+I-\/report repository\textquotesingle{}s Git\+Hub page, or you can install an offline markdown viewer (such as {\ttfamily grip}) to view it. There isn\textquotesingle{}t much to see now, but hopefully you can see that there is a green {\ttfamily working} badge next to the step labeled \char`\"{}\+The engine builds successfully\char`\"{}. If not, review the error messages from {\ttfamily mdimechanic report} to try to work out what when wrong, before moving on to the next step.\hypertarget{engine_tutorial_engine_tutorial_test}{}\doxysection{Step 7\+: Provide an example input}\label{engine_tutorial_engine_tutorial_test}
+When you run {\ttfamily mdimechanic report}, M\+DI Mechanic tries to run a series of tests to determine whether and to what extent your code supports M\+DI. To do this, M\+DI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then report the results. At this point in the tutorial, M\+DI Mechanic has no information about how to launch your code, so it can\textquotesingle{}t run these tests.
+
+We will now supply M\+DI Mechanic with everything it needs to run a calculation using your code. In {\ttfamily mdimechanic.\+yml} you will find an {\ttfamily engine\+\_\+tests} field. This field can contain a list of scripts, each of which is intended to launch a single calculation with your code. For now, we only want to supply a single test script. The relevant part of {\ttfamily mdimechanic.\+yml} reads\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{engine\_tests:}
+\DoxyCodeLine{  \# Provide at least one example input that can be used to test your code's MDI functionality}
+\DoxyCodeLine{  -\/ script:}
+\DoxyCodeLine{      -\/ echo "Insert commands to run an example calculation here"}
+\DoxyCodeLine{      -\/ exit 1}
+\end{DoxyCode}
+ Replace the script in the {\ttfamily script} field here so that, when executed, it will launch a calculation using your code. This likely means that you will need to add one or more input files to your M\+D\+I-\/report repository, which we recommend placing in a {\ttfamily tests} subdirectory. Your {\ttfamily mdimechanic.\+yml} might end up looking something like this\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{engine\_tests:}
+\DoxyCodeLine{  -\/ script:}
+\DoxyCodeLine{      -\/ cd tests/test1}
+\DoxyCodeLine{      -\/ ../../\$\{ENGINE\_EXECUTABLE\_PATH\} -\/in test.inp}
+\end{DoxyCode}
+
+
+The exact nature of the test calculation doesn\textquotesingle{}t matter very much. It should be a short calculation, since it will be run many times. The calculation might involve a simulation of a Lennard-\/\+Jones fluid, evaluation of the single-\/point energy of a water molecule, or some other small computatation. The most important thing about the test script is that {\bfseries{it must return a non-\/zero exit value if your engine exits due to an error}}.\hypertarget{engine_tutorial_engine_tutorial_link}{}\doxysection{Step 8\+: Make the M\+D\+I Library Available to the Engine}\label{engine_tutorial_engine_tutorial_link}
 In this step, we will ensure that M\+DI functions can be called from your engine.
 
- Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape report} repository)\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
 \end{DoxyCode}
@@ -29,7 +125,7 @@ You must then modify your engine\textquotesingle{}s build process to build the M
 
 Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
 
- Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+ Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape report} repository)\+: 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
 \end{DoxyCode}
@@ -55,56 +151,401 @@ You must then modify your engine\textquotesingle{}s build process to build the M
 Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
 
  First, install the M\+DI Library during the {\ttfamily build\+\_\+image} step in {\ttfamily mdimechanic.\+yml}. This can be done trivially using {\ttfamily pip} ({\itshape e.\+g.} {\ttfamily pip install pymdi}). Your engine can then import the M\+DI Library where needed ({\itshape e.\+g.} {\ttfamily import mdi}). \hypertarget{engine_tutorial_engine_tutorial_input}{}\doxysection{Step 9\+: Support User Input of the M\+D\+I Options}\label{engine_tutorial_engine_tutorial_input}
-In this step, we will ensure that M\+DI functions can be called from your engine.
-
- Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+Your code should allow users to set certain M\+DI parameters at runtime. Typically, end-\/users should be able to set these parameters through the use of a {\ttfamily -\/mdi} command-\/line option when your engine is launched. In this case, the user should be able to launch your code by doing something along the lines of\+: 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\DoxyCodeLine{engine\_exectable -\/mdi "-\/name engine -\/role ENGINE -\/method TCP -\/hostname localhost -\/port 8021"}
 \end{DoxyCode}
- The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
+ The details of how you read this command-\/line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-\/line options. The argument to the {\ttfamily -\/mdi} command-\/line option should be represented as a {\ttfamily char$\ast$} in C++, a {\ttfamily C\+H\+A\+R\+A\+C\+T\+ER} array in Fortran, and a {\ttfamily String} in Python. Subsequent steps in this tutorial will assume that you have named the corresponding variable {\ttfamily mdi\+\_\+options}.
 
-You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
-\begin{DoxyCode}{0}
-\DoxyCodeLine{mkdir -\/p lib/mdi/build}
-\DoxyCodeLine{cd lib/mdi/build}
-\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=C -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
-\DoxyCodeLine{make}
-\DoxyCodeLine{make install}
-\end{DoxyCode}
- The following C\+Make configuration options are likely to be useful\+:
+We understand that some codes prefer to eschew command-\/line options where possible. If it is preferable not to introduce support for a {\ttfamily -\/mdi} command-\/line option, ensure that there is some other mechanism for the user to provide the M\+DI parameters at runtime.\hypertarget{engine_tutorial_engine_tutorial_init}{}\doxysection{Step 10\+: Initialize the M\+D\+I Library}\label{engine_tutorial_engine_tutorial_init}
+Your code must initialize the M\+DI Library by calling the {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function. This is a straightforward process, but there are a couple of important details to keep in mind if you are using both M\+DI and the Message Passing Interface (M\+PI)\+:
 \begin{DoxyItemize}
-\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
-\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
+\item If your code uses M\+PI, you should call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} after the call to {\ttfamily M\+P\+I\+\_\+\+Init()} (or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}, if applicable). Aside from the restriction, {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} should be called as early in your code as possible. It is a best practice to call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} immediately after calling {\ttfamily M\+P\+I\+\_\+\+Init()}. Calling M\+PI functions (other than {\ttfamily M\+P\+I\+\_\+\+Init()} or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}) before calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} will lead to bugs.
+\item One of the required arguments to the {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function is an M\+PI intra-\/communicator. Upon calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, this intra-\/communicator must correspond to the intra-\/communicator that includes all global ranks ({\itshape e.\+g.}, {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}). The {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function will then perform an {\ttfamily M\+P\+I\+\_\+\+Comm\+\_\+split()} operation to obtain an inter-\/communicator that includes only ranks associated with your engine. As an engine developer, you should {\bfseries{never}} perform M\+PI operations involving {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}. Instead, use the intra-\/communicator that is provided by the M\+DI Library whenever you would have otherwise used {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}. You should replace any existing references to {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD} in your code with a reference to the intra-\/communicator obtained from calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}.
 \end{DoxyItemize}
 
-Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
+The following code snippets provide a guide to correctly initializing M\+DI and M\+PI together in C++, Fortran, and Python.
 
- Your engine must be compiled and linked against the M\+DI Library. The M\+DI Library is released under a highly permissive B\+S\+D-\/3 License, and developers of M\+D\+I-\/enabled codes are encouraged to copy the M\+DI Library directly into distributions of their software. If your code uses Git for version control, you can include the M\+DI Library in your engine\textquotesingle{}s source code repository as either a subtree (recommended) or a submodule. To incorporate a distribution of the M\+DI Library into your engine as a subtree, you can execute the following command in the top directory of the {\itshape engine\textquotesingle{}s} Git repository ({\bfseries{not}} in the top directory of the {\itshape M\+D\+I-\/report} repository)\+: 
+
+
+
 \begin{DoxyCode}{0}
-\DoxyCodeLine{git subtree add -\/-\/prefix=lib/mdi https://github.com/MolSSI-\/MDI/MDI\_Library master -\/-\/squash}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <mpi.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "mdi.h"}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* User-\/selected options for the MDI Library}}
+\DoxyCodeLine{\textcolor{comment}{   This should be obtained at runtime from a "-\/mdi" command-\/line option */}}
+\DoxyCodeLine{\textcolor{keywordtype}{char} *mdi\_options;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* MPI intra-\/communicator for all processes running this code}}
+\DoxyCodeLine{\textcolor{comment}{   It should be set to MPI\_COMM\_WORLD prior to the call to MDI\_Init(), as shown below}}
+\DoxyCodeLine{\textcolor{comment}{   Afterwards, you should ALWAYS use this variable instead of MPI\_COMM\_WORLD */}}
+\DoxyCodeLine{MPI\_Comm world\_comm;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* Pointer to world\_comm */}}
+\DoxyCodeLine{MPI\_Comm *world\_comm\_ptr = \&world\_comm;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* MDI communicator used to communicate with the driver */}}
+\DoxyCodeLine{MDI\_Comm mdi\_comm = \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{MDI\_COMM\_NULL}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* Rank of this process in the MDI-\/created intra-\/communicator */}}
+\DoxyCodeLine{\textcolor{keywordtype}{int} myrank = 0;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/* Function to initialize both MPI and MDI */}}
+\DoxyCodeLine{initialize(\textcolor{keywordtype}{char} *mdi\_options, MPI\_Comm *world\_comm\_ptr) \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* If using MPI, it should be initialized before MDI */}}
+\DoxyCodeLine{  MPI\_Init();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* Set the value of world\_comm}}
+\DoxyCodeLine{\textcolor{comment}{     Note: if you are not using MPI, set world\_comm to MDI\_COMM\_NULL instead */}}
+\DoxyCodeLine{  *world\_comm\_ptr = MPI\_COMM\_WORLD;}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* MDI should be initialized immediately after MPI */}}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{MDI\_Init}}(mdi\_options, world\_comm\_ptr);}
+\DoxyCodeLine{  \textcolor{comment}{/* Following this point, world\_comm should be used whenever you would otherwise have used MPI\_COMM\_WORLD */}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* Get the rank of this process, within the MDI-\/created intra-\/communicator */}}
+\DoxyCodeLine{  MPI\_Comm\_rank(world\_comm, my\_rank);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* Accept a connection from an external driver */}}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( my\_rank == 0 ) \{}
+\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{MDI\_Accept\_Communicator}}(\&mdi\_comm);}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{\}}
 \end{DoxyCode}
- The argument to the {\ttfamily -\/-\/prefix} option indicates the location where the M\+DI Library source code will reside, and can be changed to better fit your engine\textquotesingle{}s directory structure.
 
-You must then modify your engine\textquotesingle{}s build process to build the M\+DI Library and link against it. The M\+DI Library builds using C\+Make. If your engine also builds using C\+Make, you can simply include the M\+DI Library as a C\+Make subpackage. Otherwise, you can add a few lines to your engine\textquotesingle{}s existing build scripts to execute C\+Make and build the M\+DI Library. The following lines illustrate how the M\+DI Library could be built, assuming that the source code for the M\+DI Library is located in {\ttfamily lib/mdi}\+: 
+
+After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
+
+ 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{mkdir -\/p lib/mdi/build}
-\DoxyCodeLine{cd lib/mdi/build}
-\DoxyCodeLine{cmake -\/Dlibtype=STATIC -\/Dlanguage=Fortran -\/DCMAKE\_INSTALL\_PREFIX=../install ..}
-\DoxyCodeLine{make}
-\DoxyCodeLine{make install}
+\DoxyCodeLine{\textcolor{keyword}{SUBROUTINE }initialize ( mdi\_options, world\_comm, my\_rank, mdi\_comm )}
+\DoxyCodeLine{    \textcolor{keywordtype}{USE }mpi,               \textcolor{keywordtype}{ONLY} : mpi\_comm\_world}
+\DoxyCodeLine{    \textcolor{keywordtype}{USE }mdi,               \textcolor{keywordtype}{ONLY} : mdi\_init, mdi\_comm\_null}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! User-\/selected options for the MDI Library}}
+\DoxyCodeLine{    \textcolor{comment}{! This should be obtained at runtime from a "-\/mdi" command-\/line option}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{CHARACTER(len=1024)}, \textcolor{keywordtype}{INTENT(IN)}, \textcolor{keywordtype}{OPTIONAL} :: mdi\_options}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MPI intra-\/communicator for all processes running this code}}
+\DoxyCodeLine{    \textcolor{comment}{! It should be set to MPI\_COMM\_WORLD prior to the call to MDI\_Init(), as shown below}}
+\DoxyCodeLine{    \textcolor{comment}{! Afterwards, you should ALWAYS use this variable instead of MPI\_COMM\_WORLD}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(INOUT)} :: world\_comm}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Rank of this process within the MDI-\/created intra-\/communicator}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(OUT)} :: my\_rank}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_Communicator}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(OUT)} :: mdi\_comm}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Error flag used in MDI calls}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER} :: ierr}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! If using MPI, it should be initialized before MDI}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keyword}{CALL }mpi\_init(ierr)}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Set the value of world\_comm}}
+\DoxyCodeLine{    \textcolor{comment}{! Note: if you are not using MPI, set world\_comm to MDI\_COMM\_NULL instead}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    world\_comm = mpi\_comm\_world}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI should be initialized immediately after MPI}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordflow}{IF} ( \textcolor{keyword}{PRESENT}(mdi\_options) ) \textcolor{keywordflow}{THEN}}
+\DoxyCodeLine{        \textcolor{keyword}{CALL }mdi\_init(mdi\_options, world\_comm, ierr)}
+\DoxyCodeLine{\textcolor{keywordflow}{    END IF}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Following this point, world\_comm should be used whenever you would otherwise have used MPI\_COMM\_WORLD}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Get the rank of this process, within the MDI-\/created intra-\/communicator}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keyword}{CALL }mpi\_comm\_rank(world\_comm, my\_rank, ierr)}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Accept a connection from an external driver}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordflow}{IF} ( my\_rank .eq. 0 ) \textcolor{keywordflow}{THEN}}
+\DoxyCodeLine{        \textcolor{keyword}{CALL }mdi\_accept\_communicator( mdi\_comm, ierr )}
+\DoxyCodeLine{\textcolor{keywordflow}{    END IF}}
+\DoxyCodeLine{\textcolor{keyword}{END SUBROUTINE }initialize}
 \end{DoxyCode}
- The following C\+Make configuration options are likely to be useful\+:
-\begin{DoxyItemize}
-\item {\bfseries{-\/Dlibtype}}\+: Set this to {\ttfamily S\+T\+A\+T\+IC}.
-\item {\bfseries{-\/Dlanguage}}\+: Set this to the language of the code you intend to link to the M\+DI library. Valid options are {\ttfamily C}, {\ttfamily C\+XX} (for C++), {\ttfamily Fortran}, and {\ttfamily Python}.
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+C\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the C compiler used to build your engine (if applicable).
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+Fortran\+\_\+\+C\+O\+M\+P\+I\+L\+ER}}\+: Set this to the Fortran compiler used to build your engine (if applicable).
-\item {\bfseries{-\/D\+C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX}}\+: Set this to the destination directory for the installation.
-\end{DoxyItemize}
 
-Finally, during the link stage of your build process, you will need to ensure that your code is linked against the M\+DI Library. In the case of the above example build process, the compiled static library file will be located at {\ttfamily \$\{C\+M\+A\+K\+E\+\_\+\+I\+N\+S\+T\+A\+L\+L\+\_\+\+P\+R\+E\+F\+IX\}/lib/mdi}, and will typically be called {\ttfamily libmdi.\+a} on P\+O\+S\+IX systems.
 
- Test   
+After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{\# Import the MDI Library}}
+\DoxyCodeLine{\textcolor{keyword}{import} mdi}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Attempt to import mpi4py}}
+\DoxyCodeLine{\textcolor{keywordflow}{try}:}
+\DoxyCodeLine{    \textcolor{keyword}{from} mpi4py \textcolor{keyword}{import} MPI}
+\DoxyCodeLine{    use\_mpi4py = \textcolor{keyword}{True}}
+\DoxyCodeLine{\textcolor{keywordflow}{except} ImportError:}
+\DoxyCodeLine{    use\_mpi4py = \textcolor{keyword}{False}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# MPI intra-\/communicator for all processes running this code}}
+\DoxyCodeLine{\textcolor{comment}{\# It should be set to MPI.COMM\_WORLD prior to the call to MDI\_Init(), as shown below}}
+\DoxyCodeLine{\textcolor{comment}{\# Afterwards, you should ALWAYS use this variable instead of MPI.COMM\_WORLD}}
+\DoxyCodeLine{\textcolor{keywordflow}{if} use\_mpi4py:}
+\DoxyCodeLine{    world\_comm = MPI.COMM\_WORLD}
+\DoxyCodeLine{\textcolor{keywordflow}{else}:}
+\DoxyCodeLine{    world\_comm = \textcolor{keywordtype}{None}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Get the command-\/line options for MDI}}
+\DoxyCodeLine{...}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Initialize MDI}}
+\DoxyCodeLine{mdi.MDI\_Init(mdi\_options, world\_comm)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Set world\_comm to the correct intra-\/code MPI communicator}}
+\DoxyCodeLine{world\_comm = MDI\_Get\_Intra\_Code\_MPI\_Comm()}
+\DoxyCodeLine{\textcolor{comment}{\# Following this point, world\_comm should be used whenever you would otherwise have used MPI.COMM\_WORLD}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Get the MPI rank of this process}}
+\DoxyCodeLine{\textcolor{keywordflow}{if} world\_comm \textcolor{keywordflow}{is} \textcolor{keywordflow}{not} \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{    my\_rank = world\_comm.Get\_rank()}
+\DoxyCodeLine{\textcolor{keywordflow}{else}:}
+\DoxyCodeLine{    my\_rank = 0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{\# Accept a connection from an external driver}}
+\DoxyCodeLine{\textcolor{keywordflow}{if} my\_rank == 0:}
+\DoxyCodeLine{    mdi\_comm = \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{MDI\_Accept\_Communicator}}()}
+\end{DoxyCode}
+
+
+\hypertarget{engine_tutorial_engine_tutorial_comm}{}\doxysection{Step 11\+: Support Basic M\+D\+I Communication}\label{engine_tutorial_engine_tutorial_comm}
+In this step, we are going to introduce some basic code that will finally allow external drivers to connect to your code and ask it to do useful things for them. First, identify a point in your code when it would be appropriate for the code to accept instructions (in the form of M\+DI commands) from an external driver. The chosen point should occur after your code has completed basic initialization operations (reading input files, doing basic system setup, calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, {\itshape etc.}). It should also be practical to implement support for a reasonable number of M\+DI commands at whatever point you select. The \href{https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html}{\texttt{ M\+DI Standard}} defines numerous commands that driver developers might want to send to your code. You won\textquotesingle{}t need to support all of the available commands, but it is advisable to support some of the more common commands, such as commands that request or change the nuclear coordinates ({\ttfamily $<$C\+O\+O\+R\+DS} and {\ttfamily $>$C\+O\+O\+R\+DS}, respectively), as well as commands that request the energy ({\ttfamily $<$E\+N\+E\+R\+GY}) number of atoms ({\ttfamily $<$N\+A\+T\+O\+MS}), or ({\ttfamily $<$F\+O\+R\+C\+ES}). Try to select a point where it will be possible to fulfill some of these requests. When in doubt, select a point that is reached early in your code\textquotesingle{}s execution. This tutorial will subsequently refer to the point you have selected as the {\bfseries{M\+DI node}}.
+
+At the M\+DI node, you will need to insert some code (probably in the form of a called function) that handles the process of establishing communication with the external driver, accepting M\+DI commands from the driver, and responding to the commands appropriately. For the purpose of this tutorial, we will implement all of this functionality in a function called {\ttfamily run\+\_\+mdi()}. Examples of a minimalistic {\ttfamily run\+\_\+mdi()} function are provided below, in C++, Fortran, and Python. You can simply copy the function into your codebase and call {\ttfamily run\+\_\+mdi()} at your M\+DI node.
+
+ Call this function as {\ttfamily run\+\_\+mdi(\char`\"{}@\+D\+E\+F\+A\+U\+L\+T\char`\"{}, my\+\_\+rank, world\+\_\+comm, mdi\+\_\+comm)}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <mpi>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "mdi.h"}}
+\DoxyCodeLine{}
+\DoxyCodeLine{run\_mdi(\textcolor{keywordtype}{char} *node\_name, \textcolor{keywordtype}{int} my\_rank, MPI\_Comm world\_comm, MDI\_Comm mdi\_comm) \{}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* Exit flag for the main MDI loop */}}
+\DoxyCodeLine{  \textcolor{keywordtype}{bool} exit\_flag = \textcolor{keyword}{false};}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* MDI command from the driver */}}
+\DoxyCodeLine{  command = \textcolor{keyword}{new} \textcolor{keywordtype}{char}[\mbox{\hyperlink{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}{MDI\_COMMAND\_LENGTH}}];}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{/* Main MDI loop */}}
+\DoxyCodeLine{  \textcolor{keywordflow}{while} (not exit\_flag) \{}
+\DoxyCodeLine{    \textcolor{comment}{/* Receive a command from the driver */}}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( my\_rank == 0 ) \{}
+\DoxyCodeLine{      \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{MDI\_Recv\_Command}}(command, mdi\_comm);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    MPI\_Bcast(command, \mbox{\hyperlink{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}{MDI\_COMMAND\_LENGTH}}, MPI\_CHAR, 0, world\_comm);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{comment}{/* Confirm that this command is actually supported at this node */}}
+\DoxyCodeLine{    \textcolor{keywordtype}{int} command\_supported = 0;}
+\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a013856347b9026a7eb01e7803b3dc9b5}{MDI\_Check\_Command\_Exists}}(node\_name, command, \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{MDI\_COMM\_NULL}}, \&command\_supported);}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( command\_supported != 1 ) \{}
+\DoxyCodeLine{      \textcolor{comment}{/* Note: Replace this with whatever error handling method your code uses */}}
+\DoxyCodeLine{      MPI\_Abort(world\_comm, 1);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{comment}{/* Respond to the received command */}}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} ( strcmp(command, \textcolor{stringliteral}{"EXIT"}) == 0 ) \{}
+\DoxyCodeLine{      exit\_flag = \textcolor{keyword}{true};}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{      \textcolor{comment}{/* The received command is not recognized by this engine, so exit}}
+\DoxyCodeLine{\textcolor{comment}{         Note: Replace this with whatever error handling method your code uses */}}
+\DoxyCodeLine{      MPI\_Abort(world\_comm, 1);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Free any memory allocations}}
+\DoxyCodeLine{  \textcolor{keyword}{delete} [] command;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+ Call this function as {\ttfamily C\+A\+LL run\+\_\+mdi(\char`\"{}@\+D\+E\+F\+A\+U\+L\+T\char`\"{}, my\+\_\+rank, world\+\_\+comm, mdi\+\_\+comm)}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{SUBROUTINE }run\_mdi( node\_name, my\_rank, world\_comm, mdi\_comm )}
+\DoxyCodeLine{    \textcolor{keywordtype}{USE }mdi,              \textcolor{keywordtype}{ONLY} : mdi\_send, mdi\_recv, mdi\_recv\_command, \&}
+\DoxyCodeLine{                                 mdi\_accept\_communicator, \&}
+\DoxyCodeLine{                 mdi\_char, mdi\_double, mdi\_int, \&}
+\DoxyCodeLine{                 mdi\_command\_length, mdi\_name\_length, \&}
+\DoxyCodeLine{                 mdi\_comm\_null}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI command from the driver}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{CHARACTER} :: node\_name(MDI\_NAME\_LENGTH)}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Rank of this process in world\_comm}}
+\DoxyCodeLine{    \textcolor{comment}{! If you are not using MPI, you can set my\_rank = 0}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(IN)} :: my\_rank}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI-\/created intra-\/communicator}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(IN)} :: world\_comm}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_Communicator}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(IN)} :: mdi\_comm}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI command from the driver}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{CHARACTER}, \textcolor{keywordtype}{ALLOCATABLE} :: command(:)}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Error flag for MDI functions}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER} :: ierr}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Flag to indicate whether a received command is supported}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keywordtype}{INTEGER} :: command\_supported}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Allocate the command array}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{keyword}{ALLOCATE}( command(mdi\_command\_length) )}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    \textcolor{comment}{! Main MDI loop}}
+\DoxyCodeLine{    \textcolor{comment}{!}}
+\DoxyCodeLine{    mdi\_loop: \textcolor{keywordflow}{DO}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{comment}{! Receive a command from the driver}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{keywordflow}{IF} ( my\_rank .eq. 0 ) \textcolor{keywordflow}{THEN}}
+\DoxyCodeLine{            \textcolor{keyword}{CALL }mdi\_recv\_command( command, mdi\_comm, ierr )}
+\DoxyCodeLine{            \textcolor{keyword}{WRITE}(*,*) \textcolor{stringliteral}{"MDI Engine received a command: "},trim(command)}
+\DoxyCodeLine{\textcolor{keywordflow}{        END IF}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{comment}{! Broadcast the command to all ranks}}
+\DoxyCodeLine{        \textcolor{comment}{! Note: Remove this line if not using MPI}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{keyword}{CALL }mpi\_bcast( header, mdi\_command\_length, mpi\_char, 0, world\_comm )}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{comment}{! Confirm that this command is actually supported at this node}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        command\_supported = 0;}
+\DoxyCodeLine{        \textcolor{keyword}{CALL }mdi\_check\_command\_exists(node\_name, command, mdi\_comm\_null, command\_supported, ierr);}
+\DoxyCodeLine{        \textcolor{keywordflow}{IF} ( command\_supported .ne. 1 ) \textcolor{keywordflow}{THEN}}
+\DoxyCodeLine{            \textcolor{comment}{! Note: Replace this with whatever error handling method your code uses}}
+\DoxyCodeLine{            \textcolor{keyword}{CALL }mpi\_abort(world\_comm, 1);}
+\DoxyCodeLine{\textcolor{keywordflow}{        END IF}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{comment}{! Respond to the received command}}
+\DoxyCodeLine{        \textcolor{comment}{!}}
+\DoxyCodeLine{        \textcolor{keywordflow}{SELECT CASE} ( trim( command ) )}
+\DoxyCodeLine{    \textcolor{keywordflow}{CASE}( \textcolor{stringliteral}{"EXIT"} )}
+\DoxyCodeLine{        \textcolor{keywordflow}{RETURN}}
+\DoxyCodeLine{\textcolor{keywordflow}{        CASE DEFAULT}}
+\DoxyCodeLine{            \textcolor{comment}{!}}
+\DoxyCodeLine{            \textcolor{comment}{! The received command is not recognized by this engine, so exit}}
+\DoxyCodeLine{            \textcolor{comment}{! Note: Replace this with whatever error handling method your code uses}}
+\DoxyCodeLine{            \textcolor{comment}{!}}
+\DoxyCodeLine{            \textcolor{keyword}{WRITE}(*,*) \textcolor{stringliteral}{"MDI Engine received unrecognized command: "},trim(command)}
+\DoxyCodeLine{            \textcolor{keyword}{CALL }mpi\_abort(world\_comm, 1);}
+\DoxyCodeLine{\textcolor{keywordflow}{        END SELECT}}
+\DoxyCodeLine{\textcolor{keywordflow}{    END DO} mdi\_loop}
+\DoxyCodeLine{\textcolor{keyword}{END SUBROUTINE }run\_mdi}
+\end{DoxyCode}
+
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{import} mdi}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{def }run\_mdi(node\_name, my\_rank, world\_comm, mdi\_comm):}
+\DoxyCodeLine{}
+\DoxyCodeLine{    exit\_flag = \textcolor{keyword}{False}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{comment}{\# Main MDI loop}}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} \textcolor{keywordflow}{not} exit\_flag:}
+\DoxyCodeLine{        \textcolor{comment}{\# Receive a command from the driver}}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} self.my\_rank == 0:}
+\DoxyCodeLine{            command = mdi.MDI\_Recv\_Command(self.comm)}
+\DoxyCodeLine{        \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{            command = \textcolor{keywordtype}{None}}
+\DoxyCodeLine{}
+\DoxyCodeLine{        \textcolor{comment}{\# Broadcast the command to all ranks, if using MPI}}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} world\_comm \textcolor{keywordflow}{is} \textcolor{keywordflow}{not} \textcolor{keywordtype}{None}:}
+\DoxyCodeLine{            command = world\_comm.bcast(command, root=0)}
+\DoxyCodeLine{}
+\DoxyCodeLine{        \textcolor{comment}{\# Confirm that this command is actually supported at this node}}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} \textcolor{keywordflow}{not} mdi.MDI\_Check\_Node\_Exists(node\_name, command):}
+\DoxyCodeLine{            \textcolor{keywordflow}{raise} Exception(\textcolor{stringliteral}{'MDI Engine received unsupported command: '} + str(command))}
+\DoxyCodeLine{}
+\DoxyCodeLine{        \textcolor{comment}{\# Respond to the received command}}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} command == \textcolor{stringliteral}{"EXIT"}:}
+\DoxyCodeLine{            exit\_flag = \textcolor{keyword}{True}}
+\DoxyCodeLine{        \textcolor{keywordflow}{else}:}
+\DoxyCodeLine{            \textcolor{comment}{\# The received command is not recognized by this engine, so exit}}
+\DoxyCodeLine{            \textcolor{comment}{\# Note: Replace this with whatever error handling method your code uses}}
+\DoxyCodeLine{            \textcolor{keywordflow}{raise} Exception(\textcolor{stringliteral}{'MDI Engine received unrecognized command: '} + str(command))}
+\end{DoxyCode}
+
+
+\hypertarget{engine_tutorial_engine_tutorial_register}{}\doxysection{Step 12\+: Register the Node and Commands}\label{engine_tutorial_engine_tutorial_register}
+M\+DI requires you to \char`\"{}register\char`\"{} a list of all nodes and commands your engine supports. This allows you, as an engine developer, to inform any drivers of what your code can do. M\+DI provides two functions that allow you to do this\+: {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}}. The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command. As a result, we need to call {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} once to register the {\ttfamily @D\+E\+F\+A\+U\+LT} node and call {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} once to register the {\ttfamily E\+X\+IT} command.
+
+Fortunately, this is a very simple process. The only argument to the {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} function is the name of the node, {\ttfamily @D\+E\+F\+A\+U\+LT}. The {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} function accepts two arguments\+: the name of the node, and the name of the command that we are registering at that node, {\ttfamily E\+X\+IT}. In time, you may add support for additional commands at the default node, making additional calls to {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} for each newly supported command. If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the {\ttfamily @D\+E\+F\+A\+U\+LT} node.
+
+For now, place the following code immediately after your engine\textquotesingle{}s call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}. It is important that it be called prior to the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}}.
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{/* Register all supported commands and nodes */}}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{MDI\_Register\_Node}}(\textcolor{stringliteral}{"@DEFAULT"});}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{MDI\_Register\_Command}}(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"});}
+\end{DoxyCode}
+
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{! Register all supported commands and nodes}}
+\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_Node("@DEFAULT", ierr);}}
+\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_Command("@DEFAULT", "EXIT", ierr);}}
+\end{DoxyCode}
+
+
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{\# Register all supported commands and nodes}}
+\DoxyCodeLine{mdi.MDI\_Register\_Node(\textcolor{stringliteral}{"@DEFAULT"})}
+\DoxyCodeLine{mdi.MDI\_Register\_Command(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"})}
+\end{DoxyCode}
+
+
+\hypertarget{engine_tutorial_engine_tutorial_commands}{}\doxysection{Step 13\+: Add Support for Additional Commands}\label{engine_tutorial_engine_tutorial_commands}
+It may not look like much yet, but you have now established a basic M\+DI interface! If you generate a new report by typing {\ttfamily mdimechanic report} at the command line, M\+DI Mechanic should confirm that your engine passes all of the \char`\"{}\+Basic Functionality Tests\char`\"{}. If your engine is still failing that test, you should return to the previous steps of this tutorial to determine what went wrong.
+
+Assuming that your M\+DI interface is functioning as expected, you can now begin the process of implementing support for more commands. Whenever you want to add support for a new command, you will need to do the following\+:
+\begin{DoxyEnumerate}
+\item Add code to the \char`\"{}\+Main M\+D\+I loop\char`\"{} in {\ttfamily run\+\_\+mdi()} that will respond appropriately to the new command.
+\item Add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} to register support for that command.
+\end{DoxyEnumerate}
+
+Examine the commands specified by the \href{https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html}{\texttt{ M\+DI Standard}}, and implement support for the ones that seem relevant for your engine. Each command in the M\+DI Standard describes exactly how the engine is expected to respond. Often, the engine is expected to either send or receive information to/from the driver. This is accomplished using the {\ttfamily \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}} functions, respectively.
+
+If you are using M\+PI, you should be aware that all M\+D\+I-\/based communication must take place through {\ttfamily rank 0}. Only {\ttfamily rank 0} should call {\ttfamily M\+P\+I\+\_\+\+Send()}, {\ttfamily M\+P\+I\+\_\+\+Recv()}, and {\ttfamily M\+P\+I\+\_\+\+Recv\+\_\+\+Command()}. Depending on how you have distributed data structures across ranks, you may need to do {\ttfamily M\+P\+I\+\_\+\+Gather()} or similar operations to collect the data onto {\ttfamily rank 0} before calling {\ttfamily \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}}. Likewise, you may need to do {\ttfamily M\+P\+I\+\_\+\+Scatter()} or similar operations to correctly distribute data after calling {\ttfamily \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}}.\hypertarget{engine_tutorial_engine_tutorial_nodes}{}\doxysection{Step 14\+: Add Support for Additional Nodes}\label{engine_tutorial_engine_tutorial_nodes}
+Whenever you add a new node, you must also add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} to register support for that node. Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it. For example, if you implement five nodes, and each of them supports the {\ttfamily E\+X\+IT} command, you will need to call the {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} function five times, each time with a different node as the first argument and with {\ttfamily E\+X\+IT} as the second argument. 
