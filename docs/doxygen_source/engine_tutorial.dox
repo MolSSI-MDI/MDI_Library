@@ -1,0 +1,878 @@
+/** \page engine_tutorial Engine Tutorial
+
+\section engine_tutorial_intro Introduction
+
+This tutorial will guide you through the process of implementing a support for MDI in an existing engine.
+
+If you just want a quick tl;dr summary of the minimum steps involved in implementing an MDI interface, see the following:
+-# If your engine is written in a compiled language, build and link your engine against MDI just like any other library.  If it is written in Python, just import the MDI Library.
+-# Add a way for end-users of your engine to send runtime options to the MDI Library, preferably through a `-mdi` command-line option.
+-# Call `MDI_Init()` and `MDI_Accept_Communicator()` as early as possible in your engine.
+-# Add some server-like code that allows your engine to listen for commands via MDI and respond to them appropriately.
+-# If your engine uses the Message Passing Interface (MPI), be aware that the MDI Library provides a replacement for MPI_COMM_WORLD, and that some MDI functions should only be called by `rank 0`.
+
+
+\htmlonly
+<style>
+code
+{
+    color: #733;
+}
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #b1bfde;
+}
+
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+.tab button:hover {
+  background-color: #a2b6e1;
+}
+
+.tab button.active {
+  background-color: #96ade0;
+}
+
+.tab button.cxx, button.fortran, button.python {
+}
+
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: #e1e7f6;
+}
+.tabcontent.cxx, .tabcontent.fortran, .tabcontent.python {
+}
+</style>
+<script>
+function revealTabContent(evt, code_name) {
+  var i, tabcontent, tabbuttons;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tabbuttons = document.getElementsByClassName("tabbuttons");
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+  }
+
+  var content_name = "tabcontent";
+  content_name = content_name.concat(" ");
+  content_name = content_name.concat(code_name);
+  var contents = document.getElementsByClassName(content_name);
+  for (i = 0; i < contents.length; i++) {
+    contents[i].style.display = "block";
+  }
+
+  var button_name = "tabbuttons";
+  button_name = button_name.concat(" ");
+  button_name = button_name.concat(code_name);
+  tabbuttons = document.getElementsByClassName(button_name);
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].className += " active";
+  }
+}
+</script>
+\endhtmlonly
+
+
+
+
+
+
+\section engine_tutorial_dependencies Step 1: Prepare basic requirements
+
+In order to simplify the process of implementing, testing, and analyzing the capabilities of an MDI engine in a portable environment, this tutorial makes use of several tools.
+These tools include Git, GitHub, MDI Mechanic, and Docker.
+Please install each of these tools now:
+- If you don't already have a GitHub account, create one now.
+- If you have never used Git, you may wish to work through [a quick tutorial on Git](https://education.molssi.org/python_scripting_cms/09-version-control/index.html), first.
+- Install MDI Mechanic.  This can be done using pip, (*i.e.* `pip install mdimechanic`).
+- Install Docker and launch Docker Desktop, if applicable.  You don't need to create a DockerHub account.  You also don't need to know much about using Docker, as MDI Mechanic will handle those details for you.
+
+Note that although the above are requirements of this tutorial, none of them are required of end-users running your code.
+
+
+
+\section engine_tutorial_repo Step 2: Initialize an MDI report repository
+
+In this step of the tutorial, we will create a new GitHub repository to assist in the process of implementing, testing, and maintaining MDI support in your code.
+This new repository will be separate and independent from any repositories already associated with your code, and will henceforth be referred to as your **report repository**.
+
+Create your report repository by making a new repository on GitHub.
+This repository does **not** need to include the source code of your engine, so you can make this repository publically accessible even if your source code is maintained privately.
+Don't initialize the repository with a `README` file or a `.gitignore` file.
+You can select whatever license you prefer; since this repository is separate from the repository that holds your engine's source code, it does not need to be the same license governing your engine's code.
+
+Clone the newly created repository onto your local machine:
+```Bash
+git clone git@github.com:<organization>/<repo_name>.git
+cd <repo_name>
+```
+
+Now use MDI Mechanic to create the initial structure for this report repository:
+```Bash
+cd <repo_name>
+mdimechanic startproject --enginereport
+```
+This will add several new files to your report repository, including one called `mdimechanic.yml`.
+
+
+
+\section engine_tutorial_yaml Step 3: Configure the MDI Mechanic YAML file
+
+The `mdimechanic.yml` file created in the previous step is used by MDI Mechanic to build your engine and to test and analyze its functionality as an MDI engine.
+If you have used continuous integration (CI) testing services in the past, you will likely recognize many similarities between `mdimechanic.yml` and the YAML files that are often used by those services.
+Open `mdimechanic.yml` in your favorite text editor, and you will see that MDI Mechanic pre-populated this file with a basic template.
+
+This tutorial will go over each field in `mdimechanic.yml` in detail, but the following is a quick summary:
+- **code_name:** The name of your code, which is used when printing out information.
+- **image_name:** MDI Mechanic will create an Docker image, which will contain a highly portable environment that can be used to reproducibly build and run your engine.  This field sets the name of the engine MDI Mechanic will create.
+- **build_image**: This provides a script that is used to build the Docker image that MDI Mechanic builds.  It corresponds to the steps required to prepare an environment with all of your engine's dependencies, and is comparable to a `before_install` step in some CI services.
+- **build_engine**: This provides a script to build your engine.  It is executed within the context of the Docker image built by MDI Mechanic, and is comparable to an `install` step in some CI services.
+- **validate_engine**: This provides a script to verify that your engine has been built successfully.  It is comparable to a `script` step in some CI services.
+- **engine_tests**: This provides scripts used to test MDI functionality in your engine.
+
+For now, just replace the value of `code_name` with the name of your engine, and set the value of `image_name` to something appropriate.
+The naming convention for Docker images is `<organization_name>/<image_name>`, and we recommend that you follow this convention when setting `image_name`.
+If in doubt, you can set `image_name` to `<engine_name>/mdi_report`.
+
+
+
+\section engine_tutorial_image Step 4: Define your engine's build environment using MDI Mechanic
+
+This tutorial uses MDI Mechanic, which in turn runs your code within the context of a Docker image.
+In crude terms, you can think of an image as being a simulated duplicate of another computer, which has a different environment from yours (*i.e.* different installed libraries and system settings), and might be running an entirely different operating system.
+The image created by MDI Mechanic is based on the Ubunto Linux distribution.
+Starting from the basic Linux environment, MDI Mechanic installs some basic compilers (gcc, g++, and gfortran), an MPI library (MPICH), Python 3, and a handful of other dependencies (make and openssh).
+To finish building the image, MDI Mechanic executes whatever script you've provided in the `build_image` section of `mdimechanic.yml`.
+
+You should now fill out `build_image` with an appropriate script that installs any dependencies necessary to compile your engine (if your engine is written in a compiled language) or to run your engine (if your engine is written in an interpreted language).
+To do this, imagine that someone handed you a Linux computer that is completely new and unused, except that the compilers and libraries mentioned in the preceeding paragraph have been installed on it.
+What would you need to do in order to install all the dependencies for your code?
+The answer to this question corresponds to the script you need to provide to `build_image`.
+
+
+
+
+\section engine_tutorial_build Step 5: Build your engine using MDI Mechanic
+
+After you've finished with the `build_image` script, it is time to write the `build_engine` script.
+This script will be executed within the context of the image you described in the `build_image` script, so it will have access to any dependencies you installed in that script (and *only* those dependencies).
+To write the `build_engine` script, ask yourself "What would someone need to type into their terminal to acquire a copy of my code's source and compile it?"; the answer to this question corresponds to the script you need to provide to `build_engine`.
+Here are a few important details to keep in mind as you write the `build_engine` script:
+- The initial working directory for the `build_engine` script is the top-level directory of your report repository.
+- The `build_engine` script can access and manipulate any files within your report repository, including creating new files and subdirectories.  It does not have access to any other files or directories on you filesystem (for Docker afficianados: the report repository's top-level directory is mounted within the image to `/repo`).
+- It is recommended that your `build_engine` script should download your engine repository's source code to a `source` subdirectory within your report repository.
+- It is recommended that your `build_engine` script should build/install your engine repository's source code to a `build` subdirectory within your report repository.
+- If your engine is **not** open-source, it may not be possible to simply download the source code via a command like `git clone`.  In this case, you should write the `build_engine` script with the assumption that your engine's source code has been manually copied by the end-user into a `source` subdirectory within the report repository's top-level directory.  Uponing cloning the report repository, it will be the responsibility of the user to copy your engine's source code into the correct location, assuming they have access to it.  Note that you **absolutely should not** include any private information (*i.e.* software keys, private ssh keys, private source code, *etc.*) in `mdimechanic.yml` or any other file that is commited to your report repository.  The `build` and `source` directories are included in the `.gitignore` file of the report; this prevents source code that is temporarily stored in those locations from being accidentally committed, unless `.gitignore` is overridden. Override `.gitignore` at your peril, and always be aware of anything you are committing to the repository.
+
+At this point, you can execute `mdimechanic build` in the top-level directory of your report repository.
+If this command executes successfully, great!
+If not, work to correct any problems with the build process before continuing to the next step.
+
+
+
+
+\section engine_tutorial_validate Step 6: Validate the engine build
+
+At this point, modify the `validate_engine` field in `mdimechanic.yml` so that it performs a simple test to confirm that the engine was actually built.
+The script should return a non-zero exit code upon failure.
+If your code is written in a compiled language, this can be as simple as a check to confirm the existence of the executable file:
+\code{.yml}
+  validate_engine:
+    - ENGINE_EXECUTABLE_PATH="build/<engine_exectuable_name>"
+    - |
+      if test -f "$ENGINE_EXECUTABLE_PATH"; then
+        echo "$ENGINE_EXECUTABLE_PATH exists"
+      else
+        echo "Could not find engine executable: $ENGINE_EXECUTABLE_PATH"
+        exit 1
+      fi
+\endcode
+If your code is written in Python, you might instead confim that your code can be imported (*i.e.* `python -c "import <engine_name>"`).
+
+After providing a `validate_engine` script, run `mdimechanic report` in the top-level directory of your MPI-report repository.
+This will perform a series of tests to confirm whether your engine supports MDI correctly.
+The first of these tests simply runs the `validate_engine` script.
+Since we haven't even started implementing MDI functionality in your engine yet, it is expected that MDI Mechanic will report errors shortly after starting.
+After `mdimechanic report` stops (most likely throwing an error), you should find that there is a new `README.md` file in your MDI-report repository.
+This file contains the full report from MDI Mechanic.
+To properly view the file, you can either commit the file and push it to GitHub, where it can be viewed at your MDI-report repository's GitHub page, or you can install an offline markdown viewer (such as `grip`) to view it.
+There isn't much to see now, but hopefully you can see that there is a green `working` badge next to the step labeled "The engine builds successfully".
+If not, review the error messages from `mdimechanic report` to try to work out what when wrong, before moving on to the next step.
+
+
+
+
+\section engine_tutorial_test Step 7: Provide an example input
+
+When you run `mdimechanic report`, MDI Mechanic tries to run a series of tests to determine whether and to what extent your code supports MDI.
+To do this, MDI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then report the results.
+At this point in the tutorial, MDI Mechanic has no information about how to launch your code, so it can't run these tests.
+
+We will now supply MDI Mechanic with everything it needs to run a calculation using your code.
+In `mdimechanic.yml` you will find an `engine_tests` field.
+This field can contain a list of scripts, each of which is intended to launch a single calculation with your code.
+For now, we only want to supply a single test script.
+The relevant part of `mdimechanic.yml` reads:
+\code{.yml}
+engine_tests:
+  # Provide at least one example input that can be used to test your code's MDI functionality
+  - script:
+      - echo "Insert commands to run an example calculation here"
+      - exit 1
+\endcode
+Replace the script in the `script` field here so that, when executed, it will launch a calculation using your code.
+This likely means that you will need to add one or more input files to your MDI-report repository, which we recommend placing in a `tests` subdirectory.
+Your `mdimechanic.yml` might end up looking something like this:
+\code{.yml}
+engine_tests:
+  - script:
+      - cd tests/test1
+      - ../../${ENGINE_EXECUTABLE_PATH} -in test.inp
+\endcode
+
+The exact nature of the test calculation doesn't matter very much.
+It should be a short calculation, since it will be run many times.
+The calculation might involve a simulation of a Lennard-Jones fluid, evaluation of the single-point energy of a water molecule, or some other small computatation.
+The most important thing about the test script is that **it must return a non-zero exit value if your engine exits due to an error**.
+
+
+
+
+\section engine_tutorial_link Step 8: Make the MDI Library Available to the Engine
+
+In this step, we will ensure that MDI functions can be called from your engine.
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=C -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine's source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the *engine's* Git repository (**not** in the top directory of the *report* repository):
+\code{.sh}
+git subtree add --prefix=lib/mdi https://github.com/MolSSI-MDI/MDI_Library master --squash
+\endcode
+The argument to the `--prefix` option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine's directory structure.
+
+You must then modify your engine's build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine's existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in `lib/mdi`:
+\code{.sh}
+mkdir -p lib/mdi/build
+cd lib/mdi/build
+cmake -Dlibtype=STATIC -Dlanguage=Fortran -DCMAKE_INSTALL_PREFIX=../install ..
+make
+make install
+\endcode
+The following CMake configuration options are likely to be useful:
+- **-Dlibtype**: Set this to `STATIC`.
+- **-Dlanguage**: Set this to the language of the code you intend to link to the MDI library.  Valid options are `C`, `CXX` (for C++), `Fortran`, and `Python`.
+- **-DCMAKE_C_COMPILER**: Set this to the C compiler used to build your engine (if applicable).
+- **-DCMAKE_Fortran_COMPILER**: Set this to the Fortran compiler used to build your engine (if applicable).
+- **-DCMAKE_INSTALL_PREFIX**: Set this to the destination directory for the installation.
+
+Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at `${CMAKE_INSTALL_PREFIX}/lib/mdi`, and will typically be called `libmdi.a` on POSIX systems.
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+First, install the MDI Library during the `build_image` step in `mdimechanic.yml`.
+This can be done trivially using `pip` (*e.g.* `pip install pymdi`).
+Your engine can then import the MDI Library where needed (*e.g.* `import mdi`).
+\htmlonly
+</div>
+\endhtmlonly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section engine_tutorial_input Step 9: Support User Input of the MDI Options
+
+Your code should allow users to set certain MDI parameters at runtime.
+Typically, end-users should be able to set these parameters through the use of a `-mdi` command-line option when your engine is launched.
+In this case, the user should be able to launch your code by doing something along the lines of:
+\code{.sh}
+engine_exectable -mdi "-name engine -role ENGINE -method TCP -hostname localhost -port 8021"
+\endcode
+The details of how you read this command-line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-line options.
+The argument to the `-mdi` command-line option should be represented as a `char*` in C++, a `CHARACTER` array in Fortran, and a `String` in Python.
+Subsequent steps in this tutorial will assume that you have named the corresponding variable `mdi_options`.
+
+We understand that some codes prefer to eschew command-line options where possible.
+If it is preferable not to introduce support for a `-mdi` command-line option, ensure that there is some other mechanism for the user to provide the MDI parameters at runtime.
+
+
+
+
+
+
+
+\section engine_tutorial_init Step 10: Initialize the MDI Library
+
+Your code must initialize the MDI Library by calling the `MDI_Init()` function.
+This is a straightforward process, but there are a couple of important details to keep in mind if you are using both MDI and the Message Passing Interface (MPI):
+- If your code uses MPI, you should call `MDI_Init()` after the call to `MPI_Init()` (or `MPI_Init_thread()`, if applicable).  Aside from the restriction, `MDI_Init()` should be called as early in your code as possible.  It is a best practice to call `MDI_Init()` immediately after calling `MPI_Init()`.  Calling MPI functions (other than `MPI_Init()` or `MPI_Init_thread()`) before calling `MDI_Init()` will lead to bugs.
+- One of the required arguments to the `MDI_Init()` function is an MPI intra-communicator.  Upon calling `MDI_Init()`, this intra-communicator must correspond to the intra-communicator that includes all global ranks (*e.g.*, `MPI_COMM_WORLD`).  The `MDI_Init()` function will then perform an `MPI_Comm_split()` operation to obtain an inter-communicator that includes only ranks associated with your engine.  As an engine developer, you should **never** perform MPI operations involving `MPI_COMM_WORLD`.  Instead, use the intra-communicator that is provided by the MDI Library whenever you would have otherwise used `MPI_COMM_WORLD`.  You should replace any existing references to `MPI_COMM_WORLD` in your code with a reference to the intra-communicator obtained from calling `MDI_Init()`.
+
+The following code snippets provide a guide to correctly initializing MDI and MPI together in C++, Fortran, and Python.
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+
+\code{.cpp}
+#include <mpi.h>
+#include "mdi.h"
+
+/* User-selected options for the MDI Library
+   This should be obtained at runtime from a "-mdi" command-line option */
+char *mdi_options;
+
+/* MPI intra-communicator for all processes running this code
+   It should be set to MPI_COMM_WORLD prior to the call to MDI_Init(), as shown below
+   Afterwards, you should ALWAYS use this variable instead of MPI_COMM_WORLD */
+MPI_Comm world_comm;
+
+/* Pointer to world_comm */
+MPI_Comm *world_comm_ptr = &world_comm;
+
+/* MDI communicator used to communicate with the driver */
+MDI_Comm mdi_comm = MDI_COMM_NULL;
+
+/* Rank of this process in the MDI-created intra-communicator */
+int myrank = 0;
+
+/* Function to initialize both MPI and MDI */
+initialize(char *mdi_options, MPI_Comm *world_comm_ptr) {
+
+  /* If using MPI, it should be initialized before MDI */
+  MPI_Init();
+
+  /* Set the value of world_comm
+     Note: if you are not using MPI, set world_comm to MDI_COMM_NULL instead */
+  *world_comm_ptr = MPI_COMM_WORLD;
+
+  /* MDI should be initialized immediately after MPI */
+  MDI_Init(mdi_options, world_comm_ptr);
+  /* Following this point, world_comm should be used whenever you would otherwise have used MPI_COMM_WORLD */
+
+  /* Get the rank of this process, within the MDI-created intra-communicator */
+  MPI_Comm_rank(world_comm, my_rank);
+
+  /* Accept a connection from an external driver */
+  if ( my_rank == 0 ) {
+    MDI_Accept_Communicator(&mdi_comm);
+  }
+}
+\endcode
+
+After implementing the call to `MDI_Init()`, you should recompile the code to confirm that your executable is linked to the MPI Library.
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+\code{.f90}
+SUBROUTINE initialize ( mdi_options, world_comm, my_rank, mdi_comm )
+    USE mpi,               ONLY : MPI_COMM_WORLD
+    USE mdi,               ONLY : MDI_Init, MDI_COMM_NULL
+    !
+    ! User-selected options for the MDI Library
+    ! This should be obtained at runtime from a "-mdi" command-line option
+    !
+    CHARACTER(len=1024), INTENT(IN), OPTIONAL :: mdi_options
+    !
+    ! MPI intra-communicator for all processes running this code
+    ! It should be set to MPI_COMM_WORLD prior to the call to MDI_Init(), as shown below
+    ! Afterwards, you should ALWAYS use this variable instead of MPI_COMM_WORLD
+    !
+    INTEGER, INTENT(INOUT) :: world_comm
+    !
+    ! Rank of this process within the MDI-created intra-communicator
+    !
+    INTEGER, INTENT(OUT) :: my_rank
+    !
+    ! MDI communicator, obtained from MDI_Accept_Communicator
+    !
+    INTEGER, INTENT(OUT) :: mdi_comm
+    !
+    ! Error flag used in MDI calls
+    !
+    INTEGER :: ierr
+    !
+    ! If using MPI, it should be initialized before MDI
+    !
+    CALL MPI_Init(ierr)
+    !
+    ! Set the value of world_comm
+    ! Note: if you are not using MPI, set world_comm to MDI_COMM_NULL instead
+    !
+    world_comm = MPI_COMM_WORLD
+    !
+    ! MDI should be initialized immediately after MPI
+    !
+    IF ( PRESENT(mdi_options) ) THEN
+        CALL MDI_Init(mdi_options, world_comm, ierr)
+    END IF
+    !
+    ! Following this point, world_comm should be used whenever you would otherwise have used MPI_COMM_WORLD
+    !
+    !
+    ! Get the rank of this process, within the MDI-created intra-communicator
+    !
+    CALL MPI_Comm_rank(world_comm, my_rank, ierr)
+    !
+    ! Accept a connection from an external driver
+    !
+    IF ( my_rank .eq. 0 ) THEN
+        CALL MDI_Accept_Communicator( mdi_comm, ierr )
+    END IF
+END SUBROUTINE initialize
+\endcode
+
+After implementing the call to `MDI_Init()`, you should recompile the code to confirm that your executable is linked to the MPI Library.
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+
+\code{.py}
+# Import the MDI Library
+import mdi
+
+# Attempt to import mpi4py
+try:
+    from mpi4py import MPI
+    use_mpi4py = True
+except ImportError:
+    use_mpi4py = False
+
+# MPI intra-communicator for all processes running this code
+# It should be set to MPI.COMM_WORLD prior to the call to MDI_Init(), as shown below
+# Afterwards, you should ALWAYS use this variable instead of MPI.COMM_WORLD
+if use_mpi4py:
+    world_comm = MPI.COMM_WORLD
+else:
+    world_comm = None
+
+# Get the command-line options for MDI
+...
+
+# Initialize MDI
+mdi.MDI_Init(mdi_options, world_comm)
+
+# Set world_comm to the correct intra-code MPI communicator
+world_comm = MDI_Get_Intra_Code_MPI_Comm()
+# Following this point, world_comm should be used whenever you would otherwise have used MPI.COMM_WORLD
+
+# Get the MPI rank of this process
+if world_comm is not None:
+    my_rank = world_comm.Get_rank()
+else:
+    my_rank = 0
+
+# Accept a connection from an external driver
+if my_rank == 0:
+    mdi_comm = MDI_Accept_Communicator()
+\endcode
+
+\htmlonly
+</div>
+\endhtmlonly
+
+
+
+
+
+
+
+
+\section engine_tutorial_comm Step 11: Support Basic MDI Communication
+
+In this step, we are going to introduce some basic code that will finally allow external drivers to connect to your code and ask it to do useful things for them.
+First, identify a point in your code when it would be appropriate for the code to accept instructions (in the form of MDI commands) from an external driver.
+The chosen point should occur after your code has completed basic initialization operations (reading input files, doing basic system setup, calling `MDI_Init()`, *etc.*).
+It should also be practical to implement support for a reasonable number of MDI commands at whatever point you select.
+The [MDI Standard](https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html) defines numerous commands that driver developers might want to send to your code.
+You won't need to support all of the available commands, but it is advisable to support some of the more common commands, such as commands that request or change the nuclear coordinates (`<COORDS` and `>COORDS`, respectively), as well as commands that request the energy (`<ENERGY`) number of atoms (`<NATOMS`), or (`<FORCES`).
+Try to select a point where it will be possible to fulfill some of these requests.
+When in doubt, select a point that is reached early in your code's execution.
+This tutorial will subsequently refer to the point you have selected as the **MDI node**.
+
+At the MDI node, you will need to insert some code (probably in the form of a called function) that handles the process of establishing communication with the external driver, accepting MDI commands from the driver, and responding to the commands appropriately.
+For the purpose of this tutorial, we will implement all of this functionality in a function called `run_mdi()`.
+Examples of a minimalistic `run_mdi()` function are provided below, in C++, Fortran, and Python.
+You can simply copy the function into your codebase and call `run_mdi()` at your MDI node.
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+Call this function as `run_mdi("@DEFAULT", my_rank, world_comm, mdi_comm)`.
+
+\code{.cpp}
+#include <mpi>
+#include "mdi.h"
+
+run_mdi(char *node_name, int my_rank, MPI_Comm world_comm, MDI_Comm mdi_comm) {
+
+  /* Exit flag for the main MDI loop */
+  bool exit_flag = false;
+
+  /* MDI command from the driver */
+  command = new char[MDI_COMMAND_LENGTH];
+
+  /* Main MDI loop */
+  while (not exit_flag) {
+    /* Receive a command from the driver */
+    if ( my_rank == 0 ) {
+      MDI_Recv_Command(command, mdi_comm);
+    }
+    MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm);
+
+    /* Confirm that this command is actually supported at this node */
+    int command_supported = 0;
+    MDI_Check_Command_Exists(node_name, command, MDI_COMM_NULL, &command_supported);
+    if ( command_supported != 1 ) {
+      /* Note: Replace this with whatever error handling method your code uses */
+      MPI_Abort(world_comm, 1);
+    }
+
+    /* Respond to the received command */
+    if ( strcmp(command, "EXIT") == 0 ) {
+      exit_flag = true;
+    }
+    else {
+      /* The received command is not recognized by this engine, so exit
+         Note: Replace this with whatever error handling method your code uses */
+      MPI_Abort(world_comm, 1);
+    }
+
+  // Free any memory allocations
+  delete [] command;
+}
+\endcode
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+Call this function as `CALL run_mdi("@DEFAULT", my_rank, world_comm, mdi_comm)`.
+
+\code{.f90}
+SUBROUTINE run_mdi( node_name, my_rank, world_comm, mdi_comm )
+    USE mdi,              ONLY : MDI_Send, MDI_Recv, MDI_Recv_Command, &
+                                 MDI_Accept_Communicator, &
+				 MDI_CHAR, MDI_DOUBLE, MDI_INT, &
+				 MDI_COMMAND_LENGTH, MDI_NAME_LENGTH, &
+				 MDI_COMM_NULL
+    !
+    ! MDI command from the driver
+    !
+    CHARACTER :: node_name(MDI_NAME_LENGTH)
+    !
+    ! Rank of this process in world_comm
+    ! If you are not using MPI, you can set my_rank = 0
+    !
+    INTEGER, INTENT(IN) :: my_rank
+    !
+    ! MDI-created intra-communicator
+    !
+    INTEGER, INTENT(IN) :: world_comm
+    !
+    ! MDI communicator, obtained from MDI_Accept_Communicator
+    !
+    INTEGER, INTENT(IN) :: mdi_comm
+    !
+    ! MDI command from the driver
+    !
+    CHARACTER, ALLOCATABLE :: command(:)
+    !
+    ! Error flag for MDI functions
+    !
+    INTEGER :: ierr
+    !
+    ! Flag to indicate whether a received command is supported
+    !
+    INTEGER :: command_supported
+    !
+    ! Allocate the command array
+    !
+    ALLOCATE( command(MDI_COMMAND_LENGTH) )
+    !
+    ! Main MDI loop
+    !
+    mdi_loop: DO
+        !
+        ! Receive a command from the driver
+        !
+        IF ( my_rank .eq. 0 ) THEN
+            CALL MDI_Recv_Command( command, mdi_comm, ierr )
+            WRITE(*,*) "MDI Engine received a command: ",trim(command)
+        END IF
+        !
+        ! Broadcast the command to all ranks
+        ! Note: Remove this line if not using MPI
+        !
+        CALL MPI_Bcast( header, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm )
+        !
+        ! Confirm that this command is actually supported at this node
+        !
+        command_supported = 0;
+        CALL MDI_Check_Command_Exists(node_name, command, MDI_COMM_NULL, command_supported, ierr);
+        IF ( command_supported .ne. 1 ) THEN
+            ! Note: Replace this with whatever error handling method your code uses
+            CALL MPI_Abort(world_comm, 1);
+        END IF
+        !
+        ! Respond to the received command
+        !
+        SELECT CASE ( trim( command ) )
+	CASE( "EXIT" )
+	    RETURN
+        CASE DEFAULT
+            !
+            ! The received command is not recognized by this engine, so exit
+            ! Note: Replace this with whatever error handling method your code uses
+            !
+            WRITE(*,*) "MDI Engine received unrecognized command: ",trim(command)
+            CALL MPI_Abort(world_comm, 1);
+        END SELECT
+    END DO mdi_loop
+END SUBROUTINE run_mdi
+\endcode
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+
+\code{.py}
+import mdi
+
+def run_mdi(node_name, my_rank, world_comm, mdi_comm):
+
+    exit_flag = False
+
+    # Main MDI loop
+    while not exit_flag:
+        # Receive a command from the driver
+        if self.my_rank == 0:
+            command = mdi.MDI_Recv_Command(self.comm)
+        else:
+            command = None
+
+        # Broadcast the command to all ranks, if using MPI
+        if world_comm is not None:
+            command = world_comm.bcast(command, root=0)
+
+        # Confirm that this command is actually supported at this node
+        if not mdi.MDI_Check_Node_Exists(node_name, command):
+            raise Exception('MDI Engine received unsupported command: ' + str(command))
+
+        # Respond to the received command
+        if command == "EXIT":
+            exit_flag = True
+        else:
+            # The received command is not recognized by this engine, so exit
+            # Note: Replace this with whatever error handling method your code uses
+            raise Exception('MDI Engine received unrecognized command: ' + str(command))
+\endcode
+
+\htmlonly
+</div>
+\endhtmlonly
+
+
+
+\section engine_tutorial_register Step 12: Register the Node and Commands
+
+MDI requires you to "register" a list of all nodes and commands your engine supports.
+This allows you, as an engine developer, to inform any drivers of what your code can do.
+MDI provides two functions that allow you to do this: `MDI_Register_Node()` and `MDI_Register_Command()`.
+The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command.
+As a result, we need to call `MDI_Register_Node()` once to register the `@DEFAULT` node and call `MDI_Register_Command()` once to register the `EXIT` command.
+
+Fortunately, this is a very simple process.
+The only argument to the `MDI_Register_Node()` function is the name of the node, `@DEFAULT`.
+The `MDI_Register_Command()` function accepts two arguments: the name of the node, and the name of the command that we are registering at that node, `EXIT`.
+In time, you may add support for additional commands at the default node, making additional calls to `MDI_Register_Command()` for each newly supported command.
+If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the `@DEFAULT` node.
+
+For now, place the following code immediately after your engine's call to `MDI_Init()`.
+It is important that it be called prior to the call to `MDI_Accept_Communicator()`.
+
+
+
+\htmlonly
+<div class="tab">
+  <button class="tabbuttons cxx" onclick="revealTabContent(event, 'cxx')">C++</button>
+  <button class="tabbuttons fortran" onclick="revealTabContent(event, 'fortran')">Fortran</button>
+  <button class="tabbuttons python" onclick="revealTabContent(event, 'python')">Python</button>
+</div>
+
+<div class="tabcontent cxx">
+\endhtmlonly
+
+\code{.cpp}
+  /* Register all supported commands and nodes */
+  MDI_Register_Node("@DEFAULT");
+  MDI_Register_Command("@DEFAULT", "EXIT");
+\endcode
+
+\htmlonly
+</div>
+
+<div class="tabcontent fortran">
+\endhtmlonly
+
+\code{.f90}
+    ! Register all supported commands and nodes
+    CALL MDI_Register_Node("@DEFAULT", ierr);
+    CALL MDI_Register_Command("@DEFAULT", "EXIT", ierr);
+\endcode
+
+\htmlonly
+</div>
+
+<div class="tabcontent python">
+\endhtmlonly
+
+\code{.py}
+    # Register all supported commands and nodes
+    mdi.MDI_Register_Node("@DEFAULT")
+    mdi.MDI_Register_Command("@DEFAULT", "EXIT")
+\endcode
+
+\htmlonly
+</div>
+\endhtmlonly
+
+
+
+\section engine_tutorial_commands Step 13: Add Support for Additional Commands
+
+It may not look like much yet, but you have now established a basic MDI interface!
+If you generate a new report by typing `mdimechanic report` at the command line, MDI Mechanic should confirm that your engine passes all of the "Basic Functionality Tests".
+If your engine is still failing that test, you should return to the previous steps of this tutorial to determine what went wrong.
+
+Assuming that your MDI interface is functioning as expected, you can now begin the process of implementing support for more commands.
+Whenever you want to add support for a new command, you will need to do the following:
+-# Add code to the "Main MDI loop" in `run_mdi()` that will respond appropriately to the new command.
+-# Add a call to `MDI_Register_Command()` to register support for that command.
+
+Examine the commands specified by the [MDI Standard](https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html), and implement support for the ones that seem relevant for your engine.
+Each command in the MDI Standard describes exactly how the engine is expected to respond.
+Often, the engine is expected to either send or receive information to/from the driver.
+This is accomplished using the `MDI_Send()` and `MDI_Recv()` functions, respectively.
+
+If you are using MPI, you should be aware that all MDI-based communication must take place through `rank 0`.
+Only `rank 0` should call `MPI_Send()`, `MPI_Recv()`, and `MPI_Recv_Command()`.
+Depending on how you have distributed data structures across ranks, you may need to do `MPI_Gather()` or similar operations to collect the data onto `rank 0` before calling `MDI_Send()`.
+Likewise, you may need to do `MPI_Scatter()` or similar operations to correctly distribute data after calling `MDI_Recv()`.
+
+
+
+
+\section engine_tutorial_nodes Step 14: Add Support for Additional Nodes
+
+Whenever you add a new node, you must also add a call to `MDI_Register_Node()` to register support for that node.
+Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it.
+For example, if you implement five nodes, and each of them supports the `EXIT` command, you will need to call the `MDI_Register_Command()` function five times, each time with a different node as the first argument and with `EXIT` as the second argument.
+
+
+
+
+**/
