@@ -256,6 +256,12 @@ MODULE MDI
                        MDI_Recv_i, MDI_Recv_iv
   END INTERFACE 
 
+  INTERFACE MDI_Init
+      MODULE PROCEDURE MDI_Init_i, &
+                       MDI_Init_ptr
+
+  END INTERFACE
+
   INTERFACE
 
      FUNCTION MDI_Init_(options, world_comm) bind(c, name="MDI_Init")
@@ -419,11 +425,11 @@ MODULE MDI
 
 CONTAINS
 
-    SUBROUTINE MDI_Init(foptions, fworld_comm, ierr)
+    SUBROUTINE MDI_Init_i(foptions, fworld_comm, ierr)
       IMPLICIT NONE
 #if MDI_WINDOWS
-      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init
-      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Init
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init_i
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Init_i
 #endif
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(INOUT) :: fworld_comm
@@ -434,7 +440,24 @@ CONTAINS
       cworld_comm = fworld_comm
       ierr = MDI_Init_( TRIM(foptions)//" _language Fortran"//c_null_char, c_loc(cworld_comm) )
       fworld_comm = cworld_comm
-    END SUBROUTINE MDI_Init
+    END SUBROUTINE MDI_Init_i
+
+    SUBROUTINE MDI_Init_ptr(foptions, fworld_comm, ierr)
+      IMPLICIT NONE
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init_ptr
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Init_ptr
+#endif
+      CHARACTER(LEN=*), INTENT(IN) :: foptions
+      TYPE(C_PTR), INTENT(INOUT) :: fworld_comm
+      INTEGER, INTENT(OUT) :: ierr
+
+      !INTEGER(KIND=C_INT), TARGET :: cworld_comm
+
+      !cworld_comm = fworld_comm
+      ierr = MDI_Init_( TRIM(foptions)//" _language Fortran"//c_null_char, fworld_comm )
+      !fworld_comm = cworld_comm
+    END SUBROUTINE MDI_Init_ptr
 
     SUBROUTINE MDI_Accept_Communicator(communicator, ierr)
       IMPLICIT NONE
