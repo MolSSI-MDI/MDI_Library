@@ -1,5 +1,5 @@
-#ifndef ENGINE_LIB_CXX
-#define ENGINE_LIB_CXX
+#ifndef ENGINE_LIB_CXX_CXX
+#define ENGINE_LIB_CXX_CXX
 
 // ensure that symbols are exported to Windows .dll files
 #ifdef _WIN32

@@ -317,12 +317,12 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Get_Role_
      END FUNCTION MDI_Get_Role_
 
-     SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
+     SUBROUTINE MDI_Set_Execute_Command_Func_(command_func, class_obj, ierr)
        USE MDI_INTERNAL
        PROCEDURE(execute_command)               :: command_func 
        TYPE(C_PTR), VALUE                       :: class_obj
        INTEGER, INTENT(OUT)                     :: ierr
-     END SUBROUTINE MDI_Set_Execute_Command_Func
+     END SUBROUTINE MDI_Set_Execute_Command_Func_
 
      FUNCTION MDI_Register_Node_(node) bind(c, name="MDI_Register_Node")
        USE, INTRINSIC :: iso_c_binding
@@ -964,12 +964,6 @@ CONTAINS
       fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
     END SUBROUTINE MDI_Get_Callback
 
-END MODULE
-
-
-
-
-
 SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
   USE MDI_INTERNAL
 
@@ -988,3 +982,5 @@ SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
     ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
 END SUBROUTINE MDI_Set_Execute_Command_Func
+
+END MODULE

@@ -2,8 +2,10 @@ if ( use_CXX )
    add_subdirectory(driver_cxx)
    add_subdirectory(driver_serial_cxx)
    add_subdirectory(engine_cxx)
-   add_subdirectory(lib_cxx)
-
+   add_subdirectory(lib_cxx_cxx)
+if ( use_Python )
+      add_subdirectory(lib_cxx_py)
+endif()
    # Can't compile the i-PI test on Windows
 if(NOT WIN32)
    add_subdirectory(engine_ipi_cxx)

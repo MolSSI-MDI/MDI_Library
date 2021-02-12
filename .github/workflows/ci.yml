@@ -1,0 +1,172 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on: [push, pull_request]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Build for posix systems
+  posix:
+
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-latest ]
+        mpilib: [null, mpich, openmpi]
+
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      TESTS: ""
+      OMPI_MCA_btl_base_warn_component_unused: "0"
+      CODECOV_TOKEN: "99465b5f-26b4-4487-8355-fbcac5249a05"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Only custom build python on ubuntu
+      # On Mac, just use the 
+      - uses: actions/setup-python@v2
+        if: matrix.platform == 'ubuntu-latest'
+        with:
+          python-version: '3.7'
+
+      - name: Install dependencies (ubuntu)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install gfortran
+          [ "${{ matrix.mpilib }}" == "mpich" ] && sudo apt-get install mpich libmpich-dev
+          [ "${{ matrix.mpilib }}" == "openmpi" ] && sudo apt-get install openmpi-doc libopenmpi-dev
+          sudo apt-get install python3-dev
+          sudo apt-get install libpython3.7-dev
+          python -m pip install --upgrade pip
+          [ ! "${{ matrix.mpilib }}" == "" ] && python -m pip install mpi4py
+          python -m pip install numpy
+          python -m pip install -U pytest pytest-cov
+
+      - name: Install dependencies (macos)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          brew update > /dev/null
+          brew uninstall gcc
+          brew install gcc
+          [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich
+          [ "${{ matrix.mpilib }}" == "openmpi" ] && brew install openmpi
+          python3 -m pip install --upgrade pip
+          [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
+          python3 -m pip install numpy
+          python3 -m pip install -U pytest pytest-cov
+
+      - name: Install MDI Library Python package
+        run: |
+          mkdir python_build
+          cd python_build
+          cmake -Dpython_package=ON -Dlanguage=Python ..
+          make
+          sudo make install
+          cd ..
+
+      - name: Install local build
+        run: |
+          [ "${{ matrix.platform }}" == "macos-latest" ] && python3-config --include
+          mkdir build
+          cd build
+          export FC=gfortran
+          export CMAKE_COVERAGE_FLAGS=""
+          [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+          cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+          make
+          make install
+          ls
+          ls MDI_Library
+
+      - name: Run test scripts
+        run: |
+          cd tests
+          [ "${{ matrix.mpilib }}" == "" ] && TESTS="${TESTS} not mpi"
+          [ "${{ matrix.mpilib }}" == "openmpi" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && TESTS="${TESTS} not mpi"
+          pytest -vv --cov-report=xml --cov=MDI_Library -k "${TESTS}"
+
+      - name: Get code coverage report
+        run: |
+          cd tests
+          ls -a -l
+          ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
+          bash <(curl -s https://codecov.io/bash)
+
+
+  windows:
+
+    strategy:
+      matrix:
+        platform: [ windows-latest ]
+        mpilib: [null]
+
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      TESTS: "not mpi"
+      CODECOV_TOKEN: "99465b5f-26b4-4487-8355-fbcac5249a05"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          choco install python --version 3.6.8
+          choco install codecov
+          python -m pip install --upgrade pip
+          pip install -U pytest pytest-cov
+
+      - name: Remove the sh.exe, which prevents MinGW from working
+        run: |
+          where sh > sh_loc.txt
+          powershell -command "cat sh_loc.txt | rm"
+
+      - name: Install MDI Library Python package
+        run: |
+          mkdir python_build
+          cd python_build
+          cmake -G "MinGW Makefiles" -Dpython_package=ON ..
+          mingw32-make VERBOSE=1
+          mingw32-make install
+          cd ..
+
+      - name: Install local build
+        run: |
+          mkdir build
+          cd build
+          echo "$(pwd)/install/lib/mdi" >> $GITHUB_PATH
+          echo "$(pwd)/install/include/mdi" >> $GITHUB_PATH
+          cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX="$(pwd)/install" ..
+          mingw32-make VERBOSE=1
+          mingw32-make install
+
+      - name: Fortran executables don't seem to search the $PATH variable
+        run: |
+          cd build
+          ls
+          ls install
+          cp "$(pwd)/install/lib/mdi/*.dll*" "$(pwd)"
+          cp "$(pwd)/tests/MDI_Test_Codes/STUBS_MPI/*.dll*" "$(pwd)"
+          ls
+
+      - name: Run test scripts
+        run: |
+          ls
+          cd tests
+          pytest -vv --cov-report=xml --cov=MDI_Library -k "not mpi"
+
+      - name: Get code coverage report
+        run: |
+          codecov.exe -f coverage.xml -t "99465b5f-26b4-4487-8355-fbcac5249a05"

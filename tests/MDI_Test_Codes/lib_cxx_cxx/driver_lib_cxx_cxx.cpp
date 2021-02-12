@@ -2,7 +2,7 @@
 #include <mpi.h>
 #include <stdexcept>
 #include <string.h>
-#include "engine_lib_cxx.h"
+#include "engine_lib_cxx_cxx.h"
 #include "mdi.h"
 
 int main(int argc, char **argv) {

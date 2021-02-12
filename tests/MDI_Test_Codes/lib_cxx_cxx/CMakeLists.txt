@@ -23,28 +23,28 @@ include_directories( ${CMAKE_BINARY_DIR} )
 # Engine
 
 # Compile the engine library
-add_library(engine_lib_cxx SHARED
-            engine_lib_cxx.h
-            engine_lib_cxx.cpp)
-set_target_properties(engine_lib_cxx PROPERTIES
+add_library(engine_lib_cxx_cxx SHARED
+            engine_lib_cxx_cxx.h
+            engine_lib_cxx_cxx.cpp)
+set_target_properties(engine_lib_cxx_cxx PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-target_link_libraries(engine_lib_cxx mdi
+target_link_libraries(engine_lib_cxx_cxx mdi
                       ${MPI_LIBRARIES})
 
 # Copy the engine header file into the binary directory
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/engine_lib_cxx.h ${CMAKE_BINARY_DIR}/engine_lib_cxx.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/engine_lib_cxx_cxx.h ${CMAKE_BINARY_DIR}/engine_lib_cxx_cxx.h COPYONLY)
 
 if(NOT MPI_FOUND)
-   target_include_directories(engine_lib_cxx PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../STUBS_MPI/)
+   target_include_directories(engine_lib_cxx_cxx PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../STUBS_MPI/)
 endif()
 if(MPI_COMPILE_FLAGS)
-   set_target_properties(engine_lib_cxx PROPERTIES
+   set_target_properties(engine_lib_cxx_cxx PROPERTIES
       COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
 endif()
 if(MPI_LINK_FLAGS)
-   set_target_properties(engine_lib_cxx PROPERTIES
+   set_target_properties(engine_lib_cxx_cxx PROPERTIES
       LINK_FLAGS "${MPI_LINK_FLAGS}")
 endif()
 
@@ -55,25 +55,25 @@ endif()
 
 # Compile the driver
 
-add_executable(driver_lib_cxx
-               driver_lib_cxx.cpp)
-target_link_libraries(driver_lib_cxx mdi
+add_executable(driver_lib_cxx_cxx
+               driver_lib_cxx_cxx.cpp)
+target_link_libraries(driver_lib_cxx_cxx mdi
                       ${MPI_LIBRARIES}
-                      engine_lib_cxx)
-set_target_properties(driver_lib_cxx PROPERTIES
+                      engine_lib_cxx_cxx)
+set_target_properties(driver_lib_cxx_cxx PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 
 # Ensure that MPI is properly linked
 
 if(NOT MPI_FOUND)
-   target_include_directories(driver_lib_cxx PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../STUBS_MPI/)
+   target_include_directories(driver_lib_cxx_cxx PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../STUBS_MPI/)
 endif()
 if(MPI_COMPILE_FLAGS)
-   set_target_properties(driver_lib_cxx PROPERTIES
+   set_target_properties(driver_lib_cxx_cxx PROPERTIES
       COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
 endif()
 if(MPI_LINK_FLAGS)
-   set_target_properties(driver_lib_cxx PROPERTIES
+   set_target_properties(driver_lib_cxx_cxx PROPERTIES
       LINK_FLAGS "${MPI_LINK_FLAGS}")
 endif()
