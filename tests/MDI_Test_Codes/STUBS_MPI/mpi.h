@@ -28,5 +28,6 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
              MPI_Comm comm, MPI_Status *status) { return 0; };
 int MPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm) { return 0; };
+int MPI_Abort(MPI_Comm comm, int errorcode) { return 0; };
 
 #endif

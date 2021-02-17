@@ -56,7 +56,7 @@ def format_return(input_string):
 
 def test_cxx_cxx_lib():
     # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_lib_cxx*")[0]
+    driver_name = glob.glob("../build/driver_lib_cxx_cxx*")[0]
 
     # run the calculation
     driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
@@ -69,6 +69,24 @@ def test_cxx_cxx_lib():
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+
+def test_cxx_py_lib_mpi():
+    # run the calculation
+    driver_name = glob.glob("../build/driver_lib_cxx_py*")[0]
+    driver_proc = subprocess.Popen(["mpiexec","-n","2", driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    expected = ''' Instance name: instance1
+ Instance name: instance2
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
 
 def test_f90_f90_lib():
     # get the name of the driver code, which includes a .exe extension on Windows

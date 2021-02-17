@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string.h>
 #include "mdi.h"
-#include "engine_lib_cxx.h"
+#include "engine_lib_cxx_cxx.h"
 
 int engine_lib_cxx_create(MPI_Comm mpi_comm) {
   MPI_Comm world_comm = mpi_comm;
