@@ -3,7 +3,7 @@ PROGRAM DRIVER_F90
 USE mpi
 USE ISO_C_binding
 USE mdi,              ONLY : MDI_CHAR, MDI_NAME_LENGTH, MDI_COMMAND_LENGTH, &
-     MDI_Send, MDI_Init, MDI_Get_Role, &
+     MDI_Send, MDI_Init, MDI_MPI_get_world_comm, MDI_Get_Role, &
      MDI_Accept_Communicator, MDI_Send_Command, MDI_Recv, MDI_Conversion_Factor, &
      MDI_Check_Node_Exists, MDI_Check_Command_Exists, MDI_Check_Callback_Exists, &
      MDI_Get_NNodes, MDI_Get_NCommands, MDI_Get_NCallbacks, &
@@ -37,6 +37,7 @@ IMPLICIT NONE
          ! Initialize the MDI Library
          world_comm = MPI_COMM_WORLD
          call MDI_Init( mdi_options, world_comm, ierr)
+         call MDI_MPI_get_world_comm( world_comm, ierr )
 
          EXIT
       END IF

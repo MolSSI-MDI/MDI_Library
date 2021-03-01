@@ -419,6 +419,12 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Get_Callback_
      END FUNCTION MDI_Get_Callback_
 
+     FUNCTION MDI_MPI_get_world_comm_(world_comm) bind(c, name="MDI_MPI_get_world_comm")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: world_comm
+       INTEGER(KIND=C_INT)                      :: MDI_MPI_get_world_comm_
+     END FUNCTION MDI_MPI_get_world_comm_
+
   END INTERFACE
 
 
@@ -964,23 +970,39 @@ CONTAINS
       fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
     END SUBROUTINE MDI_Get_Callback
 
-SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
-  USE MDI_INTERNAL
+    SUBROUTINE MDI_MPI_get_world_comm(fworld_comm, ierr)
+      IMPLICIT NONE
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_MPI_get_world_comm
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_MPI_get_world_comm
+#endif
+      INTEGER, INTENT(OUT) :: fworld_comm
+      INTEGER, INTENT(OUT) :: ierr
+
+      INTEGER(KIND=C_INT), TARGET :: cworld_comm
+
+      cworld_comm = fworld_comm
+      ierr = MDI_MPI_get_world_comm_( c_loc(cworld_comm) )
+      fworld_comm = cworld_comm
+    END SUBROUTINE MDI_MPI_get_world_comm
+
+    SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
+      USE MDI_INTERNAL
 
 #if MDI_WINDOWS
-    !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
-    !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
 #endif
-    PROCEDURE(execute_command)               :: command_func
-    TYPE(C_PTR), VALUE                       :: class_obj
-    INTEGER, INTENT(OUT)                     :: ierr
-    INTEGER                                  :: current_code
+      PROCEDURE(execute_command)               :: command_func
+      TYPE(C_PTR), VALUE                       :: class_obj
+      INTEGER, INTENT(OUT)                     :: ierr
+      INTEGER                                  :: current_code
 
-    current_code = MDI_Get_Current_Code_()
+      current_code = MDI_Get_Current_Code_()
 
-    CALL add_execute_command(current_code, command_func)
-    ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
+      CALL add_execute_command(current_code, command_func)
+      ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
-END SUBROUTINE MDI_Set_Execute_Command_Func
+    END SUBROUTINE MDI_Set_Execute_Command_Func
 
 END MODULE

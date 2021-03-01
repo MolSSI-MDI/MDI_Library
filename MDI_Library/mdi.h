@@ -69,10 +69,7 @@ DllExport extern const int MDI_TEST;
 DllExport extern const int MDI_DRIVER;
 DllExport extern const int MDI_ENGINE;
 
-/*----------------------*/
-/* MDI unit conversions */
-/*----------------------*/
-
+// functions for handling MDI communication
 DllExport int MDI_Init(const char* options, void* world_comm);
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);
 DllExport int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
@@ -95,6 +92,9 @@ DllExport int MDI_Register_Callback(const char* node_name, const char* callback_
 DllExport int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, MDI_Comm comm, int* flag);
 DllExport int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks);
 DllExport int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name);
+
+// functions for handling MDI communication
+DllExport int MDI_MPI_get_world_comm(void* world_comm);
 
 // functions for managing callback functions (used only with the LIBRARY communication method)
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);

@@ -33,7 +33,7 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
-  // Note that unless using the LIBRARY communication method, general_init should only be called once
+  // Note that unless using the LINK communication method, general_init should only be called once
   current_code = new_code();
   code* this_code = get_code(current_code);
 
@@ -49,7 +49,7 @@ int general_init(const char* options, void* world_comm) {
   int port;
   char* output_file;
   char* driver_name;
-  char* language = ((char*)"");
+  char* language_argument = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
@@ -166,7 +166,16 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: Argument missing from -_language option");
 	return 1;
       }
-      language = argv[iarg+1];
+      language_argument = argv[iarg+1];
+      if ( strcmp(language_argument, "Python") == 0 ) {
+        this_code->language = MDI_LANGUAGE_PYTHON;
+      }
+      else if ( strcmp(language_argument, "Fortran") == 0 ) {
+        this_code->language = MDI_LANGUAGE_FORTRAN;
+      }
+      else {
+        mdi_error("Error in MDI_Init: Invalide -_language argument");
+      }
       iarg += 2;
     }
     else {
@@ -194,7 +203,7 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // if using the MPI method, check if MPI has been initialized
-  if ( strcmp(method, "MPI") == 0 && strcmp(language, "Python") != 0 ) {
+  if ( strcmp(method, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
 
     int mpi_init_flag = 0;
     ret = MPI_Initialized(&mpi_init_flag);
@@ -243,11 +252,11 @@ int general_init(const char* options, void* world_comm) {
     mpi_rank = 0;
   }
   else {
-    if ( strcmp(language, "Python") == 0 ) {
+    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
       // Python case
       mpi_rank = world_rank;
     }
-    else if ( strcmp(language, "Fortran") == 0 ) {
+    else if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
       // Fortran case
       mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
       MPI_Comm_rank(mpi_communicator, &mpi_rank);
@@ -309,7 +318,7 @@ int general_init(const char* options, void* world_comm) {
 
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
   int use_mpi4py = 0;
-  if ( strcmp(language, "Python") == 0 ) {
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
     use_mpi4py = 1;
   }
 
@@ -325,7 +334,7 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      if ( mpi_rank == 0 ) {
+      if ( this_code->intra_rank == 0 ) {
 	tcp_listen(port);
       }
     }
@@ -358,7 +367,7 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      if ( mpi_rank == 0 ) {
+      if ( this_code->intra_rank == 0 ) {
 	tcp_request_connection(port, hostname);
       }
     }
@@ -382,22 +391,6 @@ int general_init(const char* options, void* world_comm) {
   else {
     mdi_error("Error in MDI_Init: Role not recognized");
     return 1;
-  }
-
-  // set the MPI communicator correctly
-  if ( mpi_initialized == 1 ) {
-    if ( use_mpi4py == 0 ) {
-      if ( strcmp(language, "Fortran") == 0 ) {
-	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
-	mpi_update_world_comm( (void*) &mpi_communicator);
-        MPI_Fint f_comm = MPI_Comm_c2f( mpi_communicator );
-	MPI_Fint* f_comm_ptr = (MPI_Fint*) world_comm;
-	*f_comm_ptr = f_comm;
-      }
-      else {
-	mpi_update_world_comm(world_comm);
-      }
-    }
   }
 
   free( argv_line );

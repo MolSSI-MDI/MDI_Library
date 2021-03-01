@@ -5,7 +5,7 @@ PROGRAM ENGINE_F90
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_DOUBLE, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
        MDI_Set_Execute_Command_Func, MDI_Get_Role, MDI_ENGINE, MDI_BYTE, &
-       MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback
+       MDI_Register_Node, MDI_Register_Command, MDI_Register_Callback, MDI_MPI_get_world_comm
 
   IMPLICIT NONE
 
@@ -42,6 +42,7 @@ PROGRAM ENGINE_F90
          ! Initialize the MDI Library
          world_comm = MPI_COMM_WORLD
          CALL MDI_Init( mdi_options, world_comm, ierr)
+         CALL MDI_MPI_get_world_comm( world_comm, ierr )
 
          EXIT
       END IF

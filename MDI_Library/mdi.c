@@ -36,10 +36,10 @@ Contents:
 const int MDI_MAJOR_VERSION = 1;
 
 /*! \brief MDI minor version number */
-const int MDI_MINOR_VERSION = 1;
+const int MDI_MINOR_VERSION = 2;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 7;
+const int MDI_PATCH_VERSION = 0;
 
 /*! \brief length of an MDI command in characters */
 const int MDI_COMMAND_LENGTH = 12;
@@ -1048,6 +1048,42 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
 
   char* target_callback = vector_get( target_node->callbacks, index );
   snprintf(name, MDI_NAME_LENGTH, "%s", target_callback);
+  return 0;
+}
+
+
+/*! \brief Optain the MPI communicator that spans the single code corresponding to the calling rank
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]  world_comm
+ *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
+ */
+int MDI_MPI_get_world_comm(void* world_comm)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_MPI_get_world_comm called but MDI has not been initialized");
+    return 1;
+  }
+  code* this_code = get_code(current_code);
+
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+    mdi_error("MDI_MPI_get_world_comm was called by a Python code");
+  }
+  else if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Comm mpi_communicator = MPI_COMM_NULL;
+    mpi_update_world_comm( (void*) &mpi_communicator );
+    MPI_Fint f_comm = MPI_Comm_c2f( mpi_communicator );
+    MPI_Fint* f_comm_ptr = (MPI_Fint*) world_comm;
+    *f_comm_ptr = f_comm;
+  }
+  else if ( this_code->language == MDI_LANGUAGE_C ) {
+    mpi_update_world_comm(world_comm);
+  }
+  else {
+    mdi_error("MDI_MPI_get_world_comm was called by a code with an unrecognized language");
+  }
+
   return 0;
 }
 

@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        platform: [ ubuntu-latest, macos-latest ]
+        platform: [ ubuntu-18.04, macos-latest ]
         mpilib: [null, mpich, openmpi]
 
     # The type of runner that the job will run on
@@ -33,12 +33,12 @@ jobs:
       # Only custom build python on ubuntu
       # On Mac, just use the 
       - uses: actions/setup-python@v2
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-18.04'
         with:
           python-version: '3.7'
 
       - name: Install dependencies (ubuntu)
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-18.04'
         run: |
           sudo apt-get update
           sudo apt-get install gfortran
@@ -80,7 +80,7 @@ jobs:
           cd build
           export FC=gfortran
           export CMAKE_COVERAGE_FLAGS=""
-          [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+          [ "${{ matrix.platform }}" == "ubuntu-18.04" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
           cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
           make
           make install

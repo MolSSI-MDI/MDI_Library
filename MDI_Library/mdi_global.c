@@ -235,6 +235,8 @@ int new_code() {
   code new_code;
   new_code.returned_comms = 0;
   new_code.next_comm = 1;
+  new_code.intra_MPI_comm = MPI_COMM_WORLD;
+  new_code.language = MDI_LANGUAGE_C;
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));

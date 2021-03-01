@@ -12,9 +12,6 @@
 #include "mdi_mpi.h"
 #include "mdi_global.h"
 
-/*! \brief MPI communicator corresponding to all processes created by the same code as this process */
-MPI_Comm intra_MPI_comm = 0;
-
 /*! \brief Size of MPI_COMM_WORLD */
 int world_size = -1;
 
@@ -192,7 +189,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 
   // create the intra-code communicators
   if ( use_mpi4py == 0 ) {
-    MPI_Comm_split(world_comm, mpi_code_rank, world_rank, &intra_MPI_comm);
+    MPI_Comm_split(world_comm, mpi_code_rank, world_rank, &this_code->intra_MPI_comm);
   }
   else {
     mpi4py_split_callback(mpi_code_rank, world_rank, 0, 1);
@@ -200,7 +197,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 
   // get the intra-code rank
   if ( use_mpi4py == 0 ) {
-    MPI_Comm_rank(intra_MPI_comm, &this_code->intra_rank);
+    MPI_Comm_rank(this_code->intra_MPI_comm, &this_code->intra_rank);
   }
   else {
     this_code->intra_rank = mpi4py_rank_callback(1);
@@ -249,8 +246,9 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
  *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
  */
 int mpi_update_world_comm(void* world_comm) {
+  code* this_code = get_code(current_code);
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
-  *world_comm_ptr = intra_MPI_comm;
+  *world_comm_ptr = this_code->intra_MPI_comm;
   return 0;
 }
 
