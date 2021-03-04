@@ -3,6 +3,7 @@
  * \brief Implementation of library-based communication
  */
 #include <errno.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
