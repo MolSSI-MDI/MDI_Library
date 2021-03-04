@@ -23,6 +23,9 @@ typedef struct library_data_struct {
   int execute_on_send;
 } library_data;
 
+typedef int (*MDI_Plugin_init_t)(const char*, MPI_Comm);
+
+int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm);
 int library_initialize();
 int library_accept_communicator();
 int library_set_driver_current();

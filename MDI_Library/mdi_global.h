@@ -24,6 +24,7 @@
 // Hard-coded values
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
+#define PLUGIN_PATH_LENGTH 2048
 
 // Defined languages
 #define MDI_LANGUAGE_C 1

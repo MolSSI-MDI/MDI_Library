@@ -2,15 +2,82 @@
  *
  * \brief Implementation of library-based communication
  */
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <errno.h>
 #include "mdi.h"
 #include "mdi_lib.h"
 #include "mdi_global.h"
 #include "mdi_general.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
+
+/*! \brief Launch an MDI plugin
+ *
+ */
+int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm) {
+  // Note: Eventually, should probably replace this code with libltdl
+  // Get the path to the plugin
+  char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
+#ifdef _WIN32
+  // Attempt to open a library with a .dll extension
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
+  HINSTANCE plugin_handle = LoadLibrary( plugin_path );
+  free( plugin_path );
+  if ( ! plugin_handle ) {
+    // Unable to find the plugin library
+    mdi_error("Unable to open MDI plugin");
+    return -1;
+  }
+
+  // Load a plugin's initialization function
+  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( plugin_handle, "MDI_Plugin_init" );
+  if ( ! plugin_init ) {
+    mdi_error("Unable to load MDI plugin init function");
+    FreeLibrary( plugin_handle );
+    return -1;
+  }
+
+#else
+  // Attempt to open a library with a .so extension
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.so", plugin_name);
+  void* plugin_handle = dlopen(plugin_path, RTLD_NOW);
+  if ( ! plugin_handle ) {
+
+    // Attempt to open a library with a .dylib extension
+    snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.dylib", plugin_name);
+    plugin_handle = dlopen(plugin_path, RTLD_NOW);
+
+    if ( ! plugin_handle ) {
+      // Unable to find the plugin library
+      free( plugin_path );
+      mdi_error("Unable to open MDI plugin");
+      return -1;
+    }
+  }
+  free( plugin_path );
+
+  // Load a plugin's initialization function
+  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) dlsym(plugin_handle, "MDI_Plugin_init");
+  if ( ! plugin_init ) {
+    mdi_error("Unable to load MDI plugin init function");
+    dlclose( plugin_handle );
+    return -1;
+  }
+#endif
+
+  // Initialize an instance of the plugin
+  int ret = plugin_init(options, mpi_comm);
+  return ret;
+}
+
 
 /*! \brief Perform initialization of a communicator for library-based communication
  *
@@ -38,6 +105,7 @@ int library_initialize() {
 
   return new_comm->id;
 }
+
 
 /*! \brief Set the driver as the current code
  *
@@ -67,6 +135,7 @@ int library_set_driver_current() {
   }
   return 0;
 }
+
 
 /*! \brief Perform LIBRARY method operations upon a call to MDI_Accept_Communicator
  *

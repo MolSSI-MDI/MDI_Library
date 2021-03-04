@@ -30,6 +30,7 @@ Contents:
 #include "mdi_global.h"
 #include "mdi_general.h"
 #include "mdi_mpi.h"
+#include "mdi_lib.h"
 #include "physconst.h"
 
 /*! \brief MDI major version number */
@@ -1085,6 +1086,23 @@ int MDI_MPI_get_world_comm(void* world_comm)
   }
 
   return 0;
+}
+
+
+/*! \brief Launch an MDI plugin instance
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       plugin_name
+ *                   Name of the plugin.
+ * \param [in]       options
+ *                   Command-line options for the plugin.
+ * \param [in]       mpi_comm
+ *                   MPI intra-communicator that spans all ranks that will run this plugin instance.
+ */
+int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm) {
+  int ret = library_launch_plugin(plugin_name, options, mpi_comm);
+  return ret;
 }
 
 

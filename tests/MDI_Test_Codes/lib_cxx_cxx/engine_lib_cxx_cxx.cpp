@@ -5,7 +5,7 @@
 #include "mdi.h"
 #include "engine_lib_cxx_cxx.h"
 
-int engine_lib_cxx_create(MPI_Comm mpi_comm) {
+int MDI_Plugin_init(const char* options, MPI_Comm mpi_comm) {
   MPI_Comm world_comm = mpi_comm;
 
   // Initialize MDI

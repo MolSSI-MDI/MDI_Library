@@ -2,7 +2,6 @@
 #include <mpi.h>
 #include <stdexcept>
 #include <string.h>
-#include "engine_lib_cxx_cxx.h"
 #include "mdi.h"
 
 int main(int argc, char **argv) {
@@ -44,7 +43,7 @@ int main(int argc, char **argv) {
   }
 
   // Initialize an instance of the engine library
-  engine_lib_cxx_create(world_comm);
+  MDI_Launch_plugin("engine_lib_cxx_cxx", "", world_comm);
 
   // Connect to the engine
   MDI_Comm comm;

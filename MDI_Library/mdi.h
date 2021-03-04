@@ -93,10 +93,11 @@ DllExport int MDI_Check_Callback_Exists(const char* node_name, const char* callb
 DllExport int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks);
 DllExport int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name);
 
-// functions for handling MDI communication
+// functions for handling MPI in combination with MDI
 DllExport int MDI_MPI_get_world_comm(void* world_comm);
 
-// functions for managing callback functions (used only with the LIBRARY communication method)
+// functions for managing callback functions (used only with the LINK communication method)
+DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 
 // functions for managing callback functions for mpi4py
