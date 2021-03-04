@@ -47,7 +47,8 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 
 #else
   // Attempt to open a library with a .so extension
-  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.so", plugin_name);
+  //snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.so", plugin_name);
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "/home/runner/work/MDI_Library/MDI_Library/build/libengine_lib_cxx_cxx.so");
   void* plugin_handle = dlopen(plugin_path, RTLD_NOW);
   if ( ! plugin_handle ) {
 
