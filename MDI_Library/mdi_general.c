@@ -56,6 +56,7 @@ int general_init(const char* options, void* world_comm) {
   int has_hostname = 0;
   int has_port = 0;
   int has_driver_name = 0;
+  int has_plugin_path = 0;
   int has_output_file = 0;
 
   // calculate argc
@@ -158,6 +159,16 @@ int general_init(const char* options, void* world_comm) {
       }
       driver_name = argv[iarg+1];
       has_driver_name = 1;
+      iarg += 2;
+    }
+    //-plugin_path
+    else if (strcmp(argv[iarg],"-plugin_path") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
+	return 1;
+      }
+      snprintf(this_code->plugin_path, PLUGIN_PATH_LENGTH, "%s", argv[iarg+1]);
+      has_plugin_path = 1;
       iarg += 2;
     }
     //_language

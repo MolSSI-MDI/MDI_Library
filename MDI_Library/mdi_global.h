@@ -99,6 +99,8 @@ typedef struct code_struct {
   vector* nodes;
   /*! \brief Vector containing all communicators associated with this code */
   vector* comms;
+  /*! \brief Path to the plugins available to this code */
+  char* plugin_path;
   /*! \brief Function pointer to the generic execute_command_function */
   int (*execute_command)(const char*, MDI_Comm_Type, void*);
   /*! \brief Pointer to the class object that is passed to any call to execute_command */

@@ -15,12 +15,12 @@ typedef struct library_data_struct {
   /*! \brief Name of the next command to be executed on this code.
   This is only used by engines. */
   char command[COMMAND_LENGTH];
-  /*! \brief Buffer used for communication of data */
-  void* buf;
   /*! \brief Flag whether buf is allocated */
   int buf_allocated;
   /*! \brief Flag whether the next MDI_Send call should trigger execution of the engine's command */
   int execute_on_send;
+  /*! \brief Buffer used for communication of data */
+  void* buf;
 } library_data;
 
 typedef int (*MDI_Plugin_init_t)(const char*, void*);

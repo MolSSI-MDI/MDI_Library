@@ -24,12 +24,15 @@
  *
  */
 int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm) {
+  code* this_code = get_code(current_code);
+
   // Note: Eventually, should probably replace this code with libltdl
   // Get the path to the plugin
   char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
 #ifdef _WIN32
   // Attempt to open a library with a .dll extension
-  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
+  //snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dll", this_code->plugin_path, plugin_name);
   HINSTANCE plugin_handle = LoadLibrary( plugin_path );
   free( plugin_path );
   if ( ! plugin_handle ) {
@@ -48,12 +51,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 
 #else
   // Attempt to open a library with a .so extension
-  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.so", plugin_name);
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.so", this_code->plugin_path, plugin_name);
   void* plugin_handle = dlopen(plugin_path, RTLD_NOW);
   if ( ! plugin_handle ) {
 
     // Attempt to open a library with a .dylib extension
-    snprintf(plugin_path, PLUGIN_PATH_LENGTH, "./lib%s.dylib", plugin_name);
+    snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dylib", this_code->plugin_path, plugin_name);
     plugin_handle = dlopen(plugin_path, RTLD_NOW);
 
     if ( ! plugin_handle ) {

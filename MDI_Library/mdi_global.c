@@ -238,6 +238,10 @@ int new_code() {
   new_code.intra_MPI_comm = MPI_COMM_WORLD;
   new_code.language = MDI_LANGUAGE_C;
 
+  // initialize the character buffer for the plugin path
+  new_code.plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
+  snprintf(new_code.plugin_path, PLUGIN_PATH_LENGTH, "");
+
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
@@ -305,6 +309,9 @@ int delete_code(int code_id) {
     mdi_error("Code not found during delete");
     return 1;
   }
+
+  // delete the plugin path
+  free( this_code->plugin_path );
 
   // delete the node vector
   free_node_vector(this_code->nodes);
