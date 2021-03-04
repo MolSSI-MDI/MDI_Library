@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   }
 
   // Initialize an instance of the engine library
-  MDI_Launch_plugin("engine_lib_cxx_cxx", "", world_comm);
+  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm);
 
   // Connect to the engine
   MDI_Comm comm;
