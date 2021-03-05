@@ -116,6 +116,18 @@ int MDI_Init(const char* options, void* world_comm)
  */
 MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
 {
+  return MDI_Accept_communicator(comm);
+}
+
+
+/*! \brief Accept a new MDI communicator
+ *
+ * The function returns an MDI_Comm that describes a connection between two codes.
+ * If no new communicators are available, the function returns \p MDI_COMM_NULL.
+ *
+ */
+MDI_Comm MDI_Accept_communicator(MDI_Comm* comm)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
     return 1;
@@ -185,6 +197,22 @@ int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Send_Command(const char* buf, MDI_Comm comm)
 {
+  return MDI_Send_command(buf, comm);
+}
+
+
+/*! \brief Send a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the data to be sent.
+ * \param [in]       comm
+ *                   MDI communicator associated with the intended recipient code.
+ */
+int MDI_Send_command(const char* buf, MDI_Comm comm)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
     return 1;
@@ -204,6 +232,22 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  *                   MDI communicator associated with the connection to the sending code.
  */
 int MDI_Recv_Command(char* buf, MDI_Comm comm)
+{
+  return MDI_Recv_command(buf, comm);
+}
+
+
+/*! \brief Receive a command of length \p MDI_COMMAND_LENGTH through the MDI connection
+ *
+ * If running with MPI, this function must be called only by rank \p 0.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       buf
+ *                   Pointer to the buffer where the received data will be stored.
+ * \param [in]       comm
+ *                   MDI communicator associated with the connection to the sending code.
+ */
+int MDI_Recv_command(char* buf, MDI_Comm comm)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
@@ -273,6 +317,71 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  *                   Conversion factor from in_unit to out_unit
  */
 int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* conv)
+{
+  return MDI_Conversion_factor(in_unit, out_unit, conv);
+}
+
+
+/*! \brief Determine the conversion factor between two units
+ *
+ * The function determines the conversion factor from \p in_unit to \p out_unit.
+ * The function requires that \p in_unit and \p out_unit be members of the same category of unit (\em i.e. charge, energy, force, etc.).
+ * For example, calling \p MDI_Conversion_Factor(\p "kilojoule_per_mol",\p "atomic_unit_of_energy") will return the conversion factor from kilojoule/mol to hartrees.
+ * The function returns \p 0 on a success.
+ *
+ * All quantities communicated through MDI must be represented using atomic units.
+ * When unit conversions are necessary, this function should be used to obtain the conversion factors, as this will ensure that all drivers and engines use conversion factors that are self-consistent across codes.
+ * Use of conversion factors that are not self-consistent can result in numerical instabilities.
+ *
+ * The following is a list of the unit categories, along with the names of the units associated with each category:
+ *
+ * - charge
+ *    - atomic_unit_of_charge
+ *    - coulomb
+ * - energy
+ *    - atomic_unit_of_energy
+ *    - calorie
+ *    - electron_volt
+ *    - hartree
+ *    - inverse_meter_energy
+ *    - joule
+ *    - kelvin_energy
+ *    - kilocalorie
+ *    - kilocalorie_per_mol
+ *    - kilojoule
+ *    - kilojoule_per_mol
+ *    - rydberg
+ * - force
+ *    - atomic_unit_of_force
+ *    - newton
+ * - length
+ *    - angstrom
+ *    - atomic_unit_of_length
+ *    - bohr
+ *    - meter
+ *    - nanometer
+ *    - picometer
+ * - mass
+ *    - atomic_mass_unit
+ *    - atomic_unit_of_mass
+ *    - gram
+ *    - kilogram
+ * - time
+ *    - atomic_unit_of_time
+ *    - picosecond
+ *    - second
+ *
+ * All conversion factors were acquired from the <a href="https://physics.nist.gov/cuu/Constants/Table/allascii.txt">NIST CODATA</a>, 
+ * except the conversion factors for calorie, kilocalorie, and kilocalorie_per_mol, which were obtained from the <a href="https://www.nist.gov/pml/nist-guide-si-appendix-b9-factors-units-listed-kind-quantity-or-field-science"> NIST Guide to the SI</a>.
+ *
+ * \param [in]       in_unit
+ *                   Name of the unit to convert from.
+ * \param [in]       out_unit
+ *                   Name of the unit to convert to.
+ * \param [out]      conv
+ *                   Conversion factor from in_unit to out_unit
+ */
+int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* conv)
 {
   // Except where otherwise noted, all values are from:
   //   - https://physics.nist.gov/cuu/Constants/Table/allascii.txt
@@ -587,6 +696,7 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
   return 0;
 }
 
+
 /*! \brief Get the role of the code
  *
  * The function returns \p 0 on a success.
@@ -596,6 +706,20 @@ int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, double* con
  *
  */
 int MDI_Get_Role(int* role)
+{
+  return MDI_Get_role(role);
+}
+
+
+/*! \brief Get the role of the code
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      role
+ *                   Role of the code (either \p MDI_DRIVER or \p MDI_ENGINE)
+ *
+ */
+int MDI_Get_role(int* role)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Role called but MDI has not been initialized");
@@ -615,6 +739,7 @@ int MDI_Get_Role(int* role)
   return 0;
 }
 
+
 /*! \brief Set the size of MPI_COMM_WORLD
  *
  * This function is only used if the linked program uses MPI4PY.
@@ -624,6 +749,7 @@ void MDI_Set_World_Size(int world_size_in)
 {
   set_world_size(world_size_in);
 }
+
 
 /*! \brief Set the rank of this process within MPI_COMM_WORLD
  *
@@ -635,6 +761,7 @@ void MDI_Set_World_Rank(int world_rank_in)
   set_world_rank(world_rank_in);
 }
 
+
 /*! \brief Register a node
  *
  * The function returns \p 0 on a success.
@@ -644,6 +771,19 @@ void MDI_Set_World_Rank(int world_rank_in)
  */
 int MDI_Register_Node(const char* node_name)
 {
+  return MDI_Register_node(node_name);
+}
+
+
+/*! \brief Register a node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ */
+int MDI_Register_node(const char* node_name)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
     return 1;
@@ -651,6 +791,7 @@ int MDI_Register_Node(const char* node_name)
   code* this_code = get_code(current_code);
   return register_node(this_code->nodes, node_name);
 }
+
 
 /*! \brief Check whether a node is supported on a specified engine
  *
@@ -665,6 +806,24 @@ int MDI_Register_Node(const char* node_name)
  *                   On return, 1 if the node is supported and 0 otherwise.
  */
 int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
+{
+  return MDI_Check_node_exists(node_name, comm, flag);
+}
+
+
+/*! \brief Check whether a node is supported on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the node is supported and 0 otherwise.
+ */
+int MDI_Check_node_exists(const char* node_name, MDI_Comm comm, int* flag)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Node_Exists called but MDI has not been initialized");
@@ -689,6 +848,7 @@ int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
   return 0;
 }
 
+
 /*! \brief Get the number of nodes on a specified engine
  *
  * The function returns \p 0 on a success.
@@ -701,6 +861,22 @@ int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
  */
 int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
 {
+  return MDI_Get_nnodes(comm, nnodes);
+}
+
+
+/*! \brief Get the number of nodes on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      nnodes
+ *                   On return, the number of nodes supported by the engine.
+ */
+int MDI_Get_nnodes(MDI_Comm comm, int* nnodes)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NNodes called but MDI has not been initialized");
     return 1;
@@ -711,6 +887,7 @@ int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
 
   return 0;
 }
+
 
 /*! \brief Get the name of a node on a specified engine
  *
@@ -725,6 +902,24 @@ int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
  *                   On return, the name of the node
  */
 int MDI_Get_Node(int index, MDI_Comm comm, char* name)
+{
+  return MDI_Get_node(index, comm, name);
+}
+
+
+/*! \brief Get the name of a node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       index
+ *                   Index of the node on the specified engine.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the node
+ */
+int MDI_Get_node(int index, MDI_Comm comm, char* name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Node called but MDI has not been initialized");
@@ -745,6 +940,7 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
   return 0;
 }
 
+
 /*! \brief Register a command on a specified node
  *
  * The function returns \p 0 on a success.
@@ -756,6 +952,21 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
  */
 int MDI_Register_Command(const char* node_name, const char* command_name)
 {
+  return MDI_Register_command(node_name, command_name);
+}
+
+
+/*! \brief Register a command on a specified node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the command will be registered.
+ * \param [in]       command_name
+ *                   Name of the command.
+ */
+int MDI_Register_command(const char* node_name, const char* command_name)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
     return 1;
@@ -763,6 +974,7 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
   code* this_code = get_code(current_code);
   return register_command(this_code->nodes, node_name, command_name);
 }
+
 
 /*! \brief Check whether a command is supported on specified node on a specified engine
  *
@@ -779,6 +991,26 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
  *                   On return, 1 if the command is supported and 0 otherwise.
  */
 int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MDI_Comm comm, int* flag)
+{
+  return MDI_Check_command_exists(node_name, command_name, comm, flag);
+}
+
+
+/*! \brief Check whether a command is supported on specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the command's node.
+ * \param [in]       command_name
+ *                   Name of the command.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the command is supported and 0 otherwise.
+ */
+int MDI_Check_command_exists(const char* node_name, const char* command_name, MDI_Comm comm, int* flag)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Command_Exists called but MDI has not been initialized");
@@ -818,6 +1050,7 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
   return 0;
 }
 
+
 /*! \brief Get the number of commands supported for a specified node on a specified engine
  *
  * The function returns \p 0 on a success.
@@ -832,6 +1065,25 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
  *                   on the specified node.
  */
 int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
+{
+  return MDI_Get_ncommands(node_name, comm, ncommands);
+}
+
+
+/*! \brief Get the number of commands supported for a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      nnodes
+ *                   On return, the number of commands supported on the specified engine
+ *                   on the specified node.
+ */
+int MDI_Get_ncommands(const char* node_name, MDI_Comm comm, int* ncommands)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NCommands called but MDI has not been initialized");
@@ -858,6 +1110,7 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
   return 0;
 }
 
+
 /*! \brief Get the name of a command on a specified node on a specified engine
  *
  * The function returns \p 0 on a success.
@@ -873,6 +1126,26 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
  *                   On return, the name of the command
  */
 int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
+{
+  return MDI_Get_command(node_name, index, comm, name);
+}
+
+
+/*! \brief Get the name of a command on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the command is located.
+ * \param [in]       index
+ *                   Index of the command on the specified node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the command
+ */
+int MDI_Get_command(const char* node_name, int index, MDI_Comm comm, char* name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Command called but MDI has not been initialized");
@@ -898,6 +1171,7 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
   return 0;
 }
 
+
 /*! \brief Register a callback on a specified node
  *
  * The function returns \p 0 on a success.
@@ -909,6 +1183,21 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
  */
 int MDI_Register_Callback(const char* node_name, const char* callback_name)
 {
+  return MDI_Register_callback(node_name, callback_name);
+}
+
+
+/*! \brief Register a callback on a specified node
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the callback will be registered.
+ * \param [in]       callback_name
+ *                   Name of the callback.
+ */
+int MDI_Register_callback(const char* node_name, const char* callback_name)
+{
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
     return 1;
@@ -916,6 +1205,7 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
   code* this_code = get_code(current_code);
   return register_callback(this_code->nodes, node_name, callback_name);
 }
+
 
 /*! \brief Check whether a callback exists on specified node on a specified engine
  *
@@ -932,6 +1222,26 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
  *                   On return, 1 if the callback is supported and 0 otherwise.
  */
 int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, MDI_Comm comm, int* flag)
+{
+  return MDI_Check_callback_exists(node_name, callback_name, comm, flag);
+}
+
+
+/*! \brief Check whether a callback exists on specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the callbacks's node.
+ * \param [in]       command_name
+ *                   Name of the callback.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      flag
+ *                   On return, 1 if the callback is supported and 0 otherwise.
+ */
+int MDI_Check_callback_exists(const char* node_name, const char* callback_name, MDI_Comm comm, int* flag)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Callback_Exists called but MDI has not been initialized");
@@ -971,6 +1281,7 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
   return 0;
 }
 
+
 /*! \brief Get the number of callbacks on a specified node on a specified engine
  *
  * The function returns \p 0 on a success.
@@ -985,6 +1296,25 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
  *                   on the specified engine.
  */
 int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
+{
+  return MDI_Get_ncallbacks(node_name, comm, ncallbacks);
+}
+
+
+/*! \brief Get the number of callbacks on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      ncallbacks
+ *                   On return, the number of callbacks on the specified node
+ *                   on the specified engine.
+ */
+int MDI_Get_ncallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_NCallbacks called but MDI has not been initialized");
@@ -1011,6 +1341,7 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
   return 0;
 }
 
+
 /*! \brief Get the name of a callback on a specified node on a specified engine
  *
  * The function returns \p 0 on a success.
@@ -1026,6 +1357,26 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
  *                   On return, the name of the callback
  */
 int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name)
+{
+  return MDI_Get_callback(node_name, index, comm, name);
+}
+
+
+/*! \brief Get the name of a callback on a specified node on a specified engine
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       node_name
+ *                   Name of the node on which the callback is located.
+ * \param [in]       index
+ *                   Index of the callback on the specified node.
+ * \param [in]       comm
+ *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI_COMM_NULL, the function will check for the calling engine.
+ * \param [out]      name
+ *                   On return, the name of the callback
+ */
+int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, char* name)
 {
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Callback called but MDI has not been initialized");
@@ -1114,6 +1465,18 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
  *                   Function pointer to the generic execute_command function
  */
 int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object) {
+  return MDI_Set_execute_command_func(generic_command, class_object);
+}
+
+
+/*! \brief Set the callback MDI uses for MDI_Execute_Command
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       execute_command
+ *                   Function pointer to the generic execute_command function
+ */
+int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object) {
   code* this_code = get_code(current_code);
   this_code->execute_command = generic_command;
   this_code->execute_command_obj = class_object;
