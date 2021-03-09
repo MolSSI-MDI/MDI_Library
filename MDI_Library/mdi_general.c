@@ -722,7 +722,36 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int general_recv_command(char* buf, MDI_Comm comm) {
+  int ret;
   code* this_code = get_code(current_code);
+  communicator* this = get_communicator(current_code, comm);
+
+  // if this is a linked library, call the driver's node callback
+  if ( this->method == MDI_LINK ) {
+    int iengine = current_code;
+    communicator* engine_comm = get_communicator(current_code, comm);
+
+    // get the driver code to which this communicator connects
+    library_data* libd = (library_data*) engine_comm->method_data;
+    int idriver = libd->connected_code;
+    code* driver_code = get_code(idriver);
+
+    MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
+    communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
+    library_data* driver_lib = (library_data*) driver_comm->method_data;
+
+    // set the current code to the driver
+    current_code = idriver;
+
+    void* class_obj = driver_lib->driver_callback_obj;
+    ret = driver_lib->driver_node_callback("", driver_comm_handle, class_obj);
+
+    // set the current code to the driver
+    current_code = iengine;
+
+    return 0;
+  }
+
   // only receive on rank 0
   if ( this_code->intra_rank != 0 ) {
     return 0;
@@ -730,7 +759,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int count = MDI_COMMAND_LENGTH;
   int datatype = MDI_CHAR;
 
-  int ret = general_recv( buf, count, datatype, comm );
+  ret = general_recv( buf, count, datatype, comm );
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Recv_Command: Unable to receive command");
     return ret;

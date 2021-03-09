@@ -19,13 +19,19 @@ typedef struct library_data_struct {
   int buf_allocated;
   /*! \brief Flag whether the next MDI_Send call should trigger execution of the engine's command */
   int execute_on_send;
+  /*! \brief Pointer to the class object that is used for the driver_node_callback function */
+  void* driver_callback_obj;
+  /*! \brief Function pointer to the driver node's callback function */
+  int (*driver_node_callback)(const char*, MDI_Comm_Type, void*);
   /*! \brief Buffer used for communication of data */
   void* buf;
 } library_data;
 
 typedef int (*MDI_Plugin_init_t)(const char*, void*);
 
-int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm);
+int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
+                          int (*driver_node_callback)(const char*, MDI_Comm, void*),
+                          void* driver_callback_object);
 int library_initialize();
 int library_accept_communicator();
 int library_set_driver_current();

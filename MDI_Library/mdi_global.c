@@ -255,6 +255,7 @@ int new_code() {
   new_code.is_library = 0;
   new_code.id = (int)codes.size;
   new_code.intra_rank = 0;
+  new_code.called_set_execute_command_func = 0;
 
   // Set the MPI callbacks
   //new_code.mdi_mpi_recv = MPI_Recv;

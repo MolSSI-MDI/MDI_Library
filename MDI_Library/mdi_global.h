@@ -93,6 +93,8 @@ typedef struct code_struct {
   int language;
   /*! \brief Rank of this process within its associated code */
   int intra_rank;
+  /*! \brief Flag whether this code has called set_execute_command_func */
+  int called_set_execute_command_func;
   /*! \brief MPI intra-communicator that spans all ranks associated with this code */
   MPI_Comm intra_MPI_comm;
   /*! \brief Vector containing all nodes supported by this code */

@@ -23,7 +23,10 @@
 /*! \brief Launch an MDI plugin
  *
  */
-int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm) {
+int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
+                          int (*driver_node_callback)(const char*, MDI_Comm, void*),
+                          void* driver_callback_object) {
+  int ret;
   code* this_code = get_code(current_code);
 
   // Note: Eventually, should probably replace this code with libltdl
@@ -77,9 +80,32 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   }
 #endif
 
+  // initialize a communicator for the driver
+  int icomm = library_initialize();
+  communicator* driver_comm = get_communicator(current_code, icomm);
+  library_data* libd = (library_data*) driver_comm->method_data;
+  libd->connected_code = (int)codes.size;
+
+  MDI_Comm comm;
+  ret = MDI_Accept_Communicator(&comm);
+  if ( ret != 0 || comm == MDI_COMM_NULL ) {
+    mdi_error("MDI unable to create communicator for plugin");
+    return -1;
+  }
+
+  // Set the driver callback function to be used by this plugin instance
+  libd->driver_callback_obj = driver_callback_object;
+  libd->driver_node_callback = driver_node_callback;
+
   // Initialize an instance of the plugin
-  int ret = plugin_init(options, mpi_comm);
-  return ret;
+  ret = plugin_init(options, mpi_comm);
+  if ( ret != 0 ) {
+    mdi_error("MDI plugin init function returned non-zero exit code");
+    return -1;
+  }
+  current_code = this_code->id;
+
+  return 0;
 }
 
 
@@ -106,6 +132,14 @@ int library_initialize() {
   libd->buf_allocated = 0;
   libd->execute_on_send = 0;
   new_comm->method_data = libd;
+
+  // if this is an engine, go ahead and set the driver as the connected code
+  if ( strcmp(this_code->role, "ENGINE") == 0 ) {
+    int engine_code = current_code;
+    library_set_driver_current();
+    libd->connected_code = current_code;
+    current_code = engine_code;
+  }
 
   return new_comm->id;
 }
@@ -145,11 +179,13 @@ int library_set_driver_current() {
  *
  */
 int library_accept_communicator() {
-  // set the driver as the current code, if this is an ENGINE that is linked as a LIBRARY
-  library_set_driver_current();
-
-  // get the driver code
   code* this_code = get_code(current_code);
+  if ( this_code->called_set_execute_command_func ) {
+    // library codes are not permitted to call MDI_Accept_communicator after calling
+    // MDI_Set_execute_command_func, so assume that this call is being made by the driver
+    library_set_driver_current();
+  }
+  this_code = get_code(current_code);
 
   // if this is a DRIVER, check if there are any ENGINES that are linked to it
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
@@ -167,6 +203,7 @@ int library_accept_communicator() {
 	  //iengine = icode;
 	  iengine = other_code->id;
 	  found_engine = 1;
+	  break;
 	}
       }
     }
@@ -175,17 +212,8 @@ int library_accept_communicator() {
     if ( found_engine == 1 ) {
       int icomm = library_initialize();
 
-      // set the connected code for the engine
-      code* engine_code = get_code(iengine);
-      if ( engine_code->comms->size != 1 ) {
-	mdi_error("MDI_Accept_Communicator error: Engine appears to have been initialized multiple times"); 
-	return 1;
-      }
-      communicator* engine_comm = vector_get(engine_code->comms,0);
-      library_data* engine_lib = (library_data*) engine_comm->method_data;
-      engine_lib->connected_code = current_code;
-
       // set the connected code for the driver
+      code* engine_code = get_code(iengine);
       communicator* this_comm = get_communicator(current_code, icomm);
       library_data* libd = (library_data*) this_comm->method_data;
       libd->connected_code = engine_code->id;
