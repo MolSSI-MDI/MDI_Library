@@ -744,7 +744,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
     current_code = idriver;
 
     void* class_obj = driver_lib->driver_callback_obj;
-    ret = driver_lib->driver_node_callback("", driver_comm_handle, class_obj);
+    ret = driver_lib->driver_node_callback(driver_comm_handle, class_obj);
 
     // set the current code to the driver
     current_code = iengine;

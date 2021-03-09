@@ -24,7 +24,7 @@
  *
  */
 int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
-                          int (*driver_node_callback)(const char*, MDI_Comm, void*),
+                          int (*driver_node_callback)(MDI_Comm, void*),
                           void* driver_callback_object) {
   int ret;
   code* this_code = get_code(current_code);

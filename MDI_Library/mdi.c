@@ -1457,7 +1457,7 @@ int MDI_MPI_get_world_comm(void* world_comm)
  *                   Should be set void if driver_node_callback is not a member of a class.
  */
 int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
-                      int (*driver_node_callback)(const char*, MDI_Comm, void*),
+                      int (*driver_node_callback)(MDI_Comm, void*),
                       void* driver_callback_object) {
   int ret = library_launch_plugin(plugin_name, options, mpi_comm,
                                   driver_node_callback, driver_callback_object);
