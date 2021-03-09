@@ -19,6 +19,8 @@ typedef struct library_data_struct {
   int buf_allocated;
   /*! \brief Flag whether the next MDI_Send call should trigger execution of the engine's command */
   int execute_on_send;
+  /*! \brief MPI intra-communicator for the engine */
+  MPI_Comm mpi_comm;
   /*! \brief Pointer to the class object that is used for the driver_node_callback function */
   void* driver_callback_obj;
   /*! \brief Function pointer to the driver node's callback function */
@@ -27,7 +29,7 @@ typedef struct library_data_struct {
   void* buf;
 } library_data;
 
-typedef int (*MDI_Plugin_init_t)(const char*, void*);
+typedef int (*MDI_Plugin_init_t)(const char*);
 
 int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
                           int (*driver_node_callback)(MDI_Comm, void*),
