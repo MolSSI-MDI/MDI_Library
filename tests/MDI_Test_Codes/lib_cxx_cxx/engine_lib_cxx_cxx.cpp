@@ -12,10 +12,21 @@ int MDI_Plugin_init(const char* options, MPI_Comm* mpi_comm) {
   int ret = MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", &world_comm);
   MDI_MPI_get_world_comm(&world_comm);
 
+  /////////////////////
+  MDI_Comm comm;
+  MDI_Accept_Communicator(&comm);
+  /////////////////////
+
   // Set the execute_command callback
   void* engine_obj;
   MDI_Set_Execute_Command_Func(execute_command, engine_obj);
 
+  /////////////////////
+  char* command = new char[MDI_COMMAND_LENGTH];
+  MDI_Recv_Command(command, comm);
+  delete [] command;
+  /////////////////////
+  
   return 0;
 }
 

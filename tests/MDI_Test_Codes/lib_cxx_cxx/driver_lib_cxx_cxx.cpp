@@ -4,6 +4,20 @@
 #include <string.h>
 #include "mdi.h"
 
+int execute_at_node(const char* node_name, MDI_Comm comm, void* class_object) {
+  // Determine the name of the engine
+  char* engine_name = new char[MDI_NAME_LENGTH];
+  MDI_Send_Command("<NAME", comm);
+  MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+
+  std::cout << " Engine name: " << engine_name << std::endl;
+
+  // Send the "EXIT" command to the engine
+  MDI_Send_Command("EXIT", comm);
+
+  return 0;
+}
+
 int main(int argc, char **argv) {
 
   // Initialize the MPI environment
@@ -43,8 +57,9 @@ int main(int argc, char **argv) {
   }
 
   // Initialize an instance of the engine library
-  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm);
+  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm, execute_at_node, nullptr);
 
+  /*
   // Connect to the engine
   MDI_Comm comm;
   MDI_Accept_Communicator(&comm);
@@ -58,6 +73,7 @@ int main(int argc, char **argv) {
 
   // Send the "EXIT" command to the engine
   MDI_Send_Command("EXIT", comm);
+  */
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);
