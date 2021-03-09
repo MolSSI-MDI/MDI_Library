@@ -29,7 +29,10 @@ typedef struct library_data_struct {
   void* buf;
 } library_data;
 
-typedef int (*MDI_Plugin_init_t)(const char*);
+typedef int (*MDI_Plugin_init_t)();
+
+/*! \brief Flag whether a plugin is currently being initialized */
+int initializing_plugin;
 
 int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
                           int (*driver_node_callback)(MDI_Comm, void*),

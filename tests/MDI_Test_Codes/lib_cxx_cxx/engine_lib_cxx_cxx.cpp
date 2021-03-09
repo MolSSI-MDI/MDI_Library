@@ -5,7 +5,7 @@
 #include "mdi.h"
 #include "engine_lib_cxx_cxx.h"
 
-int MDI_Plugin_init(const char* options) {
+int MDI_Plugin_init() {
   // Initialize MDI
   MPI_Comm world_comm = MPI_COMM_WORLD;
   int ret = MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", &world_comm);

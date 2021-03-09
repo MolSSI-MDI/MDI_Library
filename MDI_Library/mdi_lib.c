@@ -101,11 +101,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   libd->mpi_comm = mpi_comm;
 
   // Initialize an instance of the plugin
-  ret = plugin_init(options);
+  initializing_plugin = 1;
+  ret = plugin_init();
   if ( ret != 0 ) {
     mdi_error("MDI plugin init function returned non-zero exit code");
     return -1;
   }
+  initializing_plugin = 0;
   current_code = this_code->id;
 
   return 0;
@@ -141,17 +143,19 @@ int library_initialize() {
   if ( strcmp(this_code->role, "ENGINE") == 0 ) {
     int engine_code = current_code;
     library_set_driver_current();
-    libd->connected_code = current_code;
+    int driver_code_id = current_code;
+    libd->connected_code = driver_code_id;
+    current_code = engine_code;
 
     // set the engine's mpi communicator
-    code* driver_code = get_code(current_code);
-    MDI_Comm matching_handle = library_get_matching_handle(comm_id);
-    communicator* driver_comm = get_communicator(driver_code->id, matching_handle);
-    library_data* driver_libd = (library_data*) driver_comm->method_data;
-    libd->mpi_comm = driver_libd->mpi_comm;
-    this_code->intra_MPI_comm = libd->mpi_comm;
-
-    current_code = engine_code;
+    if ( initializing_plugin ) {
+      code* driver_code = get_code(driver_code_id);
+      MDI_Comm matching_handle = library_get_matching_handle(comm_id);
+      communicator* driver_comm = get_communicator(driver_code->id, matching_handle);
+      library_data* driver_libd = (library_data*) driver_comm->method_data;
+      libd->mpi_comm = driver_libd->mpi_comm;
+      this_code->intra_MPI_comm = libd->mpi_comm;
+    }
   }
 
   return new_comm->id;
