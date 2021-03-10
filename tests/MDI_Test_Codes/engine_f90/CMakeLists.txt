@@ -22,7 +22,7 @@ include_directories( ${mdi_include_path} )
 
 add_executable(engine_f90
                engine_f90.f90
-               mdi_implementation.F90)
+               mdi_implementation.f90)
 set_target_properties(engine_f90 PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
@@ -58,8 +58,8 @@ endif()
 
 # Compile the engine library
 add_library(engine_f90_lib SHARED
-            engine_f90.F90
-            mdi_implementation.F90)
+            engine_f90.f90
+            mdi_implementation.f90)
 target_link_libraries(engine_f90_lib mdi)
 set_target_properties(engine_f90_lib PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
