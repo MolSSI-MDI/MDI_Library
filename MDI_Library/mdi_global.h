@@ -130,6 +130,9 @@ extern int is_initialized;
 /*! \brief Flag for whether MDI called MPI_Init */
 extern int initialized_mpi;
 
+/*! \brief Flag for whether MDI is currently operating in plugin mode */
+extern int plugin_mode;
+
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 extern MPI_Comm mdi_mpi_comm_world;
 

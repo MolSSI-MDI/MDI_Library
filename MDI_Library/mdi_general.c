@@ -615,6 +615,14 @@ int general_send_command(const char* buf, MDI_Comm comm) {
       library_data* libd = (library_data*) this->method_data;
       libd->execute_on_send = 1;
     }
+    else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
+      // this command should be received by MDI_Recv_command, rather than through the execute_command callback
+      ret = general_send( command, count, MDI_CHAR, comm );
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Send_Command: Unable to send command");
+	return ret;
+      }
+    }
     else {
       // this is a command that neither sends nor receives data, so execute it now
       ret = library_execute_command(comm);
@@ -627,13 +635,14 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   else {
     ret = general_send( command, count, MDI_CHAR, comm );
     if ( ret != 0 ) {
-      mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      mdi_error("Error in MDI_Send_Command: Unable to send command");
       return ret;
     }
   }
 
   // if the command was "EXIT", delete this communicator
-  if ( strcmp( command, "EXIT" ) == 0 ) {
+  // if running in plugin mode, the plugin system will delete the communicator instead
+  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
 
     // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
@@ -746,10 +755,10 @@ int general_recv_command(char* buf, MDI_Comm comm) {
     void* class_obj = driver_lib->driver_callback_obj;
     ret = driver_lib->driver_node_callback(driver_comm_handle, class_obj);
 
-    // set the current code to the driver
+    // set the current code to the engine
     current_code = iengine;
 
-    return 0;
+    //return 0;
   }
 
   // only receive on rank 0

@@ -27,7 +27,8 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
                           int (*driver_node_callback)(MDI_Comm, void*),
                           void* driver_callback_object) {
   int ret;
-  code* this_code = get_code(current_code);
+  int driver_code_id = current_code;
+  code* this_code = get_code(driver_code_id);
 
   // Note: Eventually, should probably replace this code with libltdl
   // Get the path to the plugin
@@ -101,14 +102,18 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   libd->mpi_comm = mpi_comm;
 
   // Initialize an instance of the plugin
-  initializing_plugin = 1;
+  plugin_mode = 1;
   ret = plugin_init();
   if ( ret != 0 ) {
     mdi_error("MDI plugin init function returned non-zero exit code");
     return -1;
   }
-  initializing_plugin = 0;
-  current_code = this_code->id;
+  plugin_mode = 0;
+  current_code = driver_code_id;
+
+  // Delete the driver's communicator to the engine
+  // This will also delete the engine code and its communicator
+  delete_communicator(driver_code_id, comm);
 
   return 0;
 }
@@ -148,7 +153,7 @@ int library_initialize() {
     current_code = engine_code;
 
     // set the engine's mpi communicator
-    if ( initializing_plugin ) {
+    if ( plugin_mode ) {
       code* driver_code = get_code(driver_code_id);
       MDI_Comm matching_handle = library_get_matching_handle(comm_id);
       communicator* driver_comm = get_communicator(driver_code->id, matching_handle);

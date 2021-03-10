@@ -17,7 +17,7 @@ include_directories( ${mdi_include_path} )
 
 
 # ----------------------------------------------------------------------------------------------------
-# Engine
+# Executable
 
 
 
@@ -29,7 +29,6 @@ target_link_libraries(engine_cxx mdi
                       ${MPI_LIBRARIES})
 set_target_properties(engine_cxx PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-
 
 
 # Ensure that MPI is properly linked
@@ -48,13 +47,14 @@ endif()
 
 
 # ----------------------------------------------------------------------------------------------------
-# Engine
+# Library
 
 
 
 # Compile the engine
 
 add_library(engine_cxx_lib SHARED
+            engine_cxx.h
             engine_cxx.cpp)
 set_target_properties(engine_cxx_lib PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
@@ -63,7 +63,6 @@ set_target_properties(engine_cxx_lib PROPERTIES
     OUTPUT_NAME engine_cxx)
 target_link_libraries(engine_cxx_lib mdi
                       ${MPI_LIBRARIES})
-
 
 
 # Ensure that MPI is properly linked
