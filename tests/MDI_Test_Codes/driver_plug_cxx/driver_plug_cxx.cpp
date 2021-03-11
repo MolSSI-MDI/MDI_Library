@@ -26,6 +26,25 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
     mpi_error("MDI_Recv returned non-zero exit code.");
   }
 
+  // Get the number of atoms
+  int natoms;
+  if ( MDI_Send_command("<NATOMS", mdi_comm) != 0 ) {
+    mpi_error("MDI_Send_command returned non-zero exit code.");
+  }
+  if ( MDI_Recv(&natoms, 1, MDI_INT, mdi_comm) != 0 ) {
+    mpi_error("MDI_Recv returned non-zero exit code.");
+  }
+
+  // Get the nuclear coordinates
+  double* coords = new double [3*natoms];
+  if ( MDI_Send_command("<COORDS", mdi_comm) != 0 ) {
+    mpi_error("MDI_Send_command returned non-zero exit code.");
+  }
+  if ( MDI_Recv(coords, 3*natoms, MDI_DOUBLE, mdi_comm) != 0 ) {
+    mpi_error("MDI_Recv returned non-zero exit code.");
+  }
+  delete[] coords;
+
   if ( my_rank == 0 ) {
     std::cout << " Engine name: " << engine_name << std::endl;
   }
