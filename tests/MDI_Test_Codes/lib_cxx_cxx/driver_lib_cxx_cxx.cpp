@@ -7,13 +7,13 @@
 int execute_at_node(void* mpi_comm_ptr, MDI_Comm comm, void* class_object) {
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
-  MDI_Send_Command("<NAME", comm);
+  MDI_Send_command("<NAME", comm);
   MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
   std::cout << " Engine name: " << engine_name << std::endl;
 
   // Send the "EXIT" command to the engine
-  MDI_Send_Command("EXIT", comm);
+  MDI_Send_command("EXIT", comm);
 
   return 0;
 }

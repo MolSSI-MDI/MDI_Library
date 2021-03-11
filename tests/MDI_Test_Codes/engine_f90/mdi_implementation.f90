@@ -3,10 +3,10 @@ MODULE MDI_IMPLEMENTATION
   USE mpi
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_CHAR, MDI_NAME_LENGTH, &
-       MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, MDI_MPI_get_world_comm, MDI_DOUBLE, MDI_BYTE, &
-       MDI_ENGINE, MDI_Get_Role, MDI_Register_Command, MDI_Register_Node, &
-       MDI_Register_Callback, MDI_COMMAND_LENGTH, MDI_MPI_get_world_comm
+       MDI_Accept_communicator, MDI_Recv_command, MDI_Recv, &
+       MDI_Set_execute_command_func, MDI_MPI_get_world_comm, MDI_DOUBLE, MDI_BYTE, &
+       MDI_ENGINE, MDI_Get_role, MDI_Register_command, MDI_Register_node, &
+       MDI_Register_callback, MDI_COMMAND_LENGTH, MDI_MPI_get_world_comm
 
   IMPLICIT NONE
 
@@ -52,29 +52,29 @@ CONTAINS
     generic_command => execute_command
 
     ! Confirm that the code is being run as an ENGINE
-    call MDI_Get_Role(role, ierr)
+    call MDI_Get_role(role, ierr)
     IF ( role .ne. MDI_ENGINE ) THEN
        WRITE(6,*)'ERROR: Must run engine_f90 as an ENGINE'
     END IF
 
     ! Register the commands
-    CALL MDI_Register_Node("@DEFAULT", ierr)
-    CALL MDI_Register_Command("@DEFAULT", "EXIT", ierr)
-    CALL MDI_Register_Command("@DEFAULT", "<NATOMS", ierr)
-    CALL MDI_Register_Command("@DEFAULT", "<COORDS", ierr)
-    CALL MDI_Register_Command("@DEFAULT", "<FORCES", ierr)
-    CALL MDI_Register_Command("@DEFAULT", "<FORCES_B", ierr)
-    CALL MDI_Register_Node("@FORCES", ierr)
-    CALL MDI_Register_Command("@FORCES", "EXIT", ierr)
-    CALL MDI_Register_Command("@FORCES", "<FORCES", ierr)
-    CALL MDI_Register_Command("@FORCES", ">FORCES", ierr)
-    CALL MDI_Register_Callback("@FORCES", ">FORCES", ierr)
+    CALL MDI_Register_node("@DEFAULT", ierr)
+    CALL MDI_Register_command("@DEFAULT", "EXIT", ierr)
+    CALL MDI_Register_command("@DEFAULT", "<NATOMS", ierr)
+    CALL MDI_Register_command("@DEFAULT", "<COORDS", ierr)
+    CALL MDI_Register_command("@DEFAULT", "<FORCES", ierr)
+    CALL MDI_Register_command("@DEFAULT", "<FORCES_B", ierr)
+    CALL MDI_Register_node("@FORCES", ierr)
+    CALL MDI_Register_command("@FORCES", "EXIT", ierr)
+    CALL MDI_Register_command("@FORCES", "<FORCES", ierr)
+    CALL MDI_Register_command("@FORCES", ">FORCES", ierr)
+    CALL MDI_Register_callback("@FORCES", ">FORCES", ierr)
 
     ! Connct to the driver
-    CALL MDI_Accept_Communicator(comm, ierr)
+    CALL MDI_Accept_communicator(comm, ierr)
 
     ! Set the generic execute_command function
-    CALL MDI_Set_Execute_Command_Func(generic_command, class_obj, ierr)
+    CALL MDI_Set_execute_command_func(generic_command, class_obj, ierr)
 
   END SUBROUTINE initialize_mdi
 
@@ -89,7 +89,7 @@ CONTAINS
     response_loop: DO
 
        ! Receive a command from the driver and broadcast it to all ranks
-       CALL MDI_Recv_Command(command, comm, ierr)
+       CALL MDI_Recv_command(command, comm, ierr)
        CALL MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm, ierr)
 
        CALL execute_command(command, comm, ierr)

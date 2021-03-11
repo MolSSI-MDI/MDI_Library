@@ -3,11 +3,11 @@ PROGRAM DRIVER_F90
 USE mpi
 USE ISO_C_binding
 USE mdi,              ONLY : MDI_CHAR, MDI_NAME_LENGTH, MDI_COMMAND_LENGTH, &
-     MDI_Send, MDI_Init, MDI_MPI_get_world_comm, MDI_Get_Role, &
-     MDI_Accept_Communicator, MDI_Send_Command, MDI_Recv, MDI_Conversion_Factor, &
-     MDI_Check_Node_Exists, MDI_Check_Command_Exists, MDI_Check_Callback_Exists, &
-     MDI_Get_NNodes, MDI_Get_NCommands, MDI_Get_NCallbacks, &
-     MDI_Get_Node, MDI_Get_Command, MDI_Get_Callback, MDI_DRIVER
+     MDI_Send, MDI_Init, MDI_MPI_get_world_comm, MDI_Get_role, &
+     MDI_Accept_communicator, MDI_Send_command, MDI_Recv, MDI_Conversion_factor, &
+     MDI_Check_Node_exists, MDI_Check_command_exists, MDI_Check_callback_exists, &
+     MDI_Get_nnodes, MDI_Get_ncommands, MDI_Get_ncallbacks, &
+     MDI_Get_node, MDI_Get_command, MDI_Get_callback, MDI_DRIVER
 
 IMPLICIT NONE
 
@@ -46,7 +46,7 @@ IMPLICIT NONE
    END DO
 
    ! Confirm that the code is being run as a driver
-   call MDI_Get_Role(role, ierr)
+   call MDI_Get_role(role, ierr)
    IF ( role .ne. MDI_DRIVER ) THEN
       WRITE(6,*)'ERROR: Must run driver_f90 as a DRIVER',role,MDI_DRIVER
    END IF
@@ -55,45 +55,45 @@ IMPLICIT NONE
    call MPI_Comm_rank( world_comm, world_rank, ierr );
 
    ! Connct to the engine
-   call MDI_Accept_Communicator(comm, ierr)
+   call MDI_Accept_communicator(comm, ierr)
 
    ! Confirm that the engine has the @DEFAULT node
-   CALL MDI_Check_Node_Exists("@DEFAULT", comm, exists, ierr)
+   CALL MDI_Check_node_exists("@DEFAULT", comm, exists, ierr)
    IF ( exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not have @DEFAULT node'
    END IF
 
    ! Confirm that the engine supports the EXIT command
-   CALL MDI_Check_Command_Exists("@DEFAULT", "EXIT", comm, exists, ierr)
+   CALL MDI_Check_command_exists("@DEFAULT", "EXIT", comm, exists, ierr)
    IF ( exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not support the EXIT command'
    END IF
 
    ! Determine the name of the engine
-   call MDI_Send_Command("<NAME", comm, ierr)
+   call MDI_Send_command("<NAME", comm, ierr)
    call MDI_Recv(message, MDI_NAME_LENGTH, MDI_CHAR, comm, ierr)
 
    WRITE(6,*)'Engine name: ', TRIM(message)
 
    ! Test the node, command, and callback inquiry functions 
-   CALL MDI_Get_NNodes(comm, nnodes, ierr)
+   CALL MDI_Get_nnodes(comm, nnodes, ierr)
    WRITE(6,*)'NNODES: ',nnodes
-   CALL MDI_Get_Node(1, comm, test_node, ierr)
+   CALL MDI_Get_node(1, comm, test_node, ierr)
    WRITE(6,*)'NODE: ',TRIM(test_node)
-   CALL MDI_Get_NCommands(test_node, comm, ncommands, ierr)
+   CALL MDI_Get_ncommands(test_node, comm, ncommands, ierr)
    WRITE(6,*)'NCOMMANDS: ',ncommands
-   CALL MDI_Get_Command(test_node, 2, comm, test_command, ierr)
+   CALL MDI_Get_command(test_node, 2, comm, test_command, ierr)
    WRITE(6,*)'COMMAND: ',TRIM(test_command)
-   CALL MDI_Get_NCallbacks(test_node, comm, ncallbacks, ierr)
+   CALL MDI_Get_ncallbacks(test_node, comm, ncallbacks, ierr)
    WRITE(6,*)'NCALLBACKS: ',ncallbacks
-   CALL MDI_Get_Callback(test_node, 0, comm, test_callback, ierr)
+   CALL MDI_Get_callback(test_node, 0, comm, test_callback, ierr)
    WRITE(6,*)'CALLBACK: ',TRIM(test_callback)
-   CALL MDI_Check_Callback_Exists("@FORCES", ">FORCES", comm, exists, ierr)
+   CALL MDI_Check_callback_exists("@FORCES", ">FORCES", comm, exists, ierr)
    IF ( exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not support the EXIT command'
    END IF
 
-   call MDI_Send_Command("EXIT", comm, ierr)
+   call MDI_Send_command("EXIT", comm, ierr)
 
    ! Synchronize all MPI ranks
    call MPI_Barrier( world_comm, ierr )

@@ -12,7 +12,7 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
 
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
-  MDI_Send_Command("<NAME", mdi_comm);
+  MDI_Send_command("<NAME", mdi_comm);
   MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_comm);
 
   if ( my_rank == 0 ) {
@@ -20,7 +20,7 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
   }
 
   // Send the "EXIT" command to the engine
-  MDI_Send_Command("EXIT", mdi_comm);
+  MDI_Send_command("EXIT", mdi_comm);
 
   return 0;
 }

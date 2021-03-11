@@ -121,14 +121,14 @@ int main(int argc, char **argv) {
 
     // Connect to the engine
     MDI_Comm comm;
-    MDI_Accept_Communicator(&comm);
+    MDI_Accept_communicator(&comm);
 
     // Determine the name of the engine
-    MDI_Send_Command("<NAME", comm);
+    MDI_Send_command("<NAME", comm);
     MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
     // Send the "EXIT" command to the engine
-    MDI_Send_Command("EXIT", comm);
+    MDI_Send_command("EXIT", comm);
     
   }
   /*****************************************************/
@@ -143,14 +143,14 @@ int main(int argc, char **argv) {
 
     // Connect to the engine
     MDI_Comm comm;
-    MDI_Accept_Communicator(&comm);
+    MDI_Accept_communicator(&comm);
 
     // Determine the name of the engine
-    MDI_Send_Command("<NAME", comm);
+    MDI_Send_command("<NAME", comm);
     MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
     // Send the "EXIT" command to the engine
-    MDI_Send_Command("EXIT", comm);
+    MDI_Send_command("EXIT", comm);
 
   }
 

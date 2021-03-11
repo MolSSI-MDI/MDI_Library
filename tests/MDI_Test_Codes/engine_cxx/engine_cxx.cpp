@@ -10,31 +10,31 @@ bool exit_signal = false;
 int initialize_mdi(MDI_Comm* comm_ptr) {
   // Confirm that the code is being run as an engine
   int role;
-  MDI_Get_Role(&role);
+  MDI_Get_role(&role);
   if ( role != MDI_ENGINE ) {
     throw std::runtime_error("Must run engine_cxx as an ENGINE");
   }
 
   // Set the list of supported commands
-  MDI_Register_Node("@DEFAULT");
-  MDI_Register_Command("@DEFAULT","EXIT");
-  MDI_Register_Command("@DEFAULT","<NATOMS");
-  MDI_Register_Command("@DEFAULT","<COORDS");
-  MDI_Register_Command("@DEFAULT","<FORCES");
-  MDI_Register_Command("@DEFAULT","<FORCES_B");
-  MDI_Register_Node("@FORCES");
-  MDI_Register_Command("@FORCES","EXIT");
-  MDI_Register_Command("@FORCES","<FORCES");
-  MDI_Register_Command("@FORCES",">FORCES");
-  MDI_Register_Callback("@FORCES",">FORCES");
+  MDI_Register_node("@DEFAULT");
+  MDI_Register_command("@DEFAULT","EXIT");
+  MDI_Register_command("@DEFAULT","<NATOMS");
+  MDI_Register_command("@DEFAULT","<COORDS");
+  MDI_Register_command("@DEFAULT","<FORCES");
+  MDI_Register_command("@DEFAULT","<FORCES_B");
+  MDI_Register_node("@FORCES");
+  MDI_Register_command("@FORCES","EXIT");
+  MDI_Register_command("@FORCES","<FORCES");
+  MDI_Register_command("@FORCES",">FORCES");
+  MDI_Register_callback("@FORCES",">FORCES");
 
   // Connect to the driver
-  MDI_Accept_Communicator(comm_ptr);
+  MDI_Accept_communicator(comm_ptr);
 
   // Create the execute_command pointer
   int (*generic_command)(const char*, MDI_Comm, void*) = execute_command;
   void* engine_obj;
-  MDI_Set_Execute_Command_Func(generic_command, engine_obj);
+  MDI_Set_execute_command_func(generic_command, engine_obj);
 
   return 0;
 }
@@ -45,7 +45,7 @@ int respond_to_commands(MDI_Comm comm, MPI_Comm mpi_world_comm) {
   char* command = new char[MDI_COMMAND_LENGTH];
   while( not exit_signal ) {
 
-    MDI_Recv_Command(command, comm);
+    MDI_Recv_command(command, comm);
     MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, mpi_world_comm);
 
     execute_command(command, comm, NULL);
@@ -104,7 +104,7 @@ int MDI_Plugin_init_engine_cxx() {
 
   // Set the execute_command callback
   void* engine_obj;
-  MDI_Set_Execute_Command_Func(execute_command, engine_obj);
+  MDI_Set_execute_command_func(execute_command, engine_obj);
 
   // Respond to commands from the driver
   respond_to_commands(comm, mpi_world_comm);

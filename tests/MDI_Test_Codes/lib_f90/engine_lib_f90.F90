@@ -3,8 +3,8 @@ MODULE ENGINE_LIB_F90
   USE mpi
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_CHAR, MDI_NAME_LENGTH, &
-       MDI_Accept_Communicator, MDI_Recv_Command, MDI_Recv, MDI_Conversion_Factor, &
-       MDI_Set_Execute_Command_Func, MDI_MPI_get_world_comm
+       MDI_Accept_communicator, MDI_Recv_command, MDI_Recv, MDI_Conversion_factor, &
+       MDI_Set_execute_command_func, MDI_MPI_get_world_comm
 
   IMPLICIT NONE
 
@@ -44,7 +44,7 @@ CONTAINS
     CALL MPI_Comm_rank( world_comm, world_rank, ierr )
 
     ! Set the generic execute_command function
-    CALL MDI_Set_Execute_Command_Func(general_command, class_obj, ierr)
+    CALL MDI_Set_execute_command_func(general_command, class_obj, ierr)
 
   END SUBROUTINE engine_lib_f90_create
 
