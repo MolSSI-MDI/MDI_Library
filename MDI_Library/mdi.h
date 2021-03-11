@@ -114,7 +114,7 @@ DllExport int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, 
 DllExport int MDI_MPI_get_world_comm(void* world_comm);
 
 // functions for managing callback functions (used only with the LINK communication method)
-DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
+DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                                 int (*driver_node_callback)(MDI_Comm, void*),
                                 void* driver_callback_object);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);

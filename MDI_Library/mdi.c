@@ -1448,18 +1448,18 @@ int MDI_MPI_get_world_comm(void* world_comm)
  *                   Name of the plugin.
  * \param [in]       options
  *                   Command-line options for the plugin.
- * \param [in]       mpi_comm
- *                   MPI intra-communicator that spans all ranks that will run this plugin instance.
+ * \param [in]       mpi_comm_ptr
+ *                   Pointer to an MPI intra-communicator that spans all ranks that will run this plugin instance.
  * \param [in]       driver_node_callback
  *                   Function pointer to the driver code that will be executed on this engine.
  * \param [in]       driver_callback_object
  *                   Pointer to the object instance of which driver_node_callback is a class member.
  *                   Should be set void if driver_node_callback is not a member of a class.
  */
-int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
+int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                       int (*driver_node_callback)(MDI_Comm, void*),
                       void* driver_callback_object) {
-  int ret = library_launch_plugin(plugin_name, options, mpi_comm,
+  int ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
                                   driver_node_callback, driver_callback_object);
   return ret;
 }

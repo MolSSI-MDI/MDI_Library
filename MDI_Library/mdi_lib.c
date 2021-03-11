@@ -23,12 +23,13 @@
 /*! \brief Launch an MDI plugin
  *
  */
-int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm,
+int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                           int (*driver_node_callback)(MDI_Comm, void*),
                           void* driver_callback_object) {
   int ret;
   int driver_code_id = current_code;
   code* this_code = get_code(driver_code_id);
+  MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   // Note: Eventually, should probably replace this code with libltdl
   // Get the path to the plugin
