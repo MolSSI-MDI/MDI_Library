@@ -4,7 +4,8 @@
 #include <string.h>
 #include "mdi.h"
 
-int execute_at_node(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_object) {
+
+int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_object) {
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
   int my_rank;
   MPI_Comm_rank(mpi_comm, &my_rank);
@@ -24,6 +25,7 @@ int execute_at_node(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_object) {
   return 0;
 }
 
+
 int main(int argc, char **argv) {
 
   // Initialize the MPI environment
@@ -36,6 +38,9 @@ int main(int argc, char **argv) {
 
   // Number of ranks running EACH plugin instance
   int plugin_nranks = -1;
+
+  // Name of the plugin to use
+  char* plugin_name = nullptr;
 
   // Read through all the command line options
   int iarg = 1;
@@ -62,7 +67,7 @@ int main(int argc, char **argv) {
     }
     else if ( strcmp(argv[iarg],"-driver_nranks") == 0 ) {
 
-      // Ensure that the argument to the -mdi option was provided
+      // Ensure that the argument to the -driver_nranks option was provided
       if ( argc-iarg < 2 ) {
 	throw std::runtime_error("The -driver_nranks argument was not provided.");
       }
@@ -75,7 +80,7 @@ int main(int argc, char **argv) {
     }
     else if ( strcmp(argv[iarg],"-plugin_nranks") == 0 ) {
 
-      // Ensure that the argument to the -mdi option was provided
+      // Ensure that the argument to the -plugin_nranks option was provided
       if ( argc-iarg < 2 ) {
 	throw std::runtime_error("The -plugin_nranks argument was not provided.");
       }
@@ -83,6 +88,18 @@ int main(int argc, char **argv) {
       // Set driver_nranks
       char* strtol_ptr;
       plugin_nranks = strtol( argv[iarg+1], &strtol_ptr, 10 );
+      iarg += 2;
+
+    }
+    else if ( strcmp(argv[iarg],"-plugin_name") == 0 ) {
+
+      // Ensure that the argument to the -plugin_name option was provided
+      if ( argc-iarg < 2 ) {
+	throw std::runtime_error("The -plugin_name argument was not provided.");
+      }
+
+      // Set driver_nranks
+      plugin_name = argv[iarg+1];
       iarg += 2;
 
     }
@@ -107,13 +124,45 @@ int main(int argc, char **argv) {
 
   // Verify that the value of driver_nranks and plugin_nranks is consistent with world_size
   int world_size;
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_size(world_comm, &world_size);
   if ( (world_size - driver_nranks) % plugin_nranks != 0 ) {
     throw std::runtime_error("Invalid values for driver_nranks and plugin_nranks: world_size - driver_nranks must be divisible by plugin_nranks.");
   }
 
-  // Initialize an instance of the engine library
-  MDI_Launch_plugin("engine_cxx", "", &world_comm, execute_at_node, nullptr);
+  // Verify the value of plugin_name
+  if ( plugin_name == nullptr ) {
+    throw std::runtime_error("Plugin name was not provided.");
+  }
+
+  // Split world_comm into MPI intra-comms for the driver and each plugin
+  MPI_Comm intra_comm;
+  int my_rank, color, intra_rank;
+  MPI_Comm_rank(world_comm, &my_rank);
+  if ( my_rank < driver_nranks ) {
+    color = 0;
+  }
+  else {
+    color = ( ( my_rank - driver_nranks ) / plugin_nranks ) + 1;
+  }
+  MPI_Comm_split(world_comm, color, my_rank, &intra_comm);
+  MPI_Comm_rank(intra_comm, &intra_rank);
+
+  if ( color == 0 ) { // Driver intra-comm
+
+    if (intra_rank == 0 ) {
+      std::cout << "I am the driver" << std::endl;
+    }
+
+  }
+  else { // Engine instance intra-comm
+
+    if ( intra_rank == 0 ) {
+      std::cout << "I am engine instance: " << color << std::endl;
+    }
+
+    // Initialize an instance of the engine library
+    MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, nullptr);
+  }
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);

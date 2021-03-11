@@ -161,6 +161,7 @@ int library_initialize() {
       library_data* driver_libd = (library_data*) driver_comm->method_data;
       libd->mpi_comm = driver_libd->mpi_comm;
       this_code->intra_MPI_comm = libd->mpi_comm;
+      MPI_Comm_rank( this_code->intra_MPI_comm, &this_code->intra_rank );
     }
   }
 
