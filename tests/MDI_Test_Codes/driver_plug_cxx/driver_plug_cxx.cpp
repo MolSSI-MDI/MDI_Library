@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <stdexcept>
 #include <string.h>
+#include <cstdlib>
 #include "mdi.h"
 
 
@@ -40,13 +41,16 @@ int main(int argc, char **argv) {
 
   // Number of ranks that will run the driver
   // This is the number of ranks that will NOT run plugin instances
+  // The value of this variable is read from the command-line options
   int driver_nranks = -1;
 
   // Number of ranks running EACH plugin instance
+  // The value of this variable is read from the command-line options
   int plugin_nranks = -1;
 
   // Name of the plugin to use
-  char* plugin_name = nullptr;
+  // The value of this variable is read from the command-line options
+  char* plugin_name = NULL;
 
   // Read through all the command line options
   int iarg = 1;
@@ -137,7 +141,7 @@ int main(int argc, char **argv) {
   }
 
   // Verify the value of plugin_name
-  if ( plugin_name == nullptr ) {
+  if ( plugin_name == NULL ) {
     throw std::runtime_error("Plugin name was not provided.");
   }
 
@@ -168,7 +172,7 @@ int main(int argc, char **argv) {
     }
 
     // Initialize and run an instance of the engine library
-    if ( MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, nullptr) != 0 ) {
+    if ( MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, NULL) != 0 ) {
       throw std::runtime_error("MDI_Launch_plugin returned non-zero exit code.");
     }
   }

@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
   }
 
   // Initialize an instance of the engine library
-  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm, execute_at_node, nullptr);
+  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm, execute_at_node, NULL);
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);
