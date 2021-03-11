@@ -6,6 +6,12 @@
 #include "mdi.h"
 
 
+void mpi_error(const char* errormsg) {
+  std::cerr << errormsg << std::endl;
+  MPI_Abort(MPI_COMM_WORLD, 1);
+}
+
+
 int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_object) {
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
   int my_rank;
@@ -14,10 +20,10 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
   if ( MDI_Send_command("<NAME", mdi_comm) != 0 ) {
-    throw std::runtime_error("MDI_Send_command returned non-zero exit code.");
+    mpi_error("MDI_Send_command returned non-zero exit code.");
   }
   if ( MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_comm) != 0 ) {
-    throw std::runtime_error("MDI_Recv returned non-zero exit code.");
+    mpi_error("MDI_Recv returned non-zero exit code.");
   }
 
   if ( my_rank == 0 ) {
@@ -26,7 +32,7 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
 
   // Send the "EXIT" command to the engine
   if ( MDI_Send_command("EXIT", mdi_comm) != 0 ) {
-    throw std::runtime_error("MDI_Send_command returned non-zero exit code.");
+    mpi_error("MDI_Send_command returned non-zero exit code.");
   }
 
   return 0;
@@ -61,16 +67,16 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -mdi option was provided
       if ( argc-iarg < 2 ) {
-	throw std::runtime_error("The -mdi argument was not provided.");
+	mpi_error("The -mdi argument was not provided.");
       }
 
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
       if ( MDI_Init(argv[iarg+1], &world_comm) != 0 ) {
-	throw std::runtime_error("MDI_Init returned non-zero exit code.");
+	mpi_error("MDI_Init returned non-zero exit code.");
       }
       if ( MDI_MPI_get_world_comm(&world_comm) != 0 ) {
-	throw std::runtime_error("MDI_MPI_get_world_comm returned non-zero exit code");
+	mpi_error("MDI_MPI_get_world_comm returned non-zero exit code");
       }
       initialized_mdi = true;
       iarg += 2;
@@ -80,7 +86,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -driver_nranks option was provided
       if ( argc-iarg < 2 ) {
-	throw std::runtime_error("The -driver_nranks argument was not provided.");
+	mpi_error("The -driver_nranks argument was not provided.");
       }
 
       // Set driver_nranks
@@ -93,7 +99,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -plugin_nranks option was provided
       if ( argc-iarg < 2 ) {
-	throw std::runtime_error("The -plugin_nranks argument was not provided.");
+	mpi_error("The -plugin_nranks argument was not provided.");
       }
 
       // Set driver_nranks
@@ -106,7 +112,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -plugin_name option was provided
       if ( argc-iarg < 2 ) {
-	throw std::runtime_error("The -plugin_name argument was not provided.");
+	mpi_error("The -plugin_name argument was not provided.");
       }
 
       // Set driver_nranks
@@ -115,36 +121,36 @@ int main(int argc, char **argv) {
 
     }
     else {
-      throw std::runtime_error("Unrecognized option.");
+      mpi_error("Unrecognized option.");
     }
 
   }
   if ( not initialized_mdi ) {
-    throw std::runtime_error("The -mdi command line option was not provided.");
+    mpi_error("The -mdi command line option was not provided.");
   }
 
   // Verify the value of driver_nranks
   if ( driver_nranks < 0 ) {
-    throw std::runtime_error("Invalid value for driver_nranks [0, inf).");
+    mpi_error("Invalid value for driver_nranks [0, inf).");
   }
 
   // Verify the value of plugin_nranks
   if ( plugin_nranks <= 0 ) {
-    throw std::runtime_error("Invalid value for plugin_nranks (0, inf).");
+    mpi_error("Invalid value for plugin_nranks (0, inf).");
   }
 
   // Verify that the value of driver_nranks and plugin_nranks is consistent with world_size
   int world_size;
   MPI_Comm_size(world_comm, &world_size);
   if ( (world_size - driver_nranks) % plugin_nranks != 0 ) {
-    throw std::runtime_error("Invalid values for driver_nranks and plugin_nranks: world_size - driver_nranks must be divisible by plugin_nranks.");
+    mpi_error("Invalid values for driver_nranks and plugin_nranks: world_size - driver_nranks must be divisible by plugin_nranks.");
   }
 
   // Verify the value of plugin_name
   if ( plugin_name == NULL ) {
-    throw std::runtime_error("Plugin name was not provided.");
+    mpi_error("Plugin name was not provided.");
   }
-
+  
   // Split world_comm into MPI intra-comms for the driver and each plugin
   MPI_Comm intra_comm;
   int my_rank, color, intra_rank;
@@ -173,7 +179,7 @@ int main(int argc, char **argv) {
 
     // Initialize and run an instance of the engine library
     if ( MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, NULL) != 0 ) {
-      throw std::runtime_error("MDI_Launch_plugin returned non-zero exit code.");
+      mpi_error("MDI_Launch_plugin returned non-zero exit code.");
     }
   }
 
