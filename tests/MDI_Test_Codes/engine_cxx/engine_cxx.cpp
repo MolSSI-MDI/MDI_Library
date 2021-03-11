@@ -92,7 +92,7 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
 }
 
 
-int MDI_Plugin_init() {
+int MDI_Plugin_init_engine_cxx() {
   // Call MDI_Init
   MPI_Comm mpi_world_comm = MPI_COMM_WORLD;
   MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", &mpi_world_comm);

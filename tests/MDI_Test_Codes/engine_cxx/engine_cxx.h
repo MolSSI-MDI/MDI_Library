@@ -10,7 +10,7 @@
   #define DllExport
 #endif
 
-extern "C" DllExport int MDI_Plugin_init();
+extern "C" DllExport int MDI_Plugin_init_engine_cxx();
 int initialize_mdi(MDI_Comm* comm_ptr);
 int respond_to_commands(MDI_Comm comm, MPI_Comm mpi_world_comm);
 int execute_command(const char* command, MDI_Comm comm, void* class_obj);

@@ -23,8 +23,8 @@ MODULE MDI_IMPLEMENTATION
 
 CONTAINS
 
-  FUNCTION MDI_Plugin_init() bind ( C, name="MDI_Plugin_init" )
-    INTEGER :: MDI_Plugin_init
+  FUNCTION MDI_Plugin_init_engine_f90() bind ( C, name="MDI_Plugin_init_engine_f90" )
+    INTEGER :: MDI_Plugin_init_engine_f90
     INTEGER :: ierr
 
     ! Call MDI_Init
@@ -40,8 +40,8 @@ CONTAINS
     ! Respond to commands from the driver
     CALL respond_to_commands()
 
-    MDI_Plugin_init = 0
-  END FUNCTION MDI_Plugin_init
+    MDI_Plugin_init_engine_f90 = 0
+  END FUNCTION MDI_Plugin_init_engine_f90
 
 
   SUBROUTINE initialize_mdi()

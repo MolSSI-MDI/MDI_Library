@@ -34,6 +34,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // Note: Eventually, should probably replace this code with libltdl
   // Get the path to the plugin
   char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
+
+  // Get the name of the plugin's init function
+  char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
+  snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "MDI_Plugin_init_%s", plugin_name);
+
 #ifdef _WIN32
   // Attempt to open a library with a .dll extension
   //snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
@@ -47,7 +52,7 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   }
 
   // Load a plugin's initialization function
-  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( plugin_handle, "MDI_Plugin_init" );
+  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( plugin_handle, plugin_init_name );
   if ( ! plugin_init ) {
     mdi_error("Unable to load MDI plugin init function");
     FreeLibrary( plugin_handle );
@@ -74,13 +79,16 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   free( plugin_path );
 
   // Load a plugin's initialization function
-  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) dlsym(plugin_handle, "MDI_Plugin_init");
+  MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) dlsym(plugin_handle, plugin_init_name);
   if ( ! plugin_init ) {
     mdi_error("Unable to load MDI plugin init function");
     dlclose( plugin_handle );
     return -1;
   }
 #endif
+
+  // free memory from loading the plugin's initialization function
+  free( plugin_init_name );
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
