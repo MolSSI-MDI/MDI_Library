@@ -4,7 +4,7 @@
 #include <string.h>
 #include "mdi.h"
 
-int execute_at_node(MDI_Comm comm, void* class_object) {
+int execute_at_node(void* mpi_comm_ptr, MDI_Comm comm, void* class_object) {
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
   MDI_Send_Command("<NAME", comm);
