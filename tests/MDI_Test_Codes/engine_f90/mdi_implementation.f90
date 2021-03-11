@@ -12,13 +12,20 @@ MODULE MDI_IMPLEMENTATION
 
   INTEGER, PARAMETER :: dp = selected_real_kind(15, 307)
 
+  ! MDI Communicator to the driver
   INTEGER :: comm
+
+  ! MPI intra-communicator for this code
+  INTEGER :: world_comm
+
+  ! Flag to terminate MDI response function
   LOGICAL :: terminate_flag = .false.
 
 CONTAINS
 
-  SUBROUTINE MDI_Plugin_init() bind ( C, name="MDI_Plugin_init" )
-    INTEGER :: ierr, world_comm
+  FUNCTION MDI_Plugin_init() bind ( C, name="MDI_Plugin_init" )
+    INTEGER :: MDI_Plugin_init
+    INTEGER :: ierr
 
     ! Call MDI_Init
     world_comm = MPI_COMM_WORLD
@@ -33,7 +40,8 @@ CONTAINS
     ! Respond to commands from the driver
     CALL respond_to_commands()
 
-  END SUBROUTINE MDI_Plugin_init
+    MDI_Plugin_init = 0
+  END FUNCTION MDI_Plugin_init
 
 
   SUBROUTINE initialize_mdi()
@@ -80,7 +88,9 @@ CONTAINS
     ! Respond to the driver's commands
     response_loop: DO
 
+       ! Receive a command from the driver and broadcast it to all ranks
        CALL MDI_Recv_Command(command, comm, ierr)
+       CALL MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm, ierr)
 
        CALL execute_command(command, comm, ierr)
 
