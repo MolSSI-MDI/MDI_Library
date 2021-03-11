@@ -80,9 +80,7 @@ CONTAINS
     ! Respond to the driver's commands
     response_loop: DO
 
-       WRITE(6,*)'   Receiving command'
        CALL MDI_Recv_Command(command, comm, ierr)
-       WRITE(6,*)'      Command: ',command
 
        CALL execute_command(command, comm, ierr)
 
