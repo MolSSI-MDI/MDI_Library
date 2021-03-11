@@ -2,12 +2,11 @@ PROGRAM ENGINE_F90
 
   USE mpi
   USE mdi,              ONLY : MDI_Init, MDI_MPI_get_world_comm
-  USE mdi_implementation, ONLY : dp, initialize_mdi, respond_to_commands
+  USE mdi_implementation, ONLY : dp, initialize_mdi, respond_to_commands, world_comm
 
   IMPLICIT NONE
 
   INTEGER :: iarg, ierr
-  INTEGER :: world_comm
   CHARACTER(len=1024) :: arg, mdi_options
 
    ! Initialize the MPI environment
