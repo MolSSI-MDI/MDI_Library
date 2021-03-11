@@ -12,15 +12,21 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
 
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
-  MDI_Send_command("<NAME", mdi_comm);
-  MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_comm);
+  if ( MDI_Send_command("<NAME", mdi_comm) != 0 ) {
+    throw std::runtime_error("MDI_Send_command returned non-zero exit code.");
+  }
+  if ( MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_comm) != 0 ) {
+    throw std::runtime_error("MDI_Recv returned non-zero exit code.");
+  }
 
   if ( my_rank == 0 ) {
     std::cout << " Engine name: " << engine_name << std::endl;
   }
 
   // Send the "EXIT" command to the engine
-  MDI_Send_command("EXIT", mdi_comm);
+  if ( MDI_Send_command("EXIT", mdi_comm) != 0 ) {
+    throw std::runtime_error("MDI_Send_command returned non-zero exit code.");
+  }
 
   return 0;
 }
@@ -56,10 +62,11 @@ int main(int argc, char **argv) {
 
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
-      int ret = MDI_Init(argv[iarg+1], &world_comm);
-      MDI_MPI_get_world_comm(&world_comm);
-      if ( ret != 0 ) {
-	throw std::runtime_error("The MDI library was not initialized correctly.");
+      if ( MDI_Init(argv[iarg+1], &world_comm) != 0 ) {
+	throw std::runtime_error("MDI_Init returned non-zero exit code.");
+      }
+      if ( MDI_MPI_get_world_comm(&world_comm) != 0 ) {
+	throw std::runtime_error("MDI_MPI_get_world_comm returned non-zero exit code");
       }
       initialized_mdi = true;
       iarg += 2;
@@ -160,8 +167,10 @@ int main(int argc, char **argv) {
       std::cout << "I am engine instance: " << color << std::endl;
     }
 
-    // Initialize an instance of the engine library
-    MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, nullptr);
+    // Initialize and run an instance of the engine library
+    if ( MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, nullptr) != 0 ) {
+      throw std::runtime_error("MDI_Launch_plugin returned non-zero exit code.");
+    }
   }
 
   // Synchronize all MPI ranks
