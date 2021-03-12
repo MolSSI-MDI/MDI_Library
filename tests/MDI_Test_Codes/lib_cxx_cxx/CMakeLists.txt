@@ -58,7 +58,8 @@ endif()
 add_executable(driver_lib_cxx_cxx
                driver_lib_cxx_cxx.cpp)
 target_link_libraries(driver_lib_cxx_cxx mdi
-                      ${MPI_LIBRARIES})
+                      ${MPI_LIBRARIES}
+                      engine_lib_cxx_cxx)
 set_target_properties(driver_lib_cxx_cxx PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
