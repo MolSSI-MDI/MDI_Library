@@ -57,7 +57,7 @@ jobs:
           brew update > /dev/null
           brew uninstall gcc
           brew install gcc
-          [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich
+          [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich-3.3
           [ "${{ matrix.mpilib }}" == "openmpi" ] && brew install openmpi
           python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
