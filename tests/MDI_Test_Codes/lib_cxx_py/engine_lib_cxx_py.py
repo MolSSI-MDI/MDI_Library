@@ -38,7 +38,7 @@ class MDIEngine:
         self.world_rank = 0
         self.world_size = 1
         if use_mpi4py:
-            self.mpi_world = mdi.MDI_Get_Intra_Code_MPI_Comm()
+            self.mpi_world = mdi.MDI_MPI_get_world_comm()
             self.world_rank = self.mpi_world.Get_rank()
             self.world_size = self.mpi_world.Get_size()
 

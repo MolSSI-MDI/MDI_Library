@@ -12,6 +12,7 @@ typedef int MPI_Fint;
 
 #define MPI_STATUS_IGNORE 0
 #define MPI_COMM_WORLD 0
+#define MPI_COMM_NULL 1
 #define MPI_INT 1
 #define MPI_DOUBLE 4
 #define MPI_CHAR 5

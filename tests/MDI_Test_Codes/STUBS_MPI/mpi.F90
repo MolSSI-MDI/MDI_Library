@@ -4,7 +4,16 @@
 
    IMPLICIT NONE
 
+   INTEGER :: MPI_MAX_PROCESSOR_NAME = 0
+   INTEGER :: MPI_STATUS_IGNORE = 0
    INTEGER :: MPI_COMM_WORLD = 0
+   INTEGER :: MPI_INT = 1
+   INTEGER :: MPI_DOUBLE = 4
+   INTEGER :: MPI_CHAR = 5
+
+   INTERFACE MPI_Bcast
+      MODULE PROCEDURE MPI_Bcast_s
+   END INTERFACE
 
   CONTAINS
 
@@ -31,6 +40,15 @@
 
       ierr = 0
     END SUBROUTINE MPI_Barrier
+
+    SUBROUTINE MPI_Bcast_s(buffer, count, datatype, root, comm, ierr)
+      IMPLICIT NONE
+      CHARACTER(LEN=*)                         :: buffer
+      INTEGER                                  :: count, datatype, root, comm
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      ierr = 0
+    END SUBROUTINE MPI_Bcast_s
 
     SUBROUTINE MPI_Finalize(ierr)
       IMPLICIT NONE

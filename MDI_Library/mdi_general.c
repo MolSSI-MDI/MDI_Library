@@ -33,7 +33,7 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
-  // Note that unless using the LIBRARY communication method, general_init should only be called once
+  // Note that unless using the LINK communication method, general_init should only be called once
   current_code = new_code();
   code* this_code = get_code(current_code);
 
@@ -49,13 +49,14 @@ int general_init(const char* options, void* world_comm) {
   int port;
   char* output_file;
   char* driver_name;
-  char* language = ((char*)"");
+  char* language_argument = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
   int has_driver_name = 0;
+  int has_plugin_path = 0;
   int has_output_file = 0;
 
   // calculate argc
@@ -160,13 +161,32 @@ int general_init(const char* options, void* world_comm) {
       has_driver_name = 1;
       iarg += 2;
     }
+    //-plugin_path
+    else if (strcmp(argv[iarg],"-plugin_path") == 0) {
+      if (iarg+2 > argc) {
+	mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
+	return 1;
+      }
+      snprintf(this_code->plugin_path, PLUGIN_PATH_LENGTH, "%s", argv[iarg+1]);
+      has_plugin_path = 1;
+      iarg += 2;
+    }
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
 	mdi_error("Error in MDI_Init: Argument missing from -_language option");
 	return 1;
       }
-      language = argv[iarg+1];
+      language_argument = argv[iarg+1];
+      if ( strcmp(language_argument, "Python") == 0 ) {
+        this_code->language = MDI_LANGUAGE_PYTHON;
+      }
+      else if ( strcmp(language_argument, "Fortran") == 0 ) {
+        this_code->language = MDI_LANGUAGE_FORTRAN;
+      }
+      else {
+        mdi_error("Error in MDI_Init: Invalide -_language argument");
+      }
       iarg += 2;
     }
     else {
@@ -194,7 +214,7 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // if using the MPI method, check if MPI has been initialized
-  if ( strcmp(method, "MPI") == 0 && strcmp(language, "Python") != 0 ) {
+  if ( strcmp(method, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
 
     int mpi_init_flag = 0;
     ret = MPI_Initialized(&mpi_init_flag);
@@ -243,11 +263,11 @@ int general_init(const char* options, void* world_comm) {
     mpi_rank = 0;
   }
   else {
-    if ( strcmp(language, "Python") == 0 ) {
+    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
       // Python case
       mpi_rank = world_rank;
     }
-    else if ( strcmp(language, "Fortran") == 0 ) {
+    else if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
       // Fortran case
       mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
       MPI_Comm_rank(mpi_communicator, &mpi_rank);
@@ -309,7 +329,7 @@ int general_init(const char* options, void* world_comm) {
 
   // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
   int use_mpi4py = 0;
-  if ( strcmp(language, "Python") == 0 ) {
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
     use_mpi4py = 1;
   }
 
@@ -325,7 +345,7 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      if ( mpi_rank == 0 ) {
+      if ( this_code->intra_rank == 0 ) {
 	tcp_listen(port);
       }
     }
@@ -358,7 +378,7 @@ int general_init(const char* options, void* world_comm) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      if ( mpi_rank == 0 ) {
+      if ( this_code->intra_rank == 0 ) {
 	tcp_request_connection(port, hostname);
       }
     }
@@ -382,22 +402,6 @@ int general_init(const char* options, void* world_comm) {
   else {
     mdi_error("Error in MDI_Init: Role not recognized");
     return 1;
-  }
-
-  // set the MPI communicator correctly
-  if ( mpi_initialized == 1 ) {
-    if ( use_mpi4py == 0 ) {
-      if ( strcmp(language, "Fortran") == 0 ) {
-	mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
-	mpi_update_world_comm( (void*) &mpi_communicator);
-        MPI_Fint f_comm = MPI_Comm_c2f( mpi_communicator );
-	MPI_Fint* f_comm_ptr = (MPI_Fint*) world_comm;
-	*f_comm_ptr = f_comm;
-      }
-      else {
-	mpi_update_world_comm(world_comm);
-      }
-    }
   }
 
   free( argv_line );
@@ -611,6 +615,14 @@ int general_send_command(const char* buf, MDI_Comm comm) {
       library_data* libd = (library_data*) this->method_data;
       libd->execute_on_send = 1;
     }
+    else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
+      // this command should be received by MDI_Recv_command, rather than through the execute_command callback
+      ret = general_send( command, count, MDI_CHAR, comm );
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Send_Command: Unable to send command");
+	return ret;
+      }
+    }
     else {
       // this is a command that neither sends nor receives data, so execute it now
       ret = library_execute_command(comm);
@@ -623,13 +635,14 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   else {
     ret = general_send( command, count, MDI_CHAR, comm );
     if ( ret != 0 ) {
-      mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      mdi_error("Error in MDI_Send_Command: Unable to send command");
       return ret;
     }
   }
 
   // if the command was "EXIT", delete this communicator
-  if ( strcmp( command, "EXIT" ) == 0 ) {
+  // if running in plugin mode, the plugin system will delete the communicator instead
+  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
 
     // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
@@ -718,7 +731,36 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int general_recv_command(char* buf, MDI_Comm comm) {
+  int ret;
   code* this_code = get_code(current_code);
+  communicator* this = get_communicator(current_code, comm);
+
+  // if this is a linked library, call the driver's node callback
+  if ( this->method == MDI_LINK ) {
+    int iengine = current_code;
+    communicator* engine_comm = get_communicator(current_code, comm);
+
+    // get the driver code to which this communicator connects
+    library_data* libd = (library_data*) engine_comm->method_data;
+    int idriver = libd->connected_code;
+    code* driver_code = get_code(idriver);
+
+    MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
+    communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
+    library_data* driver_lib = (library_data*) driver_comm->method_data;
+
+    // set the current code to the driver
+    current_code = idriver;
+
+    void* class_obj = driver_lib->driver_callback_obj;
+    ret = driver_lib->driver_node_callback(&driver_lib->mpi_comm, driver_comm_handle, class_obj);
+
+    // set the current code to the engine
+    current_code = iengine;
+
+    //return 0;
+  }
+
   // only receive on rank 0
   if ( this_code->intra_rank != 0 ) {
     return 0;
@@ -726,7 +768,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int count = MDI_COMMAND_LENGTH;
   int datatype = MDI_CHAR;
 
-  int ret = general_recv( buf, count, datatype, comm );
+  ret = general_recv( buf, count, datatype, comm );
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Recv_Command: Unable to receive command");
     return ret;

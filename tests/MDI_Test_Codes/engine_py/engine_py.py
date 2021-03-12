@@ -74,7 +74,7 @@ class MDIEngine:
         # Initialize the MDI Library
         mdi.MDI_Init(sys.argv[2],self.mpi_world)
         if use_mpi4py:
-            self.mpi_world = mdi.MDI_Get_Intra_Code_MPI_Comm()
+            self.mpi_world = mdi.MDI_MPI_get_world_comm()
             self.world_rank = self.mpi_world.Get_rank()
 
         # Confirm that this code is being used as an engine

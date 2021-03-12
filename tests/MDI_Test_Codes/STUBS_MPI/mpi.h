@@ -20,6 +20,7 @@ int MPI_Comm_size( MPI_Comm comm, int *size ) { return 0; };
 int MPI_Get_processor_name( char *name, int *resultlen ) {return 0;};
 
 int MPI_Barrier(MPI_Comm comm) { return 0; };
+int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm) { return 0; }
 int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                int root, MPI_Comm comm) { return 0; };

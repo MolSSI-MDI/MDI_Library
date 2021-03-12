@@ -59,6 +59,11 @@ if(WIN32)
   target_link_libraries(mdi wsock32 ws2_32)
 endif()
 
+#link to libdl, which is used for the plugin system
+if(NOT WIN32)
+  target_link_libraries(mdi dl)
+endif()
+
 # gfortran has trouble identifying windows, so use CMake to set the appropriate defines
 if(WIN32)
   add_definitions(-DMDI_WINDOWS=1)

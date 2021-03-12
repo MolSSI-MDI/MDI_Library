@@ -21,8 +21,17 @@
   #define mdi_strdup strdup
 #endif
 
+// Hard-coded values
 #define COMMAND_LENGTH 12
 #define NAME_LENGTH 12
+#define PLUGIN_PATH_LENGTH 2048
+
+// Defined languages
+#define MDI_LANGUAGE_C 1
+#define MDI_LANGUAGE_FORTRAN 2
+#define MDI_LANGUAGE_PYTHON 3
+
+// MDI Typedefs
 typedef int MDI_Comm_Type;
 typedef int MDI_Datatype_Type;
 
@@ -80,12 +89,20 @@ typedef struct code_struct {
   int returned_comms;
   /*! \brief The handle of the next communicator */
   int next_comm;
+  /*! \brief Native language of this code */
+  int language;
   /*! \brief Rank of this process within its associated code */
   int intra_rank;
+  /*! \brief Flag whether this code has called set_execute_command_func */
+  int called_set_execute_command_func;
+  /*! \brief MPI intra-communicator that spans all ranks associated with this code */
+  MPI_Comm intra_MPI_comm;
   /*! \brief Vector containing all nodes supported by this code */
   vector* nodes;
   /*! \brief Vector containing all communicators associated with this code */
   vector* comms;
+  /*! \brief Path to the plugins available to this code */
+  char* plugin_path;
   /*! \brief Function pointer to the generic execute_command_function */
   int (*execute_command)(const char*, MDI_Comm_Type, void*);
   /*! \brief Pointer to the class object that is passed to any call to execute_command */
@@ -112,6 +129,9 @@ extern int is_initialized;
 
 /*! \brief Flag for whether MDI called MPI_Init */
 extern int initialized_mpi;
+
+/*! \brief Flag for whether MDI is currently operating in plugin mode */
+extern int plugin_mode;
 
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 extern MPI_Comm mdi_mpi_comm_world;

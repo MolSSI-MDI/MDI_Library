@@ -25,6 +25,9 @@ int is_initialized = 0;
 /*! \brief Flag for whether MDI called MPI_Init */
 int initialized_mpi = 0;
 
+/*! \brief Flag for whether MDI is currently operating in plugin mode */
+int plugin_mode = 0;
+
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 MPI_Comm mdi_mpi_comm_world;
 
@@ -235,6 +238,12 @@ int new_code() {
   code new_code;
   new_code.returned_comms = 0;
   new_code.next_comm = 1;
+  new_code.intra_MPI_comm = MPI_COMM_WORLD;
+  new_code.language = MDI_LANGUAGE_C;
+
+  // initialize the character buffer for the plugin path
+  new_code.plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
+  snprintf(new_code.plugin_path, PLUGIN_PATH_LENGTH, "");
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
@@ -249,6 +258,7 @@ int new_code() {
   new_code.is_library = 0;
   new_code.id = (int)codes.size;
   new_code.intra_rank = 0;
+  new_code.called_set_execute_command_func = 0;
 
   // Set the MPI callbacks
   //new_code.mdi_mpi_recv = MPI_Recv;
@@ -303,6 +313,9 @@ int delete_code(int code_id) {
     mdi_error("Code not found during delete");
     return 1;
   }
+
+  // delete the plugin path
+  free( this_code->plugin_path );
 
   // delete the node vector
   free_node_vector(this_code->nodes);

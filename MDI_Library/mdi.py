@@ -470,7 +470,7 @@ def MDI_Init(arg1, comm):
 
     return ret
 
-def MDI_Get_Intra_Code_MPI_Comm():
+def MDI_MPI_get_world_comm():
     global intra_code_comm
     return intra_code_comm
 

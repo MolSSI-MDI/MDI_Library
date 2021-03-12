@@ -47,17 +47,17 @@ int main(int argc, char **argv) {
 
   // Connect to the engine
   MDI_Comm comm;
-  MDI_Accept_Communicator(&comm);
+  MDI_Accept_communicator(&comm);
 
   // Determine the name of the engine
   char* engine_name = new char[MDI_NAME_LENGTH];
-  MDI_Send_Command("<NAME", comm);
+  MDI_Send_command("<NAME", comm);
   MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
   std::cout << " Engine name: " << engine_name << std::endl;
 
   // Send the "EXIT" command to the engine
-  MDI_Send_Command("EXIT", comm);
+  MDI_Send_command("EXIT", comm);
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);
