@@ -445,16 +445,16 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       int body_type = header[2];
       int body_size = header[3];
       size_t body_stride;
-      if (datatype == MDI_INT) {
+      if (body_type == MDI_INT) {
 	body_stride = sizeof(int);
       }
-      else if (datatype == MDI_DOUBLE) {
+      else if (body_type == MDI_DOUBLE) {
 	body_stride = sizeof(double);
       }
-      else if (datatype == MDI_CHAR) {
+      else if (body_type == MDI_CHAR) {
 	body_stride = sizeof(char);
       }
-      else if (datatype == MDI_BYTE) {
+      else if (body_type == MDI_BYTE) {
 	body_stride = sizeof(char);
       }
       else {
