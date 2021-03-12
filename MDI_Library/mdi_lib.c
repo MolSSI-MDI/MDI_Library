@@ -68,15 +68,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
     // Attempt to open a library with a .dylib extension
     snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dylib", this_code->plugin_path, plugin_name);
     plugin_handle = dlopen(plugin_path, RTLD_NOW);
-
+    free( plugin_path );
     if ( ! plugin_handle ) {
       // Unable to find the plugin library
-      free( plugin_path );
       mdi_error("Unable to open MDI plugin");
       return -1;
     }
   }
-  free( plugin_path );
 
   // Load a plugin's initialization function
   MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) dlsym(plugin_handle, plugin_init_name);
@@ -123,6 +121,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
   delete_communicator(driver_code_id, comm);
+
+  // Close the plugin library
+#ifdef _WIN32
+  FreeLibrary( plugin_handle );
+#else
+  dlclose( plugin_handle );
+#endif
 
   return 0;
 }
