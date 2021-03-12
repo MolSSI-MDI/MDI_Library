@@ -11,7 +11,7 @@
 #include <sstream>
 
 
-void MDI_Launch( const char* engine_name, const char* options, MPI_Comm engine_comm ) {
+void launch_python_code( const char* engine_name, const char* options, MPI_Comm engine_comm ) {
   // Open the Python script for the Engine
   FILE* engine_script = fopen(engine_name, "r");
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
   if ( my_rank % 2 == 0 ) {
 
     // Launch the engine
-    MDI_Launch("engine_lib_cxx_py.py",
+    launch_python_code("engine_lib_cxx_py.py",
 	       "-name instance1 -role ENGINE -method LINK -driver_name driver",
 	       sub_comm);
 
@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
   else {
 
     // Launch the engine
-    MDI_Launch("engine_lib_cxx_py.py",
+    launch_python_code("engine_lib_cxx_py.py",
 	       "-name instance2 -role ENGINE -method LINK -driver_name driver",
 	       sub_comm);
 
