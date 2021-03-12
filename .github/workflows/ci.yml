@@ -91,7 +91,7 @@ jobs:
         run: |
           cd tests
           [ "${{ matrix.mpilib }}" == "" ] && TESTS="${TESTS} not mpi"
-          [ "${{ matrix.mpilib }}" == "openmpi" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && TESTS="${TESTS} not mpi"
+          [ "${{ matrix.platform }}" == "macos-latest" ] && TESTS="${TESTS} not mpi"
           pytest -vv --cov-report=xml --cov=MDI_Library -k "${TESTS}"
 
       - name: Get code coverage report
