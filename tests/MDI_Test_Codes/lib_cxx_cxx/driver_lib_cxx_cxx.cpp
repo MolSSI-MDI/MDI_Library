@@ -2,21 +2,8 @@
 #include <mpi.h>
 #include <stdexcept>
 #include <string.h>
+#include "engine_lib_cxx_cxx.h"
 #include "mdi.h"
-
-int execute_at_node(void* mpi_comm_ptr, MDI_Comm comm, void* class_object) {
-  // Determine the name of the engine
-  char* engine_name = new char[MDI_NAME_LENGTH];
-  MDI_Send_command("<NAME", comm);
-  MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
-
-  std::cout << " Engine name: " << engine_name << std::endl;
-
-  // Send the "EXIT" command to the engine
-  MDI_Send_command("EXIT", comm);
-
-  return 0;
-}
 
 int main(int argc, char **argv) {
 
@@ -39,7 +26,6 @@ int main(int argc, char **argv) {
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
       int ret = MDI_Init(argv[iarg+1], &world_comm);
-      MDI_MPI_get_world_comm(&world_comm);
       if ( ret != 0 ) {
 	throw std::runtime_error("The MDI library was not initialized correctly.");
       }
@@ -57,7 +43,21 @@ int main(int argc, char **argv) {
   }
 
   // Initialize an instance of the engine library
-  MDI_Launch_plugin("engine_lib_cxx_cxx", "", &world_comm, execute_at_node, NULL);
+  engine_lib_cxx_create(world_comm);
+
+  // Connect to the engine
+  MDI_Comm comm;
+  MDI_Accept_communicator(&comm);
+
+  // Determine the name of the engine
+  char* engine_name = new char[MDI_NAME_LENGTH];
+  MDI_Send_command("<NAME", comm);
+  MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
+
+  std::cout << " Engine name: " << engine_name << std::endl;
+
+  // Send the "EXIT" command to the engine
+  MDI_Send_command("EXIT", comm);
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);
