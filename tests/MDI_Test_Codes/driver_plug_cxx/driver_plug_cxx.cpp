@@ -35,6 +35,9 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
     mpi_error("MDI_Recv returned non-zero exit code.");
   }
 
+  // Broadcast the number of atoms to all ranks within this plugin instance
+  MPI_Bcast(&natoms, 1, MPI_INT, 0, mpi_comm);
+
   // Get the nuclear coordinates
   double* coords = new double [3*natoms];
   if ( MDI_Send_command("<COORDS", mdi_comm) != 0 ) {
@@ -48,6 +51,7 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
   if ( my_rank == 0 ) {
     std::cout << " Engine name: " << engine_name << std::endl;
   }
+  free( engine_name );
 
   // Send the "EXIT" command to the engine
   if ( MDI_Send_command("EXIT", mdi_comm) != 0 ) {
