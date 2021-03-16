@@ -595,7 +595,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   int count = MDI_COMMAND_LENGTH;
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-  int ret;
+  int ret = 0;
 
   snprintf(command, COMMAND_LENGTH, "%s", buf);
   if ( method == MDI_LINK ) {

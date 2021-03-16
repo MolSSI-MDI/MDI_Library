@@ -495,15 +495,6 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       // copy the body into libd->buf
       memcpy((char*)libd->buf + offset, buf, datasize * count);
 
-      // check whether the recipient code should now execute its command
-      if ( libd->execute_on_send == 1 ) {
-	// have the recipient code execute its command
-	library_execute_command(comm);
-
-	// turn off the execute_on_send flag
-	libd->execute_on_send = 0;
-      }
-
     }
     else {
 
@@ -512,6 +503,15 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 
     }
 
+  }
+
+  // check whether the recipient code should now execute its command
+  if ( msg_flag == 2 && libd->execute_on_send ) {
+    // have the recipient code execute its command
+    library_execute_command(comm);
+
+    // turn off the execute_on_send flag
+    libd->execute_on_send = 0;
   }
 
   return 0;
