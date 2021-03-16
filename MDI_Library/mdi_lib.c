@@ -506,7 +506,7 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   }
 
   // check whether the recipient code should now execute its command
-  if ( msg_flag == 2 ) {
+  if ( msg_flag == 2 && libd->execute_on_send ) {
     // have the recipient code execute its command
     library_execute_command(comm);
 
