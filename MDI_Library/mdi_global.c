@@ -140,6 +140,7 @@ int vector_delete(vector* v, int index) {
  */
 int vector_free(vector* v) {
   free(v->data);
+  free(v);
   return 0;
 }
 
