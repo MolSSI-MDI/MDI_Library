@@ -67,6 +67,7 @@ int general_init(const char* options, void* world_comm) {
     argc++;
     token = strtok(NULL," ");
   }
+  free( argv_line );
 
   // calculate argv
   char** argv = malloc( argc * sizeof(char*) );
