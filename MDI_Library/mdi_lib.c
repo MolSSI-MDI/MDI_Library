@@ -44,9 +44,9 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   //snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
   snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dll", this_code->plugin_path, plugin_name);
   HINSTANCE plugin_handle = LoadLibrary( plugin_path );
-  free( plugin_path );
   if ( ! plugin_handle ) {
     // Unable to find the plugin library
+    free( plugin_path );
     mdi_error("Unable to open MDI plugin");
     return -1;
   }
@@ -54,8 +54,10 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // Load a plugin's initialization function
   MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( plugin_handle, plugin_init_name );
   if ( ! plugin_init ) {
-    mdi_error("Unable to load MDI plugin init function");
+    free( plugin_path );
+    free( plugin_init_name );
     FreeLibrary( plugin_handle );
+    mdi_error("Unable to load MDI plugin init function");
     return -1;
   }
 
@@ -68,9 +70,10 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
     // Attempt to open a library with a .dylib extension
     snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dylib", this_code->plugin_path, plugin_name);
     plugin_handle = dlopen(plugin_path, RTLD_NOW);
-    free( plugin_path );
     if ( ! plugin_handle ) {
       // Unable to find the plugin library
+      free( plugin_path );
+      free( plugin_init_name );
       mdi_error("Unable to open MDI plugin");
       return -1;
     }
@@ -79,13 +82,16 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // Load a plugin's initialization function
   MDI_Plugin_init_t plugin_init = (MDI_Plugin_init_t) (intptr_t) dlsym(plugin_handle, plugin_init_name);
   if ( ! plugin_init ) {
-    mdi_error("Unable to load MDI plugin init function");
+    free( plugin_path );
+    free( plugin_init_name );
     dlclose( plugin_handle );
+    mdi_error("Unable to load MDI plugin init function");
     return -1;
   }
 #endif
 
   // free memory from loading the plugin's initialization function
+  free( plugin_path );
   free( plugin_init_name );
 
   // initialize a communicator for the driver
