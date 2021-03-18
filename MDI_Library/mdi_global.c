@@ -114,14 +114,17 @@ int vector_push_back(vector* v, void* element) {
  */
 int vector_delete(vector* v, int index) {
   // copy the data from the last element to the element that is being deleted
-  memcpy( v->data + (index * v->stride), v->data + ( (v->size - 1) * v->stride ), v->stride );
+  // don't do this if the element being deleted is the last element
+  if ( index + 1 != v->size ) {
+    memcpy( v->data + (index * v->stride), v->data + ( (v->size - 1) * v->stride ), v->stride );
+  }
   v->size--;
 
   // shrink the vector
   if (v->size <= v->capacity / 2) {
     size_t new_capacity = v->capacity / 2;
     void* new_data = malloc( v->stride * new_capacity );
-    memcpy(new_data, v->data, v->size * v->stride);
+    memcpy(new_data, v->data, v->stride * v->size );
     free(v->data);
     v->data = new_data;
     v->capacity = new_capacity;
@@ -409,6 +412,10 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
 
   // do any method-specific deletion operations
   this_comm->delete(this_comm);
+
+  // in case this communicator's delete function modified the code / comms vectors, update the pointers
+  this_code = get_code(code_id);
+  this_comm = get_communicator(code_id, comm_id);
 
   // delete the node vector
   free_node_vector(this_comm->nodes);
