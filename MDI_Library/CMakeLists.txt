@@ -1,3 +1,10 @@
+# Macro to convert strings to lists
+macro(string_to_list _VAR _STR)
+    STRING(REPLACE "  " " " ${_VAR} "${_STR}")
+    STRING(REPLACE " " ";" ${_VAR} "${_STR}")
+endmacro(string_to_list _VAR _STR)
+
+
 ################################# MDI Project ##################################
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -41,9 +48,23 @@ list(APPEND sources "mdi_test.h")
 list(APPEND sources "mdi_test.c")
 list(APPEND sources "mdi_lib.h")
 list(APPEND sources "mdi_lib.c")
+
+# Either add Python Plugin support, or Python Plugin stubs
+if ( Python_Development_FOUND )
+  list(APPEND sources "mdi_plug_py.h")
+  list(APPEND sources "mdi_plug_py.c")
+else()
+  message( WARNING "Could not find Python development libraries.  Compiling without Python plugin support." )
+  list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.h")
+  list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.c")
+endif()
+
+# Add MPI stubs, if needed
 if( mpi STREQUAL "OFF" )
    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/mpi.h")
 endif()
+
+# Add Fortran support, if requested
 if( (NOT language) OR (language STREQUAL "Fortran") )
    list(APPEND sources "mdi_f90.F90")
 endif()
@@ -75,9 +96,12 @@ endif()
 if( mpi STREQUAL "ON" )
 
    #include MPI
+   string_to_list(MPI_C_COMPILE_OPTIONS   "${MPI_C_COMPILE_FLAGS}")
+   string_to_list(MPI_C_LINK_OPTIONS      "${MPI_C_LINK_FLAGS}")
+
    target_include_directories(mdi PRIVATE ${MPI_C_INCLUDE_PATH})
-   target_compile_options(mdi PRIVATE ${MPI_C_COMPILE_FLAGS})
-   target_link_libraries(mdi ${MPI_C_LIBRARIES} ${MPI_C_LINK_FLAGS})
+   target_compile_options(mdi PRIVATE ${MPI_C_COMPILE_OPTIONS})
+   target_link_libraries(mdi ${MPI_C_LIBRARIES} ${MPI_C_LINK_OPTIONS})
 
 elseif( mpi STREQUAL "OFF" )
 
@@ -87,6 +111,18 @@ elseif( mpi STREQUAL "OFF" )
 else()
 
    message( FATAL_ERROR "Value of mpi not recognized. Accepted values are: ON; OFF." )
+
+endif()
+
+# Include and link to Python
+if( Python_Development_FOUND )
+
+   target_include_directories(mdi PRIVATE ${Python_INCLUDE_DIRS})
+   target_link_libraries(mdi ${Python_LIBRARIES})
+
+else()
+
+   target_include_directories(mdi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/)
 
 endif()
 

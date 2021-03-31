@@ -30,7 +30,7 @@ mdi_path = os.path.join( dir_path, mdi_name )
 try:
     mdi = ctypes.CDLL(mdi_path)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
-except (ValueError, AttributeError):
+except (ValueError, AttributeError, OSError) as e:
     mdi = ctypes.WinDLL(mdi_path)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
@@ -403,6 +403,27 @@ def set_mpi4py_split_callback():
     mdi.MDI_Set_Mpi4py_Split_Callback( mpi4py_split_callback_c )
 
 
+# MDI_Get_plugin_mode
+mdi.MDI_Get_plugin_mode.argtypes = [ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Get_plugin_mode.restype = ctypes.c_int
+def MDI_Get_plugin_mode():
+    plugin_mode = ctypes.c_int()
+    ret = mdi.MDI_Get_plugin_mode(ctypes.byref(plugin_mode))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Get_plugin_mode failed")
+    return plugin_mode.value
+
+
+# MDI_Get_plugin_mode
+mdi.MDI_Get_python_plugin_mpi_world_ptr.argtypes = [ctypes.POINTER(ctypes.c_void_p)]
+mdi.MDI_Get_python_plugin_mpi_world_ptr.restype = ctypes.c_int
+def MDI_Get_python_plugin_mpi_world_ptr():
+    python_plugin_mpi_world_ptr = ctypes.c_void_p()
+    ret = mdi.MDI_Get_python_plugin_mpi_world_ptr(ctypes.byref(python_plugin_mpi_world_ptr))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Get_python_plugin_mpi_world_ptr failed")
+    return python_plugin_mpi_world_ptr.value
+
 
 # MDI_Init
 mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p]
@@ -410,6 +431,38 @@ mdi.MDI_Init.restype = ctypes.c_int
 def MDI_Init(arg1, comm):
     global world_comm
     global intra_code_comm
+
+    # if this is a plugin code, get the plugin's MPI communicator
+    plugin_mode = MDI_Get_plugin_mode()
+    if ( plugin_mode == 1  and use_mpi4py ):
+        python_plugin_mpi_world_ptr = MDI_Get_python_plugin_mpi_world_ptr()
+        try:
+            # Assume python_plugin_mpi_world_ptr points to a pointer
+            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_void_p))
+            ptr_type = ctypes.c_void_p
+            handle_t = ctypes.c_void_p
+            newobj = type(MPI.COMM_WORLD)()
+            handle_old = __mdi_mpi_comm_ptr__.contents
+            handle_new = handle_t.from_address(MPI._addressof(newobj))
+            handle_new.value = handle_old.value
+            __mdi_plugin_mpi_intra_comm__ = newobj
+
+            # Confirm that the new MPI communicator works
+            world_size = __mdi_plugin_mpi_intra_comm__.Get_size()
+        except MPI.Exception:
+            # Assume python_plugin_mpi_world_ptr points to an int
+            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_int_p))
+            handle_old_value = __mdi_mpi_comm_ptr__.contents.value
+            handle_t = ctypes.c_void_p
+            newobj = type(MPI.COMM_WORLD)()
+            handle_new = handle_t.from_address(MPI._addressof(newobj))
+            handle_new.value = handle_old_value
+            __mdi_plugin_mpi_intra_comm__ = newobj
+
+            # Confirm that the new MPI communicator works
+            world_size = __mdi_plugin_mpi_intra_comm__.Get_size()
+        comm = __mdi_plugin_mpi_intra_comm__
+
 
     # prepend the _language option, so that MDI knows this is a Python code
     arg1 = "_language Python " + arg1

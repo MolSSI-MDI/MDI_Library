@@ -69,7 +69,7 @@ jobs:
           mkdir python_build
           cd python_build
           cmake -Dpython_package=ON -Dlanguage=Python ..
-          make
+          make VERBOSE=1
           sudo make install
           cd ..
 

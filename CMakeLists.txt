@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.7)
 
 option(language "language")
 option(libtype "libtype")
@@ -35,6 +35,15 @@ endif()
 project(mdi
         VERSION 1.1.6
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
+
+
+# Check for Python developement libraries, which are used for Python plugins
+find_package(Python COMPONENTS Interpreter Development)
+if(Python_Development_FOUND AND WIN32)
+   message( WARNING "Python Plugins are not currently supported on Windows.  Disabling Python Plugins." )
+   set(Python_Development_FOUND off)
+endif()
+
 
 add_subdirectory(MDI_Library)
 

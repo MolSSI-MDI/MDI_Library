@@ -136,6 +136,10 @@ extern int plugin_mode;
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 extern MPI_Comm mdi_mpi_comm_world;
 
+/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
+ * Only used for Python plugins */
+extern void* python_plugin_mpi_world_ptr;
+
 /*! \brief Python callback pointer for MPI_Recv */
 extern int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
 
@@ -175,6 +179,9 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id);
 int new_code();
 code* get_code(int code_id);
 int delete_code(int code_id);
+
+/*! \brief Check whether a file exists */
+int file_exists(const char* file_name);
 
 /*! \brief Dummy function for method-specific deletion operations for communicator deletion */
 int communicator_delete(void* comm);
