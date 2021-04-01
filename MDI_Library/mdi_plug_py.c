@@ -22,7 +22,11 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
     PyObject* main_dict = PyModule_GetDict(main_module);
 
     // Ensure that the current working directory is in sys.path
-    PyRun_SimpleString("import sys; sys.path.insert(0, '')");
+    // Also, define sys.argv, which isn't normally defined for embedded Python
+    PyRun_SimpleString("import sys\n"
+                       "sys.path.insert(0, '')\n"
+                       "if not hasattr(sys, 'argv'):\n"
+                       "    sys.argv = ['']");
 
     // Set the name to anything other than __main__
     PyRun_SimpleString("__name__ = '__mdi__'");
