@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
 #include "mdi_global.h"
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
@@ -30,6 +31,10 @@ int plugin_mode = 0;
 
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 MPI_Comm mdi_mpi_comm_world;
+
+/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
+ * Only used for Python plugins */
+void* python_plugin_mpi_world_ptr = NULL;
 
 /*! \brief Python callback pointer for MPI_Recv */
 int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
@@ -432,6 +437,21 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
  */
 int communicator_delete(void* comm) {
   return 0;
+}
+
+
+/*! \brief Print error message and exit
+ *
+ * \param [in]       message
+ *                   Message printed before exiting.
+ */
+int file_exists(const char* file_name) {
+  if ( access( file_name, F_OK ) == 0 ) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 

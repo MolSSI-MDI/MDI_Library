@@ -12,6 +12,7 @@
 #include "mdi_lib.h"
 #include "mdi_global.h"
 #include "mdi_general.h"
+#include "mdi_plug_py.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -39,9 +40,45 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
   snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "MDI_Plugin_init_%s", plugin_name);
 
+  // initialize a communicator for the driver
+  int icomm = library_initialize();
+  communicator* driver_comm = get_communicator(current_code, icomm);
+  library_data* libd = (library_data*) driver_comm->method_data;
+  libd->connected_code = (int)codes.size;
+
+  MDI_Comm comm;
+  ret = MDI_Accept_Communicator(&comm);
+  if ( ret != 0 || comm == MDI_COMM_NULL ) {
+    mdi_error("MDI unable to create communicator for plugin");
+    return -1;
+  }
+
+  // Set the driver callback function to be used by this plugin instance
+  libd->driver_callback_obj = driver_callback_object;
+  libd->driver_node_callback = driver_node_callback;
+
+  // Set the mpi communicator associated with this plugin instance
+  libd->mpi_comm = mpi_comm;
+
+
+  /*************************************************/
+  /*************** BEGIN PLUGIN MODE ***************/
+  /*************************************************/
+  plugin_mode = 1;
+
+  // Attempt to load a python script
+  snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/%s.py", this_code->plugin_path, plugin_name);
+  if ( file_exists(plugin_path) ) {
+    ret = python_plugin_init( plugin_name, plugin_path, options, mpi_comm_ptr );
+    if ( ret != 0 ) {
+      mdi_error("Unable to initialize Python plugin");
+      return -1;
+    }
+  }
+  else {
+
 #ifdef _WIN32
   // Attempt to open a library with a .dll extension
-  //snprintf(plugin_path, PLUGIN_PATH_LENGTH, "lib%s.dll", plugin_name);
   snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dll", this_code->plugin_path, plugin_name);
   HINSTANCE plugin_handle = LoadLibrary( plugin_path );
   if ( ! plugin_handle ) {
@@ -90,43 +127,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   }
 #endif
 
-  // free memory from loading the plugin's initialization function
-  free( plugin_path );
-  free( plugin_init_name );
-
-  // initialize a communicator for the driver
-  int icomm = library_initialize();
-  communicator* driver_comm = get_communicator(current_code, icomm);
-  library_data* libd = (library_data*) driver_comm->method_data;
-  libd->connected_code = (int)codes.size;
-
-  MDI_Comm comm;
-  ret = MDI_Accept_Communicator(&comm);
-  if ( ret != 0 || comm == MDI_COMM_NULL ) {
-    mdi_error("MDI unable to create communicator for plugin");
-    return -1;
-  }
-
-  // Set the driver callback function to be used by this plugin instance
-  libd->driver_callback_obj = driver_callback_object;
-  libd->driver_node_callback = driver_node_callback;
-
-  // Set the mpi communicator associated with this plugin instance
-  libd->mpi_comm = mpi_comm;
-
   // Initialize an instance of the plugin
-  plugin_mode = 1;
   ret = plugin_init();
   if ( ret != 0 ) {
     mdi_error("MDI plugin init function returned non-zero exit code");
     return -1;
   }
-  plugin_mode = 0;
-  current_code = driver_code_id;
-
-  // Delete the driver's communicator to the engine
-  // This will also delete the engine code and its communicator
-  delete_communicator(driver_code_id, comm);
 
   // Close the plugin library
 #ifdef _WIN32
@@ -134,6 +140,22 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 #else
   dlclose( plugin_handle );
 #endif
+
+  }
+
+  /*************************************************/
+  /**************** END PLUGIN MODE ****************/
+  /*************************************************/
+  plugin_mode = 0;
+  current_code = driver_code_id;
+
+  // Delete the driver's communicator to the engine
+  // This will also delete the engine code and its communicator
+  delete_communicator(driver_code_id, comm);
+
+  // free memory from loading the plugin's initialization function
+  free( plugin_path );
+  free( plugin_init_name );
 
   return 0;
 }
@@ -223,7 +245,7 @@ int library_set_driver_current() {
  */
 int library_accept_communicator() {
   code* this_code = get_code(current_code);
-  if ( this_code->called_set_execute_command_func ) {
+  if ( this_code->called_set_execute_command_func && (! plugin_mode) ) {
     // library codes are not permitted to call MDI_Accept_communicator after calling
     // MDI_Set_execute_command_func, so assume that this call is being made by the driver
     library_set_driver_current();

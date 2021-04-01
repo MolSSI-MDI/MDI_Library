@@ -11,12 +11,6 @@ else()
 endif()
 
 
-# Locate Python
-
-find_package(PythonLibs 3.0 REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-
-
 # Link to MDI
 
 link_directories( ${mdi_lib_path} )
@@ -37,9 +31,10 @@ add_executable(driver_lib_cxx_py
                driver_lib_cxx_py.cpp)
 target_link_libraries(driver_lib_cxx_py mdi
                       ${MPI_LIBRARIES}
-                      ${PYTHON_LIBRARIES})
+                      ${Python_LIBRARIES})
 set_target_properties(driver_lib_cxx_py PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+target_include_directories(driver_lib_cxx_py PRIVATE ${Python_INCLUDE_DIRS})
 
 
 # Ensure that MPI is properly linked

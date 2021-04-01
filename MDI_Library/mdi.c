@@ -1501,6 +1501,24 @@ int MDI_Get_Current_Code() {
 }
 
 
+/*! \brief Get whether plugin mode is active
+ *
+ */
+int MDI_Get_plugin_mode(int* plugin_mode_ptr) {
+  *plugin_mode_ptr = plugin_mode;
+  return 0;
+}
+
+
+/*! \brief Get the Python plugin MPI communicator
+ *
+ */
+int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr) {
+  *python_plugin_mpi_world_ptr_ptr = python_plugin_mpi_world_ptr;
+  return 0;
+}
+
+
 /*! \brief Set the callback MDI uses for MPI_Recv when using mpi4py
  *
  * The function returns \p 0 on a success.
