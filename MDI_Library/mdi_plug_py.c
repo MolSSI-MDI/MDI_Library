@@ -3,13 +3,14 @@
 #include "mdi.h"
 #include "mdi_global.h"
 #include "mdi_plug_py.h"
+#include <Python.h>
 
 /*! \brief Flag whether the Python interpreter has been initialized */
 int python_interpreter_initialized = 0;
 
 /*! \brief Pointer to the original Python interpreter's dictionary.
  * Only used for Python plugins */
-PyObject* python_interpreter_dict;
+void* python_interpreter_dict;
 
 int python_plugin_init( const char* engine_name, const char* engine_path, const char* options, void* engine_comm_ptr ) {
   // Initialize the Python interpreter
