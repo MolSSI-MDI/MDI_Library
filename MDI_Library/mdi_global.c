@@ -29,6 +29,9 @@ int initialized_mpi = 0;
 /*! \brief Flag for whether MDI is currently operating in plugin mode */
 int plugin_mode = 0;
 
+/*! \brief Flag whether the Python interpreter has been initialized */
+int python_interpreter_initialized = 0;
+
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 MPI_Comm mdi_mpi_comm_world;
 

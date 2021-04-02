@@ -6,7 +6,11 @@
 
 int python_plugin_init( const char* engine_name, const char* engine_path, const char* options, void* engine_comm_ptr ) {
   // Initialize the Python interpreter
-  Py_Initialize();
+  // Because Python has problems with reinitialization, only initialize Python once
+  if ( ! python_interpreter_initialized ) {
+    Py_Initialize();
+    python_interpreter_initialized = 1;
+  }
 
   // Open the Python script for the Engine
   FILE* engine_script = fopen(engine_path, "r");
@@ -26,7 +30,8 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
     PyRun_SimpleString("import sys\n"
                        "sys.path.insert(0, '')\n"
                        "if not hasattr(sys, 'argv'):\n"
-                       "    sys.argv = ['']");
+                       "    sys.argv = ['']\n"
+		       );
 
     // Set the name to anything other than __main__
     PyRun_SimpleString("__name__ = '__mdi__'");
@@ -48,7 +53,8 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
   fclose( engine_script );
 
   // Finalize the Python interpreter
-  Py_Finalize();
+  // Because Python has problems with reinitialization, only initialize Python once
+  //Py_Finalize();
 
   return 0;
 }

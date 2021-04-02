@@ -449,9 +449,9 @@ def MDI_Init(arg1, comm):
 
             # Confirm that the new MPI communicator works
             world_size = __mdi_plugin_mpi_intra_comm__.Get_size()
-        except MPI.Exception:
+        except:
             # Assume python_plugin_mpi_world_ptr points to an int
-            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_int_p))
+            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_int))
             handle_old_value = __mdi_mpi_comm_ptr__.contents.value
             handle_t = ctypes.c_void_p
             newobj = type(MPI.COMM_WORLD)()
