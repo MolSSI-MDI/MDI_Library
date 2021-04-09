@@ -95,7 +95,7 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
 int MDI_Plugin_init_engine_cxx() {
   // Call MDI_Init
   MPI_Comm mpi_world_comm = MPI_COMM_WORLD;
-  MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", &mpi_world_comm);
+  MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver");
   MDI_MPI_get_world_comm(&mpi_world_comm);
 
   // Perform one-time operations required to establish a connection with the driver
@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
 
       // Initialize the MDI Library
       mpi_world_comm = MPI_COMM_WORLD;
-      int ret = MDI_Init(argv[iarg+1], &mpi_world_comm);
+      int ret = MDI_Init(argv[iarg+1]);
       MDI_MPI_get_world_comm(&mpi_world_comm);
       if ( ret != 0 ) {
 	throw std::runtime_error("The MDI library was not initialized correctly.");

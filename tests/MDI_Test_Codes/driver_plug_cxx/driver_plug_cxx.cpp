@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
-      if ( MDI_Init(argv[iarg+1], &world_comm) != 0 ) {
+      if ( MDI_Init(argv[iarg+1]) != 0 ) {
 	mpi_error("MDI_Init returned non-zero exit code.");
       }
       if ( MDI_MPI_get_world_comm(&world_comm) != 0 ) {

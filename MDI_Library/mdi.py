@@ -426,11 +426,15 @@ def MDI_Get_python_plugin_mpi_world_ptr():
 
 
 # MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p]
+mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Init.restype = ctypes.c_int
-def MDI_Init(arg1, comm):
+def MDI_Init(arg1):
     global world_comm
     global intra_code_comm
+
+    comm = None
+    if use_mpi4py:
+        comm = MPI.COMM_WORLD
 
     # if this is a plugin code, get the plugin's MPI communicator
     plugin_mode = MDI_Get_plugin_mode()
@@ -485,26 +489,17 @@ def MDI_Init(arg1, comm):
         if not found_numpy:
             raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
-        # check if MDI was responsible for initializing MPI
-        if comm is None:
-            comm = MPI.COMM_WORLD
+    if use_mpi4py:
+        world_comm = comm
+        intra_code_comm = comm
+        mpi_communicator = MPI._addressof(comm)
+        mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
 
-    if comm is None:
-        mpi_communicator_ptr = None
-    else:
-        if use_mpi4py:
-            world_comm = comm
-            intra_code_comm = comm
-            mpi_communicator = MPI._addressof(comm)
-            mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
-
-            # send basic information about the MPI communicator to the MDI libarary
-            mpi_rank = comm.Get_rank()
-            mpi_world_size = comm.Get_size()
-            mdi.MDI_Set_World_Rank(mpi_rank)
-            mdi.MDI_Set_World_Size(mpi_world_size)
-        else:
-            raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but MPI4Py is not found")
+        # send basic information about the MPI communicator to the MDI libarary
+        mpi_rank = comm.Get_rank()
+        mpi_world_size = comm.Get_size()
+        mdi.MDI_Set_World_Rank(mpi_rank)
+        mdi.MDI_Set_World_Size(mpi_world_size)
 
     # set the MPI4Py callback functions
     set_mpi4py_recv_callback()
@@ -517,7 +512,7 @@ def MDI_Init(arg1, comm):
 
     # call MDI_Init
     command = arg1.encode('utf-8')
-    ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
+    ret = mdi.MDI_Init(ctypes.c_char_p(command) )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")
 
@@ -526,6 +521,10 @@ def MDI_Init(arg1, comm):
 def MDI_MPI_get_world_comm():
     global intra_code_comm
     return intra_code_comm
+
+def MDI_MPI_set_world_comm(new_comm):
+    global intra_code_comm
+    intra_code_comm = new_comm
 
 # MDI_Accept_Communicator
 mdi.MDI_Accept_Communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]

@@ -21,12 +21,8 @@
  *
  * \param [in]       options
  *                   Options describing the communication method used to connect to codes.
- * \param [in, out]  world_comm
- *                   On input, the MPI communicator that spans all of the codes.
- *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
- *                   Only used if the "-method MPI" option is provided.
  */
-int general_init(const char* options, void* world_comm) {
+int general_init(const char* options) {
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! is_initialized ) {
     vector_init(&codes, sizeof(code));
@@ -215,9 +211,9 @@ int general_init(const char* options, void* world_comm) {
   }
 
   // if using the MPI method, check if MPI has been initialized
+  int mpi_init_flag = 0;
   if ( strcmp(method, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
 
-    int mpi_init_flag = 0;
     ret = MPI_Initialized(&mpi_init_flag);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Init: MPI_Initialized failed");
@@ -249,39 +245,33 @@ int general_init(const char* options, void* world_comm) {
 
       // get the world_comm
       mdi_mpi_comm_world = MPI_COMM_WORLD;
-      world_comm = &mdi_mpi_comm_world;
       initialized_mpi = 1;
 
     }
 
   }
 
-  // get the MPI rank
+  // get the appropriate MPI communicator to use
   MPI_Comm mpi_communicator;
   int mpi_rank = 0;
-  if ( world_comm == NULL ) {
+  ret = MPI_Initialized(&mpi_init_flag);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init: MPI_Initialized failed");
+    return ret;
+  }
+  if ( mpi_init_flag == 0 ) {
     mpi_communicator = 0;
     mpi_rank = 0;
   }
   else {
     if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-      // Python case
+      mpi_communicator = 0;
       mpi_rank = world_rank;
     }
-    else if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
-      // Fortran case
-      mpi_communicator = MPI_Comm_f2c( *(MPI_Fint*) world_comm );
-      MPI_Comm_rank(mpi_communicator, &mpi_rank);
-    }
     else {
-      // C and C++ case
-      mpi_communicator = *(MPI_Comm*) world_comm;
+      mpi_communicator = MPI_COMM_WORLD;
       MPI_Comm_rank(mpi_communicator, &mpi_rank);
     }
-
-    // for now, set the intra rank to the world rank
-    // if using MPI for communication, it may change this
-    this_code->intra_rank = mpi_rank;
   }
 
   // redirect the standard output

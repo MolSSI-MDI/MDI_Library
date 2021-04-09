@@ -9,7 +9,8 @@ int engine_lib_cxx_create(MPI_Comm mpi_comm) {
   MPI_Comm world_comm = mpi_comm;
 
   // Initialize MDI
-  int ret = MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", &world_comm);
+  int ret = MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver");
+  MDI_MPI_set_world_comm(&world_comm);
 
   // Set the execute_command callback
   void* engine_obj;

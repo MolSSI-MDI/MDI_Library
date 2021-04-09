@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
       }
 
       // Initialize the MDI Library
-      int ret = MDI_Init(argv[iarg+1], NULL);
+      int ret = MDI_Init(argv[iarg+1]);
       if ( ret != 0 ) {
 	throw std::runtime_error("The MDI library was not initialized correctly.");
       }

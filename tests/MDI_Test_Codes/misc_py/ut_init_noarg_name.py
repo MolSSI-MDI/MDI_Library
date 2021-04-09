@@ -8,4 +8,4 @@ except: # Check for installed package
     import mdi
 
 with pytest.raises(Exception):
-    mdi.MDI_Init("-role DRIVER -method TEST -name", None)
+    mdi.MDI_Init("-role DRIVER -method TEST -name")

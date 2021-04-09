@@ -4,7 +4,7 @@ MODULE ENGINE_LIB_F90
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_communicator, MDI_Recv_command, MDI_Recv, MDI_Conversion_factor, &
-       MDI_Set_execute_command_func, MDI_MPI_get_world_comm
+       MDI_Set_execute_command_func, MDI_MPI_set_world_comm
 
   IMPLICIT NONE
 
@@ -37,8 +37,8 @@ CONTAINS
     ALLOCATE( character(MDI_NAME_LENGTH) :: message )
 
     ! Initialize MDI
-    CALL MDI_Init( arg, world_comm, ierr )
-    CALL MDI_MPI_get_world_comm( world_comm, ierr )
+    CALL MDI_Init( arg, ierr )
+    CALL MDI_MPI_set_world_comm( world_comm, ierr )
 
     ! Get the MPI rank within world_comm
     CALL MPI_Comm_rank( world_comm, world_rank, ierr )

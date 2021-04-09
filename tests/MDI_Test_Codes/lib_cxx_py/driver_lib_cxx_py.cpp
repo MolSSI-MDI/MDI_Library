@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
       // Initialize the MDI Library
       world_comm = MPI_COMM_WORLD;
-      int ret = MDI_Init(argv[iarg+1], &world_comm);
+      int ret = MDI_Init(argv[iarg+1]);
       MDI_MPI_get_world_comm(&world_comm);
       if ( ret != 0 ) {
 	throw std::runtime_error("The MDI library was not initialized correctly.");
