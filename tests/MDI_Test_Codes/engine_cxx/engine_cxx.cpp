@@ -94,8 +94,22 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
 
 int MDI_Plugin_init_engine_cxx() {
   // Call MDI_Init
+  int argc_mdi = 2;
+  int options_length = 256;
+  char* options = (char*) malloc( options_length * sizeof(char) );
+  snprintf(options, options_length, "-role ENGINE -method LINK -name MM -driver_name driver");
+  char* mdi_arg = (char*) malloc( options_length * sizeof(char) );
+  snprintf(mdi_arg, options_length, "-mdi");
+  char** argv_mdi = (char**) malloc( argc_mdi * sizeof(char*) );
+  argv_mdi[0] = mdi_arg;
+  argv_mdi[1] = options;
+  MDI_Init(&argc_mdi, &argv_mdi);
+  free(options);
+  free(mdi_arg);
+  free(argv_mdi);
+
+  // Get the MPI intra-communicator for this code
   MPI_Comm mpi_world_comm = MPI_COMM_WORLD;
-  MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver");
   MDI_MPI_get_world_comm(&mpi_world_comm);
 
   // Perform one-time operations required to establish a connection with the driver
@@ -114,41 +128,32 @@ int MDI_Plugin_init_engine_cxx() {
 
 
 int main(int argc, char **argv) {
+  int ret;
 
   // Initialize the MPI environment
   MPI_Comm mpi_world_comm;
   MPI_Init(&argc, &argv);
 
-  // Read through all the command line options
-  int iarg = 1;
-  bool initialized_mdi = false;
-  while ( iarg < argc ) {
-
-    if ( strcmp(argv[iarg],"-mdi") == 0 ) {
-
-      // Ensure that the argument to the -mdi option was provided
-      if ( argc-iarg < 2 ) {
-	throw std::runtime_error("The -mdi argument was not provided.");
-      }
-
-      // Initialize the MDI Library
-      mpi_world_comm = MPI_COMM_WORLD;
-      int ret = MDI_Init(argv[iarg+1]);
-      MDI_MPI_get_world_comm(&mpi_world_comm);
-      if ( ret != 0 ) {
-	throw std::runtime_error("The MDI library was not initialized correctly.");
-      }
-      initialized_mdi = true;
-      iarg += 2;
-
-    }
-    else {
-      throw std::runtime_error("Unrecognized option.");
-    }
-
+  // Initialize MDI
+  ret = MDI_Init(&argc, &argv);
+  if ( ret != 0 ) {
+    throw std::runtime_error("The MDI library was not initialized correctly.");
   }
-  if ( not initialized_mdi ) {
-    throw std::runtime_error("The -mdi command line option was not provided.");
+
+  // Confirm that MDI was initialized successfully
+  int initialized_mdi;
+  ret = MDI_Initialized(&initialized_mdi);
+  if ( ret != 0 ) {
+    throw std::runtime_error("MDI_Initialized failed.");
+  }
+  if ( ! initialized_mdi ) {
+    throw std::runtime_error("MDI not initialized: did you provide the -mdi option?.");
+  }
+
+  // Get the correct MPI intra-communicator for this code
+  ret = MDI_MPI_get_world_comm(&mpi_world_comm);
+  if ( ret != 0 ) {
+    throw std::runtime_error("MDI_MPI_get_world_comm failed.");
   }
 
   // Perform one-time operations required to establish a connection with the driver

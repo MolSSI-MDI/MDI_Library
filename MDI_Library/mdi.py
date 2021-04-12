@@ -426,8 +426,8 @@ def MDI_Get_python_plugin_mpi_world_ptr():
 
 
 # MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Init.restype = ctypes.c_int
+mdi.MDI_Init_with_options.argtypes = [ctypes.POINTER(ctypes.c_char)]
+mdi.MDI_Init_with_options.restype = ctypes.c_int
 def MDI_Init(arg1):
     global world_comm
     global intra_code_comm
@@ -512,7 +512,7 @@ def MDI_Init(arg1):
 
     # call MDI_Init
     command = arg1.encode('utf-8')
-    ret = mdi.MDI_Init(ctypes.c_char_p(command) )
+    ret = mdi.MDI_Init_with_options(ctypes.c_char_p(command) )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")
 

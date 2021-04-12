@@ -258,11 +258,11 @@ MODULE MDI
 
   INTERFACE
 
-     FUNCTION MDI_Init_(options) bind(c, name="MDI_Init")
+     FUNCTION MDI_Init_with_options_(options) bind(c, name="MDI_Init_with_options")
        USE, INTRINSIC :: iso_c_binding
        CHARACTER(C_CHAR)                        :: options(*)
-       INTEGER(KIND=C_INT)                      :: MDI_Init_
-     END FUNCTION MDI_Init_
+       INTEGER(KIND=C_INT)                      :: MDI_Init_with_options_
+     END FUNCTION MDI_Init_with_options_
 
      FUNCTION MDI_Accept_Communicator_(comm) bind(c, name="MDI_Accept_Communicator")
        USE, INTRINSIC :: iso_c_binding
@@ -439,7 +439,7 @@ CONTAINS
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(OUT) :: ierr
 
-      ierr = MDI_Init_( TRIM(foptions)//" _language Fortran"//c_null_char )
+      ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Accept_Communicator(communicator, ierr)

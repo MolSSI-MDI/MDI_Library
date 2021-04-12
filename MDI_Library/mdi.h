@@ -72,7 +72,9 @@ DllExport extern const int MDI_DRIVER;
 DllExport extern const int MDI_ENGINE;
 
 // functions for handling MDI communication
-DllExport int MDI_Init(const char* options);
+DllExport int MDI_Init(int* argc, char ***argv);
+DllExport int MDI_Init_with_options(const char *options);
+DllExport int MDI_Initialized(int* flag);
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);
 DllExport int MDI_Accept_communicator(MDI_Comm* comm);
 DllExport int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);

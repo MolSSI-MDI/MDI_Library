@@ -86,6 +86,63 @@ const int MDI_ENGINE    = 2;
  * If using the "-method MPI" option, this function must be called by all ranks.
  * The function returns \p 0 on a success.
  *
+ * \param [in, out]  argc
+ *                   Pointer to the number of arguments.
+ * \param [in, out]  argv
+ *                   Pointer to the argument vector.
+ */
+int MDI_Init(int* argc, char*** argv)
+{
+  int argc_in = *argc;
+  char** argv_in = *argv;
+
+  // Extract the mdi options
+  int iarg;
+  int mdi_iarg = -1;
+  for (iarg=0; iarg < argc_in; iarg++) {
+    //printf("AAAA: %d %s\n",iarg,argv_in[iarg]);
+    if (strcmp(argv_in[iarg],"-mdi") == 0) {
+      mdi_iarg = iarg;
+    }
+    else if (strcmp(argv_in[iarg],"--mdi") == 0) {
+      mdi_iarg = iarg;
+    }
+  }
+  if ( mdi_iarg > argc_in - 2 ) {
+    mdi_error("No argument to the -mdi option was provided");
+    return 1;
+  }
+
+  if ( mdi_iarg >= 0 ) {
+    // Initialize MDI
+    int ret = general_init(argv_in[mdi_iarg + 1]);
+    if ( ret == 0 ) {
+      is_initialized = 1;
+    }
+    return ret;
+
+    // deallocate the memory for the -mdi option
+    free(argv_in[mdi_iarg]);
+    free(argv_in[mdi_iarg + 1]);
+
+    // pass out argc and argv, without the mdi-related options
+    *argc = argc_in - 2;
+    for (iarg=mdi_iarg+2; iarg < argc_in; iarg++) {
+      *argv[iarg - 2] = argv_in[iarg];
+    }
+  }
+  else {
+    // The -mdi argument was not provided, so don't initialize
+    return 0;
+  }
+}
+
+
+/*! \brief Initialize communication through the MDI library
+ *
+ * If using the "-method MPI" option, this function must be called by all ranks.
+ * The function returns \p 0 on a success.
+ *
  * \param [in]       options
  *                   Options describing the communication method used to connect to codes.
  * \param [in, out]  world_comm
@@ -93,13 +150,8 @@ const int MDI_ENGINE    = 2;
  *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
  *                   Only used if the "-method MPI" option is provided.
  */
-int MDI_Init(const char* options)
+int MDI_Init_with_options(const char* options)
 {
-  /*
-  if ( is_initialized == 1 ) {
-    mdi_error("MDI_Init called after MDI was already initialized");
-  }
-  */
   int ret = general_init(options);
   if ( ret == 0 ) {
     is_initialized = 1;
@@ -107,6 +159,17 @@ int MDI_Init(const char* options)
   return ret;
 }
 
+
+/*! \brief Indicates whether MDI_Init has been called
+ *
+ * \param [out]  flag
+ *                   Flag is true if and only if MDI_Init has been called.
+ */
+int MDI_Initialized(int* flag)
+{
+  *flag = is_initialized;
+  return 0;
+}
 
 /*! \brief Accept a new MDI communicator
  *

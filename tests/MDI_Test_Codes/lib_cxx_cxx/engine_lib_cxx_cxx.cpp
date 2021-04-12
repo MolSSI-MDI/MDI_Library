@@ -8,8 +8,22 @@
 int engine_lib_cxx_create(MPI_Comm mpi_comm) {
   MPI_Comm world_comm = mpi_comm;
 
-  // Initialize MDI
-  int ret = MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver");
+  // Call MDI_Init
+  int argc_mdi = 2;
+  int options_length = 256;
+  char* options = (char*) malloc( options_length * sizeof(char) );
+  snprintf(options, options_length, "-role ENGINE -method LINK -name MM -driver_name driver");
+  char* mdi_arg = (char*) malloc( options_length * sizeof(char) );
+  snprintf(mdi_arg, options_length, "-mdi");
+  char** argv_mdi = (char**) malloc( argc_mdi * sizeof(char*) );
+  argv_mdi[0] = mdi_arg;
+  argv_mdi[1] = options;
+  MDI_Init(&argc_mdi, &argv_mdi);
+  free(options);
+  free(mdi_arg);
+  free(argv_mdi);
+
+  // Get the MPI intra-communicator for this code
   MDI_MPI_set_world_comm(&world_comm);
 
   // Set the execute_command callback
