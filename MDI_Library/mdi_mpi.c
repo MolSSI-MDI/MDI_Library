@@ -270,6 +270,8 @@ int mpi_update_world_comm(void* world_comm) {
  *                   2: The body (data) of a message.
  */
 int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
+  int ret;
+
   // only send from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -279,24 +281,10 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
   communicator* this = get_communicator(current_code, comm);
   mpi_method_data* method_data = (mpi_method_data*) this->method_data;
 
-  // determine the datatype of the send buffer
+  // determine the byte size of the data type being sent
   MPI_Datatype mpi_type;
-  if (datatype == MDI_INT) {
-    mpi_type = MPI_INT;
-  }
-  else if (datatype == MDI_DOUBLE) {
-    mpi_type = MPI_DOUBLE;
-  }
-  else if (datatype == MDI_CHAR) {
-    mpi_type = MPI_CHAR;
-  }
-  else if (datatype == MDI_BYTE) {
-    mpi_type = MPI_BYTE;
-  }
-  else {
-    mdi_error("MDI data type not recognized in mpi_send");
-    return 1;
-  }
+  ret = datatype_mpitype(datatype, &mpi_type);
+  if ( ret != 0 ) { return ret; }
 
   // send the data
   if ( method_data->use_mpi4py == 0 ) {
@@ -327,6 +315,8 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
  *                   2: The body (data) of a message.
  */
 int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
+  int ret;
+
   // only recv from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -336,24 +326,10 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
   communicator* this = get_communicator(current_code, comm);
   mpi_method_data* method_data = (mpi_method_data*) this->method_data;
 
-  // determine the datatype of the receive buffer
+  // determine the byte size of the data type being sent
   MPI_Datatype mpi_type;
-  if (datatype == MDI_INT) {
-    mpi_type = MPI_INT;
-  }
-  else if (datatype == MDI_DOUBLE) {
-    mpi_type = MPI_DOUBLE;
-  }
-  else if (datatype == MDI_CHAR) {
-    mpi_type = MPI_CHAR;
-  }
-  else if (datatype == MDI_BYTE) {
-    mpi_type = MPI_BYTE;
-  }
-  else {
-    mdi_error("MDI data type not recognized in mpi_send");
-    return 1;
-  }
+  ret = datatype_mpitype(datatype, &mpi_type);
+  if ( ret != 0 ) { return ret; }
 
   // receive the data
   if ( method_data->use_mpi4py == 0 ) {
