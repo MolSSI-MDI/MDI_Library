@@ -455,11 +455,91 @@ int file_exists(const char* file_name) {
 }
 
 
-/*! \brief Print error message and exit
+/*! \brief Print error message
  *
  * \param [in]       message
  *                   Message printed before exiting.
  */
 void mdi_error(const char* message) {
   fprintf( stderr, "%s\n", message );
+}
+
+
+/*! \brief Print warning message
+ *
+ * \param [in]       message
+ *                   Message printed before exiting.
+ */
+void mdi_warning(const char* message) {
+  fprintf( stderr, "MDI warning: %s\n", message );
+}
+
+
+/*! \brief Get information about an MDI datatype
+ *
+ * \param [in]       datatype
+ *                   MDI datatype.
+ * \param [out]      size
+ *                   Size of the MDI datatype.
+ * \param [out]      base
+ *                   Base type of an MDI datatype.
+ */
+int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* base) {
+  if ( datatype == MDI_INT_ ) {
+    *size = sizeof(int);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_INT8_T_ ) {
+    *size = sizeof(int8_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_INT16_T_ ) {
+    *size = sizeof(int16_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_INT32_T_ ) {
+    *size = sizeof(int32_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_INT64_T_ ) {
+    *size = sizeof(int64_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_UINT8_T_ ) {
+    *size = sizeof(uint8_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_UINT16_T_ ) {
+    *size = sizeof(uint16_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_UINT32_T_ ) {
+    *size = sizeof(uint32_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_UINT64_T_ ) {
+    *size = sizeof(uint64_t);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_DOUBLE_ ) {
+    *size = sizeof(double);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_CHAR_ ) {
+    *size = sizeof(char);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_FLOAT_ ) {
+    *size = sizeof(float);
+    *base = MDI_INT_;
+  }
+  else if ( datatype == MDI_BYTE_ ) {
+    *size = sizeof(char);
+    *base = MDI_INT_;
+  }
+  else {
+    mdi_error("Unrecognized datatype.");
+    return 1;
+  }
+  return 0;
 }

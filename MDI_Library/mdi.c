@@ -34,51 +34,69 @@ Contents:
 #include "physconst.h"
 
 /*! \brief MDI major version number */
-const int MDI_MAJOR_VERSION = 1;
+const int MDI_MAJOR_VERSION = MDI_MAJOR_VERSION_;
 
 /*! \brief MDI minor version number */
-const int MDI_MINOR_VERSION = 2;
+const int MDI_MINOR_VERSION = MDI_MINOR_VERSION_;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 0;
+const int MDI_PATCH_VERSION = MDI_PATCH_VERSION_;
 
 /*! \brief length of an MDI command in characters */
-const int MDI_COMMAND_LENGTH = 12;
+const int MDI_COMMAND_LENGTH = MDI_COMMAND_LENGTH_;
 
 /*! \brief length of an MDI name in characters */
-const int MDI_NAME_LENGTH = 12;
+const int MDI_NAME_LENGTH = MDI_NAME_LENGTH_;
 
 /*! \brief length of an MDI label in characters */
-const int MDI_LABEL_LENGTH = 64;
+const int MDI_LABEL_LENGTH = MDI_LABEL_LENGTH_;
 
 /*! \brief value of a null communicator */
-const MDI_Comm MDI_COMM_NULL = 0;
+const MDI_Comm MDI_COMM_NULL = MDI_COMM_NULL_;
 
 // MDI data types
 /*! \brief integer data type */
-const int MDI_INT          = 1;
+const int MDI_INT          = MDI_INT_;
+/*! \brief int8_t data type */
+const int MDI_INT8_T       = MDI_INT8_T_;
+/*! \brief int16_t data type */
+const int MDI_INT16_T      = MDI_INT16_T_;
+/*! \brief int32_t data type */
+const int MDI_INT32_T      = MDI_INT32_T_;
+/*! \brief int64_t data type */
+const int MDI_INT64_T      = MDI_INT64_T_;
+/*! \brief uint8_t data type */
+const int MDI_UINT8_T      = MDI_UINT8_T_;
+/*! \brief uint16_t data type */
+const int MDI_UINT16_T     = MDI_UINT16_T_;
+/*! \brief uint32_t data type */
+const int MDI_UINT32_T     = MDI_UINT32_T_;
+/*! \brief uint64_t data type */
+const int MDI_UINT64_T     = MDI_UINT64_T_;
 /*! \brief double precision float data type */
-const int MDI_DOUBLE       = 2;
+const int MDI_DOUBLE       = MDI_DOUBLE_;
 /*! \brief character data type */
-const int MDI_CHAR         = 3;
+const int MDI_CHAR         = MDI_CHAR_;
+/*! \brief single precision float data type */
+const int MDI_FLOAT        = MDI_FLOAT_;
 /*! \brief character data type */
-const int MDI_BYTE         = 6;
+const int MDI_BYTE         = MDI_BYTE_;
 
 // MDI communication types
 /*! \brief TCP/IP communication method */
-const int MDI_TCP    = 1;
+const int MDI_TCP    = MDI_TCP_;
 /*! \brief MPI communication method */
-const int MDI_MPI    = 2;
+const int MDI_MPI    = MDI_MPI_;
 /*! \brief Library communication method */
-const int MDI_LINK    = 3;
+const int MDI_LINK   = MDI_LINK_;
 /*! \brief Test communication method */
-const int MDI_TEST   = 4;
+const int MDI_TEST   = MDI_TEST_;
 
 // MDI role types
 /*! \brief Driver role type */
-const int MDI_DRIVER    = 1;
+const int MDI_DRIVER    = MDI_DRIVER_;
 /*! \brief Engine role type */
-const int MDI_ENGINE    = 2;
+const int MDI_ENGINE    = MDI_ENGINE_;
 
 
 /*! \brief Initialize communication through the MDI library
@@ -100,7 +118,6 @@ int MDI_Init(int* argc, char*** argv)
   int iarg;
   int mdi_iarg = -1;
   for (iarg=0; iarg < argc_in; iarg++) {
-    //printf("AAAA: %d %s\n",iarg,argv_in[iarg]);
     if (strcmp(argv_in[iarg],"-mdi") == 0) {
       mdi_iarg = iarg;
     }

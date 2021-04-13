@@ -31,6 +31,48 @@
 #define MDI_LANGUAGE_FORTRAN 2
 #define MDI_LANGUAGE_PYTHON 3
 
+// MDI version numbers
+#define MDI_MAJOR_VERSION_ 1
+#define MDI_MINOR_VERSION_ 2
+#define MDI_PATCH_VERSION_ 0
+
+// length of an MDI command in characters
+#define MDI_COMMAND_LENGTH_ 12
+
+// length of an MDI name in characters
+#define MDI_NAME_LENGTH_ 12
+
+// length of an MDI label in characters
+#define MDI_LABEL_LENGTH_ 64
+
+// value of a null communicator
+#define MDI_COMM_NULL_ 0
+
+// MDI data types
+#define MDI_INT_ 1
+#define MDI_INT8_T_ 7
+#define MDI_INT16_T_ 8
+#define MDI_INT32_T_ 9
+#define MDI_INT64_T_ 10
+#define MDI_UINT8_T_ 11
+#define MDI_UINT16_T_ 12
+#define MDI_UINT32_T_ 13
+#define MDI_UINT64_T_ 14
+#define MDI_DOUBLE_ 2
+#define MDI_CHAR_ 3
+#define MDI_FLOAT_ 4
+#define MDI_BYTE_ 6
+
+// MDI communication types
+#define MDI_TCP_ 1
+#define MDI_MPI_ 2
+#define MDI_LINK_ 3
+#define MDI_TEST_ 4
+
+// MDI role types
+#define MDI_DRIVER_ 1
+#define MDI_ENGINE_ 2
+
 // MDI Typedefs
 typedef int MDI_Comm_Type;
 typedef int MDI_Datatype_Type;
@@ -187,5 +229,9 @@ int file_exists(const char* file_name);
 int communicator_delete(void* comm);
 
 void mdi_error(const char* message);
+void mdi_warning(const char* message);
+
+/*! \brief Get information about an MDI_Datatype */
+int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* base);
 
 #endif
