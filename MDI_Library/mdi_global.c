@@ -8,6 +8,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <stdint.h>
 #include "mdi_global.h"
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
@@ -538,7 +539,62 @@ int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* b
     *base = MDI_INT_;
   }
   else {
-    mdi_error("Unrecognized datatype.");
+    mdi_error("Unrecognized datatype in datatype_info.");
+    return 1;
+  }
+  return 0;
+}
+
+
+/*! \brief Get the MPI datatype that corresponds to an MDI datatype
+ *
+ * \param [in]       datatype
+ *                   MDI datatype.
+ * \param [out]      mpitype
+ *                   MPI datatype.
+ */
+int datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype* mpitype) {
+  if ( datatype == MDI_INT_ ) {
+    *mpitype = MPI_INT;
+  }
+  else if ( datatype == MDI_INT8_T_ ) {
+    *mpitype = MPI_INT8_T;
+  }
+  else if ( datatype == MDI_INT16_T_ ) {
+    *mpitype = MPI_INT16_T;
+  }
+  else if ( datatype == MDI_INT32_T_ ) {
+    *mpitype = MPI_INT32_T;
+  }
+  else if ( datatype == MDI_INT64_T_ ) {
+    *mpitype = MPI_INT64_T;
+  }
+  else if ( datatype == MDI_UINT8_T_ ) {
+    *mpitype = MPI_UINT8_T;
+  }
+  else if ( datatype == MDI_UINT16_T_ ) {
+    *mpitype = MPI_UINT16_T;
+  }
+  else if ( datatype == MDI_UINT32_T_ ) {
+    *mpitype = MPI_UINT32_T;
+  }
+  else if ( datatype == MDI_UINT64_T_ ) {
+    *mpitype = MPI_UINT64_T;
+  }
+  else if ( datatype == MDI_DOUBLE_ ) {
+    *mpitype = MPI_DOUBLE;
+  }
+  else if ( datatype == MDI_CHAR_ ) {
+    *mpitype = MPI_CHAR;
+  }
+  else if ( datatype == MDI_FLOAT_ ) {
+    *mpitype = MPI_FLOAT;
+  }
+  else if ( datatype == MDI_BYTE_ ) {
+    *mpitype = MPI_BYTE;
+  }
+  else {
+    mdi_error("Unrecognized datatype in datatype_mpitype.");
     return 1;
   }
   return 0;

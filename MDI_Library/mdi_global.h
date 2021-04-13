@@ -234,4 +234,7 @@ void mdi_warning(const char* message);
 /*! \brief Get information about an MDI_Datatype */
 int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* base);
 
+/*! \brief Get the MPI datatype that corresponds to an MDI datatype */
+int datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype* mpitype);
+
 #endif
