@@ -599,3 +599,627 @@ int datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype* mpitype) {
   }
   return 0;
 }
+
+
+/*! \brief Convert a buffer from one datatype to another */
+int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
+			 void* sendbuf_in, MDI_Datatype_Type sendtype,
+			 int count) {
+  int ii;
+
+  if ( sendtype == MDI_INT_ ) {
+    int* sendbuf = (int*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+    
+  }
+  else if ( sendtype == MDI_INT8_T_ ) {
+    int8_t* sendbuf = (int8_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_INT16_T_ ) {
+    int16_t* sendbuf = (int16_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_INT32_T_ ) {
+    int32_t* sendbuf = (int32_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_INT64_T_ ) {
+    int64_t* sendbuf = (int64_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_UINT8_T_ ) {
+    uint8_t* sendbuf = (uint8_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_UINT64_T_ ) {
+    uint16_t* sendbuf = (uint16_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_UINT64_T_ ) {
+    uint32_t* sendbuf = (uint32_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_UINT64_T_ ) {
+    uint64_t* sendbuf = (uint64_t*) sendbuf_in;
+
+    if ( recvtype == MDI_INT_ ) {
+      int* recvbuf = (int*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT8_T_ ) {
+      int8_t* recvbuf = (int8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT16_T_ ) {
+      int16_t* recvbuf = (int16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT32_T_ ) {
+      int32_t* recvbuf = (int32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_INT64_T_ ) {
+      int64_t* recvbuf = (int64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (int64_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT8_T_ ) {
+      uint8_t* recvbuf = (uint8_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint8_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT16_T_ ) {
+      uint16_t* recvbuf = (uint16_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint16_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT32_T_ ) {
+      uint32_t* recvbuf = (uint32_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint32_t) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_UINT64_T_ ) {
+      uint64_t* recvbuf = (uint64_t*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (uint64_t) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_DOUBLE_ ) {
+    double* sendbuf = (double*) sendbuf_in;
+
+    if ( recvtype == MDI_DOUBLE_ ) {
+      double* recvbuf = (double*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (double) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_FLOAT_ ) {
+      float* recvbuf = (float*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (float) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else if ( sendtype == MDI_FLOAT_ ) {
+    float* sendbuf = (float*) sendbuf_in;
+
+    if ( recvtype == MDI_DOUBLE_ ) {
+      double* recvbuf = (double*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (double) sendbuf[ii];
+      }
+    }
+    else if ( recvtype == MDI_FLOAT_ ) {
+      float* recvbuf = (float*) recvbuf_in;
+      for (ii=0; ii < count; ii++) {
+        recvbuf[ii] = (float) sendbuf[ii];
+      }
+    }
+    else {
+      mdi_error("Unrecognized datatype in convert_buf_datatype.");
+      return 1;
+    }
+
+  }
+  else {
+    mdi_error("Unrecognized datatype in convert_buf_datatype.");
+    return 1;
+  }
+
+  return 0;
+}

@@ -39,10 +39,6 @@ MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 MDI_NAME_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_NAME_LENGTH").value
 MDI_LABEL_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_LABEL_LENGTH").value
 MDI_COMM_NULL = ctypes.c_int.in_dll(mdi, "MDI_COMM_NULL").value
-MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
-MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
-MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
-MDI_BYTE = ctypes.c_int.in_dll(mdi, "MDI_BYTE").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 MDI_LINK = ctypes.c_int.in_dll(mdi, "MDI_LINK").value
@@ -52,6 +48,21 @@ MDI_ENGINE = ctypes.c_int.in_dll(mdi, "MDI_ENGINE").value
 MDI_MAJOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MAJOR_VERSION").value
 MDI_MINOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MINOR_VERSION").value
 MDI_PATCH_VERSION = ctypes.c_int.in_dll(mdi, "MDI_PATCH_VERSION").value
+
+# MDI Datatypes
+MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
+MDI_INT8_T = ctypes.c_int.in_dll(mdi, "MDI_INT8_T").value
+MDI_INT16_T = ctypes.c_int.in_dll(mdi, "MDI_INT16_T").value
+MDI_INT32_T = ctypes.c_int.in_dll(mdi, "MDI_INT32_T").value
+MDI_INT64_T = ctypes.c_int.in_dll(mdi, "MDI_INT64_T").value
+MDI_UINT8_T = ctypes.c_int.in_dll(mdi, "MDI_UINT8_T").value
+MDI_UINT16_T = ctypes.c_int.in_dll(mdi, "MDI_UINT16_T").value
+MDI_UINT32_T = ctypes.c_int.in_dll(mdi, "MDI_UINT32_T").value
+MDI_UINT64_T = ctypes.c_int.in_dll(mdi, "MDI_UINT64_T").value
+MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
+MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
+MDI_FLOAT = ctypes.c_int.in_dll(mdi, "MDI_FLOAT").value
+MDI_BYTE = ctypes.c_int.in_dll(mdi, "MDI_BYTE").value
 
 world_comm = None
 
@@ -114,12 +125,39 @@ def mpi4py_get_np_array(buf, count, datatype, mdi_comm):
     if datatype == MDI_INT:
         mpi_type = MPI.INT
         datasize = ctypes.sizeof( ctypes.c_int )
+    elif datatype == MDI_INT8_T:
+        mpi_type = MPI.INT8_T
+        datasize = ctypes.sizeof( ctypes.c_int8 )
+    elif datatype == MDI_INT16_T:
+        mpi_type = MPI.INT16_T
+        datasize = ctypes.sizeof( ctypes.c_int16 )
+    elif datatype == MDI_INT32_T:
+        mpi_type = MPI.INT32_T
+        datasize = ctypes.sizeof( ctypes.c_int32 )
+    elif datatype == MDI_INT64_T:
+        mpi_type = MPI.INT64_T
+        datasize = ctypes.sizeof( ctypes.c_int64 )
+    elif datatype == MDI_UINT8_T:
+        mpi_type = MPI.UINT8_T
+        datasize = ctypes.sizeof( ctypes.c_uint8 )
+    elif datatype == MDI_UINT16_T:
+        mpi_type = MPI.UINT16_T
+        datasize = ctypes.sizeof( ctypes.c_uint16 )
+    elif datatype == MDI_UINT32_T:
+        mpi_type = MPI.UINT32_T
+        datasize = ctypes.sizeof( ctypes.c_uint32 )
+    elif datatype == MDI_UINT64_T:
+        mpi_type = MPI.UINT64_T
+        datasize = ctypes.sizeof( ctypes.c_uint64 )
     elif datatype == MDI_DOUBLE:
         mpi_type = MPI.DOUBLE
         datasize = ctypes.sizeof( ctypes.c_double )
     elif datatype == MDI_CHAR:
         mpi_type = MPI.CHAR
         datasize = ctypes.sizeof( ctypes.c_char )
+    elif datatype == MDI_FLOAT:
+        mpi_type = MPI.FLOAT
+        datasize = ctypes.sizeof( ctypes.c_float )
     elif datatype == MDI_BYTE:
         mpi_type = MPI.BYTE
         datasize = ctypes.sizeof( ctypes.c_char )

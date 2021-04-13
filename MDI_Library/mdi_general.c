@@ -503,6 +503,11 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   int ret = 0;
 
+  // Actual datatype of data sent to this code
+  // This will be read from the message header, and might be different from datatype
+  int send_datatype = datatype;
+  size_t send_datasize;
+
   communicator* this = get_communicator(current_code, comm);
 
   // receive message header information
@@ -529,7 +534,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     // analyze the header information
     int error_flag = header[0];
     int header_type = header[1];
-    int send_datatype = header[2];
+    send_datatype = header[2];
     int send_count = header[3];
 
     // verify that the error flag is zero
@@ -545,7 +550,14 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
     }
 
     // verify agreement regarding the datatype
-    if ( send_datatype != datatype ) {
+    MDI_Datatype send_basetype;
+    ret = datatype_info(send_datatype, &send_datasize, &send_basetype);
+    if ( ret != 0 ) { return ret; }
+    size_t recv_datasize;
+    MDI_Datatype recv_basetype;
+    ret = datatype_info(datatype, &recv_datasize, &recv_basetype);
+    if ( ret != 0 ) { return ret; }
+    if ( send_basetype != recv_basetype ) {
       mdi_error("Error in MDI_Recv: inconsistent datatype");
       return 1;
     }
@@ -560,8 +572,24 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   }
 
   // receive the data
-  ret = this->recv(buf, count, datatype, comm, 2);
-  if ( ret != 0 ) { return ret; }
+  if ( send_datatype == datatype ) {
+    ret = this->recv(buf, count, datatype, comm, 2);
+    if ( ret != 0 ) { return ret; }
+  }
+  else {
+    // the datatypes do not match, but are compatible
+    // recieve the data into a temporary buffer
+    void* tempbuf = malloc( count * send_datasize );
+    ret = this->recv(tempbuf, count, send_datatype, comm, 2);
+    if ( ret != 0 ) { return ret; }
+
+    // convert the data to the correct datatype
+    ret = convert_buf_datatype(buf, datatype, tempbuf, send_datatype, count);
+    if ( ret != 0 ) { return ret; }
+
+    // free the temporary buffer
+    free( tempbuf );
+  }
 
   return 0;
 }

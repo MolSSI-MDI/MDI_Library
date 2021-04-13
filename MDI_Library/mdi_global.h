@@ -237,4 +237,9 @@ int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* b
 /*! \brief Get the MPI datatype that corresponds to an MDI datatype */
 int datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype* mpitype);
 
+/*! \brief Convert a buffer from one datatype to another */
+int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
+			 void* sendbuf_in, MDI_Datatype_Type sendtype,
+			 int count);
+
 #endif

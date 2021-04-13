@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string.h>
+#include <stdint.h>
 #include "mdi.h"
 #include "engine_cxx.h"
 
@@ -59,7 +60,7 @@ int respond_to_commands(MDI_Comm comm, MPI_Comm mpi_world_comm) {
 
 int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
   // set dummy molecular information
-  int natoms = 10;
+  int64_t natoms = 10;
   double coords[3*natoms];
   for (int icoord = 0; icoord < 3 * natoms; icoord++) {
     coords[icoord] = 0.1 * double(icoord);
@@ -73,7 +74,7 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
     exit_signal = true;
   }
   else if ( strcmp(command, "<NATOMS") == 0 ) {
-    MDI_Send(&natoms, 1, MDI_INT, comm);
+    MDI_Send(&natoms, 1, MDI_INT64_T, comm);
   }
   else if ( strcmp(command, "<COORDS") == 0 ) {
     MDI_Send(&coords, 3 * natoms, MDI_DOUBLE, comm);
