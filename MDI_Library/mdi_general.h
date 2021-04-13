@@ -12,7 +12,7 @@
 /*! \brief Function pointer to the generic execute_command function */
 extern int (*execute_command)(const char*, MDI_Comm);
 
-int general_init(const char* options, void* world_comm);
+int general_init(const char* options);
 int general_accept_communicator();
 int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);

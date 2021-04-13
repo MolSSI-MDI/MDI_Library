@@ -34,7 +34,7 @@ else:
     mpi_world = None
 
 # Initialize the MDI Library
-mdi.MDI_Init(sys.argv[2],mpi_world)
+mdi.MDI_Init(sys.argv[2])
 if use_mpi4py:
     mpi_world = mdi.MDI_MPI_get_world_comm()
     world_rank = mpi_world.Get_rank()

@@ -7,6 +7,6 @@ try: # Check for local build
 except: # Check for installed package
     import mdi
 
-mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+mdi.MDI_Init("-name driver -role DRIVER -method TEST")
 with pytest.raises(Exception):
-    mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+    mdi.MDI_Init("-name driver -role DRIVER -method TEST")

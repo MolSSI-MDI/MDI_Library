@@ -36,7 +36,7 @@ IMPLICIT NONE
 
          ! Initialize the MDI Library
          world_comm = MPI_COMM_WORLD
-         call MDI_Init( mdi_options, world_comm, ierr)
+         call MDI_Init( mdi_options, ierr)
          call MDI_MPI_get_world_comm( world_comm, ierr )
 
          EXIT

@@ -8,4 +8,4 @@ except: # Check for installed package
     import mdi
 
 with pytest.raises(Exception):
-    mdi.MDI_Init("-name driver -role DRIVER -method TCP -port 8000 -hostname", None)
+    mdi.MDI_Init("-name driver -role DRIVER -method TCP -port 8000 -hostname")

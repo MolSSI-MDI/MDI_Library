@@ -8,7 +8,7 @@ except: # Check for installed package
     import mdi
 
 # Initialize MDI
-mdi.MDI_Init("-name driver -role DRIVER -method TEST", None)
+mdi.MDI_Init("-name driver -role DRIVER -method TEST")
 comm = mdi.MDI_Accept_Communicator()
 
 # Test MDI_Send and MDI_Recv

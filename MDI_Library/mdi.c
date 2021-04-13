@@ -34,51 +34,125 @@ Contents:
 #include "physconst.h"
 
 /*! \brief MDI major version number */
-const int MDI_MAJOR_VERSION = 1;
+const int MDI_MAJOR_VERSION = MDI_MAJOR_VERSION_;
 
 /*! \brief MDI minor version number */
-const int MDI_MINOR_VERSION = 2;
+const int MDI_MINOR_VERSION = MDI_MINOR_VERSION_;
 
 /*! \brief MDI patch version number */
-const int MDI_PATCH_VERSION = 0;
+const int MDI_PATCH_VERSION = MDI_PATCH_VERSION_;
 
 /*! \brief length of an MDI command in characters */
-const int MDI_COMMAND_LENGTH = 12;
+const int MDI_COMMAND_LENGTH = MDI_COMMAND_LENGTH_;
 
 /*! \brief length of an MDI name in characters */
-const int MDI_NAME_LENGTH = 12;
+const int MDI_NAME_LENGTH = MDI_NAME_LENGTH_;
 
 /*! \brief length of an MDI label in characters */
-const int MDI_LABEL_LENGTH = 64;
+const int MDI_LABEL_LENGTH = MDI_LABEL_LENGTH_;
 
 /*! \brief value of a null communicator */
-const MDI_Comm MDI_COMM_NULL = 0;
+const MDI_Comm MDI_COMM_NULL = MDI_COMM_NULL_;
 
 // MDI data types
 /*! \brief integer data type */
-const int MDI_INT          = 1;
+const int MDI_INT          = MDI_INT_;
+/*! \brief int8_t data type */
+const int MDI_INT8_T       = MDI_INT8_T_;
+/*! \brief int16_t data type */
+const int MDI_INT16_T      = MDI_INT16_T_;
+/*! \brief int32_t data type */
+const int MDI_INT32_T      = MDI_INT32_T_;
+/*! \brief int64_t data type */
+const int MDI_INT64_T      = MDI_INT64_T_;
+/*! \brief uint8_t data type */
+const int MDI_UINT8_T      = MDI_UINT8_T_;
+/*! \brief uint16_t data type */
+const int MDI_UINT16_T     = MDI_UINT16_T_;
+/*! \brief uint32_t data type */
+const int MDI_UINT32_T     = MDI_UINT32_T_;
+/*! \brief uint64_t data type */
+const int MDI_UINT64_T     = MDI_UINT64_T_;
 /*! \brief double precision float data type */
-const int MDI_DOUBLE       = 2;
+const int MDI_DOUBLE       = MDI_DOUBLE_;
 /*! \brief character data type */
-const int MDI_CHAR         = 3;
+const int MDI_CHAR         = MDI_CHAR_;
+/*! \brief single precision float data type */
+const int MDI_FLOAT        = MDI_FLOAT_;
 /*! \brief character data type */
-const int MDI_BYTE         = 6;
+const int MDI_BYTE         = MDI_BYTE_;
 
 // MDI communication types
 /*! \brief TCP/IP communication method */
-const int MDI_TCP    = 1;
+const int MDI_TCP    = MDI_TCP_;
 /*! \brief MPI communication method */
-const int MDI_MPI    = 2;
+const int MDI_MPI    = MDI_MPI_;
 /*! \brief Library communication method */
-const int MDI_LINK    = 3;
+const int MDI_LINK   = MDI_LINK_;
 /*! \brief Test communication method */
-const int MDI_TEST   = 4;
+const int MDI_TEST   = MDI_TEST_;
 
 // MDI role types
 /*! \brief Driver role type */
-const int MDI_DRIVER    = 1;
+const int MDI_DRIVER    = MDI_DRIVER_;
 /*! \brief Engine role type */
-const int MDI_ENGINE    = 2;
+const int MDI_ENGINE    = MDI_ENGINE_;
+
+
+/*! \brief Initialize communication through the MDI library
+ *
+ * If using the "-method MPI" option, this function must be called by all ranks.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in, out]  argc
+ *                   Pointer to the number of arguments.
+ * \param [in, out]  argv
+ *                   Pointer to the argument vector.
+ */
+int MDI_Init(int* argc, char*** argv)
+{
+  int argc_in = *argc;
+  char** argv_in = *argv;
+
+  // Extract the mdi options
+  int iarg;
+  int mdi_iarg = -1;
+  for (iarg=0; iarg < argc_in; iarg++) {
+    if (strcmp(argv_in[iarg],"-mdi") == 0) {
+      mdi_iarg = iarg;
+    }
+    else if (strcmp(argv_in[iarg],"--mdi") == 0) {
+      mdi_iarg = iarg;
+    }
+  }
+  if ( mdi_iarg > argc_in - 2 ) {
+    mdi_error("No argument to the -mdi option was provided");
+    return 1;
+  }
+
+  if ( mdi_iarg >= 0 ) {
+    // Initialize MDI
+    int ret = general_init(argv_in[mdi_iarg + 1]);
+    if ( ret == 0 ) {
+      is_initialized = 1;
+    }
+    return ret;
+
+    // deallocate the memory for the -mdi option
+    free(argv_in[mdi_iarg]);
+    free(argv_in[mdi_iarg + 1]);
+
+    // pass out argc and argv, without the mdi-related options
+    *argc = argc_in - 2;
+    for (iarg=mdi_iarg+2; iarg < argc_in; iarg++) {
+      *argv[iarg - 2] = argv_in[iarg];
+    }
+  }
+  else {
+    // The -mdi argument was not provided, so don't initialize
+    return 0;
+  }
+}
 
 
 /*! \brief Initialize communication through the MDI library
@@ -93,20 +167,26 @@ const int MDI_ENGINE    = 2;
  *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
  *                   Only used if the "-method MPI" option is provided.
  */
-int MDI_Init(const char* options, void* world_comm)
+int MDI_Init_with_options(const char* options)
 {
-  /*
-  if ( is_initialized == 1 ) {
-    mdi_error("MDI_Init called after MDI was already initialized");
-  }
-  */
-  int ret = general_init(options, world_comm);
+  int ret = general_init(options);
   if ( ret == 0 ) {
     is_initialized = 1;
   }
   return ret;
 }
 
+
+/*! \brief Indicates whether MDI_Init has been called
+ *
+ * \param [out]  flag
+ *                   Flag is true if and only if MDI_Init has been called.
+ */
+int MDI_Initialized(int* flag)
+{
+  *flag = is_initialized;
+  return 0;
+}
 
 /*! \brief Accept a new MDI communicator
  *
@@ -1404,7 +1484,7 @@ int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, char* name
 }
 
 
-/*! \brief Optain the MPI communicator that spans the single code corresponding to the calling rank
+/*! \brief Obtain the MPI communicator that spans the single code corresponding to the calling rank
  *
  * The function returns \p 0 on a success.
  *
@@ -1434,6 +1514,40 @@ int MDI_MPI_get_world_comm(void* world_comm)
   }
   else {
     mdi_error("MDI_MPI_get_world_comm was called by a code with an unrecognized language");
+  }
+
+  return 0;
+}
+
+
+/*! \brief Set the MPI communicator that spans the single code corresponding to the calling rank
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]  world_comm
+ *                   The MPI communicator that spans the single code corresponding to the calling rank.
+ */
+int MDI_MPI_set_world_comm(void* world_comm)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_MPI_set_world_comm called but MDI has not been initialized");
+    return 1;
+  }
+  code* this_code = get_code(current_code);
+
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+    mdi_error("MDI_MPI_set_world_comm was called by a Python code");
+  }
+  else if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Fint* f_comm_ptr = (MPI_Fint*) world_comm;
+    MPI_Comm c_comm = MPI_Comm_f2c( *f_comm_ptr );
+    this_code->intra_MPI_comm = c_comm;
+  }
+  else if ( this_code->language == MDI_LANGUAGE_C ) {
+    this_code->intra_MPI_comm = *(MPI_Comm*) world_comm;
+  }
+  else {
+    mdi_error("MDI_MPI_set_world_comm was called by a code with an unrecognized language");
   }
 
   return 0;

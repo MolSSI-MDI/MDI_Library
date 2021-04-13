@@ -39,10 +39,6 @@ MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 MDI_NAME_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_NAME_LENGTH").value
 MDI_LABEL_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_LABEL_LENGTH").value
 MDI_COMM_NULL = ctypes.c_int.in_dll(mdi, "MDI_COMM_NULL").value
-MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
-MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
-MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
-MDI_BYTE = ctypes.c_int.in_dll(mdi, "MDI_BYTE").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 MDI_LINK = ctypes.c_int.in_dll(mdi, "MDI_LINK").value
@@ -52,6 +48,21 @@ MDI_ENGINE = ctypes.c_int.in_dll(mdi, "MDI_ENGINE").value
 MDI_MAJOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MAJOR_VERSION").value
 MDI_MINOR_VERSION = ctypes.c_int.in_dll(mdi, "MDI_MINOR_VERSION").value
 MDI_PATCH_VERSION = ctypes.c_int.in_dll(mdi, "MDI_PATCH_VERSION").value
+
+# MDI Datatypes
+MDI_INT = ctypes.c_int.in_dll(mdi, "MDI_INT").value
+MDI_INT8_T = ctypes.c_int.in_dll(mdi, "MDI_INT8_T").value
+MDI_INT16_T = ctypes.c_int.in_dll(mdi, "MDI_INT16_T").value
+MDI_INT32_T = ctypes.c_int.in_dll(mdi, "MDI_INT32_T").value
+MDI_INT64_T = ctypes.c_int.in_dll(mdi, "MDI_INT64_T").value
+MDI_UINT8_T = ctypes.c_int.in_dll(mdi, "MDI_UINT8_T").value
+MDI_UINT16_T = ctypes.c_int.in_dll(mdi, "MDI_UINT16_T").value
+MDI_UINT32_T = ctypes.c_int.in_dll(mdi, "MDI_UINT32_T").value
+MDI_UINT64_T = ctypes.c_int.in_dll(mdi, "MDI_UINT64_T").value
+MDI_DOUBLE = ctypes.c_int.in_dll(mdi, "MDI_DOUBLE").value
+MDI_CHAR = ctypes.c_int.in_dll(mdi, "MDI_CHAR").value
+MDI_FLOAT = ctypes.c_int.in_dll(mdi, "MDI_FLOAT").value
+MDI_BYTE = ctypes.c_int.in_dll(mdi, "MDI_BYTE").value
 
 world_comm = None
 
@@ -114,12 +125,39 @@ def mpi4py_get_np_array(buf, count, datatype, mdi_comm):
     if datatype == MDI_INT:
         mpi_type = MPI.INT
         datasize = ctypes.sizeof( ctypes.c_int )
+    elif datatype == MDI_INT8_T:
+        mpi_type = MPI.INT8_T
+        datasize = ctypes.sizeof( ctypes.c_int8 )
+    elif datatype == MDI_INT16_T:
+        mpi_type = MPI.INT16_T
+        datasize = ctypes.sizeof( ctypes.c_int16 )
+    elif datatype == MDI_INT32_T:
+        mpi_type = MPI.INT32_T
+        datasize = ctypes.sizeof( ctypes.c_int32 )
+    elif datatype == MDI_INT64_T:
+        mpi_type = MPI.INT64_T
+        datasize = ctypes.sizeof( ctypes.c_int64 )
+    elif datatype == MDI_UINT8_T:
+        mpi_type = MPI.UINT8_T
+        datasize = ctypes.sizeof( ctypes.c_uint8 )
+    elif datatype == MDI_UINT16_T:
+        mpi_type = MPI.UINT16_T
+        datasize = ctypes.sizeof( ctypes.c_uint16 )
+    elif datatype == MDI_UINT32_T:
+        mpi_type = MPI.UINT32_T
+        datasize = ctypes.sizeof( ctypes.c_uint32 )
+    elif datatype == MDI_UINT64_T:
+        mpi_type = MPI.UINT64_T
+        datasize = ctypes.sizeof( ctypes.c_uint64 )
     elif datatype == MDI_DOUBLE:
         mpi_type = MPI.DOUBLE
         datasize = ctypes.sizeof( ctypes.c_double )
     elif datatype == MDI_CHAR:
         mpi_type = MPI.CHAR
         datasize = ctypes.sizeof( ctypes.c_char )
+    elif datatype == MDI_FLOAT:
+        mpi_type = MPI.FLOAT
+        datasize = ctypes.sizeof( ctypes.c_float )
     elif datatype == MDI_BYTE:
         mpi_type = MPI.BYTE
         datasize = ctypes.sizeof( ctypes.c_char )
@@ -426,11 +464,15 @@ def MDI_Get_python_plugin_mpi_world_ptr():
 
 
 # MDI_Init
-mdi.MDI_Init.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_void_p]
-mdi.MDI_Init.restype = ctypes.c_int
-def MDI_Init(arg1, comm):
+mdi.MDI_Init_with_options.argtypes = [ctypes.POINTER(ctypes.c_char)]
+mdi.MDI_Init_with_options.restype = ctypes.c_int
+def MDI_Init(arg1):
     global world_comm
     global intra_code_comm
+
+    comm = None
+    if use_mpi4py:
+        comm = MPI.COMM_WORLD
 
     # if this is a plugin code, get the plugin's MPI communicator
     plugin_mode = MDI_Get_plugin_mode()
@@ -485,26 +527,17 @@ def MDI_Init(arg1, comm):
         if not found_numpy:
             raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
-        # check if MDI was responsible for initializing MPI
-        if comm is None:
-            comm = MPI.COMM_WORLD
+    if use_mpi4py:
+        world_comm = comm
+        intra_code_comm = comm
+        mpi_communicator = MPI._addressof(comm)
+        mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
 
-    if comm is None:
-        mpi_communicator_ptr = None
-    else:
-        if use_mpi4py:
-            world_comm = comm
-            intra_code_comm = comm
-            mpi_communicator = MPI._addressof(comm)
-            mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
-
-            # send basic information about the MPI communicator to the MDI libarary
-            mpi_rank = comm.Get_rank()
-            mpi_world_size = comm.Get_size()
-            mdi.MDI_Set_World_Rank(mpi_rank)
-            mdi.MDI_Set_World_Size(mpi_world_size)
-        else:
-            raise Exception("MDI Error: An MPI communicator was passed to MPI_Init, but MPI4Py is not found")
+        # send basic information about the MPI communicator to the MDI libarary
+        mpi_rank = comm.Get_rank()
+        mpi_world_size = comm.Get_size()
+        mdi.MDI_Set_World_Rank(mpi_rank)
+        mdi.MDI_Set_World_Size(mpi_world_size)
 
     # set the MPI4Py callback functions
     set_mpi4py_recv_callback()
@@ -517,7 +550,7 @@ def MDI_Init(arg1, comm):
 
     # call MDI_Init
     command = arg1.encode('utf-8')
-    ret = mdi.MDI_Init(ctypes.c_char_p(command), mpi_communicator_ptr )
+    ret = mdi.MDI_Init_with_options(ctypes.c_char_p(command) )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")
 
@@ -526,6 +559,10 @@ def MDI_Init(arg1, comm):
 def MDI_MPI_get_world_comm():
     global intra_code_comm
     return intra_code_comm
+
+def MDI_MPI_set_world_comm(new_comm):
+    global intra_code_comm
+    intra_code_comm = new_comm
 
 # MDI_Accept_Communicator
 mdi.MDI_Accept_Communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]

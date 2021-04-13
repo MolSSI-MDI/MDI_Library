@@ -72,7 +72,7 @@ class MDIEngine:
             self.mpi_world = MPI.COMM_WORLD
 
         # Initialize the MDI Library
-        mdi.MDI_Init(mdi_options,self.mpi_world)
+        mdi.MDI_Init(mdi_options)
         if use_mpi4py:
             self.mpi_world = mdi.MDI_MPI_get_world_comm()
             self.world_rank = self.mpi_world.Get_rank()

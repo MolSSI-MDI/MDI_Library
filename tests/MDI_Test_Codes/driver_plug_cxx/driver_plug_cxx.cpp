@@ -63,10 +63,33 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
 
 
 int main(int argc, char **argv) {
+  int ret;
 
   // Initialize the MPI environment
   MPI_Comm world_comm;
   MPI_Init(&argc, &argv);
+
+  // Initialize MDI
+  ret = MDI_Init(&argc, &argv);
+  if ( ret != 0 ) {
+    throw std::runtime_error("The MDI library was not initialized correctly.");
+  }
+
+  // Confirm that MDI was initialized successfully
+  int initialized_mdi;
+  ret = MDI_Initialized(&initialized_mdi);
+  if ( ret != 0 ) {
+    throw std::runtime_error("MDI_Initialized failed.");
+  }
+  if ( ! initialized_mdi ) {
+    throw std::runtime_error("MDI not initialized: did you provide the -mdi option?.");
+  }
+
+  // Get the correct MPI intra-communicator for this code
+  ret = MDI_MPI_get_world_comm(&world_comm);
+  if ( ret != 0 ) {
+    throw std::runtime_error("MDI_MPI_get_world_comm failed.");
+  }
 
   // Number of ranks that will run the driver
   // This is the number of ranks that will NOT run plugin instances
@@ -83,29 +106,9 @@ int main(int argc, char **argv) {
 
   // Read through all the command line options
   int iarg = 1;
-  bool initialized_mdi = false;
   while ( iarg < argc ) {
 
-    if ( strcmp(argv[iarg],"-mdi") == 0 ) {
-
-      // Ensure that the argument to the -mdi option was provided
-      if ( argc-iarg < 2 ) {
-	mpi_error("The -mdi argument was not provided.");
-      }
-
-      // Initialize the MDI Library
-      world_comm = MPI_COMM_WORLD;
-      if ( MDI_Init(argv[iarg+1], &world_comm) != 0 ) {
-	mpi_error("MDI_Init returned non-zero exit code.");
-      }
-      if ( MDI_MPI_get_world_comm(&world_comm) != 0 ) {
-	mpi_error("MDI_MPI_get_world_comm returned non-zero exit code");
-      }
-      initialized_mdi = true;
-      iarg += 2;
-
-    }
-    else if ( strcmp(argv[iarg],"-driver_nranks") == 0 ) {
+    if ( strcmp(argv[iarg],"-driver_nranks") == 0 ) {
 
       // Ensure that the argument to the -driver_nranks option was provided
       if ( argc-iarg < 2 ) {
@@ -147,9 +150,6 @@ int main(int argc, char **argv) {
       mpi_error("Unrecognized option.");
     }
 
-  }
-  if ( not initialized_mdi ) {
-    mpi_error("The -mdi command line option was not provided.");
   }
 
   // Verify the value of driver_nranks

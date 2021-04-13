@@ -57,8 +57,17 @@ DllExport extern const MDI_Comm MDI_COMM_NULL;
 
 // MDI data types
 DllExport extern const int MDI_INT;
+DllExport extern const int MDI_INT8_T;
+DllExport extern const int MDI_INT16_T;
+DllExport extern const int MDI_INT32_T;
+DllExport extern const int MDI_INT64_T;
+DllExport extern const int MDI_UINT8_T;
+DllExport extern const int MDI_UINT16_T;
+DllExport extern const int MDI_UINT32_T;
+DllExport extern const int MDI_UINT64_T;
 DllExport extern const int MDI_DOUBLE;
 DllExport extern const int MDI_CHAR;
+DllExport extern const int MDI_FLOAT;
 DllExport extern const int MDI_BYTE;
 
 // MDI communication types
@@ -72,7 +81,9 @@ DllExport extern const int MDI_DRIVER;
 DllExport extern const int MDI_ENGINE;
 
 // functions for handling MDI communication
-DllExport int MDI_Init(const char* options, void* world_comm);
+DllExport int MDI_Init(int* argc, char ***argv);
+DllExport int MDI_Init_with_options(const char *options);
+DllExport int MDI_Initialized(int* flag);
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);
 DllExport int MDI_Accept_communicator(MDI_Comm* comm);
 DllExport int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
@@ -114,6 +125,7 @@ DllExport int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, 
 
 // functions for handling MPI in combination with MDI
 DllExport int MDI_MPI_get_world_comm(void* world_comm);
+DllExport int MDI_MPI_set_world_comm(void* world_comm);
 
 // functions for managing callback functions (used only with the LINK communication method)
 DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,

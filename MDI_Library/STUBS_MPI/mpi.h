@@ -14,7 +14,16 @@ typedef int MPI_Fint;
 #define MPI_COMM_WORLD 0
 #define MPI_COMM_NULL 1
 #define MPI_INT 1
+#define MPI_INT8_T 10
+#define MPI_INT16_T 11
+#define MPI_INT32_T 12
+#define MPI_INT64_T 13
+#define MPI_UINT8_T 14
+#define MPI_UINT16_T 15
+#define MPI_UINT32_T 16
+#define MPI_UINT64_T 17
 #define MPI_DOUBLE 4
+#define MPI_FLOAT 40
 #define MPI_CHAR 5
 #define MPI_BYTE 6
 

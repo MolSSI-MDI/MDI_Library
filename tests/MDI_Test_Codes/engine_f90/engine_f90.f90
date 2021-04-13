@@ -23,7 +23,7 @@ PROGRAM ENGINE_F90
 
          ! Initialize the MDI Library
          world_comm = MPI_COMM_WORLD
-         CALL MDI_Init( mdi_options, world_comm, ierr)
+         CALL MDI_Init( mdi_options, ierr)
          CALL MDI_MPI_get_world_comm( world_comm, ierr )
 
          EXIT

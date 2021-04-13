@@ -256,6 +256,8 @@ int tcp_accept_connection() {
  *                   2: The body (data) of a message.
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
+  int ret;
+  
   // only send from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -272,25 +274,12 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
 
   // determine the byte size of the data type being sent
   size_t datasize;
+  MDI_Datatype basetype;
+  ret = datatype_info(datatype, &datasize, &basetype);
+  if ( ret != 0 ) { return ret; }
+
   n = 0;
   size_t total_sent = 0;
-  if (datatype == MDI_INT) {
-    datasize = sizeof(int);
-  }
-  else if (datatype == MDI_DOUBLE) {
-    datasize = sizeof(double);
-  }
-  else if (datatype == MDI_CHAR) {
-    datasize = sizeof(char);
-  }
-  else if (datatype == MDI_BYTE) {
-    datasize = sizeof(char);
-  }
-  else {
-    mdi_error("MDI data type not recognized in tcp_send"); 
-    return 1;
-  }
-
   while ( n >= 0 && total_sent < count_t*datasize ) {
 #ifdef _WIN32
     n = send(this->sockfd, (char*)buf+total_sent, (int)(count_t*datasize-total_sent), 0);
@@ -326,6 +315,8 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
  *                   2: The body (data) of a message.
  */
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
+  int ret;
+  
   // only recv from rank 0
   code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
@@ -342,22 +333,9 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
 
   // determine the byte size of the data type being sent
   size_t datasize;
-  if (datatype == MDI_INT) {
-    datasize = sizeof(int);
-  }
-  else if (datatype == MDI_DOUBLE) {
-    datasize = sizeof(double);
-  }
-  else if (datatype == MDI_CHAR) {
-    datasize = sizeof(char);
-  }
-  else if (datatype == MDI_BYTE) {
-    datasize = sizeof(char);
-  }
-  else {
-    mdi_error("MDI data type not recognized in tcp_recv");
-    return 1;
-  }
+  MDI_Datatype basetype;
+  ret = datatype_info(datatype, &datasize, &basetype);
+  if ( ret != 0 ) { return ret; }
 
 #ifdef _WIN32
   n = nr = recv(this->sockfd,(char*)buf,(int)(count_t*datasize),0);
