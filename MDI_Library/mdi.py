@@ -567,12 +567,14 @@ def MDI_MPI_set_world_comm(new_comm):
 # MDI_Accept_Communicator
 mdi.MDI_Accept_Communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Accept_Communicator.restype = ctypes.c_int
-def MDI_Accept_Communicator():
+def MDI_Accept_communicator():
     comm = ctypes.c_int()
     ret = mdi.MDI_Accept_Communicator(ctypes.byref(comm))
     if ret != 0:
         raise Exception("MDI Error: MDI_Accept_Communicator failed")
     return comm.value
+def MDI_Accept_Communicator():
+    return MDI_Accept_communicator()
 
 # MDI_Send
 mdi.MDI_Send.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.c_int]
@@ -694,16 +696,18 @@ def MDI_Recv(arg2, arg3, arg4, buf = None):
 # MDI_Send_Command
 mdi.MDI_Send_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Send_Command.restype = ctypes.c_int
-def MDI_Send_Command(arg1, arg2):
+def MDI_Send_command(arg1, arg2):
     command = arg1.encode('utf-8')
     ret = mdi.MDI_Send_Command(ctypes.c_char_p(command), arg2)
     if ret != 0:
         raise Exception("MDI Error: MDI_Send_Command failed")
+def MDI_Send_Command(arg1, arg2):
+    return MDI_Send_command(arg1, arg2)
 
 # MDI_Recv_Command
 mdi.MDI_Recv_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int]
 mdi.MDI_Recv_Command.restype = ctypes.c_int
-def MDI_Recv_Command(arg2): 
+def MDI_Recv_command(arg2): 
     arg_size = ctypes.sizeof(ctypes.c_char)
     arg1 = (ctypes.c_char*(MDI_COMMAND_LENGTH*arg_size))()
 
@@ -720,11 +724,13 @@ def MDI_Recv_Command(arg2):
         delete_code_state(arg2)
 
     return presult
+def MDI_Recv_Command(arg2):
+    return MDI_Recv_command(arg2)
 
 # MDI_Conversion_Factor
 mdi.MDI_Conversion_Factor.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_double)]
 mdi.MDI_Conversion_Factor.restype = ctypes.c_int
-def MDI_Conversion_Factor(arg1, arg2):
+def MDI_Conversion_factor(arg1, arg2):
     in_unit = arg1.encode('utf-8')
     out_unit = arg2.encode('utf-8')
     conversion = ctypes.c_double()
@@ -732,16 +738,20 @@ def MDI_Conversion_Factor(arg1, arg2):
     if ret != 0:
         raise Exception("MDI Error: MDI_Conversion_Factor failed")
     return conversion.value
+def MDI_Conversion_Factor(arg1, arg2):
+    return MDI_Conversion_factor(arg1, arg2)
 
 # MDI_Get_Role
 mdi.MDI_Get_Role.argtypes = [ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Get_Role.restype = ctypes.c_int
-def MDI_Get_Role():
+def MDI_Get_role():
     role = ctypes.c_int()
     ret = mdi.MDI_Get_Role(ctypes.byref(role))
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_Role failed")
     return role.value
+def MDI_Get_Role():
+    return MDI_Get_role()
 
 
 #####################################
@@ -770,7 +780,7 @@ execute_command_func_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes
 MDI_Execute_Command_c = execute_command_func_type( MDI_Execute_Command_py )
 mdi.MDI_Set_Execute_Command_Func.argtypes = [execute_command_func_type, ctypes.c_void_p]
 mdi.MDI_Set_Execute_Command_Func.restype = ctypes.c_int
-def MDI_Set_Execute_Command_Func(func, class_obj):
+def MDI_Set_execute_command_func(func, class_obj):
     global execute_command_dict
 
     current_code = MDI_Get_Current_Code()
@@ -784,6 +794,8 @@ def MDI_Set_Execute_Command_Func(func, class_obj):
     ret = mdi.MDI_Set_Execute_Command_Func( MDI_Execute_Command_c, class_obj_pointer )
     if ret != 0:
         raise Exception("MDI Error: MDI_Set_Execute_Command_Func failed")
+def MDI_Set_Execute_Command_Func(func, class_obj):
+    return MDI_Set_execute_command_func(func, class_obj)
 
 
 
@@ -793,18 +805,20 @@ def MDI_Set_Execute_Command_Func(func, class_obj):
 # MDI_Register_Node
 mdi.MDI_Register_Node.argtypes = [ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Register_Node.restype = ctypes.c_int
-def MDI_Register_Node(arg1):
+def MDI_Register_node(arg1):
     node = arg1.encode('utf-8')
     ret = mdi.MDI_Register_Node(ctypes.c_char_p(node))
     if ret != 0:
         raise Exception("MDI Error: MDI_Register_Node failed")
 
     return ret
+def MDI_Register_Node(arg1):
+    return MDI_Register_node(arg1)
 
 # MDI_Check_Node_Exists
 mdi.MDI_Check_Node_Exists.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Check_Node_Exists.restype = ctypes.c_int
-def MDI_Check_Node_Exists(arg1, arg2):
+def MDI_Check_node_exists(arg1, arg2):
     node = arg1.encode('utf-8')
 
     arg_size = ctypes.sizeof(ctypes.c_int)
@@ -816,11 +830,13 @@ def MDI_Check_Node_Exists(arg1, arg2):
     flag_cast = ctypes.cast(flag, ctypes.POINTER(ctypes.c_int)).contents
 
     return flag_cast.value
+def MDI_Check_Node_Exists(arg1, arg2):
+    return MDI_Check_node_exists(arg1, arg2)
 
 # MDI_Get_NNodes
 mdi.MDI_Get_NNodes.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Get_NNodes.restype = ctypes.c_int
-def MDI_Get_NNodes(arg2):
+def MDI_Get_nnodes(arg2):
     arg_size = ctypes.sizeof(ctypes.c_int)
     nnodes = (ctypes.c_int*arg_size)()
 
@@ -830,11 +846,13 @@ def MDI_Get_NNodes(arg2):
     nnodes_cast = ctypes.cast(nnodes, ctypes.POINTER(ctypes.c_int)).contents
 
     return nnodes_cast.value
+def MDI_Get_NNodes(arg2):
+    return MDI_Get_nnodes(arg2)
 
 # MDI_Get_Node
 mdi.MDI_Get_Node.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Get_Node.restype = ctypes.c_int
-def MDI_Get_Node(index, arg2): 
+def MDI_Get_node(index, arg2): 
     arg_size = ctypes.sizeof(ctypes.c_char)
     node_name = (ctypes.c_char*(MDI_COMMAND_LENGTH*arg_size))()
 
@@ -846,11 +864,13 @@ def MDI_Get_Node(index, arg2):
     presult = ctypes.cast(result, ctypes.c_char_p).value
     presult = presult.decode('utf-8')
     return presult
+def MDI_Get_Node(index, arg2):
+    return MDI_Get_node(index, arg2)
 
 # MDI_Register_Command
 mdi.MDI_Register_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Register_Command.restype = ctypes.c_int
-def MDI_Register_Command(arg1, arg2):
+def MDI_Register_command(arg1, arg2):
     node = arg1.encode('utf-8')
     command = arg2.encode('utf-8')
     ret = mdi.MDI_Register_Command(ctypes.c_char_p(node), ctypes.c_char_p(command))
@@ -858,11 +878,13 @@ def MDI_Register_Command(arg1, arg2):
         raise Exception("MDI Error: MDI_Get_Callback failed")
 
     return ret
+def MDI_Register_Command(arg1, arg2):
+    return MDI_Register_command(arg1, arg2)
 
 # MDI_Check_Command_Exists
 mdi.MDI_Check_Command_Exists.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Check_Command_Exists.restype = ctypes.c_int
-def MDI_Check_Command_Exists(arg1, command_name, arg2):
+def MDI_Check_command_exists(arg1, command_name, arg2):
     node = arg1.encode('utf-8')
     command = command_name.encode('utf-8')
 
@@ -875,11 +897,13 @@ def MDI_Check_Command_Exists(arg1, command_name, arg2):
     flag_cast = ctypes.cast(flag, ctypes.POINTER(ctypes.c_int)).contents
 
     return flag_cast.value
+def MDI_Check_Command_Exists(arg1, command_name, arg2):
+    return MDI_Check_command_exists(arg1, command_name, arg2)
 
 # MDI_Get_NCommands
 mdi.MDI_Get_NCommands.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Get_NCommands.restype = ctypes.c_int
-def MDI_Get_NCommands(arg1, arg2):
+def MDI_Get_ncommands(arg1, arg2):
     node = arg1.encode('utf-8')
 
     arg_size = ctypes.sizeof(ctypes.c_int)
@@ -891,11 +915,13 @@ def MDI_Get_NCommands(arg1, arg2):
     ncommands_cast = ctypes.cast(ncommands, ctypes.POINTER(ctypes.c_int)).contents
 
     return ncommands_cast.value
+def MDI_Get_NCommands(arg1, arg2):
+    return MDI_Get_ncommands(arg1, arg2)
 
 # MDI_Get_Command
 mdi.MDI_Get_Command.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Get_Command.restype = ctypes.c_int
-def MDI_Get_Command(node_name, index, arg2): 
+def MDI_Get_command(node_name, index, arg2): 
     node = node_name.encode('utf-8')
 
     arg_size = ctypes.sizeof(ctypes.c_char)
@@ -906,11 +932,13 @@ def MDI_Get_Command(node_name, index, arg2):
         raise Exception("MDI Error: MDI_Get_Command failed")
 
     return c_ptr_to_py_str(command_name, MDI_COMMAND_LENGTH)
+def MDI_Get_Command(node_name, index, arg2):
+    return MDI_Get_command(node_name, index, arg2)
 
 # MDI_Register_Callback
 mdi.MDI_Register_Callback.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Register_Callback.restype = ctypes.c_int
-def MDI_Register_Callback(arg1, arg2):
+def MDI_Register_callback(arg1, arg2):
     node = arg1.encode('utf-8')
     callback = arg2.encode('utf-8')
     ret =  mdi.MDI_Register_Callback(ctypes.c_char_p(node), ctypes.c_char_p(callback))
@@ -918,11 +946,13 @@ def MDI_Register_Callback(arg1, arg2):
         raise Exception("MDI Error: MDI_Register_Callback failed")
 
     return ret
+def MDI_Register_Callback(arg1, arg2):
+    return MDI_Register_callback(arg1, arg2)
 
 # MDI_Check_Callback_Exists
 mdi.MDI_Check_Callback_Exists.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Check_Callback_Exists.restype = ctypes.c_int
-def MDI_Check_Callback_Exists(arg1, callback_name, arg2):
+def MDI_Check_callback_exists(arg1, callback_name, arg2):
     node = arg1.encode('utf-8')
     callback = callback_name.encode('utf-8')
 
@@ -935,11 +965,13 @@ def MDI_Check_Callback_Exists(arg1, callback_name, arg2):
     flag_cast = ctypes.cast(flag, ctypes.POINTER(ctypes.c_int)).contents
 
     return flag_cast.value
+def MDI_Check_Callback_Exists(arg1, callback_name, arg2):
+    return MDI_Check_callback_exists(arg1, callback_name, arg2)
 
 # MDI_Get_NCallbacks
 mdi.MDI_Get_NCallbacks.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Get_NCallbacks.restype = ctypes.c_int
-def MDI_Get_NCallbacks(arg1, arg2):
+def MDI_Get_ncallbacks(arg1, arg2):
     node = arg1.encode('utf-8')
 
     arg_size = ctypes.sizeof(ctypes.c_int)
@@ -951,11 +983,13 @@ def MDI_Get_NCallbacks(arg1, arg2):
     ncallbacks_cast = ctypes.cast(ncallbacks, ctypes.POINTER(ctypes.c_int)).contents
 
     return ncallbacks_cast.value
+def MDI_Get_NCallbacks(arg1, arg2):
+    return MDI_Get_ncallbacks(arg1, arg2)
 
 # MDI_Get_Callback
 mdi.MDI_Get_Callback.argtypes = [ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Get_Callback.restype = ctypes.c_int
-def MDI_Get_Callback(node_name, index, arg2): 
+def MDI_Get_callback(node_name, index, arg2): 
     node = node_name.encode('utf-8')
 
     arg_size = ctypes.sizeof(ctypes.c_char)
@@ -966,3 +1000,5 @@ def MDI_Get_Callback(node_name, index, arg2):
         raise Exception("MDI Error: MDI_Get_Callback failed")
 
     return c_ptr_to_py_str(callback_name, MDI_COMMAND_LENGTH)
+def MDI_Get_Callback(node_name, index, arg2):
+    return MDI_Get_callback(node_name, index, arg2)
