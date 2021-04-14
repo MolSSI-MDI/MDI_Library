@@ -5,7 +5,7 @@ If you just want a quick tl;dr summary of the minimum steps involved in implemen
 \begin{DoxyEnumerate}
 \item If your engine is written in a compiled language, build and link your engine against M\+DI just like any other library. If it is written in Python, just import the M\+DI Library.
 \item Add a way for end-\/users of your engine to send runtime options to the M\+DI Library, preferably through a {\ttfamily -\/mdi} command-\/line option.
-\item Call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}} as early as possible in your engine.
+\item Call {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}} as early as possible in your engine.
 \item Add some server-\/like code that allows your engine to listen for commands via M\+DI and respond to them appropriately.
 \item If your engine uses the Message Passing Interface (M\+PI), be aware that the M\+DI Library provides a replacement for M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD, and that some M\+DI functions should only be called by {\ttfamily rank 0}.
 \end{DoxyEnumerate}
@@ -158,10 +158,10 @@ Your code should allow users to set certain M\+DI parameters at runtime. Typical
  The details of how you read this command-\/line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-\/line options. The argument to the {\ttfamily -\/mdi} command-\/line option should be represented as a {\ttfamily char$\ast$} in C++, a {\ttfamily C\+H\+A\+R\+A\+C\+T\+ER} array in Fortran, and a {\ttfamily String} in Python. Subsequent steps in this tutorial will assume that you have named the corresponding variable {\ttfamily mdi\+\_\+options}.
 
 We understand that some codes prefer to eschew command-\/line options where possible. If it is preferable not to introduce support for a {\ttfamily -\/mdi} command-\/line option, ensure that there is some other mechanism for the user to provide the M\+DI parameters at runtime.\hypertarget{engine_tutorial_engine_tutorial_init}{}\doxysection{Step 10\+: Initialize the M\+D\+I Library}\label{engine_tutorial_engine_tutorial_init}
-Your code must initialize the M\+DI Library by calling the {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function. This is a straightforward process, but there are a couple of important details to keep in mind if you are using both M\+DI and the Message Passing Interface (M\+PI)\+:
+Your code must initialize the M\+DI Library by calling the {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} function. This is a straightforward process, but there are a couple of important details to keep in mind if you are using both M\+DI and the Message Passing Interface (M\+PI)\+:
 \begin{DoxyItemize}
-\item If your code uses M\+PI, you should call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} after the call to {\ttfamily M\+P\+I\+\_\+\+Init()} (or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}, if applicable). Aside from the restriction, {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} should be called as early in your code as possible. It is a best practice to call {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} immediately after calling {\ttfamily M\+P\+I\+\_\+\+Init()}. Calling M\+PI functions (other than {\ttfamily M\+P\+I\+\_\+\+Init()} or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}) before calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} will lead to bugs.
-\item One of the required arguments to the {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function is an M\+PI intra-\/communicator. Upon calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, this intra-\/communicator must correspond to the intra-\/communicator that includes all global ranks ({\itshape e.\+g.}, {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}). The {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}} function will then perform an {\ttfamily M\+P\+I\+\_\+\+Comm\+\_\+split()} operation to obtain an inter-\/communicator that includes only ranks associated with your engine. As an engine developer, you should {\bfseries{never}} perform M\+PI operations involving {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}. Instead, use the intra-\/communicator that is provided by the M\+DI Library whenever you would have otherwise used {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}. You should replace any existing references to {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD} in your code with a reference to the intra-\/communicator obtained from calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}.
+\item If your code uses M\+PI, you should call {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} after the call to {\ttfamily M\+P\+I\+\_\+\+Init()} (or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}, if applicable). Aside from the restriction, {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} should be called as early in your code as possible. It is a best practice to call {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} immediately after calling {\ttfamily M\+P\+I\+\_\+\+Init()}. Calling M\+PI functions (other than {\ttfamily M\+P\+I\+\_\+\+Init()} or {\ttfamily M\+P\+I\+\_\+\+Init\+\_\+thread()}) before calling {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} can lead to bugs.
+\item Immediately following the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}, the {\ttfamily \mbox{\hyperlink{mdi_8c_a1792db6705a7032640af46d5b05d23f4}{M\+D\+I\+\_\+\+M\+P\+I\+\_\+get\+\_\+world\+\_\+comm()}}} function should be called. This function accepts a pointer to an M\+PI communicator as its only argument. Upon return, this pointer will point to an M\+PI intra-\/communicator that spans all ranks associated with your engine. This intra-\/communicator should be used whenever you would otherwise use {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD}. You should {\bfseries{never}} perform M\+PI operations involving {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD} in an M\+D\+I-\/enabled code, as {\ttfamily M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD} will in certain contexts span ranks that are not associated with your engine, but which are instead associated with the driver or other engines.
 \end{DoxyItemize}
 
 The following code snippets provide a guide to correctly initializing M\+DI and M\+PI together in C++, Fortran, and Python.
@@ -183,7 +183,7 @@ The following code snippets provide a guide to correctly initializing M\+DI and 
 \DoxyCodeLine{MPI\_Comm world\_comm;}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{/* Pointer to world\_comm */}}
-\DoxyCodeLine{MPI\_Comm *world\_comm\_ptr = \&world\_comm;}
+\DoxyCodeLine{MPI\_Comm *world\_comm\_ptr;}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{/* MDI communicator used to communicate with the driver */}}
 \DoxyCodeLine{MDI\_Comm mdi\_comm = \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{MDI\_COMM\_NULL}};}
@@ -192,31 +192,28 @@ The following code snippets provide a guide to correctly initializing M\+DI and 
 \DoxyCodeLine{\textcolor{keywordtype}{int} myrank = 0;}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{/* Function to initialize both MPI and MDI */}}
-\DoxyCodeLine{initialize(\textcolor{keywordtype}{char} *mdi\_options, MPI\_Comm *world\_comm\_ptr) \{}
+\DoxyCodeLine{initialize(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv) \{}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{/* If using MPI, it should be initialized before MDI */}}
-\DoxyCodeLine{  MPI\_Init();}
-\DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{/* Set the value of world\_comm}}
-\DoxyCodeLine{\textcolor{comment}{     Note: if you are not using MPI, set world\_comm to MDI\_COMM\_NULL instead */}}
-\DoxyCodeLine{  *world\_comm\_ptr = MPI\_COMM\_WORLD;}
+\DoxyCodeLine{  MPI\_Init(\&argc, \&argv);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{/* MDI should be initialized immediately after MPI */}}
-\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{MDI\_Init}}(mdi\_options, world\_comm\_ptr);}
-\DoxyCodeLine{  \textcolor{comment}{/* Following this point, world\_comm should be used whenever you would otherwise have used MPI\_COMM\_WORLD */}}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{MDI\_Init}}(\&argc, \&argv);}
+\DoxyCodeLine{  \mbox{\hyperlink{mdi_8c_a1792db6705a7032640af46d5b05d23f4}{MDI\_MPI\_get\_world\_comm}}(world\_comm\_ptr);}
+\DoxyCodeLine{  \textcolor{comment}{/* Following this point, *world\_comm\_ptr should be used whenever you would otherwise have used MPI\_COMM\_WORLD */}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{/* Get the rank of this process, within the MDI-\/created intra-\/communicator */}}
-\DoxyCodeLine{  MPI\_Comm\_rank(world\_comm, my\_rank);}
+\DoxyCodeLine{  MPI\_Comm\_rank(*world\_comm\_ptr, my\_rank);}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{/* Accept a connection from an external driver */}}
 \DoxyCodeLine{  \textcolor{keywordflow}{if} ( my\_rank == 0 ) \{}
-\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{MDI\_Accept\_Communicator}}(\&mdi\_comm);}
+\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{MDI\_Accept\_communicator}}(\&mdi\_comm);}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{\}}
 \end{DoxyCode}
 
 
-After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
+After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
 
  
 \begin{DoxyCode}{0}
@@ -239,7 +236,7 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(OUT)} :: my\_rank}
 \DoxyCodeLine{    \textcolor{comment}{!}}
-\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_Communicator}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_communicator}}
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(OUT)} :: mdi\_comm}
 \DoxyCodeLine{    \textcolor{comment}{!}}
@@ -251,15 +248,11 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keyword}{CALL }mpi\_init(ierr)}
 \DoxyCodeLine{    \textcolor{comment}{!}}
-\DoxyCodeLine{    \textcolor{comment}{! Set the value of world\_comm}}
-\DoxyCodeLine{    \textcolor{comment}{! Note: if you are not using MPI, set world\_comm to MDI\_COMM\_NULL instead}}
-\DoxyCodeLine{    \textcolor{comment}{!}}
-\DoxyCodeLine{    world\_comm = mpi\_comm\_world}
-\DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{comment}{! MDI should be initialized immediately after MPI}}
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keywordflow}{IF} ( \textcolor{keyword}{PRESENT}(mdi\_options) ) \textcolor{keywordflow}{THEN}}
-\DoxyCodeLine{        \textcolor{keyword}{CALL }mdi\_init(mdi\_options, world\_comm, ierr)}
+\DoxyCodeLine{        \textcolor{keyword}{CALL }mdi\_init(mdi\_options, ierr)}
+\DoxyCodeLine{    \textcolor{keyword}{CALL }mdi\_mpi\_get\_world\_comm(world\_comm)}
 \DoxyCodeLine{\textcolor{keywordflow}{    END IF}}
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{comment}{! Following this point, world\_comm should be used whenever you would otherwise have used MPI\_COMM\_WORLD}}
@@ -278,7 +271,7 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de
 \end{DoxyCode}
 
 
-After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
+After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}, you should recompile the code to confirm that your executable is linked to the M\+PI Library.
 
 
 
@@ -294,23 +287,12 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de
 \DoxyCodeLine{\textcolor{keywordflow}{except} ImportError:}
 \DoxyCodeLine{    use\_mpi4py = \textcolor{keyword}{False}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{\# MPI intra-\/communicator for all processes running this code}}
-\DoxyCodeLine{\textcolor{comment}{\# It should be set to MPI.COMM\_WORLD prior to the call to MDI\_Init(), as shown below}}
-\DoxyCodeLine{\textcolor{comment}{\# Afterwards, you should ALWAYS use this variable instead of MPI.COMM\_WORLD}}
-\DoxyCodeLine{\textcolor{keywordflow}{if} use\_mpi4py:}
-\DoxyCodeLine{    world\_comm = MPI.COMM\_WORLD}
-\DoxyCodeLine{\textcolor{keywordflow}{else}:}
-\DoxyCodeLine{    world\_comm = \textcolor{keywordtype}{None}}
-\DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{\# Get the command-\/line options for MDI}}
 \DoxyCodeLine{...}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{\# Initialize MDI}}
-\DoxyCodeLine{mdi.MDI\_Init(mdi\_options, world\_comm)}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{\# Set world\_comm to the correct intra-\/code MPI communicator}}
-\DoxyCodeLine{world\_comm = MDI\_Get\_Intra\_Code\_MPI\_Comm()}
-\DoxyCodeLine{\textcolor{comment}{\# Following this point, world\_comm should be used whenever you would otherwise have used MPI.COMM\_WORLD}}
+\DoxyCodeLine{mdi.MDI\_Init(mdi\_options)}
+\DoxyCodeLine{world\_comm = mdi.MDI\_MPI\_get\_world\_comm()}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{\# Get the MPI rank of this process}}
 \DoxyCodeLine{\textcolor{keywordflow}{if} world\_comm \textcolor{keywordflow}{is} \textcolor{keywordflow}{not} \textcolor{keywordtype}{None}:}
@@ -320,12 +302,12 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{\# Accept a connection from an external driver}}
 \DoxyCodeLine{\textcolor{keywordflow}{if} my\_rank == 0:}
-\DoxyCodeLine{    mdi\_comm = \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{MDI\_Accept\_Communicator}}()}
+\DoxyCodeLine{    mdi\_comm = \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{MDI\_Accept\_communicator}}()}
 \end{DoxyCode}
 
 
 \hypertarget{engine_tutorial_engine_tutorial_comm}{}\doxysection{Step 11\+: Support Basic M\+D\+I Communication}\label{engine_tutorial_engine_tutorial_comm}
-In this step, we are going to introduce some basic code that will finally allow external drivers to connect to your code and ask it to do useful things for them. First, identify a point in your code when it would be appropriate for the code to accept instructions (in the form of M\+DI commands) from an external driver. The chosen point should occur after your code has completed basic initialization operations (reading input files, doing basic system setup, calling {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}, {\itshape etc.}). It should also be practical to implement support for a reasonable number of M\+DI commands at whatever point you select. The \href{https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html}{\texttt{ M\+DI Standard}} defines numerous commands that driver developers might want to send to your code. You won\textquotesingle{}t need to support all of the available commands, but it is advisable to support some of the more common commands, such as commands that request or change the nuclear coordinates ({\ttfamily $<$C\+O\+O\+R\+DS} and {\ttfamily $>$C\+O\+O\+R\+DS}, respectively), as well as commands that request the energy ({\ttfamily $<$E\+N\+E\+R\+GY}) number of atoms ({\ttfamily $<$N\+A\+T\+O\+MS}), or ({\ttfamily $<$F\+O\+R\+C\+ES}). Try to select a point where it will be possible to fulfill some of these requests. When in doubt, select a point that is reached early in your code\textquotesingle{}s execution. This tutorial will subsequently refer to the point you have selected as the {\bfseries{M\+DI node}}.
+In this step, we are going to introduce some basic code that will finally allow external drivers to connect to your code and ask it to do useful things for them. First, identify a point in your code when it would be appropriate for the code to accept instructions (in the form of M\+DI commands) from an external driver. The chosen point should occur after your code has completed basic initialization operations (reading input files, doing basic system setup, calling {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}, {\itshape etc.}). It should also be practical to implement support for a reasonable number of M\+DI commands at whatever point you select. The \href{https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html}{\texttt{ M\+DI Standard}} defines numerous commands that driver developers might want to send to your code. You won\textquotesingle{}t need to support all of the available commands, but it is advisable to support some of the more common commands, such as commands that request or change the nuclear coordinates ({\ttfamily $<$C\+O\+O\+R\+DS} and {\ttfamily $>$C\+O\+O\+R\+DS}, respectively), as well as commands that request the energy ({\ttfamily $<$E\+N\+E\+R\+GY}) number of atoms ({\ttfamily $<$N\+A\+T\+O\+MS}), or ({\ttfamily $<$F\+O\+R\+C\+ES}). Try to select a point where it will be possible to fulfill some of these requests. When in doubt, select a point that is reached early in your code\textquotesingle{}s execution. This tutorial will subsequently refer to the point you have selected as the {\bfseries{M\+DI node}}.
 
 At the M\+DI node, you will need to insert some code (probably in the form of a called function) that handles the process of establishing communication with the external driver, accepting M\+DI commands from the driver, and responding to the commands appropriately. For the purpose of this tutorial, we will implement all of this functionality in a function called {\ttfamily run\+\_\+mdi()}. Examples of a minimalistic {\ttfamily run\+\_\+mdi()} function are provided below, in C++, Fortran, and Python. You can simply copy the function into your codebase and call {\ttfamily run\+\_\+mdi()} at your M\+DI node.
 
@@ -348,13 +330,13 @@ At the M\+DI node, you will need to insert some code (probably in the form of a 
 \DoxyCodeLine{  \textcolor{keywordflow}{while} (not exit\_flag) \{}
 \DoxyCodeLine{    \textcolor{comment}{/* Receive a command from the driver */}}
 \DoxyCodeLine{    \textcolor{keywordflow}{if} ( my\_rank == 0 ) \{}
-\DoxyCodeLine{      \mbox{\hyperlink{mdi_8c_ab03c0ea8beda690d6f796d3089cbfe15}{MDI\_Recv\_Command}}(command, mdi\_comm);}
+\DoxyCodeLine{      \mbox{\hyperlink{mdi_8c_a537752bd942b19cf0a2fd6adafb10a48}{MDI\_Recv\_command}}(command, mdi\_comm);}
 \DoxyCodeLine{    \}}
 \DoxyCodeLine{    MPI\_Bcast(command, \mbox{\hyperlink{mdi_8c_ae5fcebdb64c7844358e07e880bcb15c2}{MDI\_COMMAND\_LENGTH}}, MPI\_CHAR, 0, world\_comm);}
 \DoxyCodeLine{}
 \DoxyCodeLine{    \textcolor{comment}{/* Confirm that this command is actually supported at this node */}}
 \DoxyCodeLine{    \textcolor{keywordtype}{int} command\_supported = 0;}
-\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a013856347b9026a7eb01e7803b3dc9b5}{MDI\_Check\_Command\_Exists}}(node\_name, command, \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{MDI\_COMM\_NULL}}, \&command\_supported);}
+\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a748099153c09f719c3f1cf5965c9a457}{MDI\_Check\_command\_exists}}(node\_name, command, \mbox{\hyperlink{mdi_8c_a01e277b0239a7304055c883adb759280}{MDI\_COMM\_NULL}}, \&command\_supported);}
 \DoxyCodeLine{    \textcolor{keywordflow}{if} ( command\_supported != 1 ) \{}
 \DoxyCodeLine{      \textcolor{comment}{/* Note: Replace this with whatever error handling method your code uses */}}
 \DoxyCodeLine{      MPI\_Abort(world\_comm, 1);}
@@ -400,7 +382,7 @@ At the M\+DI node, you will need to insert some code (probably in the form of a 
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(IN)} :: world\_comm}
 \DoxyCodeLine{    \textcolor{comment}{!}}
-\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_Communicator}}
+\DoxyCodeLine{    \textcolor{comment}{! MDI communicator, obtained from MDI\_Accept\_communicator}}
 \DoxyCodeLine{    \textcolor{comment}{!}}
 \DoxyCodeLine{    \textcolor{keywordtype}{INTEGER}, \textcolor{keywordtype}{INTENT(IN)} :: mdi\_comm}
 \DoxyCodeLine{    \textcolor{comment}{!}}
@@ -477,7 +459,7 @@ At the M\+DI node, you will need to insert some code (probably in the form of a 
 \DoxyCodeLine{    \textcolor{keywordflow}{while} \textcolor{keywordflow}{not} exit\_flag:}
 \DoxyCodeLine{        \textcolor{comment}{\# Receive a command from the driver}}
 \DoxyCodeLine{        \textcolor{keywordflow}{if} self.my\_rank == 0:}
-\DoxyCodeLine{            command = mdi.MDI\_Recv\_Command(self.comm)}
+\DoxyCodeLine{            command = mdi.MDI\_Recv\_command(self.comm)}
 \DoxyCodeLine{        \textcolor{keywordflow}{else}:}
 \DoxyCodeLine{            command = \textcolor{keywordtype}{None}}
 \DoxyCodeLine{}
@@ -486,7 +468,7 @@ At the M\+DI node, you will need to insert some code (probably in the form of a 
 \DoxyCodeLine{            command = world\_comm.bcast(command, root=0)}
 \DoxyCodeLine{}
 \DoxyCodeLine{        \textcolor{comment}{\# Confirm that this command is actually supported at this node}}
-\DoxyCodeLine{        \textcolor{keywordflow}{if} \textcolor{keywordflow}{not} mdi.MDI\_Check\_Node\_Exists(node\_name, command):}
+\DoxyCodeLine{        \textcolor{keywordflow}{if} \textcolor{keywordflow}{not} mdi.MDI\_Check\_node\_exists(node\_name, command):}
 \DoxyCodeLine{            \textcolor{keywordflow}{raise} Exception(\textcolor{stringliteral}{'MDI Engine received unsupported command: '} + str(command))}
 \DoxyCodeLine{}
 \DoxyCodeLine{        \textcolor{comment}{\# Respond to the received command}}
@@ -500,19 +482,19 @@ At the M\+DI node, you will need to insert some code (probably in the form of a 
 
 
 \hypertarget{engine_tutorial_engine_tutorial_register}{}\doxysection{Step 12\+: Register the Node and Commands}\label{engine_tutorial_engine_tutorial_register}
-M\+DI requires you to \char`\"{}register\char`\"{} a list of all nodes and commands your engine supports. This allows you, as an engine developer, to inform any drivers of what your code can do. M\+DI provides two functions that allow you to do this\+: {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}}. The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command. As a result, we need to call {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} once to register the {\ttfamily @D\+E\+F\+A\+U\+LT} node and call {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} once to register the {\ttfamily E\+X\+IT} command.
+M\+DI requires you to \char`\"{}register\char`\"{} a list of all nodes and commands your engine supports. This allows you, as an engine developer, to inform any drivers of what your code can do. M\+DI provides two functions that allow you to do this\+: {\ttfamily \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}}. The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command. As a result, we need to call {\ttfamily \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node()}}} once to register the {\ttfamily @D\+E\+F\+A\+U\+LT} node and call {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} once to register the {\ttfamily E\+X\+IT} command.
 
-Fortunately, this is a very simple process. The only argument to the {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} function is the name of the node, {\ttfamily @D\+E\+F\+A\+U\+LT}. The {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} function accepts two arguments\+: the name of the node, and the name of the command that we are registering at that node, {\ttfamily E\+X\+IT}. In time, you may add support for additional commands at the default node, making additional calls to {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} for each newly supported command. If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the {\ttfamily @D\+E\+F\+A\+U\+LT} node.
+Fortunately, this is a very simple process. The only argument to the {\ttfamily \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node()}}} function is the name of the node, {\ttfamily @D\+E\+F\+A\+U\+LT}. The {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} function accepts two arguments\+: the name of the node, and the name of the command that we are registering at that node, {\ttfamily E\+X\+IT}. In time, you may add support for additional commands at the default node, making additional calls to {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} for each newly supported command. If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the {\ttfamily @D\+E\+F\+A\+U\+LT} node.
 
-For now, place the following code immediately after your engine\textquotesingle{}s call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{M\+D\+I\+\_\+\+Init()}}}. It is important that it be called prior to the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}}.
+For now, place the following code immediately after your engine\textquotesingle{}s call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}. It is important that it be called prior to the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}}.
 
 
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{/* Register all supported commands and nodes */}}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{MDI\_Register\_Node}}(\textcolor{stringliteral}{"@DEFAULT"});}
-\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{MDI\_Register\_Command}}(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"});}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{MDI\_Register\_node}}(\textcolor{stringliteral}{"@DEFAULT"});}
+\DoxyCodeLine{\mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{MDI\_Register\_command}}(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"});}
 \end{DoxyCode}
 
 
@@ -521,8 +503,8 @@ For now, place the following code immediately after your engine\textquotesingle{
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{! Register all supported commands and nodes}}
-\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_Node("@DEFAULT", ierr);}}
-\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_Command("@DEFAULT", "EXIT", ierr);}}
+\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_node("@DEFAULT", ierr);}}
+\DoxyCodeLine{\textcolor{comment}{CALL MDI\_Register\_command("@DEFAULT", "EXIT", ierr);}}
 \end{DoxyCode}
 
 
@@ -531,8 +513,8 @@ For now, place the following code immediately after your engine\textquotesingle{
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{\textcolor{comment}{\# Register all supported commands and nodes}}
-\DoxyCodeLine{mdi.MDI\_Register\_Node(\textcolor{stringliteral}{"@DEFAULT"})}
-\DoxyCodeLine{mdi.MDI\_Register\_Command(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"})}
+\DoxyCodeLine{mdi.MDI\_Register\_node(\textcolor{stringliteral}{"@DEFAULT"})}
+\DoxyCodeLine{mdi.MDI\_Register\_command(\textcolor{stringliteral}{"@DEFAULT"}, \textcolor{stringliteral}{"EXIT"})}
 \end{DoxyCode}
 
 
@@ -542,10 +524,10 @@ It may not look like much yet, but you have now established a basic M\+DI interf
 Assuming that your M\+DI interface is functioning as expected, you can now begin the process of implementing support for more commands. Whenever you want to add support for a new command, you will need to do the following\+:
 \begin{DoxyEnumerate}
 \item Add code to the \char`\"{}\+Main M\+D\+I loop\char`\"{} in {\ttfamily run\+\_\+mdi()} that will respond appropriately to the new command.
-\item Add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} to register support for that command.
+\item Add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} to register support for that command.
 \end{DoxyEnumerate}
 
 Examine the commands specified by the \href{https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html}{\texttt{ M\+DI Standard}}, and implement support for the ones that seem relevant for your engine. Each command in the M\+DI Standard describes exactly how the engine is expected to respond. Often, the engine is expected to either send or receive information to/from the driver. This is accomplished using the {\ttfamily \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}} functions, respectively.
 
 If you are using M\+PI, you should be aware that all M\+D\+I-\/based communication must take place through {\ttfamily rank 0}. Only {\ttfamily rank 0} should call {\ttfamily M\+P\+I\+\_\+\+Send()}, {\ttfamily M\+P\+I\+\_\+\+Recv()}, and {\ttfamily M\+P\+I\+\_\+\+Recv\+\_\+\+Command()}. Depending on how you have distributed data structures across ranks, you may need to do {\ttfamily M\+P\+I\+\_\+\+Gather()} or similar operations to collect the data onto {\ttfamily rank 0} before calling {\ttfamily \mbox{\hyperlink{mdi_8c_a7bebce6d5fa91ee99a34fdcc5dcaedea}{M\+D\+I\+\_\+\+Send()}}}. Likewise, you may need to do {\ttfamily M\+P\+I\+\_\+\+Scatter()} or similar operations to correctly distribute data after calling {\ttfamily \mbox{\hyperlink{mdi_8c_ab73f32323a155011fcc184866215ba03}{M\+D\+I\+\_\+\+Recv()}}}.\hypertarget{engine_tutorial_engine_tutorial_nodes}{}\doxysection{Step 14\+: Add Support for Additional Nodes}\label{engine_tutorial_engine_tutorial_nodes}
-Whenever you add a new node, you must also add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node()}}} to register support for that node. Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it. For example, if you implement five nodes, and each of them supports the {\ttfamily E\+X\+IT} command, you will need to call the {\ttfamily \mbox{\hyperlink{mdi_8c_a8eade50fb64b5bf5919b35cc2071952d}{M\+D\+I\+\_\+\+Register\+\_\+\+Command()}}} function five times, each time with a different node as the first argument and with {\ttfamily E\+X\+IT} as the second argument. 
+Whenever you add a new node, you must also add a call to {\ttfamily \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node()}}} to register support for that node. Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it. For example, if you implement five nodes, and each of them supports the {\ttfamily E\+X\+IT} command, you will need to call the {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} function five times, each time with a different node as the first argument and with {\ttfamily E\+X\+IT} as the second argument. 

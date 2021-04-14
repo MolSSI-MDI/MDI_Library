@@ -177,35 +177,23 @@ int main(int argc, char **argv) {
   MPI_Comm world_comm;
   MPI_Init(&argc, &argv);
 
-  // Read through all the command line options
-  int iarg = 1;
-  bool initialized_mdi = false;
-  while ( iarg < argc ) {
-
-    if ( strcmp(argv[iarg],"-mdi") == 0 ) {
-
-      // Ensure that the argument to the -mdi option was provided
-      if ( argc-iarg < 2 ) {
-        throw runtime_error("The -mdi argument was not provided.");
-      }
-
-      // Initialize the MDI Library
-      world_comm = MPI_COMM_WORLD;
-      int ret = MDI_Init(argv[iarg+1], &world_comm);
-      if ( ret != 0 ) {
-        throw runtime_error("The MDI library was not initialized correctly.");
-      }
-      initialized_mdi = true;
-      iarg += 2;
-
-    }
-    else {
-      throw runtime_error("Unrecognized option.");
-    }
-
+  // Initialize MDI
+  if ( MDI_Init(&argc, &argv) ) {
+    throw std::runtime_error("The MDI library was not initialized correctly.");
   }
-  if ( not initialized_mdi ) {
-    throw runtime_error("The -mdi command line option was not provided.");
+
+  // Confirm that MDI was initialized successfully
+  int initialized_mdi;
+  if ( MDI_Initialized(&initialized_mdi) ) {
+    throw std::runtime_error("MDI_Initialized failed.");
+  }
+  if ( ! initialized_mdi ) {
+    throw std::runtime_error("MDI not initialized: did you provide the -mdi option?.");
+  }
+
+  // Get the correct MPI intra-communicator for this code
+  if ( MDI_MPI_get_world_comm(&world_comm) ) {
+    throw std::runtime_error("MDI_MPI_get_world_comm failed.");
   }
 
   // Connect to the engines
@@ -226,7 +214,9 @@ int main(int argc, char **argv) {
 
 The first few lines of code simply initialize both MPI and and MDI.
 Don't worry if you don't have access to an MPI library - the code will just fall back to a set of dummy MPI functions provided in \c STUBS_MPI.
-The code also checks for a \c -mdi command line argument, which is used in the call to \c MDI_Init.
+The call to the \c MDI_MPI_get_world_comm() function obtains from MDI an MPI intra-communicator that spans all MPI ranks associated with the driver.
+This call is important when using the MPI protocol for MDI communication, because in that context, MPI_COMM_WORLD spans all ranks associated with both the driver and the engine(s).
+In general, an MDI-enabled code should call \c MDI_MPI_get_world_comm() immediately after calling \c MDI_Init(), and the resulting MPI intra-communicator should be used instead of MPI_COMM_WORLD throughout the remainder of the code.
 
 After initializing MDI, we need to connect the driver to its engines.
 For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep.

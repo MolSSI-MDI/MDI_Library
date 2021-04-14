@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['recv',['recv',['../structcommunicator__struct.html#a5ab265eb6817d2c0edb0cd510af88cf5',1,'communicator_struct']]],
-  ['register_5fcallback',['register_callback',['../mdi__general_8c.html#a25f8f401438a3ea84bc29f60bf7984a6',1,'register_callback(vector *node_vec, const char *node_name, const char *callback_name):&#160;mdi_general.c'],['../mdi__general_8h.html#a25f8f401438a3ea84bc29f60bf7984a6',1,'register_callback(vector *node_vec, const char *node_name, const char *callback_name):&#160;mdi_general.c']]],
-  ['register_5fcommand',['register_command',['../mdi__general_8c.html#ab039ef24caf27fd91a25b809b24ebccd',1,'register_command(vector *node_vec, const char *node_name, const char *command_name):&#160;mdi_general.c'],['../mdi__general_8h.html#ab039ef24caf27fd91a25b809b24ebccd',1,'register_command(vector *node_vec, const char *node_name, const char *command_name):&#160;mdi_general.c']]],
-  ['register_5fnode',['register_node',['../mdi__general_8c.html#a13565a7590af2e05f10a55bb7cf5cbff',1,'register_node(vector *node_vec, const char *node_name):&#160;mdi_general.c'],['../mdi__general_8h.html#a13565a7590af2e05f10a55bb7cf5cbff',1,'register_node(vector *node_vec, const char *node_name):&#160;mdi_general.c']]],
-  ['returned_5fcomms',['returned_comms',['../structcode__struct.html#aadd2a0711072e4bf29c73c7e599e23b9',1,'code_struct']]],
-  ['role',['role',['../structcode__struct.html#afbdb208181e10943f51aa0266953dc04',1,'code_struct']]]
+  ['plugin_5fmode',['plugin_mode',['../mdi__global_8c.html#a986dc95b20aa73f843b59a335480d995',1,'plugin_mode():&#160;mdi_global.c'],['../mdi__global_8h.html#a986dc95b20aa73f843b59a335480d995',1,'plugin_mode():&#160;mdi_global.c']]],
+  ['plugin_5fpath',['plugin_path',['../structcode__struct.html#ab9121b32657cf3175782b87ef50e677d',1,'code_struct']]],
+  ['python_5finterpreter_5fdict',['python_interpreter_dict',['../mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645',1,'mdi_plug_py.c']]],
+  ['python_5finterpreter_5finitialized',['python_interpreter_initialized',['../mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44',1,'mdi_plug_py.c']]],
+  ['python_5fplugin_5fmpi_5fworld_5fptr',['python_plugin_mpi_world_ptr',['../mdi__global_8c.html#a996b501922da600d9da916888e4fd023',1,'python_plugin_mpi_world_ptr():&#160;mdi_global.c'],['../mdi__global_8h.html#a996b501922da600d9da916888e4fd023',1,'python_plugin_mpi_world_ptr():&#160;mdi_global.c']]]
 ];

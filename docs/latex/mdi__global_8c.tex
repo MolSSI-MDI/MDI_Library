@@ -9,6 +9,8 @@ Global structures used by M\+DI.
 {\ttfamily \#include $<$stdlib.\+h$>$}\newline
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -53,8 +55,19 @@ int \mbox{\hyperlink{mdi__global_8c_a828ac5580059f72c76b7335f73a452d9}{delete\+\
 \mbox{\Hypertarget{mdi__global_8c_aee63109d024677e514597584cdb5c70b}\label{mdi__global_8c_aee63109d024677e514597584cdb5c70b}} 
 int \mbox{\hyperlink{mdi__global_8c_aee63109d024677e514597584cdb5c70b}{communicator\+\_\+delete}} (void $\ast$comm)
 \begin{DoxyCompactList}\small\item\em Dummy function for method-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_a76edb8071574cfd3b322e0df10a18718}{file\+\_\+exists}} (const char $\ast$file\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Print error message and exit. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi__global_8c_a10ceefc902b8eb71e2383d7ac95de2c7}{mdi\+\_\+error}} (const char $\ast$message)
-\begin{DoxyCompactList}\small\item\em Print error message and exit. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Print error message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mdi__global_8c_a1f7dbb9cb3cd341f0ca9ff303f9fb313}{mdi\+\_\+warning}} (const char $\ast$message)
+\begin{DoxyCompactList}\small\item\em Print warning message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_a87a268a3dc5bc82001aca5c45bbe4f6a}{datatype\+\_\+info}} (M\+D\+I\+\_\+\+Datatype\+\_\+\+Type datatype, size\+\_\+t $\ast$size, M\+D\+I\+\_\+\+Datatype\+\_\+\+Type $\ast$base)
+\begin{DoxyCompactList}\small\item\em Get information about an M\+DI datatype. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__global_8c_aa98bf7a7635471166b92b0a22d60a1a4}{datatype\+\_\+mpitype}} (M\+D\+I\+\_\+\+Datatype\+\_\+\+Type datatype, M\+P\+I\+\_\+\+Datatype $\ast$mpitype)
+\begin{DoxyCompactList}\small\item\em Get the M\+PI datatype that corresponds to an M\+DI datatype. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_ab0e3600e7cb339375fbeecf035de7385}\label{mdi__global_8c_ab0e3600e7cb339375fbeecf035de7385}} 
+int \mbox{\hyperlink{mdi__global_8c_ab0e3600e7cb339375fbeecf035de7385}{convert\+\_\+buf\+\_\+datatype}} (void $\ast$recvbuf\+\_\+in, M\+D\+I\+\_\+\+Datatype\+\_\+\+Type recvtype, void $\ast$sendbuf\+\_\+in, M\+D\+I\+\_\+\+Datatype\+\_\+\+Type sendtype, int count)
+\begin{DoxyCompactList}\small\item\em Convert a buffer from one datatype to another. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -73,9 +86,15 @@ int \mbox{\hyperlink{mdi__global_8c_a744d9706c873299c528f99016ace9201}{is\+\_\+i
 \mbox{\Hypertarget{mdi__global_8c_ac11ba5fc1a91e40e8ac14cc31aa65a3f}\label{mdi__global_8c_ac11ba5fc1a91e40e8ac14cc31aa65a3f}} 
 int \mbox{\hyperlink{mdi__global_8c_ac11ba5fc1a91e40e8ac14cc31aa65a3f}{initialized\+\_\+mpi}} = 0
 \begin{DoxyCompactList}\small\item\em Flag for whether M\+DI called M\+P\+I\+\_\+\+Init. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a986dc95b20aa73f843b59a335480d995}\label{mdi__global_8c_a986dc95b20aa73f843b59a335480d995}} 
+int \mbox{\hyperlink{mdi__global_8c_a986dc95b20aa73f843b59a335480d995}{plugin\+\_\+mode}} = 0
+\begin{DoxyCompactList}\small\item\em Flag for whether M\+DI is currently operating in plugin mode. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_a66bb70e3c3f8e140995b0c7aed39f72f}\label{mdi__global_8c_a66bb70e3c3f8e140995b0c7aed39f72f}} 
 M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{mdi__global_8c_a66bb70e3c3f8e140995b0c7aed39f72f}{mdi\+\_\+mpi\+\_\+comm\+\_\+world}}
 \begin{DoxyCompactList}\small\item\em Internal copy of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD, used when M\+DI initializes M\+PI. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a996b501922da600d9da916888e4fd023}\label{mdi__global_8c_a996b501922da600d9da916888e4fd023}} 
+void $\ast$ \mbox{\hyperlink{mdi__global_8c_a996b501922da600d9da916888e4fd023}{python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr}} = N\+U\+LL
+\begin{DoxyCompactList}\small\item\em Pointer to the M\+P\+I\+\_\+\+Comm over which a Python plugin should run. Only used for Python plugins. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_a81771e72698989541351fc9fdd75eba6}\label{mdi__global_8c_a81771e72698989541351fc9fdd75eba6}} 
 int($\ast$ \mbox{\hyperlink{mdi__global_8c_a81771e72698989541351fc9fdd75eba6}{mpi4py\+\_\+recv\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
 \begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Recv. \end{DoxyCompactList}\item 
@@ -105,6 +124,61 @@ Global structures used by M\+DI.
 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{mdi__global_8c_a87a268a3dc5bc82001aca5c45bbe4f6a}\label{mdi__global_8c_a87a268a3dc5bc82001aca5c45bbe4f6a}} 
+\index{mdi\_global.c@{mdi\_global.c}!datatype\_info@{datatype\_info}}
+\index{datatype\_info@{datatype\_info}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{datatype\_info()}{datatype\_info()}}
+{\footnotesize\ttfamily int datatype\+\_\+info (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Datatype\+\_\+\+Type}]{datatype,  }\item[{size\+\_\+t $\ast$}]{size,  }\item[{M\+D\+I\+\_\+\+Datatype\+\_\+\+Type $\ast$}]{base }\end{DoxyParamCaption})}
+
+
+
+Get information about an M\+DI datatype. 
+
+Get information about an M\+D\+I\+\_\+\+Datatype.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI datatype. \\
+\hline
+\mbox{\texttt{ out}}  & {\em size} & Size of the M\+DI datatype. \\
+\hline
+\mbox{\texttt{ out}}  & {\em base} & Base type of an M\+DI datatype. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_aa98bf7a7635471166b92b0a22d60a1a4}\label{mdi__global_8c_aa98bf7a7635471166b92b0a22d60a1a4}} 
+\index{mdi\_global.c@{mdi\_global.c}!datatype\_mpitype@{datatype\_mpitype}}
+\index{datatype\_mpitype@{datatype\_mpitype}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{datatype\_mpitype()}{datatype\_mpitype()}}
+{\footnotesize\ttfamily int datatype\+\_\+mpitype (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Datatype\+\_\+\+Type}]{datatype,  }\item[{M\+P\+I\+\_\+\+Datatype $\ast$}]{mpitype }\end{DoxyParamCaption})}
+
+
+
+Get the M\+PI datatype that corresponds to an M\+DI datatype. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em datatype} & M\+DI datatype. \\
+\hline
+\mbox{\texttt{ out}}  & {\em mpitype} & M\+PI datatype. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_a76edb8071574cfd3b322e0df10a18718}\label{mdi__global_8c_a76edb8071574cfd3b322e0df10a18718}} 
+\index{mdi\_global.c@{mdi\_global.c}!file\_exists@{file\_exists}}
+\index{file\_exists@{file\_exists}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{file\_exists()}{file\_exists()}}
+{\footnotesize\ttfamily int file\+\_\+exists (\begin{DoxyParamCaption}\item[{const char $\ast$}]{file\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Print error message and exit. 
+
+Check whether a file exists.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em message} & Message printed before exiting. \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{mdi__global_8c_a62da6acd5dbe977614e689e6000a3b18}\label{mdi__global_8c_a62da6acd5dbe977614e689e6000a3b18}} 
 \index{mdi\_global.c@{mdi\_global.c}!get\_callback\_index@{get\_callback\_index}}
 \index{get\_callback\_index@{get\_callback\_index}!mdi\_global.c@{mdi\_global.c}}
@@ -164,7 +238,22 @@ Determine the index of a node within a vector of nodes.
 
 
 
-Print error message and exit. 
+Print error message. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em message} & Message printed before exiting. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi__global_8c_a1f7dbb9cb3cd341f0ca9ff303f9fb313}\label{mdi__global_8c_a1f7dbb9cb3cd341f0ca9ff303f9fb313}} 
+\index{mdi\_global.c@{mdi\_global.c}!mdi\_warning@{mdi\_warning}}
+\index{mdi\_warning@{mdi\_warning}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{mdi\_warning()}{mdi\_warning()}}
+{\footnotesize\ttfamily void mdi\+\_\+warning (\begin{DoxyParamCaption}\item[{const char $\ast$}]{message }\end{DoxyParamCaption})}
+
+
+
+Print warning message. 
 
 
 \begin{DoxyParams}[1]{Parameters}

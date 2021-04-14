@@ -94,9 +94,15 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a3d48c114fe82db8c91a621dc43bb4a4b"><td class="memItemLeft" align="right" valign="top"><a id="a3d48c114fe82db8c91a621dc43bb4a4b"></a>
 typedef struct <a class="el" href="structlibrary__data__struct.html">library_data_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>library_data</b></td></tr>
 <tr class="separator:a3d48c114fe82db8c91a621dc43bb4a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1f3df53f4d8199d3e2ba24481ff07a2"><td class="memItemLeft" align="right" valign="top"><a id="af1f3df53f4d8199d3e2ba24481ff07a2"></a>
+typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Plugin_init_t</b>) ()</td></tr>
+<tr class="separator:af1f3df53f4d8199d3e2ba24481ff07a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a1a1ab96bea21c7b704373638570a70b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a1a1ab96bea21c7b704373638570a70b4">library_launch_plugin</a> (const char *plugin_name, const char *options, void *mpi_comm_ptr, MDI_Driver_node_callback_t driver_node_callback, void *driver_callback_object)</td></tr>
+<tr class="memdesc:a1a1ab96bea21c7b704373638570a70b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch an MDI plugin.  <a href="#a1a1ab96bea21c7b704373638570a70b4">More...</a><br /></td></tr>
+<tr class="separator:a1a1ab96bea21c7b704373638570a70b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a7d422a4cce77e23f0f2b0c64431830"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a3a7d422a4cce77e23f0f2b0c64431830">library_initialize</a> ()</td></tr>
 <tr class="memdesc:a3a7d422a4cce77e23f0f2b0c64431830"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform initialization of a communicator for library-based communication.  <a href="#a3a7d422a4cce77e23f0f2b0c64431830">More...</a><br /></td></tr>
 <tr class="separator:a3a7d422a4cce77e23f0f2b0c64431830"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -225,6 +231,54 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 </div><div class="memdoc">
 
 <p>Perform initialization of a communicator for library-based communication. </p>
+
+</div>
+</div>
+<a id="a1a1ab96bea21c7b704373638570a70b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a1ab96bea21c7b704373638570a70b4">&#9670;&nbsp;</a></span>library_launch_plugin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int library_launch_plugin </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>plugin_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>options</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>mpi_comm_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MDI_Driver_node_callback_t&#160;</td>
+          <td class="paramname"><em>driver_node_callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>driver_callback_object</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Launch an MDI plugin. </p>
 
 </div>
 </div>

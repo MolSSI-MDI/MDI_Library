@@ -82,6 +82,8 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -142,9 +144,25 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#aee63109d024677e514597584cdb5c70b">communicator_delete</a> (void *comm)</td></tr>
 <tr class="memdesc:aee63109d024677e514597584cdb5c70b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dummy function for method-specific deletion operations for communicator deletion. <br /></td></tr>
 <tr class="separator:aee63109d024677e514597584cdb5c70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76edb8071574cfd3b322e0df10a18718"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a76edb8071574cfd3b322e0df10a18718">file_exists</a> (const char *file_name)</td></tr>
+<tr class="memdesc:a76edb8071574cfd3b322e0df10a18718"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message and exit.  <a href="#a76edb8071574cfd3b322e0df10a18718">More...</a><br /></td></tr>
+<tr class="separator:a76edb8071574cfd3b322e0df10a18718"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a10ceefc902b8eb71e2383d7ac95de2c7">mdi_error</a> (const char *message)</td></tr>
-<tr class="memdesc:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message and exit.  <a href="#a10ceefc902b8eb71e2383d7ac95de2c7">More...</a><br /></td></tr>
+<tr class="memdesc:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error message.  <a href="#a10ceefc902b8eb71e2383d7ac95de2c7">More...</a><br /></td></tr>
 <tr class="separator:a10ceefc902b8eb71e2383d7ac95de2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f7dbb9cb3cd341f0ca9ff303f9fb313"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a1f7dbb9cb3cd341f0ca9ff303f9fb313">mdi_warning</a> (const char *message)</td></tr>
+<tr class="memdesc:a1f7dbb9cb3cd341f0ca9ff303f9fb313"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print warning message.  <a href="#a1f7dbb9cb3cd341f0ca9ff303f9fb313">More...</a><br /></td></tr>
+<tr class="separator:a1f7dbb9cb3cd341f0ca9ff303f9fb313"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a268a3dc5bc82001aca5c45bbe4f6a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a87a268a3dc5bc82001aca5c45bbe4f6a">datatype_info</a> (MDI_Datatype_Type datatype, size_t *size, MDI_Datatype_Type *base)</td></tr>
+<tr class="memdesc:a87a268a3dc5bc82001aca5c45bbe4f6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get information about an MDI datatype.  <a href="#a87a268a3dc5bc82001aca5c45bbe4f6a">More...</a><br /></td></tr>
+<tr class="separator:a87a268a3dc5bc82001aca5c45bbe4f6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa98bf7a7635471166b92b0a22d60a1a4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#aa98bf7a7635471166b92b0a22d60a1a4">datatype_mpitype</a> (MDI_Datatype_Type datatype, MPI_Datatype *mpitype)</td></tr>
+<tr class="memdesc:aa98bf7a7635471166b92b0a22d60a1a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the MPI datatype that corresponds to an MDI datatype.  <a href="#aa98bf7a7635471166b92b0a22d60a1a4">More...</a><br /></td></tr>
+<tr class="separator:aa98bf7a7635471166b92b0a22d60a1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e3600e7cb339375fbeecf035de7385"><td class="memItemLeft" align="right" valign="top"><a id="ab0e3600e7cb339375fbeecf035de7385"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ab0e3600e7cb339375fbeecf035de7385">convert_buf_datatype</a> (void *recvbuf_in, MDI_Datatype_Type recvtype, void *sendbuf_in, MDI_Datatype_Type sendtype, int count)</td></tr>
+<tr class="memdesc:ab0e3600e7cb339375fbeecf035de7385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a buffer from one datatype to another. <br /></td></tr>
+<tr class="separator:ab0e3600e7cb339375fbeecf035de7385"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -168,10 +186,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ac11ba5fc1a91e40e8ac14cc31aa65a3f">initialized_mpi</a> = 0</td></tr>
 <tr class="memdesc:ac11ba5fc1a91e40e8ac14cc31aa65a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for whether MDI called MPI_Init. <br /></td></tr>
 <tr class="separator:ac11ba5fc1a91e40e8ac14cc31aa65a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a986dc95b20aa73f843b59a335480d995"><td class="memItemLeft" align="right" valign="top"><a id="a986dc95b20aa73f843b59a335480d995"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a986dc95b20aa73f843b59a335480d995">plugin_mode</a> = 0</td></tr>
+<tr class="memdesc:a986dc95b20aa73f843b59a335480d995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for whether MDI is currently operating in plugin mode. <br /></td></tr>
+<tr class="separator:a986dc95b20aa73f843b59a335480d995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66bb70e3c3f8e140995b0c7aed39f72f"><td class="memItemLeft" align="right" valign="top"><a id="a66bb70e3c3f8e140995b0c7aed39f72f"></a>
 MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a66bb70e3c3f8e140995b0c7aed39f72f">mdi_mpi_comm_world</a></td></tr>
 <tr class="memdesc:a66bb70e3c3f8e140995b0c7aed39f72f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI. <br /></td></tr>
 <tr class="separator:a66bb70e3c3f8e140995b0c7aed39f72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996b501922da600d9da916888e4fd023"><td class="memItemLeft" align="right" valign="top"><a id="a996b501922da600d9da916888e4fd023"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a996b501922da600d9da916888e4fd023">python_plugin_mpi_world_ptr</a> = NULL</td></tr>
+<tr class="memdesc:a996b501922da600d9da916888e4fd023"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the MPI_Comm over which a Python plugin should run. Only used for Python plugins. <br /></td></tr>
+<tr class="separator:a996b501922da600d9da916888e4fd023"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81771e72698989541351fc9fdd75eba6"><td class="memItemLeft" align="right" valign="top"><a id="a81771e72698989541351fc9fdd75eba6"></a>
 int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a81771e72698989541351fc9fdd75eba6">mpi4py_recv_callback</a> )(void *, int, int, int, MDI_Comm_Type)</td></tr>
 <tr class="memdesc:a81771e72698989541351fc9fdd75eba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Recv. <br /></td></tr>
@@ -204,6 +230,115 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Global structures used by MDI. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a87a268a3dc5bc82001aca5c45bbe4f6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87a268a3dc5bc82001aca5c45bbe4f6a">&#9670;&nbsp;</a></span>datatype_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int datatype_info </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Datatype_Type&#160;</td>
+          <td class="paramname"><em>datatype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MDI_Datatype_Type *&#160;</td>
+          <td class="paramname"><em>base</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get information about an MDI datatype. </p>
+<p>Get information about an MDI_Datatype.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI datatype. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">size</td><td>Size of the MDI datatype. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">base</td><td>Base type of an MDI datatype. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa98bf7a7635471166b92b0a22d60a1a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa98bf7a7635471166b92b0a22d60a1a4">&#9670;&nbsp;</a></span>datatype_mpitype()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int datatype_mpitype </td>
+          <td>(</td>
+          <td class="paramtype">MDI_Datatype_Type&#160;</td>
+          <td class="paramname"><em>datatype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Datatype *&#160;</td>
+          <td class="paramname"><em>mpitype</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the MPI datatype that corresponds to an MDI datatype. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">datatype</td><td>MDI datatype. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">mpitype</td><td>MPI datatype. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a76edb8071574cfd3b322e0df10a18718"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76edb8071574cfd3b322e0df10a18718">&#9670;&nbsp;</a></span>file_exists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int file_exists </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>file_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print error message and exit. </p>
+<p>Check whether a file exists.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">message</td><td>Message printed before exiting. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a62da6acd5dbe977614e689e6000a3b18"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a62da6acd5dbe977614e689e6000a3b18">&#9670;&nbsp;</a></span>get_callback_index()</h2>
 
@@ -331,7 +466,33 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
       </table>
 </div><div class="memdoc">
 
-<p>Print error message and exit. </p>
+<p>Print error message. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">message</td><td>Message printed before exiting. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1f7dbb9cb3cd341f0ca9ff303f9fb313"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f7dbb9cb3cd341f0ca9ff303f9fb313">&#9670;&nbsp;</a></span>mdi_warning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mdi_warning </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>message</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print warning message. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">message</td><td>Message printed before exiting. </td></tr>

@@ -18,15 +18,27 @@ int \mbox{\hyperlink{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}{retur
 \mbox{\Hypertarget{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}\label{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}} 
 int \mbox{\hyperlink{structcode__struct_addc15d4f02753bd4ae5c8c8e2bd5b7c2}{next\+\_\+comm}}
 \begin{DoxyCompactList}\small\item\em The handle of the next communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a9ba912b3bfc83fb707c34fe6066fc553}\label{structcode__struct_a9ba912b3bfc83fb707c34fe6066fc553}} 
+int \mbox{\hyperlink{structcode__struct_a9ba912b3bfc83fb707c34fe6066fc553}{language}}
+\begin{DoxyCompactList}\small\item\em Native language of this code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcode__struct_ade7a49e570c12978d69f01b145a44027}\label{structcode__struct_ade7a49e570c12978d69f01b145a44027}} 
 int \mbox{\hyperlink{structcode__struct_ade7a49e570c12978d69f01b145a44027}{intra\+\_\+rank}}
 \begin{DoxyCompactList}\small\item\em Rank of this process within its associated code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a65f58e831f66250515c6b7ac94382e45}\label{structcode__struct_a65f58e831f66250515c6b7ac94382e45}} 
+int \mbox{\hyperlink{structcode__struct_a65f58e831f66250515c6b7ac94382e45}{called\+\_\+set\+\_\+execute\+\_\+command\+\_\+func}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code has called set\+\_\+execute\+\_\+command\+\_\+func. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}\label{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}} 
+M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}{intra\+\_\+\+M\+P\+I\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em M\+PI intra-\/communicator that spans all ranks associated with this code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcode__struct_a213cad27fe198175bd7d7ff983f45289}\label{structcode__struct_a213cad27fe198175bd7d7ff983f45289}} 
 \mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a213cad27fe198175bd7d7ff983f45289}{nodes}}
 \begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}\label{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}} 
 \mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}{comms}}
 \begin{DoxyCompactList}\small\item\em Vector containing all communicators associated with this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab9121b32657cf3175782b87ef50e677d}\label{structcode__struct_ab9121b32657cf3175782b87ef50e677d}} 
+char $\ast$ \mbox{\hyperlink{structcode__struct_ab9121b32657cf3175782b87ef50e677d}{plugin\+\_\+path}}
+\begin{DoxyCompactList}\small\item\em Path to the plugins available to this code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}\label{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}} 
 int($\ast$ \mbox{\hyperlink{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}{execute\+\_\+command}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, void $\ast$)
 \begin{DoxyCompactList}\small\item\em Function pointer to the generic execute\+\_\+command\+\_\+function. \end{DoxyCompactList}\item 

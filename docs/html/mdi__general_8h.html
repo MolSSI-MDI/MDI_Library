@@ -85,9 +85,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af2f6b0553a53f438a26b5d4d094007a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#af2f6b0553a53f438a26b5d4d094007a8">general_init</a> (const char *options, void *world_comm)</td></tr>
-<tr class="memdesc:af2f6b0553a53f438a26b5d4d094007a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="#af2f6b0553a53f438a26b5d4d094007a8">More...</a><br /></td></tr>
-<tr class="separator:af2f6b0553a53f438a26b5d4d094007a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12009556a91d0d280ff6190a6856f5df"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a12009556a91d0d280ff6190a6856f5df">general_init</a> (const char *options)</td></tr>
+<tr class="memdesc:a12009556a91d0d280ff6190a6856f5df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="#a12009556a91d0d280ff6190a6856f5df">More...</a><br /></td></tr>
+<tr class="separator:a12009556a91d0d280ff6190a6856f5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29ba5cd8b9eb5fc5e1fcbe3576333dec"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a29ba5cd8b9eb5fc5e1fcbe3576333dec">general_accept_communicator</a> ()</td></tr>
 <tr class="memdesc:a29ba5cd8b9eb5fc5e1fcbe3576333dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a new MDI communicator.  <a href="#a29ba5cd8b9eb5fc5e1fcbe3576333dec">More...</a><br /></td></tr>
 <tr class="separator:a29ba5cd8b9eb5fc5e1fcbe3576333dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,8 +208,8 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 
 </div>
 </div>
-<a id="af2f6b0553a53f438a26b5d4d094007a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2f6b0553a53f438a26b5d4d094007a8">&#9670;&nbsp;</a></span>general_init()</h2>
+<a id="a12009556a91d0d280ff6190a6856f5df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12009556a91d0d280ff6190a6856f5df">&#9670;&nbsp;</a></span>general_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,18 +218,8 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
           <td class="memname">int general_init </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>options</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>options</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>world_comm</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -239,7 +229,6 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">options</td><td>Options describing the communication method used to connect to codes. </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">world_comm</td><td>On input, the MPI communicator that spans all of the codes. On output, the MPI communicator that spans the single code corresponding to the calling rank. Only used if the "-method MPI" option is provided. </td></tr>
   </table>
   </dd>
 </dl>

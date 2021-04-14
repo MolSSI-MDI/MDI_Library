@@ -9,15 +9,24 @@ int \mbox{\hyperlink{structlibrary__data__struct_ae1a7ced6becb9629333af1b62efdd4
 \mbox{\Hypertarget{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}\label{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}} 
 char \mbox{\hyperlink{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}{command}} \mbox{[}C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\mbox{]}
 \begin{DoxyCompactList}\small\item\em Name of the next command to be executed on this code. This is only used by engines. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}\label{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}} 
-void $\ast$ \mbox{\hyperlink{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}{buf}}
-\begin{DoxyCompactList}\small\item\em Buffer used for communication of data. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}\label{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}} 
 int \mbox{\hyperlink{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}{buf\+\_\+allocated}}
 \begin{DoxyCompactList}\small\item\em Flag whether buf is allocated. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structlibrary__data__struct_a77fcab27c305cf4bb2ff40a87efb84fd}\label{structlibrary__data__struct_a77fcab27c305cf4bb2ff40a87efb84fd}} 
 int \mbox{\hyperlink{structlibrary__data__struct_a77fcab27c305cf4bb2ff40a87efb84fd}{execute\+\_\+on\+\_\+send}}
-\begin{DoxyCompactList}\small\item\em Flag whether the next M\+D\+I\+\_\+\+Send call should trigger execution of the engine\textquotesingle{}s command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Flag whether the next M\+D\+I\+\_\+\+Send call should trigger execution of the engine\textquotesingle{}s command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_aaafbc8c152c19a654a057bd7469d2073}\label{structlibrary__data__struct_aaafbc8c152c19a654a057bd7469d2073}} 
+M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{structlibrary__data__struct_aaafbc8c152c19a654a057bd7469d2073}{mpi\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em M\+PI intra-\/communicator for the engine. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a7b80abc8cab172280cdfb03ef6322014}\label{structlibrary__data__struct_a7b80abc8cab172280cdfb03ef6322014}} 
+void $\ast$ \mbox{\hyperlink{structlibrary__data__struct_a7b80abc8cab172280cdfb03ef6322014}{driver\+\_\+callback\+\_\+obj}}
+\begin{DoxyCompactList}\small\item\em Pointer to the class object that is used for the driver\+\_\+node\+\_\+callback function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a01f48e994be608caca1b9fa6697faf4a}\label{structlibrary__data__struct_a01f48e994be608caca1b9fa6697faf4a}} 
+M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t \mbox{\hyperlink{structlibrary__data__struct_a01f48e994be608caca1b9fa6697faf4a}{driver\+\_\+node\+\_\+callback}}
+\begin{DoxyCompactList}\small\item\em Function pointer to the driver node\textquotesingle{}s callback function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}\label{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}} 
+void $\ast$ \mbox{\hyperlink{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}{buf}}
+\begin{DoxyCompactList}\small\item\em Buffer used for communication of data. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}

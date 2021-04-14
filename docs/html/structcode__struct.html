@@ -94,10 +94,22 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#addc15d4f02753bd4ae5c8c8e2bd5b7c2">next_comm</a></td></tr>
 <tr class="memdesc:addc15d4f02753bd4ae5c8c8e2bd5b7c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The handle of the next communicator. <br /></td></tr>
 <tr class="separator:addc15d4f02753bd4ae5c8c8e2bd5b7c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ba912b3bfc83fb707c34fe6066fc553"><td class="memItemLeft" align="right" valign="top"><a id="a9ba912b3bfc83fb707c34fe6066fc553"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a9ba912b3bfc83fb707c34fe6066fc553">language</a></td></tr>
+<tr class="memdesc:a9ba912b3bfc83fb707c34fe6066fc553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Native language of this code. <br /></td></tr>
+<tr class="separator:a9ba912b3bfc83fb707c34fe6066fc553"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7a49e570c12978d69f01b145a44027"><td class="memItemLeft" align="right" valign="top"><a id="ade7a49e570c12978d69f01b145a44027"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#ade7a49e570c12978d69f01b145a44027">intra_rank</a></td></tr>
 <tr class="memdesc:ade7a49e570c12978d69f01b145a44027"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rank of this process within its associated code. <br /></td></tr>
 <tr class="separator:ade7a49e570c12978d69f01b145a44027"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65f58e831f66250515c6b7ac94382e45"><td class="memItemLeft" align="right" valign="top"><a id="a65f58e831f66250515c6b7ac94382e45"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a65f58e831f66250515c6b7ac94382e45">called_set_execute_command_func</a></td></tr>
+<tr class="memdesc:a65f58e831f66250515c6b7ac94382e45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag whether this code has called set_execute_command_func. <br /></td></tr>
+<tr class="separator:a65f58e831f66250515c6b7ac94382e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a653f0f54e8e1939716b6a0f7a12ecdde"><td class="memItemLeft" align="right" valign="top"><a id="a653f0f54e8e1939716b6a0f7a12ecdde"></a>
+MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a653f0f54e8e1939716b6a0f7a12ecdde">intra_MPI_comm</a></td></tr>
+<tr class="memdesc:a653f0f54e8e1939716b6a0f7a12ecdde"><td class="mdescLeft">&#160;</td><td class="mdescRight">MPI intra-communicator that spans all ranks associated with this code. <br /></td></tr>
+<tr class="separator:a653f0f54e8e1939716b6a0f7a12ecdde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a213cad27fe198175bd7d7ff983f45289"><td class="memItemLeft" align="right" valign="top"><a id="a213cad27fe198175bd7d7ff983f45289"></a>
 <a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a213cad27fe198175bd7d7ff983f45289">nodes</a></td></tr>
 <tr class="memdesc:a213cad27fe198175bd7d7ff983f45289"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all nodes supported by this code. <br /></td></tr>
@@ -106,6 +118,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 <a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a55009ad789bdb3f0013248fcbb55dbe3">comms</a></td></tr>
 <tr class="memdesc:a55009ad789bdb3f0013248fcbb55dbe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all communicators associated with this code. <br /></td></tr>
 <tr class="separator:a55009ad789bdb3f0013248fcbb55dbe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9121b32657cf3175782b87ef50e677d"><td class="memItemLeft" align="right" valign="top"><a id="ab9121b32657cf3175782b87ef50e677d"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#ab9121b32657cf3175782b87ef50e677d">plugin_path</a></td></tr>
+<tr class="memdesc:ab9121b32657cf3175782b87ef50e677d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to the plugins available to this code. <br /></td></tr>
+<tr class="separator:ab9121b32657cf3175782b87ef50e677d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fbc6c7947fd3550eba445a489a1023f"><td class="memItemLeft" align="right" valign="top"><a id="a3fbc6c7947fd3550eba445a489a1023f"></a>
 int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcode__struct.html#a3fbc6c7947fd3550eba445a489a1023f">execute_command</a> )(const char *, MDI_Comm_Type, void *)</td></tr>
 <tr class="memdesc:a3fbc6c7947fd3550eba445a489a1023f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function pointer to the generic execute_command_function. <br /></td></tr>

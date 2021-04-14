@@ -17,10 +17,15 @@ struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+stru
 \item 
 \mbox{\Hypertarget{mdi__lib_8h_a3d48c114fe82db8c91a621dc43bb4a4b}\label{mdi__lib_8h_a3d48c114fe82db8c91a621dc43bb4a4b}} 
 typedef struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+struct}} {\bfseries library\+\_\+data}
+\item 
+\mbox{\Hypertarget{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}\label{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}} 
+typedef int($\ast$ {\bfseries M\+D\+I\+\_\+\+Plugin\+\_\+init\+\_\+t}) ()
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+int \mbox{\hyperlink{mdi__lib_8h_a1a1ab96bea21c7b704373638570a70b4}{library\+\_\+launch\+\_\+plugin}} (const char $\ast$plugin\+\_\+name, const char $\ast$options, void $\ast$mpi\+\_\+comm\+\_\+ptr, M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t driver\+\_\+node\+\_\+callback, void $\ast$driver\+\_\+callback\+\_\+object)
+\begin{DoxyCompactList}\small\item\em Launch an M\+DI plugin. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()
 \begin{DoxyCompactList}\small\item\em Perform initialization of a communicator for library-\/based communication. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a63ecbf6a80c775d9977153e69ada09d1}{library\+\_\+accept\+\_\+communicator}} ()
@@ -109,6 +114,16 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 
 
 Perform initialization of a communicator for library-\/based communication. 
+
+\mbox{\Hypertarget{mdi__lib_8h_a1a1ab96bea21c7b704373638570a70b4}\label{mdi__lib_8h_a1a1ab96bea21c7b704373638570a70b4}} 
+\index{mdi\_lib.h@{mdi\_lib.h}!library\_launch\_plugin@{library\_launch\_plugin}}
+\index{library\_launch\_plugin@{library\_launch\_plugin}!mdi\_lib.h@{mdi\_lib.h}}
+\doxysubsubsection{\texorpdfstring{library\_launch\_plugin()}{library\_launch\_plugin()}}
+{\footnotesize\ttfamily int library\+\_\+launch\+\_\+plugin (\begin{DoxyParamCaption}\item[{const char $\ast$}]{plugin\+\_\+name,  }\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{mpi\+\_\+comm\+\_\+ptr,  }\item[{M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t}]{driver\+\_\+node\+\_\+callback,  }\item[{void $\ast$}]{driver\+\_\+callback\+\_\+object }\end{DoxyParamCaption})}
+
+
+
+Launch an M\+DI plugin. 
 
 \mbox{\Hypertarget{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}\label{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}} 
 \index{mdi\_lib.h@{mdi\_lib.h}!library\_recv@{library\_recv}}

@@ -5,18 +5,23 @@
 Implementation of library-\/based communication.  
 
 
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
 {\ttfamily \#include $<$stdio.\+h$>$}\newline
 {\ttfamily \#include $<$stdlib.\+h$>$}\newline
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$signal.\+h$>$}\newline
-{\ttfamily \#include $<$errno.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}mdi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+lib.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+global.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+general.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mdi\+\_\+plug\+\_\+py.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$dlfcn.\+h$>$}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+int \mbox{\hyperlink{mdi__lib_8c_a1a1ab96bea21c7b704373638570a70b4}{library\+\_\+launch\+\_\+plugin}} (const char $\ast$plugin\+\_\+name, const char $\ast$options, void $\ast$mpi\+\_\+comm\+\_\+ptr, M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t driver\+\_\+node\+\_\+callback, void $\ast$driver\+\_\+callback\+\_\+object)
+\begin{DoxyCompactList}\small\item\em Launch an M\+DI plugin. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8c_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()
 \begin{DoxyCompactList}\small\item\em Perform initialization of a communicator for library-\/based communication. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8c_aace2263cc5a50162e432fdd1ece07ebd}{library\+\_\+set\+\_\+driver\+\_\+current}} ()
@@ -99,6 +104,16 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 
 
 Perform initialization of a communicator for library-\/based communication. 
+
+\mbox{\Hypertarget{mdi__lib_8c_a1a1ab96bea21c7b704373638570a70b4}\label{mdi__lib_8c_a1a1ab96bea21c7b704373638570a70b4}} 
+\index{mdi\_lib.c@{mdi\_lib.c}!library\_launch\_plugin@{library\_launch\_plugin}}
+\index{library\_launch\_plugin@{library\_launch\_plugin}!mdi\_lib.c@{mdi\_lib.c}}
+\doxysubsubsection{\texorpdfstring{library\_launch\_plugin()}{library\_launch\_plugin()}}
+{\footnotesize\ttfamily int library\+\_\+launch\+\_\+plugin (\begin{DoxyParamCaption}\item[{const char $\ast$}]{plugin\+\_\+name,  }\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{mpi\+\_\+comm\+\_\+ptr,  }\item[{M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t}]{driver\+\_\+node\+\_\+callback,  }\item[{void $\ast$}]{driver\+\_\+callback\+\_\+object }\end{DoxyParamCaption})}
+
+
+
+Launch an M\+DI plugin. 
 
 \mbox{\Hypertarget{mdi__lib_8c_af6088e90893c28807b1b147a2db1995e}\label{mdi__lib_8c_af6088e90893c28807b1b147a2db1995e}} 
 \index{mdi\_lib.c@{mdi\_lib.c}!library\_recv@{library\_recv}}

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: Member List</title>
+<title>Molssi Driver Interface Library: /Users/tbarnes/Documents/mdi/MDI_Library/MDI_Library/mdi_plug_py.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,24 +62,45 @@ $(function() {
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_eb12bed14706be1a038fa5626ef29fb7.html">MDI_Library</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">library_data_struct Member List</div>  </div>
+<div class="title">mdi_plug_py.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="structlibrary__data__struct.html">library_data_struct</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="structlibrary__data__struct.html#a0cb01c720e09bce66c6f88828bf5e54b">buf</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structlibrary__data__struct.html#a021b6e6e52dfa86e3e741522dba24606">buf_allocated</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structlibrary__data__struct.html#a7e0aee6fd84931a1b0d3d2bc67cf3769">command</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structlibrary__data__struct.html#ae1a7ced6becb9629333af1b62efdd493">connected_code</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structlibrary__data__struct.html#a7b80abc8cab172280cdfb03ef6322014">driver_callback_obj</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structlibrary__data__struct.html#a01f48e994be608caca1b9fa6697faf4a">driver_node_callback</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structlibrary__data__struct.html#a77fcab27c305cf4bb2ff40a87efb84fd">execute_on_send</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structlibrary__data__struct.html#aaafbc8c152c19a654a057bd7469d2073">mpi_comm</a></td><td class="entry"><a class="el" href="structlibrary__data__struct.html">library_data_struct</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p>Implementation of library-based communication.  
+<a href="#details">More...</a></p>
+
+<p><a href="mdi__plug__py_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a23a88b14777a212c33e97c00f3d2c694"><td class="memItemLeft" align="right" valign="top"><a id="a23a88b14777a212c33e97c00f3d2c694"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>python_plugin_init</b> (const char *engine_name, const char *engine_path, const char *options, void *engine_comm_ptr)</td></tr>
+<tr class="separator:a23a88b14777a212c33e97c00f3d2c694"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aefcfa5ce4e0c1567f119976f36406d44"><td class="memItemLeft" align="right" valign="top"><a id="aefcfa5ce4e0c1567f119976f36406d44"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44">python_interpreter_initialized</a></td></tr>
+<tr class="memdesc:aefcfa5ce4e0c1567f119976f36406d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag whether the Python interpreter has been initialized. <br /></td></tr>
+<tr class="separator:aefcfa5ce4e0c1567f119976f36406d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3097c8a62136724cee1eb5786ace0645"><td class="memItemLeft" align="right" valign="top"><a id="a3097c8a62136724cee1eb5786ace0645"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645">python_interpreter_dict</a></td></tr>
+<tr class="memdesc:a3097c8a62136724cee1eb5786ace0645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the original Python interpreter's dictionary. Only used for Python plugins. <br /></td></tr>
+<tr class="separator:a3097c8a62136724cee1eb5786ace0645"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Implementation of library-based communication. </p>
+</div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.16-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

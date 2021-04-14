@@ -10,7 +10,7 @@ Generic M\+DI function calls.
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-int \mbox{\hyperlink{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}{general\+\_\+init}} (const char $\ast$options, void $\ast$world\+\_\+comm)
+int \mbox{\hyperlink{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}{general\+\_\+init}} (const char $\ast$options)
 \begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}{general\+\_\+accept\+\_\+communicator}} ()
 \begin{DoxyCompactList}\small\item\em Accept a new M\+DI communicator. \end{DoxyCompactList}\item 
@@ -89,11 +89,11 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}\label{mdi__general_8h_af2f6b0553a53f438a26b5d4d094007a8}} 
+\mbox{\Hypertarget{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}\label{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}} 
 \index{mdi\_general.h@{mdi\_general.h}!general\_init@{general\_init}}
 \index{general\_init@{general\_init}!mdi\_general.h@{mdi\_general.h}}
 \doxysubsubsection{\texorpdfstring{general\_init()}{general\_init()}}
-{\footnotesize\ttfamily int general\+\_\+init (\begin{DoxyParamCaption}\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{world\+\_\+comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int general\+\_\+init (\begin{DoxyParamCaption}\item[{const char $\ast$}]{options }\end{DoxyParamCaption})}
 
 
 
@@ -104,8 +104,6 @@ If using the \char`\"{}-\/method M\+P\+I\char`\"{} option, this function must be
 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em options} & Options describing the communication method used to connect to codes. \\
-\hline
-\mbox{\texttt{ in,out}}  & {\em world\+\_\+comm} & On input, the M\+PI communicator that spans all of the codes. On output, the M\+PI communicator that spans the single code corresponding to the calling rank. Only used if the \char`\"{}-\/method M\+P\+I\char`\"{} option is provided. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}\label{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}} 

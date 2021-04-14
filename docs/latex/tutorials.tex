@@ -150,35 +150,23 @@ Open the file called {\ttfamily aimd.\+cpp}. It contains the following code\+:
 \DoxyCodeLine{  MPI\_Comm world\_comm;}
 \DoxyCodeLine{  MPI\_Init(\&argc, \&argv);}
 \DoxyCodeLine{}
-\DoxyCodeLine{  \textcolor{comment}{// Read through all the command line options}}
-\DoxyCodeLine{  \textcolor{keywordtype}{int} iarg = 1;}
-\DoxyCodeLine{  \textcolor{keywordtype}{bool} initialized\_mdi = \textcolor{keyword}{false};}
-\DoxyCodeLine{  \textcolor{keywordflow}{while} ( iarg < argc ) \{}
-\DoxyCodeLine{}
-\DoxyCodeLine{    \textcolor{keywordflow}{if} ( strcmp(argv[iarg],\textcolor{stringliteral}{"-\/mdi"}) == 0 ) \{}
-\DoxyCodeLine{}
-\DoxyCodeLine{      \textcolor{comment}{// Ensure that the argument to the -\/mdi option was provided}}
-\DoxyCodeLine{      \textcolor{keywordflow}{if} ( argc-\/iarg < 2 ) \{}
-\DoxyCodeLine{        \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The -\/mdi argument was not provided."});}
-\DoxyCodeLine{      \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{      \textcolor{comment}{// Initialize the MDI Library}}
-\DoxyCodeLine{      world\_comm = MPI\_COMM\_WORLD;}
-\DoxyCodeLine{      \textcolor{keywordtype}{int} ret = \mbox{\hyperlink{mdi_8c_ae05ae377fa8de592f62c696c041b7d0a}{MDI\_Init}}(argv[iarg+1], \&world\_comm);}
-\DoxyCodeLine{      \textcolor{keywordflow}{if} ( ret != 0 ) \{}
-\DoxyCodeLine{        \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The MDI library was not initialized correctly."});}
-\DoxyCodeLine{      \}}
-\DoxyCodeLine{      initialized\_mdi = \textcolor{keyword}{true};}
-\DoxyCodeLine{      iarg += 2;}
-\DoxyCodeLine{}
-\DoxyCodeLine{    \}}
-\DoxyCodeLine{    \textcolor{keywordflow}{else} \{}
-\DoxyCodeLine{      \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"Unrecognized option."});}
-\DoxyCodeLine{    \}}
-\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Initialize MDI}}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{MDI\_Init}}(\&argc, \&argv) ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} std::runtime\_error(\textcolor{stringliteral}{"The MDI library was not initialized correctly."});}
 \DoxyCodeLine{  \}}
-\DoxyCodeLine{  \textcolor{keywordflow}{if} ( not initialized\_mdi ) \{}
-\DoxyCodeLine{    \textcolor{keywordflow}{throw} runtime\_error(\textcolor{stringliteral}{"The -\/mdi command line option was not provided."});}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Confirm that MDI was initialized successfully}}
+\DoxyCodeLine{  \textcolor{keywordtype}{int} initialized\_mdi;}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( \mbox{\hyperlink{mdi_8c_a82aaa736f9d174c7663ad80a97089767}{MDI\_Initialized}}(\&initialized\_mdi) ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} std::runtime\_error(\textcolor{stringliteral}{"MDI\_Initialized failed."});}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( ! initialized\_mdi ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} std::runtime\_error(\textcolor{stringliteral}{"MDI not initialized: did you provide the -\/mdi option?."});}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// Get the correct MPI intra-\/communicator for this code}}
+\DoxyCodeLine{  \textcolor{keywordflow}{if} ( \mbox{\hyperlink{mdi_8c_a1792db6705a7032640af46d5b05d23f4}{MDI\_MPI\_get\_world\_comm}}(\&world\_comm) ) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{throw} std::runtime\_error(\textcolor{stringliteral}{"MDI\_MPI\_get\_world\_comm failed."});}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{// Connect to the engines}}
@@ -198,7 +186,7 @@ Open the file called {\ttfamily aimd.\+cpp}. It contains the following code\+:
 \end{DoxyCode}
 
 
-The first few lines of code simply initialize both M\+PI and and M\+DI. Don\textquotesingle{}t worry if you don\textquotesingle{}t have access to an M\+PI library -\/ the code will just fall back to a set of dummy M\+PI functions provided in {\ttfamily S\+T\+U\+B\+S\+\_\+\+M\+PI}. The code also checks for a {\ttfamily -\/mdi} command line argument, which is used in the call to {\ttfamily M\+D\+I\+\_\+\+Init}.
+The first few lines of code simply initialize both M\+PI and and M\+DI. Don\textquotesingle{}t worry if you don\textquotesingle{}t have access to an M\+PI library -\/ the code will just fall back to a set of dummy M\+PI functions provided in {\ttfamily S\+T\+U\+B\+S\+\_\+\+M\+PI}. The call to the {\ttfamily \mbox{\hyperlink{mdi_8c_a1792db6705a7032640af46d5b05d23f4}{M\+D\+I\+\_\+\+M\+P\+I\+\_\+get\+\_\+world\+\_\+comm()}}} function obtains from M\+DI an M\+PI intra-\/communicator that spans all M\+PI ranks associated with the driver. This call is important when using the M\+PI protocol for M\+DI communication, because in that context, M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD spans all ranks associated with both the driver and the engine(s). In general, an M\+D\+I-\/enabled code should call {\ttfamily \mbox{\hyperlink{mdi_8c_a1792db6705a7032640af46d5b05d23f4}{M\+D\+I\+\_\+\+M\+P\+I\+\_\+get\+\_\+world\+\_\+comm()}}} immediately after calling {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}, and the resulting M\+PI intra-\/communicator should be used instead of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD throughout the remainder of the code.
 
 After initializing M\+DI, we need to connect the driver to its engines. For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep. In the M\+DI standard, engines request a connection to a driver. The driver will need to call the {\ttfamily \mbox{\hyperlink{mdi_8c_a27002da8665201b9d0e9bdb4f51f64d8}{M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator()}}} function to accept each connection. The general format of this functional call looks like this\+:
 
