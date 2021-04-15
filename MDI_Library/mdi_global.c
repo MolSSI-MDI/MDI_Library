@@ -7,7 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <unistd.h>
+#ifdef _WIN32
+  #include <windows.h>
+#else
+  #include <unistd.h>
+#endif
 #include <stdint.h>
 #include "mdi_global.h"
 
@@ -447,12 +451,22 @@ int communicator_delete(void* comm) {
  *                   Message printed before exiting.
  */
 int file_exists(const char* file_name) {
+#ifdef _WIN32
+  DWORD dwAttrib = GetFileAttributes(file_name);
+  if ( dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY) ) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+#else
   if ( access( file_name, F_OK ) == 0 ) {
     return 1;
   }
   else {
     return 0;
   }
+#endif
 }
 
 

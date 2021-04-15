@@ -4,6 +4,7 @@ option(language "language")
 option(libtype "libtype")
 option(mpi "on or off" ON)
 option(python_package "on or off" OFF)
+option(python_version "python version number" OFF)
 option(test_codes "on or off" OFF)
 
 set(use_C "")
@@ -38,7 +39,13 @@ project(mdi
 
 
 # Check for Python developement libraries, which are used for Python plugins
-find_package(Python COMPONENTS Interpreter Development)
+if( python_version )
+   # Find this specific Python version
+   find_package(Python python_version EXACT COMPONENTS Interpreter Development)
+else()
+   # Find the latest Python version
+   find_package(Python COMPONENTS Interpreter Development)
+endif()
 if(Python_Development_FOUND AND WIN32)
    message( WARNING "Python Plugins are not currently supported on Windows.  Disabling Python Plugins." )
    set(Python_Development_FOUND off)
