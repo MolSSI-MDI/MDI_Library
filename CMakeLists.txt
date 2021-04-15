@@ -34,14 +34,14 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.2.0
+        VERSION 1.2.1
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 
 # Check for Python developement libraries, which are used for Python plugins
 if( python_version )
    # Find this specific Python version
-   find_package(Python python_version EXACT COMPONENTS Interpreter Development)
+   find_package(Python ${python_version} EXACT COMPONENTS Interpreter Development)
 else()
    # Find the latest Python version
    find_package(Python COMPONENTS Interpreter Development)
