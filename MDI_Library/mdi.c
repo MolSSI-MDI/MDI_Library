@@ -136,22 +136,21 @@ int MDI_Init(int* argc, char*** argv)
     if ( ret == 0 ) {
       is_initialized = 1;
     }
-    return ret;
-
-    // deallocate the memory for the -mdi option
-    free(argv_in[mdi_iarg]);
-    free(argv_in[mdi_iarg + 1]);
+    else {
+      return ret;
+    }
 
     // pass out argc and argv, without the mdi-related options
     *argc = argc_in - 2;
     for (iarg=mdi_iarg+2; iarg < argc_in; iarg++) {
-      *argv[iarg - 2] = argv_in[iarg];
+      argv_in[iarg - 2] = argv_in[iarg];
     }
   }
   else {
     // The -mdi argument was not provided, so don't initialize
     return 0;
   }
+  return 0;
 }
 
 
