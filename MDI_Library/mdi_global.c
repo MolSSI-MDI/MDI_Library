@@ -258,7 +258,7 @@ int new_code() {
 
   // initialize the character buffer for the plugin path
   new_code.plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
-  snprintf(new_code.plugin_path, PLUGIN_PATH_LENGTH, "");
+  snprintf(new_code.plugin_path, PLUGIN_PATH_LENGTH, "\0");
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
