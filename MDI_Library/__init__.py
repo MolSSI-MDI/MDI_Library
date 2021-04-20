@@ -14,4 +14,9 @@ from .mdi import MDI_COMMAND_LENGTH, MDI_NAME_LENGTH, MDI_LABEL_LENGTH, \
     MDI_Set_Execute_Command_Func, \
     MDI_Register_Node, MDI_Check_Node_Exists, MDI_Get_NNodes, MDI_Get_Node, \
     MDI_Register_Command, MDI_Check_Command_Exists, MDI_Get_NCommands, MDI_Get_Command, \
-    MDI_Register_Callback, MDI_Check_Callback_Exists, MDI_Get_NCallbacks, MDI_Get_Callback
+    MDI_Register_Callback, MDI_Check_Callback_Exists, MDI_Get_NCallbacks, MDI_Get_Callback, \
+    MDI_Accept_communicator, MDI_Send_command, MDI_Recv_command, MDI_Conversion_factor, \
+    MDI_Get_role, MDI_Set_execute_command_func, \
+    MDI_Register_node, MDI_Check_node_exists, MDI_Get_nnodes, MDI_Get_node, \
+    MDI_Register_command, MDI_Check_command_exists, MDI_Get_ncommands, MDI_Get_command, \
+    MDI_Register_callback, MDI_Check_callback_exists, MDI_Get_ncallbacks, MDI_Get_callback
