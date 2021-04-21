@@ -10,7 +10,7 @@ from distutils.version import LooseVersion
 
 # Get version number information
 base_path = os.path.dirname(os.path.realpath(__file__))
-file_path = os.path.join( base_path, 'MDI_Library', 'mdi.c' )
+file_path = os.path.join( base_path, 'MDI_Library', 'mdi_global.h' )
 found_major_version = False
 found_minor_version = False
 found_patch_version = False
@@ -19,14 +19,14 @@ with open( file_path ) as mdi_file:
     while line and ( not found_major_version or not found_minor_version or not found_patch_version ):
         print("line: " + str(line) )
         sline = line.split()
-        if line.startswith( 'const int MDI_MAJOR_VERSION = ' ):
-            major_version = sline[4][:-1]
+        if line.startswith( '#define MDI_MAJOR_VERSION_ ' ):
+            major_version = sline[2]
             found_major_version = True
-        elif line.startswith( 'const int MDI_MINOR_VERSION = ' ):
-            minor_version = sline[4][:-1]
+        elif line.startswith( '#define MDI_MINOR_VERSION_ ' ):
+            minor_version = sline[2]
             found_minor_version = True
-        elif line.startswith( 'const int MDI_PATCH_VERSION = ' ):
-            patch_version = sline[4][:-1]
+        elif line.startswith( '#define MDI_PATCH_VERSION_ ' ):
+            patch_version = sline[2]
             found_patch_version = True
         line = mdi_file.readline()
 if not found_major_version or not found_minor_version or not found_patch_version:
