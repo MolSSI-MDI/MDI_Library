@@ -43,6 +43,40 @@ def format_return(input_string):
 
     return my_string
 
+
+##########################
+# Plugin Tests           #
+##########################
+
+def test_cxx_cxx_plug():
+    # get the name of the driver code, which includes a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_proc = subprocess.Popen([driver_name,
+                                    "-driver_nranks", "0",
+                                    "-plugin_nranks", "1",
+                                    "-plugin_name", "engine_cxx",
+                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+
+
 ##########################
 # LIBRARY Method         #
 ##########################
@@ -59,7 +93,7 @@ def test_cxx_cxx_lib():
     #driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK -plugin_path /Users/tbarnes/Documents/mdi/MDI_Library/build"],
     driver_proc = subprocess.Popen([driver_name, "-mdi",
                                     "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string

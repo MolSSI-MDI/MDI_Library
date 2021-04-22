@@ -12,7 +12,7 @@ int engine_lib_cxx_create(MPI_Comm mpi_comm) {
   int argc_mdi = 2;
   int options_length = 256;
   char* options = (char*) malloc( options_length * sizeof(char) );
-  snprintf(options, options_length, "-role ENGINE -method LINK -name MM -driver_name driver");
+  snprintf(options, options_length, "-role ENGINE -method LINK -name MM");
   char* mdi_arg = (char*) malloc( options_length * sizeof(char) );
   snprintf(mdi_arg, options_length, "-mdi");
   char** argv_mdi = (char**) malloc( argc_mdi * sizeof(char*) );

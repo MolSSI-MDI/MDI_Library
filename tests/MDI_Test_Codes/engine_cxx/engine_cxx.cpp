@@ -94,20 +94,18 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
 
 
 int MDI_Plugin_init_engine_cxx() {
+  // Get the command-line arguments for this plugin instance
+  int mdi_argc;
+  if ( MDI_Plugin_get_argc(&mdi_argc) ) {
+    throw std::runtime_error("MDI_Plugin_get_argc failed.");
+  }
+  char** mdi_argv;
+  if ( MDI_Plugin_get_argv(&mdi_argv) ) {
+    throw std::runtime_error("MDI_Plugin_get_argv failed.");
+  }
+
   // Call MDI_Init
-  int argc_mdi = 2;
-  int options_length = 256;
-  char* options = (char*) malloc( options_length * sizeof(char) );
-  snprintf(options, options_length, "-role ENGINE -method LINK -name MM -driver_name driver");
-  char* mdi_arg = (char*) malloc( options_length * sizeof(char) );
-  snprintf(mdi_arg, options_length, "-mdi");
-  char** argv_mdi = (char**) malloc( argc_mdi * sizeof(char*) );
-  argv_mdi[0] = mdi_arg;
-  argv_mdi[1] = options;
-  MDI_Init(&argc_mdi, &argv_mdi);
-  free(options);
-  free(mdi_arg);
-  free(argv_mdi);
+  MDI_Init(&mdi_argc, &mdi_argv);
 
   // Get the MPI intra-communicator for this code
   MPI_Comm mpi_world_comm = MPI_COMM_WORLD;

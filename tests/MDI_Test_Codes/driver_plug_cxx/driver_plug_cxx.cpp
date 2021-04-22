@@ -201,7 +201,11 @@ int main(int argc, char **argv) {
     }
 
     // Initialize and run an instance of the engine library
-    if ( MDI_Launch_plugin(plugin_name, "", &intra_comm, code_for_plugin_instance, NULL) != 0 ) {
+    if ( MDI_Launch_plugin(plugin_name,
+			   "-mdi \"-name MM -role ENGINE -method LINK\"",
+			   &intra_comm,
+			   code_for_plugin_instance,
+			   NULL) != 0 ) {
       mpi_error("MDI_Launch_plugin returned non-zero exit code.");
     }
   }

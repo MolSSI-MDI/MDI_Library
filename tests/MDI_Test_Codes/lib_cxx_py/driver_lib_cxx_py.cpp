@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 
     // Launch the engine
     launch_python_code("engine_lib_cxx_py.py",
-	       "-name instance1 -role ENGINE -method LINK -driver_name driver",
+	       "-name instance1 -role ENGINE -method LINK",
 	       sub_comm);
 
     // Connect to the engine
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
 
     // Launch the engine
     launch_python_code("engine_lib_cxx_py.py",
-	       "-name instance2 -role ENGINE -method LINK -driver_name driver",
+	       "-name instance2 -role ENGINE -method LINK",
 	       sub_comm);
 
     // Connect to the engine

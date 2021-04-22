@@ -32,8 +32,80 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   code* this_code = get_code(driver_code_id);
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
-  // Note: Eventually, should probably replace this code with libltdl
+  // Begin parsing the options char array into an argv-style array of char arrays
+
+  // copy the input options array
+  int options_len = strlen(options) + 1;
+  plugin_options = malloc( options_len * sizeof(char) );
+  snprintf(plugin_options, options_len, "%s", options);
+  plugin_unedited_options = malloc( options_len * sizeof(char) );
+  snprintf(plugin_unedited_options, options_len, "%s", options);
+
+  // determine the number of arguments
+  plugin_argc = 0;
+  int ichar;
+  int in_argument = 0; // was the previous character part of an argument, or just whitespace?
+  int in_single_quotes = 0; // was the previous character part of a single quote?
+  int in_double_quotes = 0; // was the previous character part of a double quote?
+  for (ichar=0; ichar < options_len; ichar++) {
+    if ( plugin_options[ichar] == '\0' ) {
+      if ( in_double_quotes ) {
+	mdi_error("Unterminated double quotes received in MDI_Launch_plugin \"options\" argument.");
+      }
+      if ( in_argument ) {
+	plugin_argc++;
+      }
+      in_argument = 0;
+    }
+    else if (plugin_options[ichar] == ' ') {
+      if ( ! in_double_quotes && ! in_single_quotes ) {
+	if ( in_argument ) {
+	  plugin_argc++;
+	}
+	in_argument = 0;
+	plugin_options[ichar] = '\0';
+      }
+    }
+    else if (plugin_options[ichar] == '\"') {
+      if ( in_single_quotes ) {
+	mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
+      }
+      in_argument = 1;
+      in_double_quotes = (in_double_quotes + 1) % 2;
+      plugin_options[ichar] = '\0';
+    }
+    else if (plugin_options[ichar] == '\'') { 
+      if ( in_double_quotes ) {
+	mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
+      }
+      in_argument = 1;
+      in_single_quotes = (in_single_quotes + 1) % 2;
+      plugin_options[ichar] = '\0';
+    }
+    else {
+      in_argument = 1;
+    }
+  }
+
+  // construct pointers to all of the arguments
+  plugin_argv = malloc( plugin_argc * sizeof(char*) );
+  int iarg = 0;
+  for (ichar=0; ichar < options_len; ichar++) {
+    if ( plugin_options[ichar] != '\0' ) {
+      if ( ichar == 0 || plugin_options[ichar-1] == '\0' ) {
+	plugin_argv[iarg] = &plugin_options[ichar];
+	iarg++;
+      }
+    }
+  }
+  if ( iarg != plugin_argc ) {
+    mdi_error("Programming error: unable to correctly parse the MDI_Launch_plugin \"options\" argument.");
+  }
+
+  //
   // Get the path to the plugin
+  // Note: Eventually, should probably replace this code with libltdl
+  //
   char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
 
   // Get the name of the plugin's init function
@@ -156,6 +228,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // free memory from loading the plugin's initialization function
   free( plugin_path );
   free( plugin_init_name );
+
+  // free memory from storing the plugin's command-line options
+  free( plugin_options );
+  free( plugin_unedited_options );
+  free( plugin_argv );
 
   return 0;
 }
@@ -423,11 +500,6 @@ int library_execute_command(MDI_Comm comm) {
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
-    mdi_error("MDI data type not recognized in library_send");
-    return 1;
-  }
-
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
   library_data* libd = (library_data*) this->method_data;
@@ -450,7 +522,10 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     size_t datasize;
     MDI_Datatype basetype;
     ret = datatype_info(datatype, &datasize, &basetype);
-    if ( ret != 0 ) { return ret; }
+    if ( ret != 0 ) {
+      mdi_error("datatype_info returned nonzero value in library_send");
+      return ret;
+    }
 
     int nheader_actual = 4; // actual number of elements of nheader that were sent
 
@@ -466,21 +541,13 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       int* header = (int*)buf;
       int body_type = header[2];
       int body_size = header[3];
+
+      // determine the byte size of the data type being sent in the body of the message
       size_t body_stride;
-      if (body_type == MDI_INT) {
-	body_stride = sizeof(int);
-      }
-      else if (body_type == MDI_DOUBLE) {
-	body_stride = sizeof(double);
-      }
-      else if (body_type == MDI_CHAR) {
-	body_stride = sizeof(char);
-      }
-      else if (body_type == MDI_BYTE) {
-	body_stride = sizeof(char);
-      }
-      else {
-	mdi_error("MDI Error: Unrecognized data type");
+      ret = datatype_info(body_type, &body_stride, &basetype);
+      if ( ret != 0 ) {
+	mdi_error("datatype_info returned nonzero value in library_send");
+	return ret;
       }
 
       int msg_bytes = ( (int)datasize * count ) + ( (int)body_stride * body_size );
@@ -576,16 +643,14 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
     return 0;
   }
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
-    mdi_error("MDI data type not recognized in library_send");
-    return 1;
-  }
-
   // determine the byte size of the data type being sent
   size_t datasize;
   MDI_Datatype basetype;
   ret = datatype_info(datatype, &datasize, &basetype);
-  if ( ret != 0 ) { return ret; }
+  if ( ret != 0 ) {
+    mdi_error("datatype_info returned nonzero value in library_recv");
+    return ret;
+  }
 
   // confirm that libd->buf is initialized
   if ( other_lib->buf_allocated != 1 ) {

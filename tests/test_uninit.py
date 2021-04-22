@@ -270,17 +270,6 @@ def test_init_errors():
     assert driver_err == expected_err
     assert driver_out == ""
 
-    # Test leaving off the -driver_name argument
-    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_driver_name.py"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    driver_tup = driver_proc.communicate()
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-    expected_err = """Error in MDI_Init: Argument missing from -driver_name option
-"""
-    assert driver_err == expected_err
-    assert driver_out == ""
-
     # Test leaving off the -_language argument
     driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_noarg_language.py"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
