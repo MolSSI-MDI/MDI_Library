@@ -423,11 +423,6 @@ int library_execute_command(MDI_Comm comm) {
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
-    mdi_error("MDI data type not recognized in library_send");
-    return 1;
-  }
-
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
   library_data* libd = (library_data*) this->method_data;
@@ -450,7 +445,10 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     size_t datasize;
     MDI_Datatype basetype;
     ret = datatype_info(datatype, &datasize, &basetype);
-    if ( ret != 0 ) { return ret; }
+    if ( ret != 0 ) {
+      mdi_error("datatype_info returned nonzero value in library_send");
+      return ret;
+    }
 
     int nheader_actual = 4; // actual number of elements of nheader that were sent
 
@@ -466,21 +464,13 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
       int* header = (int*)buf;
       int body_type = header[2];
       int body_size = header[3];
+
+      // determine the byte size of the data type being sent in the body of the message
       size_t body_stride;
-      if (body_type == MDI_INT) {
-	body_stride = sizeof(int);
-      }
-      else if (body_type == MDI_DOUBLE) {
-	body_stride = sizeof(double);
-      }
-      else if (body_type == MDI_CHAR) {
-	body_stride = sizeof(char);
-      }
-      else if (body_type == MDI_BYTE) {
-	body_stride = sizeof(char);
-      }
-      else {
-	mdi_error("MDI Error: Unrecognized data type");
+      ret = datatype_info(body_type, &body_stride, &basetype);
+      if ( ret != 0 ) {
+	mdi_error("datatype_info returned nonzero value in library_send");
+	return ret;
       }
 
       int msg_bytes = ( (int)datasize * count ) + ( (int)body_stride * body_size );
@@ -576,16 +566,14 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
     return 0;
   }
 
-  if ( datatype != MDI_INT && datatype != MDI_DOUBLE && datatype != MDI_CHAR && datatype != MDI_BYTE ) {
-    mdi_error("MDI data type not recognized in library_send");
-    return 1;
-  }
-
   // determine the byte size of the data type being sent
   size_t datasize;
   MDI_Datatype basetype;
   ret = datatype_info(datatype, &datasize, &basetype);
-  if ( ret != 0 ) { return ret; }
+  if ( ret != 0 ) {
+    mdi_error("datatype_info returned nonzero value in library_recv");
+    return ret;
+  }
 
   // confirm that libd->buf is initialized
   if ( other_lib->buf_allocated != 1 ) {
