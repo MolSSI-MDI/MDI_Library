@@ -110,7 +110,7 @@ class MDIEngine:
 
 def MDI_Plugin_init_engine_py():
     engine = MDIEngine()
-    engine.run("-role ENGINE -method LINK -name MM -driver_name driver")
+    engine.run("-role ENGINE -method LINK -name MM")
 
 if __name__== "__main__":
     engine = MDIEngine()

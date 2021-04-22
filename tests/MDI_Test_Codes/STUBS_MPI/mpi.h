@@ -15,8 +15,14 @@ typedef int MPI_Status;
 int MPI_Init( int *argc, char ***argv) { return 0;};
 int MPI_Finalize(void) { return 0; };
 
-int MPI_Comm_rank( MPI_Comm comm, int *rank ) { return 0; };
-int MPI_Comm_size( MPI_Comm comm, int *size ) { return 0; };
+int MPI_Comm_rank( MPI_Comm comm, int *rank ) {
+  *rank = 0;
+  return 0;
+};
+int MPI_Comm_size( MPI_Comm comm, int *size ) {
+  *size = 1;
+  return 0;
+};
 int MPI_Get_processor_name( char *name, int *resultlen ) {return 0;};
 
 int MPI_Barrier(MPI_Comm comm) { return 0; };

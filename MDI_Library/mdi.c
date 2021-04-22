@@ -1623,6 +1623,45 @@ int MDI_Get_plugin_mode(int* plugin_mode_ptr) {
 }
 
 
+/*! \brief Get plugin_argc
+ *
+ */
+int MDI_Plugin_get_argc(int* argc_ptr) {
+  if ( ! plugin_mode ) {
+    mdi_error("MDI_Plugin_get_argc called, but plugin mode is not active.");
+    return 1;
+  }
+  *argc_ptr = plugin_argc;
+  return 0;
+}
+
+
+/*! \brief Get plugin_argv
+ *
+ */
+int MDI_Plugin_get_argv(char*** argv_ptr) {
+  if ( ! plugin_mode ) {
+    mdi_error("MDI_Plugin_get_argv called, but plugin mode is not active.");
+    return 1;
+  }
+  *argv_ptr = plugin_argv;
+  return 0;
+}
+
+
+/*! \brief Get plugin_unedited_options
+ *
+ */
+int MDI_Plugin_get_args(char** args_ptr) {
+  if ( ! plugin_mode ) {
+    mdi_error("MDI_Plugin_get_args called, but plugin mode is not active.");
+    return 1;
+  }
+  *args_ptr = plugin_unedited_options;
+  return 0;
+}
+
+
 /*! \brief Get the Python plugin MPI communicator
  *
  */

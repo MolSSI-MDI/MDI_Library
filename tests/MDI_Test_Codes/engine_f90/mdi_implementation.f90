@@ -29,7 +29,7 @@ CONTAINS
 
     ! Call MDI_Init
     world_comm = MPI_COMM_WORLD
-    CALL MDI_Init("-role ENGINE -method LINK -name MM -driver_name driver", ierr)
+    CALL MDI_Init("-role ENGINE -method LINK -name MM", ierr)
 
     ! Get the MPI intra-communicator over which this plugin will run
     CALL MDI_MPI_get_world_comm(world_comm, ierr);

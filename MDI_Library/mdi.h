@@ -134,6 +134,9 @@ DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, vo
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Get_plugin_mode(int* plugin_mode);
+DllExport int MDI_Plugin_get_argc(int* argc_ptr);
+DllExport int MDI_Plugin_get_argv(char*** argv_ptr);
+DllExport int MDI_Plugin_get_args(char** args_ptr);
 
 // functions for managing callback functions for mpi4py
 DllExport int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Comm));

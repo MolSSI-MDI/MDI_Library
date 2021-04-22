@@ -32,8 +32,80 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   code* this_code = get_code(driver_code_id);
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
-  // Note: Eventually, should probably replace this code with libltdl
+  // Begin parsing the options char array into an argv-style array of char arrays
+
+  // copy the input options array
+  int options_len = strlen(options) + 1;
+  plugin_options = malloc( options_len * sizeof(char) );
+  snprintf(plugin_options, options_len, "%s", options);
+  plugin_unedited_options = malloc( options_len * sizeof(char) );
+  snprintf(plugin_unedited_options, options_len, "%s", options);
+
+  // determine the number of arguments
+  plugin_argc = 0;
+  int ichar;
+  int in_argument = 0; // was the previous character part of an argument, or just whitespace?
+  int in_single_quotes = 0; // was the previous character part of a single quote?
+  int in_double_quotes = 0; // was the previous character part of a double quote?
+  for (ichar=0; ichar < options_len; ichar++) {
+    if ( plugin_options[ichar] == '\0' ) {
+      if ( in_double_quotes ) {
+	mdi_error("Unterminated double quotes received in MDI_Launch_plugin \"options\" argument.");
+      }
+      if ( in_argument ) {
+	plugin_argc++;
+      }
+      in_argument = 0;
+    }
+    else if (plugin_options[ichar] == ' ') {
+      if ( ! in_double_quotes && ! in_single_quotes ) {
+	if ( in_argument ) {
+	  plugin_argc++;
+	}
+	in_argument = 0;
+	plugin_options[ichar] = '\0';
+      }
+    }
+    else if (plugin_options[ichar] == '\"') {
+      if ( in_single_quotes ) {
+	mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
+      }
+      in_argument = 1;
+      in_double_quotes = (in_double_quotes + 1) % 2;
+      plugin_options[ichar] = '\0';
+    }
+    else if (plugin_options[ichar] == '\'') { 
+      if ( in_double_quotes ) {
+	mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
+      }
+      in_argument = 1;
+      in_single_quotes = (in_single_quotes + 1) % 2;
+      plugin_options[ichar] = '\0';
+    }
+    else {
+      in_argument = 1;
+    }
+  }
+
+  // construct pointers to all of the arguments
+  plugin_argv = malloc( plugin_argc * sizeof(char*) );
+  int iarg = 0;
+  for (ichar=0; ichar < options_len; ichar++) {
+    if ( plugin_options[ichar] != '\0' ) {
+      if ( ichar == 0 || plugin_options[ichar-1] == '\0' ) {
+	plugin_argv[iarg] = &plugin_options[ichar];
+	iarg++;
+      }
+    }
+  }
+  if ( iarg != plugin_argc ) {
+    mdi_error("Programming error: unable to correctly parse the MDI_Launch_plugin \"options\" argument.");
+  }
+
+  //
   // Get the path to the plugin
+  // Note: Eventually, should probably replace this code with libltdl
+  //
   char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
 
   // Get the name of the plugin's init function
@@ -156,6 +228,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // free memory from loading the plugin's initialization function
   free( plugin_path );
   free( plugin_init_name );
+
+  // free memory from storing the plugin's command-line options
+  free( plugin_options );
+  free( plugin_unedited_options );
+  free( plugin_argv );
 
   return 0;
 }

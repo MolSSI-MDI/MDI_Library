@@ -182,6 +182,18 @@ extern MPI_Comm mdi_mpi_comm_world;
  * Only used for Python plugins */
 extern void* python_plugin_mpi_world_ptr;
 
+/*! \brief Unedited command-line options for currently running plugin */
+extern char* plugin_unedited_options;
+
+/*! \brief Command-line options for currently running plugin */
+extern char* plugin_options;
+
+/*! \brief Argument count for plugin command-line options */
+extern int plugin_argc;
+
+/*! \brief Argument vector for plugin command-line options */
+extern char** plugin_argv;
+
 /*! \brief Python callback pointer for MPI_Recv */
 extern int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
 

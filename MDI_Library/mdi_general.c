@@ -44,14 +44,12 @@ int general_init(const char* options) {
   char* hostname;
   int port;
   char* output_file;
-  char* driver_name;
   char* language_argument = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
   int has_hostname = 0;
   int has_port = 0;
-  int has_driver_name = 0;
   int has_plugin_path = 0;
   int has_output_file = 0;
 
@@ -146,16 +144,6 @@ int general_init(const char* options) {
       }
       has_output_file = 1;
       output_file = argv[iarg+1];
-      iarg += 2;
-    }
-    //-driver_name
-    else if (strcmp(argv[iarg],"-driver_name") == 0) {
-      if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -driver_name option");
-	return 1;
-      }
-      driver_name = argv[iarg+1];
-      has_driver_name = 1;
       iarg += 2;
     }
     //-plugin_path
@@ -374,10 +362,6 @@ int general_init(const char* options) {
       }
     }
     else if ( strcmp(method, "LINK") == 0 ) {
-      if ( has_driver_name == 0 ) {
-	mdi_error("Error in MDI_Init: -driver_name option not provided");
-	return 1;
-      }
       library_initialize();
     }
     else if ( strcmp(method, "TEST") == 0 ) {

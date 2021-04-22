@@ -16,7 +16,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_name.py ${CMAKE_CURRENT
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_hostname.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_noarg_hostname.py COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_port.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_noarg_port.py COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_out.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_noarg_out.py COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_driver_name.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_noarg_driver_name.py COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_noarg_language.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_noarg_language.py COPYONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ut_init_double.py ${CMAKE_CURRENT_BINARY_DIR}/../../../ut_init_double.py COPYONLY)
