@@ -35,7 +35,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.2.6
+        VERSION 1.2.8
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 
