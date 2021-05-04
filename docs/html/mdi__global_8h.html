@@ -129,7 +129,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_MINOR_VERSION_</b>&#160;&#160;&#160;2</td></tr>
 <tr class="separator:a67fc6017b22b9da77cc9499b4d27aaa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae00623daf324fbcb5836b054fa0836b8"><td class="memItemLeft" align="right" valign="top"><a id="ae00623daf324fbcb5836b054fa0836b8"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_PATCH_VERSION_</b>&#160;&#160;&#160;0</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_PATCH_VERSION_</b>&#160;&#160;&#160;8</td></tr>
 <tr class="separator:ae00623daf324fbcb5836b054fa0836b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a474fb80c9b424fce2f9f207a749d8602"><td class="memItemLeft" align="right" valign="top"><a id="a474fb80c9b424fce2f9f207a749d8602"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_COMMAND_LENGTH_</b>&#160;&#160;&#160;12</td></tr>
@@ -334,6 +334,22 @@ MPI_Comm&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a996b501922da600d9da916888e4fd023">python_plugin_mpi_world_ptr</a></td></tr>
 <tr class="memdesc:a996b501922da600d9da916888e4fd023"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the MPI_Comm over which a Python plugin should run. Only used for Python plugins. <br /></td></tr>
 <tr class="separator:a996b501922da600d9da916888e4fd023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8205f3c7213163e84a9071830f7e7b43"><td class="memItemLeft" align="right" valign="top"><a id="a8205f3c7213163e84a9071830f7e7b43"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a8205f3c7213163e84a9071830f7e7b43">plugin_unedited_options</a></td></tr>
+<tr class="memdesc:a8205f3c7213163e84a9071830f7e7b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unedited command-line options for currently running plugin. <br /></td></tr>
+<tr class="separator:a8205f3c7213163e84a9071830f7e7b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad54b921aece5d4b50db9b18b28ea14f1"><td class="memItemLeft" align="right" valign="top"><a id="ad54b921aece5d4b50db9b18b28ea14f1"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#ad54b921aece5d4b50db9b18b28ea14f1">plugin_options</a></td></tr>
+<tr class="memdesc:ad54b921aece5d4b50db9b18b28ea14f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command-line options for currently running plugin. <br /></td></tr>
+<tr class="separator:ad54b921aece5d4b50db9b18b28ea14f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa56537b3bb1c33766d2c001e9c417fa8"><td class="memItemLeft" align="right" valign="top"><a id="aa56537b3bb1c33766d2c001e9c417fa8"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#aa56537b3bb1c33766d2c001e9c417fa8">plugin_argc</a></td></tr>
+<tr class="memdesc:aa56537b3bb1c33766d2c001e9c417fa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Argument count for plugin command-line options. <br /></td></tr>
+<tr class="separator:aa56537b3bb1c33766d2c001e9c417fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2c956cb23ba46561ddd45ebe86fe017"><td class="memItemLeft" align="right" valign="top"><a id="ae2c956cb23ba46561ddd45ebe86fe017"></a>
+char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#ae2c956cb23ba46561ddd45ebe86fe017">plugin_argv</a></td></tr>
+<tr class="memdesc:ae2c956cb23ba46561ddd45ebe86fe017"><td class="mdescLeft">&#160;</td><td class="mdescRight">Argument vector for plugin command-line options. <br /></td></tr>
+<tr class="separator:ae2c956cb23ba46561ddd45ebe86fe017"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81771e72698989541351fc9fdd75eba6"><td class="memItemLeft" align="right" valign="top"><a id="a81771e72698989541351fc9fdd75eba6"></a>
 int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a81771e72698989541351fc9fdd75eba6">mpi4py_recv_callback</a> )(void *, int, int, int, MDI_Comm_Type)</td></tr>
 <tr class="memdesc:a81771e72698989541351fc9fdd75eba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Python callback pointer for MPI_Recv. <br /></td></tr>

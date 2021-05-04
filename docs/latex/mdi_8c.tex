@@ -114,6 +114,12 @@ int \mbox{\hyperlink{mdi_8c_a8272503f977c698ccd8cee1e7c5c7b3e}{M\+D\+I\+\_\+\+Ge
 \begin{DoxyCompactList}\small\item\em Get the current code. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_aba6884e311ea54778297805267a91e16}{M\+D\+I\+\_\+\+Get\+\_\+plugin\+\_\+mode}} (int $\ast$plugin\+\_\+mode\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get whether plugin mode is active. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ab4e86ef9c4bb12e90d8e07be2e5cf6d9}{M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+argc}} (int $\ast$argc\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Get plugin\+\_\+argc. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_abebb0265894fbfcced765d9688719355}{M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+argv}} (char $\ast$$\ast$$\ast$argv\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Get plugin\+\_\+argv. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_a4b7c5d301e092db15578ae745ffa0913}{M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+args}} (char $\ast$$\ast$args\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Get plugin\+\_\+unedited\+\_\+options. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a57509800ae93333f382d0cdec96179f3}{M\+D\+I\+\_\+\+Get\+\_\+python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr}} (void $\ast$$\ast$python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get the Python plugin M\+PI communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_acb8c9a81546e101e143ff9b4dbb77f66}{M\+D\+I\+\_\+\+Set\+\_\+\+Mpi4py\+\_\+\+Recv\+\_\+\+Callback}} (int($\ast$mpi4py\+\_\+recv)(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm))
@@ -961,6 +967,36 @@ The function returns {\ttfamily 0} on a success.
 \mbox{\texttt{ out}}  & {\em world\+\_\+comm} & The M\+PI communicator that spans the single code corresponding to the calling rank. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_ab4e86ef9c4bb12e90d8e07be2e5cf6d9}\label{mdi_8c_ab4e86ef9c4bb12e90d8e07be2e5cf6d9}} 
+\index{mdi.c@{mdi.c}!MDI\_Plugin\_get\_argc@{MDI\_Plugin\_get\_argc}}
+\index{MDI\_Plugin\_get\_argc@{MDI\_Plugin\_get\_argc}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Plugin\_get\_argc()}{MDI\_Plugin\_get\_argc()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+argc (\begin{DoxyParamCaption}\item[{int $\ast$}]{argc\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Get plugin\+\_\+argc. 
+
+\mbox{\Hypertarget{mdi_8c_a4b7c5d301e092db15578ae745ffa0913}\label{mdi_8c_a4b7c5d301e092db15578ae745ffa0913}} 
+\index{mdi.c@{mdi.c}!MDI\_Plugin\_get\_args@{MDI\_Plugin\_get\_args}}
+\index{MDI\_Plugin\_get\_args@{MDI\_Plugin\_get\_args}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Plugin\_get\_args()}{MDI\_Plugin\_get\_args()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+args (\begin{DoxyParamCaption}\item[{char $\ast$$\ast$}]{args\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Get plugin\+\_\+unedited\+\_\+options. 
+
+\mbox{\Hypertarget{mdi_8c_abebb0265894fbfcced765d9688719355}\label{mdi_8c_abebb0265894fbfcced765d9688719355}} 
+\index{mdi.c@{mdi.c}!MDI\_Plugin\_get\_argv@{MDI\_Plugin\_get\_argv}}
+\index{MDI\_Plugin\_get\_argv@{MDI\_Plugin\_get\_argv}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Plugin\_get\_argv()}{MDI\_Plugin\_get\_argv()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+argv (\begin{DoxyParamCaption}\item[{char $\ast$$\ast$$\ast$}]{argv\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Get plugin\+\_\+argv. 
+
 \mbox{\Hypertarget{mdi_8c_ab73f32323a155011fcc184866215ba03}\label{mdi_8c_ab73f32323a155011fcc184866215ba03}} 
 \index{mdi.c@{mdi.c}!MDI\_Recv@{MDI\_Recv}}
 \index{MDI\_Recv@{MDI\_Recv}!mdi.c@{mdi.c}}

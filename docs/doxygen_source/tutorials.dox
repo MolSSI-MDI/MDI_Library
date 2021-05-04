@@ -141,7 +141,7 @@ Now use Cookiecutter to create a new driver project:
 cookiecutter git@github.com:MolSSI/MDI_Driver_Cookiecutter.git
 \endcode
 
-When prompted for the \c repo_name, type \c aimd.
+When prompted for the \c repo_name, type \c aimd, and then when prompted to select a language, type \c 1 for C++.
 This will create a new directory called \c aimd and populate it with some of the things you will need for the driver, including a copy of the MDI Library.
 The overall directory structure is:
 \code
@@ -149,11 +149,10 @@ The overall directory structure is:
 └── aimd
     ├── CMakeLists.txt
     ├── aimd
-    │   ├── CMakeLists.txt
-    │   ├── STUBS_MPI
-    │   │   └── mpi.h
-    │   └── aimd.cpp
-    └── lib
+        ├── CMakeLists.txt
+        ├── STUBS_MPI
+        │   └── mpi.h
+        └── aimd.cpp
         └── mdi
             ...
 \endcode
@@ -164,10 +163,11 @@ Open the file called \c aimd.cpp.
 It contains the following code:
 
 \code
+#include <iostream>
+#include <mpi.h>
+#include <stdexcept>
 #include <string.h>
-extern "C" {
 #include "mdi.h"
-}
 
 using namespace std;
 
@@ -207,6 +207,7 @@ int main(int argc, char **argv) {
 
   // Synchronize all MPI ranks
   MPI_Barrier(world_comm);
+  MPI_Finalize();
 
   return 0;
 }
@@ -221,16 +222,16 @@ In general, an MDI-enabled code should call \c MDI_MPI_get_world_comm() immediat
 After initializing MDI, we need to connect the driver to its engines.
 For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep.
 In the MDI standard, engines request a connection to a driver.
-The driver will need to call the \c MDI_Accept_Communicator() function to accept each connection.
+The driver will need to call the \c MDI_Accept_communicator() function to accept each connection.
 The general format of this functional call looks like this:
 
 \code
 MDI_Comm comm;
-MDI_Accept_Communicator(&comm);
+MDI_Accept_communicator(&comm);
 \endcode
 
 This will assign a new MDI communicator to \c comm, which functions very similarly to an MPI communicator and is used in certain MDI function calls to identify which engine is expected to send/receive data to/from the driver.
-Our AIMD driver will connect to two different engines, so we will be calling \c MDI_Accept_Communicator() twice.
+Our AIMD driver will connect to two different engines, so we will be calling \c MDI_Accept_communicator() twice.
 We don't know the order in which the engines will request a connection to the driver, so we will need some way to determine which engine is the QM code and which engine is the MM code.
 
 This can be accomplished through the use of the \"\c <NAME\" command.
@@ -244,37 +245,37 @@ Sending the \"\c <NAME\" command to an engine and then receiving the engine's na
 
 \code
 char* code_name = new char[MDI_NAME_LENGTH];
-MDI_Send_Command("<NAME", comm);
+MDI_Send_command("<NAME", comm);
 MDI_Recv(code_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 \endcode
 
 The following code accepts connections from two engines and assigns the communicator from the engine named "MM" to \c mm_comm and assigns the communicator from the engine named "QM" to \c qm_comm.
-Place it immediately after the comment that reads \"<c>// Connect to the engines</c>\".
+Replace the comment that reads \"<c>// Connect to the engines</c>\" with:
 
 \code
   // Connect to the engines
-  MDI_Comm mm_comm = MDI_NULL_COMM;
-  MDI_Comm qm_comm = MDI_NULL_COMM;
+  MDI_Comm mm_comm = MDI_COMM_NULL;
+  MDI_Comm qm_comm = MDI_COMM_NULL;
   int nengines = 2;
   for (int iengine=0; iengine < nengines; iengine++) {
     MDI_Comm comm;
-    MDI_Accept_Communicator(&comm);
+    MDI_Accept_communicator(&comm);
  
     // Determine the name of this engine
     char* engine_name = new char[MDI_NAME_LENGTH];
-    MDI_Send_Command("<NAME", comm);
+    MDI_Send_command("<NAME", comm);
     MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
  
     cout << "Engine name: " << engine_name << endl;
  
     if ( strcmp(engine_name, "MM") == 0 ) {
-      if ( mm_comm != MDI_NULL_COMM ) {
+      if ( mm_comm != MDI_COMM_NULL ) {
 	throw runtime_error("Accepted a communicator from a second MM engine.");
       }
       mm_comm = comm;
     }
     else if ( strcmp(engine_name, "QM") == 0 ) {
-      if ( qm_comm != MDI_NULL_COMM ) {
+      if ( qm_comm != MDI_COMM_NULL ) {
 	throw runtime_error("Accepted a communicator from a second QM engine.");
       }
       qm_comm = comm;
@@ -292,14 +293,14 @@ In broad terms, during each dynamics iteration we will send a set of atomic coor
 
 Keep in mind that the driver doesn't know anything about the simulated system beyond what it can query by sending MDI commands.
 MDI engines initialize basic information about the system using whatever input file format the engine's developer chose.
-In particular, when run as engines LAMMPS and QE will read normal input files for LAMMPS and QE, respectively, initialize their system, and then request a connection to the driver.
+When the MM and QM engines are launched, they will each read their standard input files, perform basic initialization tasks, and then request a connection to the driver.
 The driver can request information about the engine's system by sending certain MDI commands.
 For example, to determine the number of atoms in the MM engine's system, you could do:
 
 \code
   // Receive the number of atoms from the MM engine
   int natoms;
-  MDI_Send_Command("<NATOMS", mm_comm);
+  MDI_Send_command("<NATOMS", mm_comm);
   MDI_Recv(&natoms, 1, MDI_INT, mm_comm);
 \endcode
 
@@ -308,7 +309,7 @@ Similarly, to learn the coordinates of the atoms in the MM engine's system, you 
 \code
   // Receive the coordinates from the MM engine
   double coords[3*natoms];
-  MDI_Send_Command("<COORDS", mm_comm);
+  MDI_Send_command("<COORDS", mm_comm);
   MDI_Recv(&coords, 3*natoms, MDI_DOUBLE, mm_comm);
 \endcode
 
@@ -316,15 +317,15 @@ You could then update the coordinates of the QM engine's system:
 
 \code
   // Send the coordinates to the QM engine
-  MDI_Send_Command(">COORDS", qm_comm);
+  MDI_Send_command(">COORDS", qm_comm);
   MDI_Send(&coords, 3*natoms, MDI_DOUBLE, qm_comm);
 \endcode
 
 \note
 As we will discuss later in \ref tutorials_using_sec, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.
 
-The following code will handle all of the work associated with driving an AIMD simulation.
-Place it immediately after the comment that reads \"<c>// Perform the simulation</c>\".
+The following code will handle all of the work associated with driving an AIMD simulation
+Replace the comment that reads \"<c>// Perform the simulation</c>\" with:
 
 \code
   // Perform the simulation
@@ -334,7 +335,7 @@ Place it immediately after the comment that reads \"<c>// Perform the simulation
   double mm_energy;
  
   // Receive the number of atoms from the MM engine
-  MDI_Send_Command("<NATOMS", mm_comm);
+  MDI_Send_command("<NATOMS", mm_comm);
   MDI_Recv(&natoms, 1, MDI_INT, mm_comm);
  
   // Allocate the arrays for the coordinates and forces
@@ -342,40 +343,40 @@ Place it immediately after the comment that reads \"<c>// Perform the simulation
   double forces[3*natoms];
 
   // Have the MM engine initialize a new MD simulation
-  MDI_Send_Command("@INIT_MD", mm_comm);
+  MDI_Send_command("@INIT_MD", mm_comm);
  
   // Perform each iteration of the simulation
   for (int iiteration = 0; iiteration < niterations; iiteration++) {
 
     // Receive the coordinates from the MM engine
-    MDI_Send_Command("<COORDS", mm_comm);
+    MDI_Send_command("<COORDS", mm_comm);
     MDI_Recv(&coords, 3*natoms, MDI_DOUBLE, mm_comm);
  
     // Send the coordinates to the QM engine
-    MDI_Send_Command(">COORDS", qm_comm);
+    MDI_Send_command(">COORDS", qm_comm);
     MDI_Send(&coords, 3*natoms, MDI_DOUBLE, qm_comm);
  
     // Have the MM engine proceed to the @FORCES node
-    MDI_Send_Command("@FORCES", mm_comm);
+    MDI_Send_command("@FORCES", mm_comm);
  
     // Get the QM energy
-    MDI_Send_Command("<ENERGY", qm_comm);
+    MDI_Send_command("<ENERGY", qm_comm);
     MDI_Recv(&qm_energy, 1, MDI_DOUBLE, qm_comm);
  
     // Get the MM energy
-    MDI_Send_Command("<ENERGY", mm_comm);
+    MDI_Send_command("<ENERGY", mm_comm);
     MDI_Recv(&mm_energy, 1, MDI_DOUBLE, mm_comm);
  
     // Receive the forces from the QM engine
-    MDI_Send_Command("<FORCES", qm_comm);
+    MDI_Send_command("<FORCES", qm_comm);
     MDI_Recv(&forces, 3*natoms, MDI_DOUBLE, qm_comm);
  
     // Send the forces to the MM engine
-    MDI_Send_Command(">FORCES", mm_comm);
+    MDI_Send_command(">FORCES", mm_comm);
     MDI_Send(&forces, 3*natoms, MDI_DOUBLE, mm_comm);
  
     // Have the MM engine proceed to the @COORDS node, which completes the timestep
-    MDI_Send_Command("@COORDS", mm_comm);
+    MDI_Send_command("@COORDS", mm_comm);
  
     cout << "timestep: " << iiteration << " " << mm_energy << " " << qm_energy << endl;
   }
@@ -391,11 +392,12 @@ The above code does the following:
     -# Orders the MM engine update the atomic coordinates
 
 Finally, we should send an MDI command to cause the engines to exit.
-Add the following immediately after the comment that reads \"<c>// Send the "EXIT" command to each of the engines</c>\":
+Replace the comment that reads \"<c>// Send the "EXIT" command to each of the engines</c>\" with the following:
 
 \code
-  MDI_Send_Command("EXIT", mm_comm);
-  MDI_Send_Command("EXIT", qm_comm);
+  // Send the "EXIT" command to each of the engines
+  MDI_Send_command("EXIT", mm_comm);
+  MDI_Send_command("EXIT", qm_comm);
 \endcode
 
 \subsection compile_sec Driver Compilation
@@ -413,7 +415,7 @@ make
 To test the driver, you will need access to a QM engine and an MM engine.
 The \ref user_tutorial describes how to compile QE and LAMMPS for this purpose.
 
-You will also need to appropriate input files for a test simulation.
+You will also need appropriate input files for a test simulation.
 The test files in the MDI_AIMD_Driver repository (see the \ref user_tutorial) will work fine, as will the scripts.
 You can simply edit MDI_AIMD_Driver/tests/locations/MDI_AIMD_Driver to point to your new repository and run the scripts in the manner described in the \ref user_tutorial.
 

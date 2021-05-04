@@ -235,6 +235,15 @@ Functions</h2></td></tr>
 <tr class="memitem:aba6884e311ea54778297805267a91e16"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#aba6884e311ea54778297805267a91e16">MDI_Get_plugin_mode</a> (int *plugin_mode_ptr)</td></tr>
 <tr class="memdesc:aba6884e311ea54778297805267a91e16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get whether plugin mode is active.  <a href="#aba6884e311ea54778297805267a91e16">More...</a><br /></td></tr>
 <tr class="separator:aba6884e311ea54778297805267a91e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4e86ef9c4bb12e90d8e07be2e5cf6d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ab4e86ef9c4bb12e90d8e07be2e5cf6d9">MDI_Plugin_get_argc</a> (int *argc_ptr)</td></tr>
+<tr class="memdesc:ab4e86ef9c4bb12e90d8e07be2e5cf6d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get plugin_argc.  <a href="#ab4e86ef9c4bb12e90d8e07be2e5cf6d9">More...</a><br /></td></tr>
+<tr class="separator:ab4e86ef9c4bb12e90d8e07be2e5cf6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abebb0265894fbfcced765d9688719355"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#abebb0265894fbfcced765d9688719355">MDI_Plugin_get_argv</a> (char ***argv_ptr)</td></tr>
+<tr class="memdesc:abebb0265894fbfcced765d9688719355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get plugin_argv.  <a href="#abebb0265894fbfcced765d9688719355">More...</a><br /></td></tr>
+<tr class="separator:abebb0265894fbfcced765d9688719355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b7c5d301e092db15578ae745ffa0913"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a4b7c5d301e092db15578ae745ffa0913">MDI_Plugin_get_args</a> (char **args_ptr)</td></tr>
+<tr class="memdesc:a4b7c5d301e092db15578ae745ffa0913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get plugin_unedited_options.  <a href="#a4b7c5d301e092db15578ae745ffa0913">More...</a><br /></td></tr>
+<tr class="separator:a4b7c5d301e092db15578ae745ffa0913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57509800ae93333f382d0cdec96179f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a57509800ae93333f382d0cdec96179f3">MDI_Get_python_plugin_mpi_world_ptr</a> (void **python_plugin_mpi_world_ptr_ptr)</td></tr>
 <tr class="memdesc:a57509800ae93333f382d0cdec96179f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Python plugin MPI communicator.  <a href="#a57509800ae93333f382d0cdec96179f3">More...</a><br /></td></tr>
 <tr class="separator:a57509800ae93333f382d0cdec96179f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1773,6 +1782,66 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ab4e86ef9c4bb12e90d8e07be2e5cf6d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4e86ef9c4bb12e90d8e07be2e5cf6d9">&#9670;&nbsp;</a></span>MDI_Plugin_get_argc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MDI_Plugin_get_argc </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>argc_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get plugin_argc. </p>
+
+</div>
+</div>
+<a id="a4b7c5d301e092db15578ae745ffa0913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b7c5d301e092db15578ae745ffa0913">&#9670;&nbsp;</a></span>MDI_Plugin_get_args()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MDI_Plugin_get_args </td>
+          <td>(</td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>args_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get plugin_unedited_options. </p>
+
+</div>
+</div>
+<a id="abebb0265894fbfcced765d9688719355"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abebb0265894fbfcced765d9688719355">&#9670;&nbsp;</a></span>MDI_Plugin_get_argv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MDI_Plugin_get_argv </td>
+          <td>(</td>
+          <td class="paramtype">char ***&#160;</td>
+          <td class="paramname"><em>argv_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get plugin_argv. </p>
 
 </div>
 </div>
