@@ -31,7 +31,6 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
   FILE* engine_script = fopen(engine_path, "r");
 
   if( engine_script ) {
-    printf("Opened engine script\n");
 
     // Set the python_plugin_mpi_world_ptr
     python_plugin_mpi_world_ptr = engine_comm_ptr;
