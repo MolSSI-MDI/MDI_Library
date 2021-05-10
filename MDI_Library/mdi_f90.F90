@@ -433,6 +433,25 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_MPI_set_world_comm_
      END FUNCTION MDI_MPI_set_world_comm_
 
+     FUNCTION MDI_Plugin_get_argc_(argc_ptr) bind(c, name="MDI_Plugin_get_argc")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: argc_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Plugin_get_argc_
+     END FUNCTION MDI_Plugin_get_argc_
+
+     FUNCTION MDI_Plugin_get_args_(args_ptr) bind(c, name="MDI_Plugin_get_args")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: args_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Plugin_get_args_
+     END FUNCTION MDI_Plugin_get_args_
+
+     FUNCTION MDI_Plugin_get_arg_(index, arg_ptr) bind(c, name="MDI_Plugin_get_arg")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: index
+       TYPE(C_PTR), VALUE                       :: arg_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Plugin_get_arg_
+     END FUNCTION MDI_Plugin_get_arg_
+
   END INTERFACE
 
 
@@ -986,6 +1005,66 @@ CONTAINS
       cworld_comm = fworld_comm
       ierr = MDI_MPI_set_world_comm_( c_loc(cworld_comm) )
     END SUBROUTINE MDI_MPI_set_world_comm
+
+    SUBROUTINE MDI_Plugin_get_argc(argc, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_argc
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_argc
+#endif
+      INTEGER, INTENT(OUT)                     :: argc
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cargc
+
+      ierr = MDI_Plugin_get_argc_( c_loc(cargc) )
+      argc = cargc
+
+    END SUBROUTINE MDI_Plugin_get_argc
+
+    SUBROUTINE MDI_Plugin_get_args(args, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
+#endif
+      CHARACTER(LEN=*), INTENT(OUT)            :: args
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), POINTER   :: cargs(:)
+      TYPE(C_PTR), TARGET                      :: cargs_ptr
+
+      ierr = MDI_Plugin_get_args_(c_loc(cargs_ptr))
+      CALL c_f_pointer(cargs_ptr, cargs, [LEN(args)])
+
+      ! convert from C string to Fortran string
+      args = str_c_to_f(cargs, LEN(args))
+
+    END SUBROUTINE MDI_Plugin_get_args
+
+    SUBROUTINE MDI_Plugin_get_arg(index, arg, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
+#endif
+      INTEGER, INTENT(IN)                      :: index
+      CHARACTER(LEN=*), INTENT(OUT)            :: arg
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), POINTER   :: carg(:)
+      TYPE(C_PTR), TARGET                      :: carg_ptr
+
+      ierr = MDI_Plugin_get_arg_(index, c_loc(carg_ptr))
+      CALL c_f_pointer(carg_ptr, carg, [LEN(arg)])
+
+      ! convert from C string to Fortran string
+      arg = str_c_to_f(carg, LEN(arg))
+
+    END SUBROUTINE MDI_Plugin_get_arg
 
     SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
       USE MDI_INTERNAL
