@@ -1662,6 +1662,27 @@ int MDI_Plugin_get_args(char** args_ptr) {
 }
 
 
+/*! \brief Get a specific element from plugin_argv
+ *
+ */
+int MDI_Plugin_get_arg(int index, char** arg_ptr) {
+  if ( ! plugin_mode ) {
+    mdi_error("MDI_Plugin_get_arg called, but plugin mode is not active.");
+    return 1;
+  }
+  if ( index < 0 ) {
+    mdi_error("MDI_Plugin_get_arg called with invalid value (<0) for index.");
+    return 1;
+  }
+  if ( index > plugin_argc ) {
+    mdi_error("MDI_Plugin_get_arg called with invalid value (>argc) for index.");
+    return 1;
+  }
+  *arg_ptr = plugin_argv[index];
+  return 0;
+}
+
+
 /*! \brief Get the Python plugin MPI communicator
  *
  */

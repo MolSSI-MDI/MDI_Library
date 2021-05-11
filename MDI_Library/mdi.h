@@ -137,6 +137,7 @@ DllExport int MDI_Get_plugin_mode(int* plugin_mode);
 DllExport int MDI_Plugin_get_argc(int* argc_ptr);
 DllExport int MDI_Plugin_get_argv(char*** argv_ptr);
 DllExport int MDI_Plugin_get_args(char** args_ptr);
+DllExport int MDI_Plugin_get_arg(int index, char** arg_ptr);
 
 // functions for managing callback functions for mpi4py
 DllExport int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Comm));

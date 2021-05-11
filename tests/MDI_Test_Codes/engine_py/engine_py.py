@@ -109,8 +109,23 @@ class MDIEngine:
             execute_command( command, comm, self )
 
 def MDI_Plugin_init_engine_py():
+    # Get command-line information from the driver
+    argc = mdi.MDI_Plugin_get_argc()
+    found_mdi_options = False
+    mdi_options = ""
+    for iarg in range(argc):
+        arg = mdi.MDI_Plugin_get_arg(iarg)
+        if arg == "-mdi" or arg == "--mdi":
+            if argc > iarg + 1:
+                mdi_options = mdi.MDI_Plugin_get_arg(iarg+1)
+            else:
+                raise Exception("Error in engine_py.py: -mdi argument not provided")
+            found_mdi_options = True
+    if not found_mdi_options:
+        raise Exception("Error in engine_py.py: -mdi option not provided")
+
     engine = MDIEngine()
-    engine.run("-role ENGINE -method LINK -name MM")
+    engine.run(mdi_options)
 
 if __name__== "__main__":
     engine = MDIEngine()
