@@ -1002,3 +1002,29 @@ def MDI_Get_callback(node_name, index, arg2):
     return c_ptr_to_py_str(callback_name, MDI_COMMAND_LENGTH)
 def MDI_Get_Callback(node_name, index, arg2):
     return MDI_Get_callback(node_name, index, arg2)
+
+
+
+##################################################
+# Plugin functions                               #
+##################################################
+
+# MDI_Plugin_get_argc
+mdi.MDI_Plugin_get_argc.argtypes = [ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Plugin_get_argc.restype = ctypes.c_int
+def MDI_Plugin_get_argc():
+    argc = ctypes.c_int()
+    ret = mdi.MDI_Plugin_get_argc(ctypes.byref(argc))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Plugin_get_argc failed")
+    return argc.value
+
+# MDI_Plugin_get_arg
+mdi.MDI_Plugin_get_arg.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+mdi.MDI_Plugin_get_arg.restype = ctypes.c_int
+def MDI_Plugin_get_arg(index):
+    arg = ctypes.c_char_p()
+    ret = mdi.MDI_Plugin_get_arg(index, ctypes.byref(arg))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Plugin_get_arg failed")
+    return c_ptr_to_py_str(arg, len(arg.value) )

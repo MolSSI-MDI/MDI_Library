@@ -1027,8 +1027,8 @@ CONTAINS
       USE ISO_C_BINDING
       USE MDI_INTERNAL, ONLY : str_c_to_f
 #if MDI_WINDOWS
-      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
-      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_arg
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_args
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Plugin_get_args
 #endif
       CHARACTER(LEN=*), INTENT(OUT)            :: args
       INTEGER, INTENT(OUT)                     :: ierr
