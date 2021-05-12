@@ -32,6 +32,8 @@ int main(int argc, char **argv) {
   if ( ret != 0 ) {
     throw std::runtime_error("MDI_MPI_get_world_comm failed.");
   }
+  int world_rank;
+  MPI_Comm_rank(world_comm, &world_rank);
 
   // Confirm that the code is being run as a driver
   int role;
@@ -47,13 +49,13 @@ int main(int argc, char **argv) {
   // Confirm that the engine has the @DEFAULT node
   int exists;
   MDI_Check_node_exists("@DEFAULT", comm, &exists);
-  if ( exists != 1 ) {
+  if ( world_rank == 0 && exists != 1 ) {
     throw std::runtime_error("The engine does not have the @DEFAULT node.");
   }
 
   // Confirm that the engine supports the EXIT command
   MDI_Check_command_exists("@DEFAULT", "EXIT", comm, &exists);
-  if ( exists != 1 ) {
+  if ( world_rank == 0 && exists != 1 ) {
     throw std::runtime_error("The engine does not support the EXIT command.");
   }
 
@@ -62,7 +64,9 @@ int main(int argc, char **argv) {
   MDI_Send_command("<NAME", comm);
   MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
-  std::cout << " Engine name: " << engine_name << std::endl;
+  if ( world_rank == 0 ) {
+    std::cout << " Engine name: " << engine_name << std::endl;
+  }
 
   // Send the "EXIT" command to the engine
   MDI_Send_command("EXIT", comm);
