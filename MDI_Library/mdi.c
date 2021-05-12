@@ -909,6 +909,12 @@ int MDI_Check_node_exists(const char* node_name, MDI_Comm comm, int* flag)
     return 1;
   }
 
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
@@ -1094,6 +1100,12 @@ int MDI_Check_command_exists(const char* node_name, const char* command_name, MD
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Command_Exists called but MDI has not been initialized");
     return 1;
+  }
+
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
@@ -1325,6 +1337,12 @@ int MDI_Check_callback_exists(const char* node_name, const char* callback_name, 
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Check_Callback_Exists called but MDI has not been initialized");
     return 1;
+  }
+
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH

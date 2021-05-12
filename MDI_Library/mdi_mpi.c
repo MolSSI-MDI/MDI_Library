@@ -143,9 +143,9 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 	mpi_code_rank = nunique_names;
       }
 
-      // if this is rank 0 on either the driver or the engine, create a new communicator
+      // if this rank is a member of either the driver or the engine, create a new communicator
       MDI_Comm comm_id = MDI_COMM_NULL;
-      if ( world_rank == driver_rank || world_rank == i ) {
+      if ( strcmp(my_name, "") == 0 || strcmp(my_name, name) == 0 ) {
 	comm_id = new_communicator(this_code->id, MDI_MPI);
       }
 
@@ -169,8 +169,8 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       }
 
       // create an MDI communicator for communication between the driver and engine
-      // only done if this is rank 0 on either the driver or the engine
-      if ( world_rank == driver_rank || world_rank == i ) {
+      // only done if this is a rank on either the driver or the engine
+      if ( strcmp(my_name, "") == 0 || strcmp(my_name, name) == 0 ) {
 	communicator* new_comm = get_communicator(this_code->id, comm_id);
 	new_comm->delete = communicator_delete_mpi;
 	new_comm->send = mpi_send;
