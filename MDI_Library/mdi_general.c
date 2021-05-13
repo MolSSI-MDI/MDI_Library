@@ -404,7 +404,7 @@ int general_accept_communicator() {
   }
 
   // check for any production codes connecting via TCP
-  if ( tcp_socket > 0 ) {
+  if ( tcp_socket > 0 && this_code->intra_rank == 0 ) {
 
     //accept a connection via TCP
     tcp_accept_connection();
