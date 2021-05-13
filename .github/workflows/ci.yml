@@ -55,7 +55,7 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           brew update > /dev/null
-          brew uninstall gcc
+          brew uninstall gcc || true
           brew install gcc
           [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich
           [ "${{ matrix.mpilib }}" == "openmpi" ] && brew install openmpi
