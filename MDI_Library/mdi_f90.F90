@@ -485,13 +485,15 @@ CONTAINS
       ! determine if plugin mode is active
       ! if this rank has previously run a Fortran plugin, need to remove its state now
       ! NOTE: Should consider whether the C code can call these at end of MDI_Launch_plugin
-      ierr = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
       plugin_mode = cplugin_mode
-      current_code = MDI_Get_Current_Code_()
-      index = find_execute_command( current_code )
-      IF ( index .ne. -1 ) THEN
-        CALL remove_execute_command( current_code )
-      END IF
+      IF ( plugin_mode .eq. 1 ) THEN
+         current_code = MDI_Get_Current_Code_()
+         index = find_execute_command( current_code )
+         IF ( index .ne. -1 ) THEN
+            CALL remove_execute_command( current_code )
+         END IF
+      ENDIF
 
     END SUBROUTINE MDI_Init
 
