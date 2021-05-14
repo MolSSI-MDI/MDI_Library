@@ -433,6 +433,12 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_MPI_set_world_comm_
      END FUNCTION MDI_MPI_set_world_comm_
 
+     FUNCTION MDI_Get_plugin_mode_(plugin_mode_ptr) bind(c, name="MDI_Get_plugin_mode")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: plugin_mode_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Get_plugin_mode_
+     END FUNCTION MDI_Get_plugin_mode_
+
      FUNCTION MDI_Plugin_get_argc_(argc_ptr) bind(c, name="MDI_Plugin_get_argc")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: argc_ptr
@@ -459,6 +465,7 @@ MODULE MDI
 CONTAINS
 
     SUBROUTINE MDI_Init(foptions, ierr)
+      USE MDI_INTERNAL
       IMPLICIT NONE
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Init
@@ -467,7 +474,25 @@ CONTAINS
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(OUT) :: ierr
 
+      INTEGER                                  :: plugin_mode
+      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
+      INTEGER                                  :: current_code
+      INTEGER                                  :: index
+
+
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
+
+      ! determine if plugin mode is active
+      ! if this rank has previously run a Fortran plugin, need to remove its state now
+      ! NOTE: Should consider whether the C code can call these at end of MDI_Launch_plugin
+      ierr = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      plugin_mode = cplugin_mode
+      current_code = MDI_Get_Current_Code_()
+      index = find_execute_command( current_code )
+      IF ( index .ne. -1 ) THEN
+        CALL remove_execute_command( current_code )
+      END IF
+
     END SUBROUTINE MDI_Init
 
     SUBROUTINE MDI_Accept_Communicator(communicator, ierr)
