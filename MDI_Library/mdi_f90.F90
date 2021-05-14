@@ -478,6 +478,7 @@ CONTAINS
       INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
       INTEGER                                  :: current_code
       INTEGER                                  :: index
+      INTEGER                                  :: ierr2
 
 
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
@@ -485,7 +486,7 @@ CONTAINS
       ! determine if plugin mode is active
       ! if this rank has previously run a Fortran plugin, need to remove its state now
       ! NOTE: Should consider whether the C code can call these at end of MDI_Launch_plugin
-      MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
       plugin_mode = cplugin_mode
       IF ( plugin_mode .eq. 1 ) THEN
          current_code = MDI_Get_Current_Code_()
