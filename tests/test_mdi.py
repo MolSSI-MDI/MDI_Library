@@ -534,6 +534,25 @@ def test_cxx_cxx_tcp():
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
 
+def test_cxx_cxx_tcp_mpi12():
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_cxx*")[0]
+    engine_name = glob.glob("../build/engine_cxx*")[0]
+
+    # run the calculation
+    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+
 def test_cxx_f90_tcp():
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
