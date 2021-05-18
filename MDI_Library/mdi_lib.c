@@ -143,7 +143,7 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   if ( file_exists(plugin_path) ) {
     ret = python_plugin_init( plugin_name, plugin_path, options, mpi_comm_ptr );
     if ( ret != 0 ) {
-      mdi_error("Unable to initialize Python plugin");
+      mdi_error("Error in python_plugin_init");
       return -1;
     }
   }

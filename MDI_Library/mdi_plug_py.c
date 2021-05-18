@@ -17,6 +17,10 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
   // Because Python has problems with reinitialization, only initialize Python once
   if ( ! python_interpreter_initialized ) {
     Py_Initialize();
+    if ( ! Py_IsInitialized() ) {
+      mdi_error("Unable to initialize Python interpreter");
+      return 1;
+    }
     PyObject* main_module = PyImport_AddModule("__main__");
     PyObject* original_dict = PyModule_GetDict(main_module);
     python_interpreter_dict = PyDict_Copy(original_dict);
@@ -44,11 +48,21 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
 		 "__name__ = '__mdi__'",
 		 Py_file_input,
 		 main_dict, main_dict);
+    if ( PyErr_Occurred() ) {
+      mdi_error("Unable to set system properties for Python plugin");
+      PyErr_PrintEx(0);
+      return 1;
+    }
 
     // Run the engine file, which will make the MDI_Plugin_init function available
     PyRun_File(engine_script, engine_path,
 	       Py_file_input,
 	       main_dict, main_dict);
+    if ( PyErr_Occurred() ) {
+      mdi_error("Error when loading Python plugin file");
+      PyErr_PrintEx(0);
+      return 1;
+    }
 
     // Call the MDI_Plugin_init function for this plugin
     char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
@@ -57,6 +71,11 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
 		 Py_file_input,
 		 main_dict, main_dict);
     free( plugin_init_name );
+    if ( PyErr_Occurred() ) {
+      mdi_error("Error when running MDI_Plugin_init function");
+      PyErr_PrintEx(0);
+      return 1;
+    }
 
   }
   
