@@ -12,6 +12,62 @@ int python_interpreter_initialized = 0;
  * Only used for Python plugins */
 void* python_interpreter_dict;
 
+int print_traceback()
+{
+  // Function to print the Python traceback
+  
+  PyObject *ptype, *pvalue, *ptraceback;
+  PyObject *traceback_module;
+  char *c_traceback;
+
+  PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+
+  traceback_module = PyImport_ImportModule("traceback");
+  if (traceback_module != NULL) {
+    PyObject *traceback_list, *empty_str, *traceback_pystr;
+
+    traceback_list = PyObject_CallMethod(traceback_module,
+					 "format_exception",
+					 "OOO",
+					 ptype,
+					 pvalue == NULL ? Py_None : pvalue,
+					 ptraceback == NULL ? Py_None : ptraceback);
+
+#if PY_MAJOR_VERSION >= 3
+    empty_str = PyUnicode_FromString("");
+#else
+    empty_str = PyString_FromString("");
+#endif
+
+    traceback_pystr = PyObject_CallMethod(empty_str, "join", "O", traceback_list);
+
+#if PY_MAJOR_VERSION >= 3
+    c_traceback = strdup(PyUnicode_AsUTF8(traceback_pystr));
+#else
+    c_traceback = strdup(PyString_AsString(traceback_pystr));
+#endif
+
+    Py_DECREF(traceback_list);
+    Py_DECREF(empty_str);
+    Py_DECREF(traceback_pystr);
+    Py_DECREF(traceback_module);
+  }
+  else {
+    mdi_error("Unable to print Python plugin traceback");
+    return 1;
+  }
+
+  Py_DECREF(ptype);
+  Py_XDECREF(pvalue);
+  Py_XDECREF(ptraceback);
+
+  // Print the traceback
+  printf("%s\n", c_traceback);
+  free(c_traceback);
+
+  return 0;
+}
+
 int python_plugin_init( const char* engine_name, const char* engine_path, const char* options, void* engine_comm_ptr ) {
   // Initialize the Python interpreter
   // Because Python has problems with reinitialization, only initialize Python once
@@ -50,7 +106,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
 		 main_dict, main_dict);
     if ( PyErr_Occurred() ) {
       mdi_error("Unable to set system properties for Python plugin");
-      PyErr_PrintEx(0);
+      print_traceback();
       return 1;
     }
 
@@ -60,7 +116,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
 	       main_dict, main_dict);
     if ( PyErr_Occurred() ) {
       mdi_error("Error when loading Python plugin file");
-      PyErr_PrintEx(0);
+      print_traceback();
       return 1;
     }
 
@@ -73,7 +129,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, const 
     free( plugin_init_name );
     if ( PyErr_Occurred() ) {
       mdi_error("Error when running MDI_Plugin_init function");
-      PyErr_PrintEx(0);
+      print_traceback();
       return 1;
     }
 
