@@ -18,9 +18,6 @@ typedef struct mpi_data_struct {
   int use_mpi4py;
 } mpi_method_data;
 
-extern int world_size;
-extern int world_rank;
-
 int set_world_size(int world_size_in);
 int set_world_rank(int world_rank_in);
 

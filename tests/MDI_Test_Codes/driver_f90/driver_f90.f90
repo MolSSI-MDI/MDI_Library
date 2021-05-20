@@ -59,13 +59,13 @@ IMPLICIT NONE
 
    ! Confirm that the engine has the @DEFAULT node
    CALL MDI_Check_node_exists("@DEFAULT", comm, exists, ierr)
-   IF ( exists .ne. 1 ) THEN
+   IF ( world_rank .eq. 0 .and. exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not have @DEFAULT node'
    END IF
 
    ! Confirm that the engine supports the EXIT command
    CALL MDI_Check_command_exists("@DEFAULT", "EXIT", comm, exists, ierr)
-   IF ( exists .ne. 1 ) THEN
+   IF ( world_rank .eq. 0 .and. exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not support the EXIT command'
    END IF
 
@@ -73,23 +73,23 @@ IMPLICIT NONE
    call MDI_Send_command("<NAME", comm, ierr)
    call MDI_Recv(message, MDI_NAME_LENGTH, MDI_CHAR, comm, ierr)
 
-   WRITE(6,*)'Engine name: ', TRIM(message)
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'Engine name: ', TRIM(message)
 
    ! Test the node, command, and callback inquiry functions 
    CALL MDI_Get_nnodes(comm, nnodes, ierr)
-   WRITE(6,*)'NNODES: ',nnodes
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'NNODES: ',nnodes
    CALL MDI_Get_node(1, comm, test_node, ierr)
-   WRITE(6,*)'NODE: ',TRIM(test_node)
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'NODE: ',TRIM(test_node)
    CALL MDI_Get_ncommands(test_node, comm, ncommands, ierr)
-   WRITE(6,*)'NCOMMANDS: ',ncommands
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'NCOMMANDS: ',ncommands
    CALL MDI_Get_command(test_node, 2, comm, test_command, ierr)
-   WRITE(6,*)'COMMAND: ',TRIM(test_command)
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'COMMAND: ',TRIM(test_command)
    CALL MDI_Get_ncallbacks(test_node, comm, ncallbacks, ierr)
-   WRITE(6,*)'NCALLBACKS: ',ncallbacks
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'NCALLBACKS: ',ncallbacks
    CALL MDI_Get_callback(test_node, 0, comm, test_callback, ierr)
-   WRITE(6,*)'CALLBACK: ',TRIM(test_callback)
+   IF ( world_rank .eq. 0 ) WRITE(6,*)'CALLBACK: ',TRIM(test_callback)
    CALL MDI_Check_callback_exists("@FORCES", ">FORCES", comm, exists, ierr)
-   IF ( exists .ne. 1 ) THEN
+   IF ( world_rank .eq. 0 .and. exists .ne. 1 ) THEN
       WRITE(6,*)'ERROR: Engine does not support the EXIT command'
    END IF
 

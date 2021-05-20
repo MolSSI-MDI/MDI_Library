@@ -215,6 +215,12 @@ extern int (*mpi4py_size_callback)(int);
 /*! \brief Python callback pointer for MPI_Comm_barrier */
 extern int (*mpi4py_barrier_callback)(int);
 
+/*! \brief Size of MPI_COMM_WORLD */
+extern int world_size;
+
+/*! \brief Rank of this process within MPI_COMM_WORLD */
+extern int world_rank;
+
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
 void* vector_get(vector* v, int index);

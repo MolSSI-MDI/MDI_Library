@@ -967,6 +967,12 @@ int MDI_Get_nnodes(MDI_Comm comm, int* nnodes)
     return 1;
   }
 
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   vector* node_vec = get_node_vector(comm);
   *nnodes = (int)node_vec->size;
 
@@ -1010,6 +1016,13 @@ int MDI_Get_node(int index, MDI_Comm comm, char* name)
     mdi_error("MDI_Get_Node called but MDI has not been initialized");
     return 1;
   }
+
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   vector* node_vec = get_node_vector(comm);
   if ( node_vec == NULL ) {
     mdi_error("MDI_Get_Node unable to find node vector");
@@ -1181,6 +1194,12 @@ int MDI_Get_ncommands(const char* node_name, MDI_Comm comm, int* ncommands)
     return 1;
   }
 
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
@@ -1242,6 +1261,13 @@ int MDI_Get_command(const char* node_name, int index, MDI_Comm comm, char* name)
     mdi_error("MDI_Get_Command called but MDI has not been initialized");
     return 1;
   }
+
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   vector* node_vec = get_node_vector(comm);
 
   // find the node
@@ -1418,6 +1444,12 @@ int MDI_Get_ncallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
     return 1;
   }
 
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) > COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
@@ -1478,6 +1510,12 @@ int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, char* name
   if ( is_initialized == 0 ) {
     mdi_error("MDI_Get_Callback called but MDI has not been initialized");
     return 1;
+  }
+
+  // Only rank 0 should respond to this call
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
   }
 
   vector* node_vec = get_node_vector(comm);

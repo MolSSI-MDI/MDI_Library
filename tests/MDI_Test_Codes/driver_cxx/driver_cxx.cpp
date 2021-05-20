@@ -47,15 +47,15 @@ int main(int argc, char **argv) {
   MDI_Accept_communicator(&comm);
 
   // Confirm that the engine has the @DEFAULT node
-  int exists;
+  int exists = 1;
   MDI_Check_node_exists("@DEFAULT", comm, &exists);
-  if ( world_rank == 0 && exists != 1 ) {
+  if ( exists != 1 ) {
     throw std::runtime_error("The engine does not have the @DEFAULT node.");
   }
 
   // Confirm that the engine supports the EXIT command
   MDI_Check_command_exists("@DEFAULT", "EXIT", comm, &exists);
-  if ( world_rank == 0 && exists != 1 ) {
+  if ( exists != 1 ) {
     throw std::runtime_error("The engine does not support the EXIT command.");
   }
 
