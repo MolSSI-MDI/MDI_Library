@@ -29,7 +29,7 @@ include_directories( ${CMAKE_BINARY_DIR} )
 
 add_executable(driver_lib_cxx_py
                driver_lib_cxx_py.cpp)
-target_link_libraries(driver_lib_cxx_py mdi
+target_link_libraries(driver_lib_cxx_py PRIVATE mdi
                       ${MPI_LIBRARIES}
                       ${Python_LIBRARIES})
 set_target_properties(driver_lib_cxx_py PROPERTIES

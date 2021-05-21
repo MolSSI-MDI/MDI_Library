@@ -224,28 +224,6 @@ def test_cxx_py_plug_mpi():
 # LIBRARY Method         #
 ##########################
 
-def test_cxx_cxx_lib():
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_lib_cxx_cxx*")[0]
-
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
-
-    # run the calculation
-    #driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK -plugin_path /Users/tbarnes/Documents/mdi/MDI_Library/build"],
-    driver_proc = subprocess.Popen([driver_name, "-mdi",
-                                    "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    driver_tup = driver_proc.communicate()
-
-    # convert the driver's output into a string
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-
-    assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
-
 def test_f90_f90_lib():
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_lib_f90*")[0]
