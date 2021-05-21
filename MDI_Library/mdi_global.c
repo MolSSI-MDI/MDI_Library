@@ -75,6 +75,12 @@ int (*mpi4py_size_callback)(int);
 /*! \brief Python callback pointer for MPI_Comm_barrier */
 int (*mpi4py_barrier_callback)(int);
 
+/*! \brief Size of MPI_COMM_WORLD */
+int world_size = -1;
+
+/*! \brief Rank of this process within MPI_COMM_WORLD */
+int world_rank = -1;
+
 /*! \brief Initialize memory allocation for a vector structure
  *
  * \param [in]       v
@@ -284,8 +290,12 @@ int new_code() {
 
   new_code.is_library = 0;
   new_code.id = (int)codes.size;
-  new_code.intra_rank = 0;
   new_code.called_set_execute_command_func = 0;
+  new_code.intra_rank = 0;
+  if (world_rank != -1) {
+    // The Python wrapper has called MDI_Set_World_Rank to set this value
+    new_code.intra_rank = world_rank;
+  }
 
   // Set the MPI callbacks
   //new_code.mdi_mpi_recv = MPI_Recv;

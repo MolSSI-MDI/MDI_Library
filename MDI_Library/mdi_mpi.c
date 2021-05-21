@@ -12,12 +12,6 @@
 #include "mdi_mpi.h"
 #include "mdi_global.h"
 
-/*! \brief Size of MPI_COMM_WORLD */
-int world_size = -1;
-
-/*! \brief Rank of this process within MPI_COMM_WORLD */
-int world_rank = -1;
-
 
 /*! \brief Set the size of MPI_COMM_WORLD
  *

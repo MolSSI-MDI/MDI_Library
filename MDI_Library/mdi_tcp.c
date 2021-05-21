@@ -44,6 +44,14 @@ sock_t tcp_socket = -1;
  *                   Port to listen over
  */
 int tcp_listen(int port) {
+  code* this_code = get_code(current_code);
+
+  // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+  if ( this_code->intra_rank != 0 ) {
+    tcp_socket = 1;
+    return 0;
+  }
+
   int ret;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
@@ -211,27 +219,41 @@ int tcp_accept_connection() {
   sock_t connection;
   code* this_code = get_code(current_code);
 
-  connection = accept(tcp_socket, NULL, NULL);
-  if (connection < 0) {
-    mdi_error("Could not accept connection");
-    return 1;
+  if ( this_code->intra_rank == 0 ) { // Running on rank 0
+
+    connection = accept(tcp_socket, NULL, NULL);
+    if (connection < 0) {
+      mdi_error("Could not accept connection");
+      return 1;
+    }
+
+    MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
+    communicator* new_comm = get_communicator(this_code->id, comm_id);
+    new_comm->sockfd = connection;
+    new_comm->send = tcp_send;
+    new_comm->recv = tcp_recv;
+
+    // communicate the version number between codes
+    // only do this if not in i-PI compatibility mode
+    if ( ipi_compatibility != 1 ) {
+      int version[3];
+      version[0] = MDI_MAJOR_VERSION;
+      version[1] = MDI_MINOR_VERSION;
+      version[2] = MDI_PATCH_VERSION;
+      tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
+      tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
+    }
+
   }
+  else { // Not running on rank 0
 
-  MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
-  communicator* new_comm = get_communicator(this_code->id, comm_id);
-  new_comm->sockfd = connection;
-  new_comm->send = tcp_send;
-  new_comm->recv = tcp_recv;
+    // Simply create a dummy communicator
+    MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
+    communicator* new_comm = get_communicator(this_code->id, comm_id);
+    new_comm->sockfd = connection;
+    new_comm->send = tcp_send;
+    new_comm->recv = tcp_recv;
 
-  // communicate the version number between codes
-  // only do this if not in i-PI compatibility mode
-  if ( ipi_compatibility != 1 ) {
-    int version[3];
-    version[0] = MDI_MAJOR_VERSION;
-    version[1] = MDI_MINOR_VERSION;
-    version[2] = MDI_PATCH_VERSION;
-    tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
-    tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
   }
 
   return 0;

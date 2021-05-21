@@ -241,7 +241,6 @@ int general_init(const char* options) {
 
   // get the appropriate MPI communicator to use
   MPI_Comm mpi_communicator;
-  int mpi_rank = 0;
   ret = MPI_Initialized(&mpi_init_flag);
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Init: MPI_Initialized failed");
@@ -249,16 +248,16 @@ int general_init(const char* options) {
   }
   if ( mpi_init_flag == 0 ) {
     mpi_communicator = 0;
-    mpi_rank = 0;
   }
   else {
     if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
       mpi_communicator = 0;
-      mpi_rank = world_rank;
     }
     else {
       mpi_communicator = MPI_COMM_WORLD;
-      MPI_Comm_rank(mpi_communicator, &mpi_rank);
+      MPI_Comm_rank(mpi_communicator, &world_rank);
+      MPI_Comm_size(mpi_communicator, &world_size);
+      this_code->intra_rank = world_rank;
     }
   }
 
@@ -324,9 +323,7 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      if ( this_code->intra_rank == 0 ) {
-	tcp_listen(port);
-      }
+      tcp_listen(port);
     }
     else if ( strcmp(method, "LINK") == 0 ) {
       //library_initialize();
@@ -393,20 +390,21 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  // give the library method an opportunity to update the current code
+  // Give the library method an opportunity to update the current code
   library_accept_communicator();
 
-  // if MDI hasn't returned some connections, do that now
+  // If MDI hasn't returned some connections, do that now
   code* this_code = get_code(current_code);
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
     return this_code->returned_comms;
   }
 
-  // check for any production codes connecting via TCP
-  if ( tcp_socket > 0 && this_code->intra_rank == 0 ) {
+  // Check for any production codes connecting via TCP
+  if ( tcp_socket > 0 ) {
 
-    //accept a connection via TCP
+    // Accept a connection via TCP
+    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
     tcp_accept_connection();
 
     // if MDI hasn't returned some connections, do that now

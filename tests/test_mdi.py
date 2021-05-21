@@ -76,6 +76,35 @@ def test_cxx_cxx_plug():
     assert driver_err == ""
     assert driver_out == expected
 
+def test_cxx_cxx_plug_mpi():
+    # get the name of the driver code, which includes a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+                                    driver_name,
+                                    "-driver_nranks", "0",
+                                    "-plugin_nranks", "2",
+                                    "-plugin_name", "engine_cxx",
+                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+
 def test_cxx_f90_plug():
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
@@ -88,6 +117,35 @@ def test_cxx_f90_plug():
     driver_proc = subprocess.Popen([driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "1",
+                                    "-plugin_name", "engine_f90",
+                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+
+def test_cxx_f90_plug_mpi():
+    # get the name of the driver code, which includes a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+                                    driver_name,
+                                    "-driver_nranks", "0",
+                                    "-plugin_nranks", "2",
                                     "-plugin_name", "engine_f90",
                                     "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -132,6 +190,35 @@ def test_cxx_py_plug():
     assert driver_err == ""
     assert driver_out == expected
 
+def test_cxx_py_plug_mpi():
+    # get the name of the driver code, which includes a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+                                    driver_name,
+                                    "-driver_nranks", "0",
+                                    "-plugin_nranks", "2",
+                                    "-plugin_name", "engine_py",
+                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_path)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+
 
 ##########################
 # LIBRARY Method         #
@@ -158,24 +245,6 @@ def test_cxx_cxx_lib():
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
-
-def test_cxx_py_lib_mpi():
-    # run the calculation
-    driver_name = glob.glob("../build/driver_lib_cxx_py*")[0]
-    driver_proc = subprocess.Popen(["mpiexec","-n","2", driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    driver_tup = driver_proc.communicate()
-
-    # convert the driver's output into a string
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-
-    expected = ''' Instance name: instance1
- Instance name: instance2
-'''
-
-    assert driver_err == ""
-    assert driver_out == expected
 
 def test_f90_f90_lib():
     # get the name of the driver code, which includes a .exe extension on Windows
@@ -553,6 +622,25 @@ def test_cxx_cxx_tcp_mpi12():
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
 
+def test_cxx_cxx_tcp_mpi21():
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_cxx*")[0]
+    engine_name = glob.glob("../build/engine_cxx*")[0]
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+
 def test_cxx_f90_tcp():
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -621,6 +709,48 @@ def test_f90_f90_tcp():
 
     # run the calculation
     driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_f90
+
+def test_f90_f90_tcp_mpi12():
+    global driver_out_expected_f90
+
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_f90*")[0]
+    engine_name = glob.glob("../build/engine_f90*")[0]
+
+    # run the calculation
+    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_f90
+
+def test_f90_f90_tcp_mpi21():
+    global driver_out_expected_f90
+
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_f90*")[0]
+    engine_name = glob.glob("../build/engine_f90*")[0]
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
@@ -712,6 +842,43 @@ def test_py_py_tcp():
     assert driver_err == ""
 #    assert driver_out == " Engine name: MM\n"
     assert driver_out == driver_out_expected_py
+
+def test_py_py_tcp_mpi12():
+    global driver_out_expected_py
+
+    # run the calculation
+    driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    engine_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_py
+
+def test_py_py_tcp_mpi21():
+    global driver_out_expected_py
+
+    # run the calculation
+    driver_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
+    engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = format_return(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_py
+
 
 
 
