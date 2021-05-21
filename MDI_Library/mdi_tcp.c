@@ -46,12 +46,6 @@ sock_t tcp_socket = -1;
 int tcp_listen(int port) {
   code* this_code = get_code(current_code);
 
-  // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-  if ( this_code->intra_rank != 0 ) {
-    tcp_socket = 1;
-    return 0;
-  }
-
   int ret;
   struct sockaddr_in serv_addr;
   int reuse_value = 1;

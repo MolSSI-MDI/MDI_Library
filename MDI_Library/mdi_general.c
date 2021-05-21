@@ -323,7 +323,13 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
       }
-      tcp_listen(port);
+      if ( this_code->intra_rank == 0 ) {
+	tcp_listen(port);
+      }
+      else {
+	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+	tcp_socket = 1;
+      }
     }
     else if ( strcmp(method, "LINK") == 0 ) {
       //library_initialize();
@@ -356,6 +362,12 @@ int general_init(const char* options) {
       }
       if ( this_code->intra_rank == 0 ) {
 	tcp_request_connection(port, hostname);
+      }
+      else {
+	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+	if ( this_code->intra_rank != 0 ) {
+	  tcp_socket = 1;
+	}
       }
     }
     else if ( strcmp(method, "LINK") == 0 ) {

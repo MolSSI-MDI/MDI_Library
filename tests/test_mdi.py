@@ -831,17 +831,19 @@ def test_py_py_tcp():
     driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
-                                   cwd=build_dir)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
-    engine_proc.communicate()
+    engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
+    engine_out = format_return(engine_tup[0])
+    engine_err = format_return(engine_tup[1])
 
     assert driver_err == ""
-#    assert driver_out == " Engine name: MM\n"
     assert driver_out == driver_out_expected_py
+    assert engine_err == ""
 
 def test_py_py_tcp_mpi12():
     global driver_out_expected_py
@@ -850,16 +852,19 @@ def test_py_py_tcp_mpi12():
     driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
-                                   cwd=build_dir)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
-    engine_proc.communicate()
+    engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
+    engine_out = format_return(engine_tup[0])
+    engine_err = format_return(engine_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert engine_err == ""
 
 def test_py_py_tcp_mpi21():
     global driver_out_expected_py
@@ -868,16 +873,19 @@ def test_py_py_tcp_mpi21():
     driver_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
-                                   cwd=build_dir)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
-    engine_proc.communicate()
+    engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
+    engine_out = format_return(engine_tup[0])
+    engine_err = format_return(engine_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert engine_err == ""
 
 
 
