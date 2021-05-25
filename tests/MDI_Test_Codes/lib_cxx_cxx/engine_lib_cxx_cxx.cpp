@@ -1,6 +1,8 @@
 #include <mpi.h>
 #include <iostream>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "mdi.h"
 #include "engine_lib_cxx_cxx.h"

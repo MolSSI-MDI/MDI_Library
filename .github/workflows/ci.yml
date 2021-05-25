@@ -82,7 +82,7 @@ jobs:
           export CMAKE_COVERAGE_FLAGS=""
           [ "${{ matrix.platform }}" == "ubuntu-18.04" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
           cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
-          make
+          make VERBOSE=1
           make install
           ls
           ls MDI_Library
