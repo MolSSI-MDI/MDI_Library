@@ -70,7 +70,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="standard_overview"></a>
 Overview</h1>
-<p>The MDI Standard provides a straightforward, API-like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-level program flow of one or more engine codes. The driver exercises this control through the use of <a class="el" href="mdi_standard.html#command_list">commands</a> that are defined by the MDI Standard. Commands are available that correspond to a variety of tasks, such as "receive a new set of nuclear coordinates from me" (<a class="el" href="mdi_standard.html#send_coords">&gt;COORDS</a>), "start an MD simulation" (<a class="el" href="mdi_standard.html#init_md">@INIT_MC</a>) and "send me the forces on the nuclei" (<a class="el" href="mdi_standard.html#recv_forces">&lt;FORCES</a>). The MDI standard defines the <a class="el" href="mdi_standard.html#standard_units">units</a>, data types, and formatting of any data communicated between codes in response to a command.</p>
+<p>The MDI Standard provides a straightforward, API-like method for enabling interoperability among computational molecular sciences codes. It uses a driver/engine model in which a driver code controls the high-level program flow of one or more engine codes. The driver exercises this control through the use of <a class="el" href="mdi_standard.html#command_list">commands</a> that are defined by the MDI Standard. Commands are available that correspond to a variety of tasks, such as "receive a new set of nuclear coordinates from me" (<a class="el" href="mdi_standard.html#send_coords">&gt;COORDS</a>), "start an MD simulation" (<a class="el" href="mdi_standard.html#init_md">@INIT_MD</a>) and "send me the forces on the nuclei" (<a class="el" href="mdi_standard.html#recv_forces">&lt;FORCES</a>). The MDI standard defines the <a class="el" href="mdi_standard.html#standard_units">units</a>, data types, and formatting of any data communicated between codes in response to a command.</p>
 <h1><a class="anchor" id="standard_extension"></a>
 Extending the MDI Standard</h1>
 <p>Although the MDI Standard has been designed to enable a wide range of potential applications, it is inevitable that some use cases will require functionality that is not yet supported by the standard. Typically, supporting such use cases will simply require addition of one or more new <a class="el" href="mdi_standard.html#command_list">commands</a> to the MDI Standard. Users who find themselves in need of a new MDI command are encouraged to create an <a href="https://github.com/MolSSI-MDI/MDI_Library/issues">issue</a> describing their needs or submit a <a href="https://github.com/MolSSI-MDI/MDI_Library/pulls">pull request</a> suggesting a solution.</p>
@@ -79,7 +79,7 @@ Units</h1>
 <p>All physical quantities communicated through MDI must be expressed in atomic units. Whenever it is necessary to perform a unit conversion on data communicated through MDI, the conversion factor should be obtained through the <a class="el" href="mdi_8c.html#aa1ccf61d45e842b50d72084735cb984a" title="Determine the conversion factor between two units.">MDI_Conversion_Factor()</a> function. Use of this function ensures self-consistency in unit conversions between codes, which is important for avoiding numerical instabilities.</p>
 <h1><a class="anchor" id="standard_nodes_sec"></a>
 Nodes</h1>
-<p>One of the powerful features of the MDI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in MDI engines. In particular, the <a class="el" href="mdi_standard.html#init_md">@INIT_MC</a> and <a class="el" href="mdi_standard.html#init_optg">@INIT_OPTG</a> commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain "nodes" and listen for new commands.</p>
+<p>One of the powerful features of the MDI Standard is that it permits drivers to take advantage of existing implementations of time integrators and geometry optimizers in MDI engines. In particular, the <a class="el" href="mdi_standard.html#init_md">@INIT_MD</a> and <a class="el" href="mdi_standard.html#init_optg">@INIT_OPTG</a> commands cause an engine to begin a molecular dynamics trajectory or a geometry optimization, respectively. Upon receiving one of these commands, an engine will perform the corresponding simulation without requiring further instruction from the driver, except that it will pause at certain "nodes" and listen for new commands.</p>
 <p>The MDI Standard defines several nodes. Their names and when they occur are as follows:</p>
 <dl class="section user"><dt></dt><dd><b> @DEFAULT </b> - Upon initially connecting to the driver. <br  />
  <b> @INIT_MC </b> - Upon initializing a new Monte Carlo simulation. <br  />
@@ -278,11 +278,11 @@ EXIT</h2>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> 3 * NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order</dd></dl>
-<h2><a class="anchor" id="init_md"></a>
+<h2><a class="anchor" id="init_mc"></a>
 @INIT_MC</h2>
 <p>The engine performs any initialization operations that are necessary before a Monte Carlo simulation can be performed, proceeding to the @INIT_MC node.</p>
 <h2><a class="anchor" id="init_md"></a>
-@INIT_MC</h2>
+@INIT_MD</h2>
 <p>The engine performs any initialization operations that are necessary before a molecular dynamics simulation can be performed, proceeding to the @INIT_MD node.</p>
 <dl class="section user"><dt></dt><dd><b> Note: </b> This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.</dd></dl>
 <h2><a class="anchor" id="init_optg"></a>

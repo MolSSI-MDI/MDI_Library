@@ -393,7 +393,7 @@ See the descriptions of the different nodes for more details.
 
 
 
-\subsection init_md @INIT_MC
+\subsection init_mc @INIT_MC
 
 The engine performs any initialization operations that are necessary before a Monte Carlo simulation can be performed, proceeding to the @INIT_MC node.
 
