@@ -23,6 +23,7 @@ var searchData=
   ['mdi_5flaunch_5fplugin',['MDI_Launch_plugin',['../mdi_8c.html#abea4cba4cc69b71123511d34beb28277',1,'mdi.c']]],
   ['mdi_5fmpi_5fget_5fworld_5fcomm',['MDI_MPI_get_world_comm',['../mdi_8c.html#a1792db6705a7032640af46d5b05d23f4',1,'mdi.c']]],
   ['mdi_5fmpi_5fset_5fworld_5fcomm',['MDI_MPI_set_world_comm',['../mdi_8c.html#af305dbbeb2de3f39edb26c5287ecd845',1,'mdi.c']]],
+  ['mdi_5fplugin_5fget_5farg',['MDI_Plugin_get_arg',['../mdi_8c.html#ac69f5e1cea7115d324cadd207c216081',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargc',['MDI_Plugin_get_argc',['../mdi_8c.html#ab4e86ef9c4bb12e90d8e07be2e5cf6d9',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargs',['MDI_Plugin_get_args',['../mdi_8c.html#a4b7c5d301e092db15578ae745ffa0913',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargv',['MDI_Plugin_get_argv',['../mdi_8c.html#abebb0265894fbfcced765d9688719355',1,'mdi.c']]],

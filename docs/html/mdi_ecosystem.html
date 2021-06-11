@@ -73,18 +73,10 @@ Overview</h1>
 <p>This section provides basic usage instructions for the drivers, engines, and other codes that compose the MDI ecosystem.</p>
 <h1><a class="anchor" id="ecosystem_lammps"></a>
 LAMMPS</h1>
-<p>MolSSI provides <a href="https://github.com/MolSSI/lammps/tree/mdi">an MDI-enabled fork</a> of <a href="https://lammps.sandia.gov/">LAMMPS</a> that can be run as an MDI engine. To use LAMMPS as an engine, follow these steps:</p>
+<p>To use LAMMPS as an engine, follow these steps:</p>
 <ol type="1">
-<li>Acquire the MDI-enabled fork of LAMMPS: <pre class="fragment">git clone --branch mdi git@github.com:MolSSI/lammps.git
-</pre></li>
-<li>Compile the repository's internal MDI distribution by doing: <pre class="fragment">cd lammps/lib/mdi
-python Install.py -m gcc
-</pre></li>
-<li>Activate the <code>USER-MDI</code> package: <pre class="fragment">cd ../../src
-make yes-user-mdi
-</pre></li>
-<li>Compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.</li>
-<li>Prepare a LAMMPS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings. The file must include the <b>mdi fix</b>. At the end of the input file, call the <b>mdi</b> command, which does not accept any arguments. For example: <pre class="fragment">units           real
+<li>Acquire and compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>. You will need to <a href="https://docs.lammps.org/Build_extras.html">enable the USER-MDI package</a> when building LAMMPS.</li>
+<li>Prepare a LAMMPS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings. At the end of the input file, call the <b>mdi/engine</b> command, which does not accept any arguments. For example: <pre class="fragment">units           real
 neigh_modify    delay 0 every 1 check yes
 atom_style      full
 bond_style      harmonic
@@ -109,11 +101,10 @@ dump_modify     2 element O H
 thermo_style    multi
 thermo          1
 
-fix             1 all mdi
-fix             2 all nvt temp 300.0 300.0 70.0
-fix             3 all shake 0.0001 20 0 b 1 a 1
+fix             1 all nvt temp 300.0 300.0 70.0
+fix             2 all shake 0.0001 20 0 b 1 a 1
 
-mdi
+mdi/engine
 </pre></li>
 <li>Launch LAMMPS using the "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">lammps -in lammps.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
 </pre></li>
@@ -132,11 +123,9 @@ OpenMM</h1>
 </ol>
 <h1><a class="anchor" id="ecosystem_psi4"></a>
 Psi4</h1>
-<p>MolSSI provides <a href="https://github.com/MolSSI/psi4/tree/mdi">an MDI-enabled fork</a> of <a href="http://www.psicode.org/">Psi4</a> that can be run as an MDI engine. To use Psi4 as an engine, follow these steps:</p>
+<p>To use Psi4 as an engine, follow these steps:</p>
 <ol type="1">
-<li>Acquire the MDI-enabled fork of Psi4: <pre class="fragment">git clone --branch mdi git@github.com:MolSSI/psi4.git
-</pre></li>
-<li>Compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.</li>
+<li>Acquire and compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.</li>
 <li>Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, call the <b>mdi</b> command, which accepts as its only argument the computational method that should be used for any energy or gradient calculations that are requested by the driver. For example: <pre class="fragment">molecule {
 O 4.92718 4.99809 1.10308
 H 5.80905 5.31488 0.90767
@@ -150,7 +139,7 @@ mdi("scf/sto-3g")
 </ol>
 <h1><a class="anchor" id="ecosystem_qcengine"></a>
 QCEngine</h1>
-<p>The <a href="https://github.com/MolSSI/QCEngine">current master branch</a> of QCEngine can be run as an MDI engine. To use QCEngine as an MDI engine, follow these steps:</p>
+<p>To use QCEngine as an MDI engine, follow these steps:</p>
 <ol type="1">
 <li>Install QCEngine, following the <a href="https://qcengine.readthedocs.io/en/latest/install.html">QCEngine installation guide</a>.</li>
 <li>Prepare a QCEngine input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, create an "<code>MDIServer"</code> object and call the "<code>start()"</code> method on it. For example: <pre class="fragment">import qcengine as qcng

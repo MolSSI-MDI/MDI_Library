@@ -8,33 +8,15 @@ This section provides basic usage instructions for the drivers, engines, and oth
 
 \section ecosystem_lammps LAMMPS
 
-MolSSI provides <a href="https://github.com/MolSSI/lammps/tree/mdi">an MDI-enabled fork</a> of <a href="https://lammps.sandia.gov/">LAMMPS</a> that can be run as an MDI engine.
 To use LAMMPS as an engine, follow these steps:
 
   -#
-Acquire the MDI-enabled fork of LAMMPS:
-
-    git clone --branch mdi git@github.com:MolSSI/lammps.git
-
-  -#
-Compile the repository's internal MDI distribution by doing:
-
-    cd lammps/lib/mdi
-    python Install.py -m gcc
-
-  -#
-Activate the \c USER-MDI package:
-
-    cd ../../src
-    make yes-user-mdi
-
-  -#
-Compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.
+Acquire and compile LAMMPS, following the <a href="https://lammps.sandia.gov/doc/Build.html">LAMMPS build guide</a>.
+You will need to <a href="https://docs.lammps.org/Build_extras.html">enable the USER-MDI package</a> when building LAMMPS.
 
   -#
 Prepare a LAMMPS input file that specifies the initial molecular geometry of the system, the force field to be used, and any other desired settings.
-The file must include the <b>mdi fix</b>.
-At the end of the input file, call the \b mdi command, which does not accept any arguments.
+At the end of the input file, call the \b mdi/engine command, which does not accept any arguments.
 For example:
 
     units           real
@@ -61,12 +43,11 @@ For example:
     
     thermo_style    multi
     thermo          1
-    
-    fix             1 all mdi
-    fix             2 all nvt temp 300.0 300.0 70.0
-    fix             3 all shake 0.0001 20 0 b 1 a 1
 
-    mdi
+    fix             1 all nvt temp 300.0 300.0 70.0
+    fix             2 all shake 0.0001 20 0 b 1 a 1
+
+    mdi/engine
 
   -#
 Launch LAMMPS using the \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
@@ -105,16 +86,10 @@ At the end of the run script (or at whatever point OpenMM should begin accepting
 
 \section ecosystem_psi4 Psi4
 
-MolSSI provides <a href="https://github.com/MolSSI/psi4/tree/mdi">an MDI-enabled fork</a> of <a href="http://www.psicode.org/">Psi4</a> that can be run as an MDI engine.
 To use Psi4 as an engine, follow these steps:
 
   -#
-Acquire the MDI-enabled fork of Psi4:
-
-    git clone --branch mdi git@github.com:MolSSI/psi4.git
-
-  -#
-Compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.
+Acquire and compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.
 
   -#
 Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings.
@@ -141,7 +116,6 @@ For example:
 
 \section ecosystem_qcengine QCEngine
 
-The <a href="https://github.com/MolSSI/QCEngine">current master branch</a> of QCEngine can be run as an MDI engine.
 To use QCEngine as an MDI engine, follow these steps:
 
   -#

@@ -120,6 +120,8 @@ int \mbox{\hyperlink{mdi_8c_abebb0265894fbfcced765d9688719355}{M\+D\+I\+\_\+\+Pl
 \begin{DoxyCompactList}\small\item\em Get plugin\+\_\+argv. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a4b7c5d301e092db15578ae745ffa0913}{M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+args}} (char $\ast$$\ast$args\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get plugin\+\_\+unedited\+\_\+options. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ac69f5e1cea7115d324cadd207c216081}{M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+arg}} (int index, char $\ast$$\ast$arg\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Get a specific element from plugin\+\_\+argv. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a57509800ae93333f382d0cdec96179f3}{M\+D\+I\+\_\+\+Get\+\_\+python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr}} (void $\ast$$\ast$python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get the Python plugin M\+PI communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_acb8c9a81546e101e143ff9b4dbb77f66}{M\+D\+I\+\_\+\+Set\+\_\+\+Mpi4py\+\_\+\+Recv\+\_\+\+Callback}} (int($\ast$mpi4py\+\_\+recv)(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm))
@@ -967,6 +969,16 @@ The function returns {\ttfamily 0} on a success.
 \mbox{\texttt{ out}}  & {\em world\+\_\+comm} & The M\+PI communicator that spans the single code corresponding to the calling rank. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_ac69f5e1cea7115d324cadd207c216081}\label{mdi_8c_ac69f5e1cea7115d324cadd207c216081}} 
+\index{mdi.c@{mdi.c}!MDI\_Plugin\_get\_arg@{MDI\_Plugin\_get\_arg}}
+\index{MDI\_Plugin\_get\_arg@{MDI\_Plugin\_get\_arg}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Plugin\_get\_arg()}{MDI\_Plugin\_get\_arg()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Plugin\+\_\+get\+\_\+arg (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{char $\ast$$\ast$}]{arg\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Get a specific element from plugin\+\_\+argv. 
+
 \mbox{\Hypertarget{mdi_8c_ab4e86ef9c4bb12e90d8e07be2e5cf6d9}\label{mdi_8c_ab4e86ef9c4bb12e90d8e07be2e5cf6d9}} 
 \index{mdi.c@{mdi.c}!MDI\_Plugin\_get\_argc@{MDI\_Plugin\_get\_argc}}
 \index{MDI\_Plugin\_get\_argc@{MDI\_Plugin\_get\_argc}!mdi.c@{mdi.c}}

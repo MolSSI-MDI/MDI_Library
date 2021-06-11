@@ -57,6 +57,7 @@ var searchData=
   ['mdi_5fname_5flength',['MDI_NAME_LENGTH',['../mdi_8c.html#a8ca47e903a62de4298767ef3d446901d',1,'MDI_NAME_LENGTH():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#ae231959ce59ce1e0090a0d1089777d09',1,'MDI_Library.mdi.MDI_NAME_LENGTH()']]],
   ['mdi_5fpatch_5fversion',['MDI_PATCH_VERSION',['../mdi_8c.html#a147d2caf02b6d41347bac14abf8deff0',1,'MDI_PATCH_VERSION():&#160;mdi.c'],['../namespaceMDI__Library_1_1mdi.html#aa4a6b782f7f388a007fa5ab5f6c4c016',1,'MDI_Library.mdi.MDI_PATCH_VERSION()']]],
   ['mdi_5fplug_5fpy_2eh',['mdi_plug_py.h',['../mdi__plug__py_8h.html',1,'']]],
+  ['mdi_5fplugin_5fget_5farg',['MDI_Plugin_get_arg',['../mdi_8c.html#ac69f5e1cea7115d324cadd207c216081',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargc',['MDI_Plugin_get_argc',['../mdi_8c.html#ab4e86ef9c4bb12e90d8e07be2e5cf6d9',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargs',['MDI_Plugin_get_args',['../mdi_8c.html#a4b7c5d301e092db15578ae745ffa0913',1,'mdi.c']]],
   ['mdi_5fplugin_5fget_5fargv',['MDI_Plugin_get_argv',['../mdi_8c.html#abebb0265894fbfcced765d9688719355',1,'mdi.c']]],

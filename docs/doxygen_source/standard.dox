@@ -39,6 +39,7 @@ Their names and when they occur are as follows:
 
 \par
 <b> @DEFAULT </b> - Upon initially connecting to the driver. <br>
+<b> @INIT_MC </b> - Upon initializing a new Monte Carlo simulation. <br>
 <b> @INIT_MD </b> - Upon initializing a new molecular dynamics simulation. <br>
 <b> @INIT_OPTG </b> - Upon initializing a new geometry optimization. <br>
 
@@ -82,7 +83,7 @@ The following constants are defined by the MDI Standard and are accessible throu
 
   - \c MDI_MPI - Identifier for the MPI communication method
   - \c MDI_TCP - Identifier for the TCP communication method
-  - \c MDI_LIB - Identifier for the LIB communication method
+  - \c MDI_LINK - Identifier for the LINK communication method
   - \c MDI_TEST - Identifier for the TEST communication method
   - \c MDI_DRIVER - Identifier for the DRIVER role
   - \c MDI_ENGINE - Identifier for the ENGINE role
@@ -389,6 +390,12 @@ See the descriptions of the different nodes for more details.
 <b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * NATOMS </c> <br>
 <b> Format: </b> Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order
+
+
+
+\subsection init_md @INIT_MC
+
+The engine performs any initialization operations that are necessary before a Monte Carlo simulation can be performed, proceeding to the @INIT_MC node.
 
 
 
