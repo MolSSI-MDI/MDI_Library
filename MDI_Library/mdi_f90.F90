@@ -62,8 +62,8 @@ CONTAINS
     fbuf = ""
     end_string = .false.
     DO i = 1, str_len
-       IF ( cbuf(i) == c_null_char ) end_string = .true.
-       IF ( end_string ) THEN
+       IF ( end_string .or. cbuf(i) == c_null_char ) THEN
+          end_string = .true.
           fbuf(i:i) = ' '
        ELSE
           fbuf(i:i) = cbuf(i)
@@ -1083,11 +1083,21 @@ CONTAINS
       CHARACTER(LEN=*), INTENT(OUT)            :: arg
       INTEGER, INTENT(OUT)                     :: ierr
 
-      CHARACTER(LEN=1, KIND=C_CHAR), POINTER   :: carg(:)
+      !CHARACTER(LEN=1, KIND=C_CHAR), POINTER   :: farg_ptr(:)
+      CHARACTER(KIND=C_CHAR), POINTER          :: farg_ptr(:)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: carg(LEN(arg))
       TYPE(C_PTR), TARGET                      :: carg_ptr
+      INTEGER                                  :: i
+      LOGICAL                                  :: string_end
 
       ierr = MDI_Plugin_get_arg_(index, c_loc(carg_ptr))
-      CALL c_f_pointer(carg_ptr, carg, [LEN(arg)])
+      CALL c_f_pointer(carg_ptr, farg_ptr, [LEN(arg)])
+      string_end = .false.
+      DO i=1, LEN(arg)
+         IF ( string_end ) CYCLE
+         carg(i) = farg_ptr(i)
+         IF ( carg(i) .eq. c_null_char ) string_end = .true.
+      END DO
 
       ! convert from C string to Fortran string
       arg = str_c_to_f(carg, LEN(arg))
