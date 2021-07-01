@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
   if ( world_rank == 0 ) {
     std::cout << " Engine name: " << engine_name << std::endl;
   }
+  delete[] engine_name;
 
   // Send the "EXIT" command to the engine
   MDI_Send_command("EXIT", comm);

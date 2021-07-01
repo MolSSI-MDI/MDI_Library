@@ -43,12 +43,42 @@ def format_return(input_string):
 
     return my_string
 
+# Remove lines that are associated with known / irrelevant warning messages
+def parse_stderr(input_string):
+    my_string = format_return(input_string)
+
+    ignored_messages = [ "hwloc x86 backend cannot work under Valgrind, disabling.\n",
+                         "May be reenabled by dumping CPUIDs with hwloc-gather-cpuid\n",
+                         "and reloading them under Valgrind with HWLOC_CPUID_PATH.\n", ]
+
+    for message in ignored_messages:
+        my_string = my_string.replace(message, '')
+
+    return my_string
+
+def get_valgrind_options(valgrind):
+    if valgrind:
+        return ["valgrind",
+                "-v",
+                "--log-file=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind_%p_%n.txt",
+                "--leak-check=full",
+                "--show-leak-kinds=definite",
+                "--errors-for-leak-kinds=definite",
+                "--trace-children=yes",
+                "--track-origins=yes",
+                "--error-exitcode=1",
+                "--gen-suppressions=all",
+                "--suppressions=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind.supp" ]
+    else:
+        return []
 
 ##########################
 # Plugin Tests           #
 ##########################
 
-def test_cxx_cxx_plug():
+def test_cxx_cxx_plug(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -57,7 +87,8 @@ def test_cxx_cxx_plug():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name,
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "1",
                                     "-plugin_name", "engine_cxx",
@@ -67,7 +98,7 @@ def test_cxx_cxx_plug():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -75,8 +106,11 @@ def test_cxx_cxx_plug():
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
-def test_cxx_cxx_plug_mpi():
+def test_cxx_cxx_plug_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -85,7 +119,8 @@ def test_cxx_cxx_plug_mpi():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -96,7 +131,7 @@ def test_cxx_cxx_plug_mpi():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -104,8 +139,11 @@ def test_cxx_cxx_plug_mpi():
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
-def test_cxx_f90_plug():
+def test_cxx_f90_plug(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -114,7 +152,8 @@ def test_cxx_f90_plug():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name,
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "1",
                                     "-plugin_name", "engine_f90",
@@ -124,7 +163,7 @@ def test_cxx_f90_plug():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -132,8 +171,11 @@ def test_cxx_f90_plug():
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
-def test_cxx_f90_plug_mpi():
+def test_cxx_f90_plug_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -142,7 +184,8 @@ def test_cxx_f90_plug_mpi():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -153,7 +196,7 @@ def test_cxx_f90_plug_mpi():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -161,8 +204,11 @@ def test_cxx_f90_plug_mpi():
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
-def test_cxx_py_plug():
+def test_cxx_py_plug(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -171,7 +217,8 @@ def test_cxx_py_plug():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name,
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "1",
                                     "-plugin_name", "engine_py",
@@ -181,7 +228,7 @@ def test_cxx_py_plug():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -189,8 +236,11 @@ def test_cxx_py_plug():
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
-def test_cxx_py_plug_mpi():
+def test_cxx_py_plug_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -199,7 +249,8 @@ def test_cxx_py_plug_mpi():
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec", "-n", "2",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -210,7 +261,7 @@ def test_cxx_py_plug_mpi():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -218,331 +269,289 @@ def test_cxx_py_plug_mpi():
 
     assert driver_err == ""
     assert driver_out == expected
-
-
-##########################
-# LIBRARY Method         #
-##########################
-
-def test_f90_f90_lib():
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_lib_f90*")[0]
-
-    # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method LINK"],
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    driver_tup = driver_proc.communicate()
-
-    # convert the driver's output into a string
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-
-    assert driver_err == ""
-    assert driver_out == " Engine name: MM\n"
-
-def test_py_py_lib():
-    # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LINK"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    driver_tup = driver_proc.communicate()
-
-    # convert the driver's output into a string
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-
-    expected = '''Start of driver
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-NATOMS: 10
-'''
-
-    assert driver_err == ""
-    assert driver_out == expected
-
-def test_py_py_lib_mpi():
-    # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","2",sys.executable, "../build/lib_py.py", "-mdi", "-role DRIVER -name driver -method LINK"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    driver_tup = driver_proc.communicate()
-
-    # convert the driver's output into a string
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-
-    expected = '''Start of driver
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-NATOMS: 10
-NATOMS: 20
-'''
-
-    assert driver_err == ""
-    assert driver_out == expected
-
+    assert driver_proc.returncode == 0
 
 
 ##########################
 # MPI Method             #
 ##########################
 
-def test_cxx_cxx_mpi():
+def test_cxx_cxx_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_out == " Engine name: MM\n"
     assert driver_err == ""
+    assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi21():
+def test_cxx_cxx_mpi21(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi12():
+def test_cxx_cxx_mpi12(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","2",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi_serial():
+def test_cxx_cxx_mpi_serial(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_serial_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_out == " Engine name: MM\n"
     assert driver_err == ""
+    assert driver_proc.returncode == 0
 
-def test_cxx_f90_mpi():
+def test_cxx_f90_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
-def test_cxx_py_mpi():
+def test_cxx_py_mpi(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
-def test_f90_cxx_mpi():
+def test_f90_cxx_mpi(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
-def test_f90_f90_mpi():
+def test_f90_f90_mpi(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
-def test_f90_py_mpi():
+def test_f90_py_mpi(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
-def test_py_cxx_mpi():
+def test_py_cxx_mpi(valgrind):
     global driver_out_expected_py
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
-def test_py_f90_mpi():
+def test_py_f90_mpi(valgrind):
     global driver_out_expected_py
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
-def test_py_py_mpi():
+def test_py_py_mpi(valgrind):
     global driver_out_expected_py
 
+    valgrind_options = get_valgrind_options(valgrind)
+
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
  
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
-def test_py_py_mpi_serial():
+def test_py_py_mpi_serial(valgrind):
     global driver_out_expected_py
 
+    valgrind_options = get_valgrind_options(valgrind)
+
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","1",sys.executable,"driver_py.py", 
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", 
                                     "-mdi", "-role DRIVER -name driver -method MPI","-nompi",":",
                                     "-n","1",sys.executable,"engine_py.py",
                                     "-mdi","-role ENGINE -name MM -method MPI","-nompi"],
@@ -551,10 +560,11 @@ def test_py_py_mpi_serial():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
  
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
 
 
@@ -562,308 +572,398 @@ def test_py_py_mpi_serial():
 # TCP Method             #
 ##########################
 
-def test_cxx_cxx_tcp():
+def test_cxx_cxx_tcp(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_cxx_cxx_tcp_mpi12():
+def test_cxx_cxx_tcp_mpi12(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen(["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_cxx_cxx_tcp_mpi21():
+def test_cxx_cxx_tcp_mpi21(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_cxx_f90_tcp():
+def test_cxx_f90_tcp(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_cxx_py_tcp():
+def test_cxx_py_tcp(valgrind):
+    valgrind_options = get_valgrind_options(valgrind)
+
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"], 
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"], 
                                    cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_f90_cxx_tcp():
+def test_f90_cxx_tcp(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp():
+def test_f90_f90_tcp(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp_mpi12():
+def test_f90_f90_tcp_mpi12(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen(["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp_mpi21():
+def test_f90_f90_tcp_mpi21(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_f90_py_tcp():
+def test_f90_py_tcp(valgrind):
     global driver_out_expected_f90
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
                                    cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_py_cxx_tcp():
+def test_py_cxx_tcp(valgrind):
     global driver_out_expected_py
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_cxx*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_py_f90_tcp():
+def test_py_f90_tcp(valgrind):
     global driver_out_expected_py
+
+    valgrind_options = get_valgrind_options(valgrind)
 
     # get the name of the engine code, which includes a .exe extension on Windows
     engine_name = glob.glob("../build/engine_f90*")[0]
 
     # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    engine_proc = subprocess.Popen([engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_py_py_tcp():
+def test_py_py_tcp(valgrind):
     global driver_out_expected_py
 
+    valgrind_options = get_valgrind_options(valgrind)
+
     # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
     engine_out = format_return(engine_tup[0])
-    engine_err = format_return(engine_tup[1])
+    engine_err = parse_stderr(engine_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_py_py_tcp_mpi12():
+def test_py_py_tcp_mpi12(valgrind):
     global driver_out_expected_py
 
+    valgrind_options = get_valgrind_options(valgrind)
+
     # run the calculation
-    driver_proc = subprocess.Popen([sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    engine_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
     engine_out = format_return(engine_tup[0])
-    engine_err = format_return(engine_tup[1])
+    engine_err = parse_stderr(engine_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
-def test_py_py_tcp_mpi21():
+def test_py_py_tcp_mpi21(valgrind):
     global driver_out_expected_py
 
+    valgrind_options = get_valgrind_options(valgrind)
+
     # run the calculation
-    driver_proc = subprocess.Popen(["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+    driver_proc = subprocess.Popen(valgrind_options +
+                                   ["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    engine_proc = subprocess.Popen([sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+    engine_proc = subprocess.Popen(valgrind_options +
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
     engine_out = format_return(engine_tup[0])
-    engine_err = format_return(engine_tup[1])
+    engine_err = parse_stderr(engine_tup[1])
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 
 
@@ -896,7 +996,9 @@ def test_py_cxx_ipi():
 
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
+    driver_err = parse_stderr(driver_tup[1])
 
     assert driver_err == ""
     #assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0

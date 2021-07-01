@@ -1,0 +1,189 @@
+{
+  OMPI init leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:ompi_mpi_init
+}
+
+{
+  OMPI init leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:ompi_mpi_init
+}
+
+{
+  ORTE init leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:orte_init
+}
+
+{
+  ORTE init leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:orte_init
+}
+
+{
+   ORTE run realloc leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   fun:opal_argv_append_nosize
+   fun:opal_argv_append
+   fun:parse_locals
+   fun:orte_submit_job
+   fun:orterun
+   fun:main
+}
+
+{
+  ORTE nspace leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:orte_pmix_server_register_nspace
+}
+
+{
+  OMPI finalize leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:ompi_mpi_finalize
+}
+
+{
+  OMPI finalize leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:ompi_mpi_finalize
+}
+
+{
+  OMPI event leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+   OMPI event cond
+   Memcheck:Cond
+   obj:*
+   ...
+   fun:event_process_active_single_queue
+   fun:event_process_active
+   fun:opal*_event_base_loop
+   ...
+   fun:start_thread
+   fun:clone
+}
+
+{
+   OMPI leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal*_event_base_once
+   ...
+   fun:orte_finalize
+   fun:orterun
+   fun:main
+}
+
+{
+   PMIX server fence cond
+   Memcheck:Cond
+   fun:pmix_server_fence
+   fun:server_switchyard
+   fun:pmix_server_message_handler
+   fun:OPAL_MCA_PMIX3X_pmix_ptl_base_process_msg
+   fun:event_process_active_single_queue
+   fun:event_process_active
+   fun:opal_libevent2022_event_base_loop
+   fun:progress_engine
+   fun:start_thread
+   fun:clone
+}
+
+{
+   OMPI vector param
+   Memcheck:Param
+   writev(vector[...])
+   fun:writev
+   ...
+   fun:event_persist_closure
+   fun:event_process_active_single_queue
+   fun:event_process_active
+   ...
+   fun:start_thread
+   fun:clone
+}
+
+{
+   OMPI create keyval leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal_obj_new
+   ...
+   fun:PMPI_Comm_create_keyval
+}
+
+{
+   OMPI set attribute leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal_obj_new
+   ...
+   fun:PMPI_Comm_set_attr
+}
+
+
+
+
+
+{
+   MPICH finalize cond
+   Memcheck:Cond
+   fun:conn_manager_destroy
+   fun:MPIDI_OFI_mpi_finalize_hook
+   fun:MPID_Finalize
+   fun:PMPI_Finalize
+   ...
+}
+
+{
+   MPICH split leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:MPL_malloc
+   ...
+   fun:MPIR_Comm_commit
+   fun:MPIR_Comm_split_impl
+   fun:PMPI_Comm_split
+}
+
+
+{
+   Python malloc
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:PyObject_Malloc
+   ...
+   fun:PyModule_ExecDef
+}

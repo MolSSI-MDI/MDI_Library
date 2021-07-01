@@ -152,6 +152,7 @@ DllExport int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int));
 DllExport void mdi_error(const char* message);
 DllExport void MDI_Set_World_Size(int world_size_in);
 DllExport void MDI_Set_World_Rank(int world_rank_in);
+DllExport int MDI_Get_intra_rank(int intra_rank_out);
 DllExport int MDI_Get_Current_Code();
 DllExport int MDI_Get_python_plugin_mpi_world_ptr(void** plugin_mode);
 

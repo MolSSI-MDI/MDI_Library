@@ -65,6 +65,8 @@ IMPLICIT NONE
 
    call MDI_Send_command("EXIT", comm, ierr)
 
+   DEALLOCATE( message )
+
    ! Synchronize all MPI ranks
    call MPI_Barrier( world_comm, ierr )
    call MPI_Finalize( ierr )

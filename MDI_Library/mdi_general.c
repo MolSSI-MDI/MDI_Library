@@ -83,7 +83,11 @@ int general_init(const char* options) {
 	return 1;
       }
       role = argv[iarg+1];
-      snprintf(this_code->role, NAME_LENGTH, "%s", role);
+      if ( strlen(role) > NAME_LENGTH ) {
+	mdi_error("Error in MDI_Init: Role option is larger than MDI_NAME_LENGTH");
+	return 1;
+      }
+      snprintf(this_code->role, strlen(role)+1, "%s", role);
       has_role = 1;
       iarg += 2;
     }
@@ -107,7 +111,7 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
 	return 1;
       }
-      snprintf(this_code->name, NAME_LENGTH, "%s", argv[iarg+1]);
+      snprintf(this_code->name, strlen(argv[iarg+1])+1, "%s", argv[iarg+1]);
       has_name = 1;
       iarg += 2;
     }
@@ -152,7 +156,11 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
 	return 1;
       }
-      snprintf(this_code->plugin_path, PLUGIN_PATH_LENGTH, "%s", argv[iarg+1]);
+      if ( strlen(argv[iarg+1]) > PLUGIN_PATH_LENGTH ) {
+	mdi_error("Error in MDI_Init: Plugin path is larger than PLUGIN_PATH_LENGTH");
+	return 1;
+      }
+      snprintf(this_code->plugin_path, strlen(argv[iarg+1])+1, "%s", argv[iarg+1]);
       has_plugin_path = 1;
       iarg += 2;
     }
@@ -600,6 +608,8 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
+  code* this_code = get_code(current_code);
+
   // ensure that the driver is the current code
   library_set_driver_current();
 
@@ -608,9 +618,26 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   int count = MDI_COMMAND_LENGTH;
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  int ichar;
+  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
+    command[ichar] = '\0';
+  }
+  //const char* command = buf;
   int ret = 0;
 
-  snprintf(command, COMMAND_LENGTH, "%s", buf);
+  // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
+  if ( method == MDI_LINK || this_code->intra_rank == 0 ) {
+    // copy the command string, inserting terminal zeros
+    int actual_message_length = 0;
+    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      actual_message_length++;
+      if ( buf[ichar] == '\0' ) {
+	break;
+      }
+    }
+    snprintf(command, actual_message_length, "%s", buf);
+  }
+  
   if ( method == MDI_LINK ) {
     // set the command for the engine to execute
     library_set_command(command, comm);
@@ -655,12 +682,12 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   // if the command was "EXIT", delete this communicator
   // if running in plugin mode, the plugin system will delete the communicator instead
+  //if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
   if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
 
     // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
     if ( initialized_mpi == 1 ) {
-      code* this_code = get_code(current_code);
       if ( this_code->comms->size == 0 ) {
 	MPI_Finalize();
       }
@@ -812,8 +839,14 @@ int general_recv_command(char* buf, MDI_Comm comm) {
  */
 int register_node(vector* node_vec, const char* node_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Cannot register node name with length greater than MDI_COMMAND_LENGTH");
     return 1;
   }
@@ -832,7 +865,11 @@ int register_node(vector* node_vec, const char* node_name)
   vector_init(callback_vec, sizeof(char[COMMAND_LENGTH]));
   new_node.commands = command_vec;
   new_node.callbacks = callback_vec;
-  snprintf(new_node.name, COMMAND_LENGTH, "%s", node_name);
+  int ichar;
+  for (ichar = 0; ichar < COMMAND_LENGTH; ichar++) {
+    new_node.name[ichar] = '\0';
+  }
+  snprintf(new_node.name, strlen(node_name)+1, "%s", node_name);
   vector_push_back(node_vec, &new_node);
   return 0;
 }
@@ -851,14 +888,20 @@ int register_node(vector* node_vec, const char* node_name)
  */
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 1;
   }
 
   // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(command_name) > COMMAND_LENGTH ) {
+  if ( strlen(command_name) >= COMMAND_LENGTH ) {
     mdi_error("Cannot register command name with length greater than MDI_COMMAND_LENGTH");
     return 1;
   }
@@ -880,7 +923,11 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
 
   // register this command
   char new_command[COMMAND_LENGTH];
-  snprintf(new_command, COMMAND_LENGTH, "%s", command_name);
+  int ichar;
+  for ( ichar = 0; ichar < COMMAND_LENGTH; ichar++) {
+    new_command[ichar] = '\0';
+  }
+  snprintf(new_command, strlen(node_name)+1, "%s", command_name);
   vector_push_back( target_node->commands, &new_command );
 
   return 0;
@@ -900,14 +947,20 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
  */
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 1;
   }
 
   // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(callback_name) > COMMAND_LENGTH ) {
+  if ( strlen(callback_name) >= COMMAND_LENGTH ) {
     mdi_error("Cannot register callback name with length greater than MDI_COMMAND_LENGTH");
     return 1;
   }
@@ -929,7 +982,11 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
 
   // register this callback
   char new_callback[COMMAND_LENGTH];
-  snprintf(new_callback, COMMAND_LENGTH, "%s", callback_name);
+  int ichar;
+  for ( ichar=0; ichar < COMMAND_LENGTH; ichar++ ) {
+    new_callback[ichar] = '\0';
+  }
+  snprintf(new_callback, strlen(callback_name)+1, "%s", callback_name);
   vector_push_back( target_node->callbacks, &new_callback );
 
   return 0;
@@ -971,16 +1028,16 @@ int send_command_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = (int)strlen(this_node->name);
-    snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
+    snprintf(&commands[ islot * stride ], strlen(this_node->name)+1, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      snprintf(&commands[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
+      commands[ islot * stride + ichar ] = ' ';
     }
     if ( this_node->commands->size > 0 ) {
-      snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
+      commands[ islot * stride + stride - 1 ] = ',';
     }
     else {
-      snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
+      commands[ islot * stride + stride - 1 ] = ';';
     }
     islot++;
 
@@ -990,13 +1047,13 @@ int send_command_list(MDI_Comm comm) {
       length = (int)strlen(command);
       snprintf(&commands[ islot * stride ], COMMAND_LENGTH, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
-	snprintf(&commands[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
+	commands[ islot * stride + ichar ] = ' ';
       }
       if ( icommand == this_node->commands->size - 1 ) {
-	snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
+	commands[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	snprintf(&commands[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
+	commands[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1036,6 +1093,10 @@ int send_callback_list(MDI_Comm comm) {
   // allocate memory for the callbacks list
   int count = ( ncallbacks + nnodes ) * stride;
   char* callbacks = malloc( count * sizeof(char) );
+  int ichar;
+  for (ichar = 0; ichar < count; ichar++) {
+    callbacks[ichar] = '\0';
+  }
 
   // form the list of callbacks
   int islot = 0;
@@ -1043,16 +1104,16 @@ int send_callback_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = (int)strlen(this_node->name);
-    snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", this_node->name);
+    snprintf(&callbacks[ islot * stride ], strlen(this_node->name)+1, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      snprintf(&callbacks[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
+      callbacks[ islot * stride + ichar ] = ' ';
     }
     if ( this_node->callbacks->size > 0 ) {
-      snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
+      callbacks[ islot * stride + stride - 1 ] = ',';
     }
     else {
-      snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
+      callbacks[ islot * stride + stride - 1 ] = ';';
     }
     islot++;
 
@@ -1062,13 +1123,13 @@ int send_callback_list(MDI_Comm comm) {
       length = (int)strlen(callback);
       snprintf(&callbacks[ islot * stride ], COMMAND_LENGTH, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
-	snprintf(&callbacks[ islot * stride + ichar ], sizeof(char*), "%c", ' ');
+	callbacks[ islot * stride + ichar ] = ' ';
       }
       if ( icallback == this_node->callbacks->size - 1 ) {
-	snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ';');
+	callbacks[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	snprintf(&callbacks[ islot * stride + stride - 1 ], sizeof(char*), "%c", ',');
+	callbacks[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1107,12 +1168,16 @@ int send_node_list(MDI_Comm comm) {
     // add the name of this node to the list
     node* this_node = vector_get(this_code->nodes, inode);
     int length = (int)strlen(this_node->name);
-    snprintf(&node_list[ inode * stride ], COMMAND_LENGTH, "%s", this_node->name);
+    if ( strlen(this_node->name) >= COMMAND_LENGTH ) {
+      mdi_error("Error in send_node_list: Node name is larger than MDI_COMMAND_LENGTH");
+      return 1;
+    }
+    snprintf(&node_list[ inode * stride ], strlen(this_node->name)+1, "%s", this_node->name);
     int ichar;
     for (ichar = length; ichar < stride-1; ichar++) {
-      snprintf(&node_list[ inode * stride + ichar ], COMMAND_LENGTH, "%c", ' ');
+      node_list[ inode * stride + ichar ] = ' ';
     }
-    snprintf(&node_list[ inode * stride + stride - 1 ], COMMAND_LENGTH, "%c", ',');
+    node_list[ inode * stride + stride - 1 ] = ',';
   }
 
   int ret = general_send( node_list, count, MDI_CHAR, comm );
@@ -1240,14 +1305,16 @@ int get_node_info(MDI_Comm comm) {
     else {
       name_length = (int)(name_end - name_start);
     }
-    if ( name_length > MDI_COMMAND_LENGTH ) {
+    if ( name_length >= MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse node name");
       return 1;
     }
 
     // construct the name of the node
     char* node_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    snprintf(node_name, COMMAND_LENGTH, "%s", name_start);
+    for (ichar = 0; ichar < name_length; ichar++) {
+      node_name[ichar] = name_start[ichar];
+    }
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       node_name[ichar] = '\0';
     }
@@ -1283,22 +1350,23 @@ int get_node_info(MDI_Comm comm) {
     else {
       name_length = (int)(name_end - name_start);
     }
-    if ( name_length > MDI_COMMAND_LENGTH ) {
+    if ( name_length >= MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse command name");
       return 1;
     }
 
-    // construct the name
+    // construct the name of the command
     char* command_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    snprintf(command_name, COMMAND_LENGTH, "%s", name_start);
+    for (ichar = 0; ichar < name_length; ichar++) {
+      command_name[ichar] = name_start[ichar];
+    }
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       command_name[ichar] = '\0';
     }
-    //printf("DRIVER COMMAND: %d %d %s\n",inode,name_length,command_name);
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      snprintf(current_node, COMMAND_LENGTH, "%s", command_name);
+      snprintf(current_node, strlen(command_name)+1, "%s", command_name);
     }
     else { // command
       // register this command
@@ -1347,14 +1415,16 @@ int get_node_info(MDI_Comm comm) {
     else {
       name_length = (int)(name_end - name_start);
     }
-    if ( name_length > MDI_COMMAND_LENGTH ) {
+    if ( name_length >= MDI_COMMAND_LENGTH ) {
       mdi_error("Error obtaining node information: could not parse callback name");
       return 1;
     }
 
     // construct the name
     char* callback_name = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-    snprintf(callback_name, COMMAND_LENGTH, "%s", name_start);
+    for (ichar = 0; ichar < name_length; ichar++) {
+      callback_name[ichar] = name_start[ichar];
+    }
     for (ichar = name_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
       callback_name[ichar] = '\0';
     }
@@ -1362,7 +1432,7 @@ int get_node_info(MDI_Comm comm) {
 
     if ( node_flag == 1 ) { // node
       // store the name of the current node
-      snprintf(current_node, COMMAND_LENGTH, "%s", callback_name);
+      snprintf(current_node, strlen(callback_name)+1, "%s", callback_name);
     }
     else { // callback
       // register this callback
