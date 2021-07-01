@@ -25,6 +25,7 @@ mdi_name_path = os.path.join( dir_path, "mdi_name" )
 mdi_name_file = open( mdi_name_path, "r" )
 mdi_name = mdi_name_file.read()
 mdi_path = os.path.join( dir_path, mdi_name )
+mdi_name_file.close()
 
 # load the MDI Library
 try:
