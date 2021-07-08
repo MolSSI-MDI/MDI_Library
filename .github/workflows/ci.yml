@@ -57,7 +57,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install gfortran
           sudo apt-get install valgrind
-          [ "${{ matrix.mpilib }}" == "mpich" ] && sudo apt-get install mpich libmpich-dev
           
           # Custom build Python with Valgrind compatibility
           git clone https://github.com/python/cpython.git
