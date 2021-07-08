@@ -62,3 +62,45 @@
   fun:event_process_active
   fun:opal*_event_base_loop
 }
+
+{
+  OMPI event uninit
+  Memcheck:Value1
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+  OMPI event uninit
+  Memcheck:Value2
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+  OMPI event uninit
+  Memcheck:Value4
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+  OMPI event uninit
+  Memcheck:Value8
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+  OMPI event jump
+  Memcheck:Jump
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
+
+{
+  OMPI event cond
+  Memcheck:Cond
+  fun:event_process_active
+  fun:opal*_event_base_loop
+}
