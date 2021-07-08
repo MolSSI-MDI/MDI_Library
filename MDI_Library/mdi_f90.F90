@@ -200,9 +200,9 @@ CONTAINS
     call execute_commands(i)%value(fbuf, commf, ierr)
 
     ! If this is the EXIT command, delete all Fortran state associated with the code
-    IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
-      CALL remove_execute_command( current_code )
-    END IF
+    !IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
+    !  CALL remove_execute_command( current_code )
+    !END IF
 
     MDI_Execute_Command_f = ierr
 
@@ -709,10 +709,10 @@ CONTAINS
       fbuf = str_c_to_f(cbuf, MDI_COMMAND_LENGTH)
 
       ! If this is the EXIT command, delete all Fortran state associated with the code
-      IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
-        current_code = MDI_Get_Current_Code_()
-        CALL remove_execute_command( current_code )
-      END IF
+      !IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
+      !  current_code = MDI_Get_Current_Code_()
+      !  CALL remove_execute_command( current_code )
+      !END IF
     END SUBROUTINE MDI_Recv_Command
 
     SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor, ierr)

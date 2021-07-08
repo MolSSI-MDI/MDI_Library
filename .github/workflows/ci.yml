@@ -13,6 +13,7 @@ jobs:
   posix:
 
     strategy:
+      fail-fast: false
       matrix:
         platform: [ ubuntu-18.04, macos-latest ]
         mpilib: [null, mpich, openmpi]
@@ -21,7 +22,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     env:
-      TESTS: ""
       OMPI_MCA_btl_base_warn_component_unused: "0"
       CODECOV_TOKEN: "99465b5f-26b4-4487-8355-fbcac5249a05"
 
@@ -30,8 +30,20 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Create source file with all required environment variables
+        run: |
+          # Create a source file that will contain environment variables used in additional steps
+          # Environment variabls are not normally preserved between steps, so the source file is necessary
+          touch env.source
+
+          # Set MDI_TESTS, which defines which tests will be performed for this job
+          [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
+          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug"' >> env.source
+
+          cat env.source
+
       # Only custom build python on ubuntu
-      # On Mac, just use the 
+      # On Mac, just use the prebuilt package
       - uses: actions/setup-python@v2
         if: matrix.platform == 'ubuntu-18.04'
         with:
@@ -40,10 +52,41 @@ jobs:
       - name: Install dependencies (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
         run: |
+          source env.source
+          sudo apt-get clean
           sudo apt-get update
           sudo apt-get install gfortran
+          sudo apt-get install valgrind
           [ "${{ matrix.mpilib }}" == "mpich" ] && sudo apt-get install mpich libmpich-dev
-          [ "${{ matrix.mpilib }}" == "openmpi" ] && sudo apt-get install openmpi-doc libopenmpi-dev
+          
+          # Custom build Python with Valgrind compatibility
+          git clone https://github.com/python/cpython.git
+          cd cpython
+          git checkout v3.9.6
+          ./configure --with-pydebug --without-pymalloc --prefix /opt/debugpython
+          make OPT=-g
+          make install
+          cd ..
+
+      - name: Install dependencies (ubuntu, OpenMPI)
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
+        run: |
+          echo 'export PATH="${PATH}:/usr/openmpi/bin"' >> env.source
+          echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/openmpi/lib"' >> env.source
+          echo 'export OMPI_MCA_rmaps_base_oversubscribe=1' >> env.source
+          source env.source
+          wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
+          tar -xvf ./openmpi-4.0.2.tar.gz
+          cd openmpi-4.0.2
+          ./configure --prefix="/usr/openmpi" --enable-debug --enable-memchecker --with-valgrind=/usr
+          make -j 2
+          sudo make install
+
+
+      - name: Install Python dependencies (ubuntu)
+        if: matrix.platform == 'ubuntu-18.04'
+        run: |
+          source env.source
           sudo apt-get install python3-dev
           sudo apt-get install libpython3.7-dev
           python -m pip install --upgrade pip
@@ -51,9 +94,23 @@ jobs:
           python -m pip install numpy
           python -m pip install -U pytest pytest-cov
 
+      - name: Install Python dependencies for custom-built Python (ubuntu)
+        if: matrix.platform == 'ubuntu-18.04'
+        run: |
+          source env.source
+          which python3
+          python3 --version
+          ls /opt/debugpython/bin
+          /opt/debugpython/bin/python3 --version
+          /opt/debugpython/bin/python3 -m pip install --upgrade pip
+          [ ! "${{ matrix.mpilib }}" == "" ] && /opt/debugpython/bin/python3 -m pip install mpi4py
+          /opt/debugpython/bin/python3 -m pip install numpy
+          /opt/debugpython/bin/python3 -m pip install -U pytest pytest-cov
+
       - name: Install dependencies (macos)
         if: matrix.platform == 'macos-latest'
         run: |
+          source env.source
           brew update > /dev/null
           brew uninstall gcc || true
           brew install gcc
@@ -66,6 +123,7 @@ jobs:
 
       - name: Install MDI Library Python package
         run: |
+          source env.source
           mkdir python_build
           cd python_build
           cmake -Dpython_package=ON -Dlanguage=Python ..
@@ -75,6 +133,7 @@ jobs:
 
       - name: Install local build
         run: |
+          source env.source
           [ "${{ matrix.platform }}" == "macos-latest" ] && python3-config --include
           mkdir build
           cd build
@@ -89,17 +148,33 @@ jobs:
 
       - name: Run test scripts
         run: |
+          source env.source
           cd tests
-          [ "${{ matrix.mpilib }}" == "" ] && TESTS="${TESTS} not mpi"
-          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && TESTS="${TESTS} not mpi and not py_plug"
-          pytest -vv --cov-report=xml --cov=MDI_Library -k "${TESTS}"
+          pytest -vv --cov-report=xml --cov=MDI_Library -k "${MDI_TESTS}"
 
       - name: Get code coverage report
         run: |
+          source env.source
           cd tests
           ls -a -l
           ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
           bash <(curl -s https://codecov.io/bash)
+
+      - name: Run valgrind tests
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' }}
+        run: |
+          source env.source
+          cd tests
+          export PYTHONMALLOC=malloc
+          export MDI_TESTS="not mpi"
+          /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
+
+      - name: Print valgrind results
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' && ( success() || failure() ) }}
+        run: |
+          source env.source
+          cat tests/valgrind*.txt
+
 
 
   windows:
@@ -170,3 +245,4 @@ jobs:
       - name: Get code coverage report
         run: |
           codecov.exe -f coverage.xml -t "99465b5f-26b4-4487-8355-fbcac5249a05"
+
