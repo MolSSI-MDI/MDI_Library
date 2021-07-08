@@ -69,7 +69,7 @@ jobs:
           cd ..
 
       - name: Install dependencies (ubuntu, MPICH)
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'mpich' }}
         run: |
           ls /usr/include
           echo "--------------------------"
