@@ -23,9 +23,42 @@
 }
 
 {
+  ORTE init leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:orte_init
+}
+
+{
   ORTE nspace leak
   Memcheck:Leak
   fun:malloc
   ...
   fun:orte_pmix_server_register_nspace
+}
+
+{
+  OMPI finalize leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:ompi_mpi_finalize
+}
+
+{
+  OMPI finalize leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:ompi_mpi_finalize
+}
+
+{
+  OMPI event leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:event_process_active
+  fun:opal*_event_base_loop
 }

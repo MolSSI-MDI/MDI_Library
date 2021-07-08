@@ -187,7 +187,7 @@ jobs:
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
 
       - name: Print valgrind results
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' && ( success() || failure() ) }}
+        if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
         run: |
           source env.source
           cat tests/valgrind*.txt
