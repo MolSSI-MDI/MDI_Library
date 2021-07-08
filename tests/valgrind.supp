@@ -1,0 +1,31 @@
+{
+  OMPI init leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:ompi_mpi_init
+}
+
+{
+  OMPI init leak
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:ompi_mpi_init
+}
+
+{
+  ORTE init leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:orte_init
+}
+
+{
+  ORTE nspace leak
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:orte_pmix_server_register_nspace
+}

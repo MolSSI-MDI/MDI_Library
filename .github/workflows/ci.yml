@@ -68,6 +68,25 @@ jobs:
           make install
           cd ..
 
+      - name: Install dependencies (ubuntu, MPICH)
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
+        run: |
+          ls /usr/include
+          echo "--------------------------"
+          ls /usr/include/valgrind
+          echo "--------------------------"
+          echo 'export PATH="${PATH}:/usr/mpich/bin"' >> env.source
+          echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/mpich/lib"' >> env.source
+          echo 'export MPICH_TRMEM_VALIDATE=YES' >> env.source
+          echo 'export MPICH_TRMEM_INITZERO=YES' >> env.source
+          source env.source
+          wget https://github.com/pmodels/mpich/releases/download/v3.4.2/mpich-3.4.2.tar.gz
+          tar -xvf ./mpich-3.4.2.tar.gz
+          cd mpich-3.4.2
+          ./configure --prefix="/usr/mpich" --enable-g=mem,meminit CPPFLAGS='-I/usr/include/valgrind'
+          make -j 2
+          sudo make install
+
       - name: Install dependencies (ubuntu, OpenMPI)
         if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
         run: |
@@ -81,7 +100,6 @@ jobs:
           ./configure --prefix="/usr/openmpi" --enable-debug --enable-memchecker --with-valgrind=/usr
           make -j 2
           sudo make install
-
 
       - name: Install Python dependencies (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
@@ -161,12 +179,11 @@ jobs:
           bash <(curl -s https://codecov.io/bash)
 
       - name: Run valgrind tests
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' }}
+        if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
           source env.source
           cd tests
           export PYTHONMALLOC=malloc
-          export MDI_TESTS="not mpi"
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
 
       - name: Print valgrind results
