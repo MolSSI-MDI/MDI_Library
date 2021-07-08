@@ -65,7 +65,8 @@ def get_valgrind_options(valgrind):
                 "--show-leak-kinds=definite",
                 "--trace-children=yes",
                 "--track-origins=yes",
-                "--error-exitcode=1"]
+                "--error-exitcode=1",
+                "--suppressions=valgrind.supp"]
     else:
         return []
 

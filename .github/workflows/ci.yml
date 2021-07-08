@@ -82,7 +82,7 @@ jobs:
           wget https://github.com/pmodels/mpich/releases/download/v3.4.2/mpich-3.4.2.tar.gz
           tar -xvf ./mpich-3.4.2.tar.gz
           cd mpich-3.4.2
-          ./configure --prefix="/usr/mpich" --enable-g=mem,meminit CPPFLAGS='-I/usr/include/valgrind'
+          ./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=mem,meminit CPPFLAGS='-I/usr/include/valgrind'
           make -j 2
           sudo make install
 
