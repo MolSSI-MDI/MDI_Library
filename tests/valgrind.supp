@@ -131,3 +131,15 @@
    fun:PMPI_Comm_split
    fun:main
 }
+
+
+ {
+   Python malloc
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:PyObject_Malloc
+   ...
+   fun:_imp_exec_dynamic
+}
