@@ -62,7 +62,7 @@ jobs:
           git clone https://github.com/python/cpython.git
           cd cpython
           git checkout v3.9.6
-          ./configure --with-pydebug --without-pymalloc --prefix /opt/debugpython
+          ./configure --with-pydebug --without-pymalloc --enable-shared --prefix /opt/debugpython
           make OPT=-g
           make install
           cd ..
@@ -183,6 +183,8 @@ jobs:
           echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
           source env.source
           echo "${PATH}"
+          echo "-----------------------"
+          ls /opt/hostedtoolcache/Python/3.7.10/x64/bin/python3.7
           echo "-----------------------"
           ls /opt/debugpython
           echo "-----------------------"
