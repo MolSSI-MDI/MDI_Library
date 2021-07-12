@@ -181,6 +181,12 @@ jobs:
       - name: Install local valgrind build
         if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
+          source env.source
+          echo "-----------------------"
+          pwd
+          echo "-----------------------"
+          ls
+          echo "-----------------------"
           rm -rf build
           cd build
           export FC=gfortran
