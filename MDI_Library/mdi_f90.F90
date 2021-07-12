@@ -67,7 +67,7 @@ CONTAINS
 
     my_rank = MDI_Get_world_rank_()
 
-    if ( my_rank .eq. 0 .or. my_rank .eq. -1 ) THEN
+    !if ( my_rank .eq. 0 .or. my_rank .eq. -1 ) THEN
        ! convert from C string to Fortran string
        fbuf = ""
        end_string = .false.
@@ -81,7 +81,7 @@ CONTAINS
        ENDDO
        str_c_to_f = fbuf
 
-    END IF
+    !END IF
 
   END FUNCTION str_c_to_f
 
