@@ -216,7 +216,7 @@ jobs:
           cat env.source
           cd tests
           export PYTHONMALLOC=malloc
-          /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}"
+          /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
 
       - name: Print valgrind results
         if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
