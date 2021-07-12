@@ -178,6 +178,15 @@ jobs:
           ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
           bash <(curl -s https://codecov.io/bash)
 
+      - name: Install local valgrind build
+        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        run: |
+          rm -rf build
+          cd build
+          export FC=gfortran
+          cmake -Dtest_codes=ON -Dpython_version=3.9.6 ..
+          make VERBOSE=1
+
       - name: Run valgrind tests
         if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
