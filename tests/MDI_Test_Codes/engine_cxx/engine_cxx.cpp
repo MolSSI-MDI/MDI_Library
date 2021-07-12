@@ -52,7 +52,7 @@ int respond_to_commands(MDI_Comm comm, MPI_Comm mpi_world_comm) {
     execute_command(command, comm, NULL);
 
   }
-  //delete [] command;
+  delete [] command;
 
   return 0;
 }
