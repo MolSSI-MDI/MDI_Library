@@ -116,7 +116,7 @@
    fun:MPIDI_OFI_mpi_finalize_hook
    fun:MPID_Finalize
    fun:PMPI_Finalize
-   fun:main
+   ...
 }
 
  {
