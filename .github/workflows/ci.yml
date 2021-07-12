@@ -70,19 +70,12 @@ jobs:
       - name: Install dependencies (ubuntu, MPICH)
         if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'mpich' }}
         run: |
-          ls /opt/debugpython
-          echo "--------------------------"
-          ls /opt/debugpython
-          echo "--------------------------"
           echo 'export PATH="${PATH}:/usr/mpich/bin"' >> env.source
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/mpich/lib"' >> env.source
-          #echo 'export MPICH_TRMEM_VALIDATE=YES' >> env.source
-          #echo 'export MPICH_TRMEM_INITZERO=YES' >> env.source
           source env.source
           wget https://github.com/pmodels/mpich/releases/download/v3.4.2/mpich-3.4.2.tar.gz
           tar -xvf ./mpich-3.4.2.tar.gz
           cd mpich-3.4.2
-          #./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=dbg,mem,meminit CPPFLAGS='-I/usr/include/valgrind'
           ./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=dbg,meminit CPPFLAGS='-I/usr/include/valgrind'
           make -j 2
           sudo make install
@@ -186,9 +179,11 @@ jobs:
           echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
           source env.source
           echo "-----------------------"
-          pwd
+          ls /opt/debugpython
           echo "-----------------------"
-          ls
+          ls /opt/debugpython/lib
+          echo "-----------------------"
+          ls /opt/debugpython/include
           echo "-----------------------"
           rm -rf build
           mkdir build
