@@ -112,7 +112,7 @@ jobs:
           ls /opt/debugpython/bin
           echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           ls /opt/debugpython/lib
-          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
           echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           source env.source
           which python3
@@ -180,12 +180,12 @@ jobs:
         if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
           # Set the debug Python build paths
-          echo 'export PATH="{$PATH}:/opt/debugpython"' >> env.source
-          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython"' >> env.source
-          echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
-          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
-          echo 'export PATH="{$PATH}:/opt/debugpython/bin"' >> env.source
-          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
+          #echo 'export PATH="{$PATH}:/opt/debugpython"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython"' >> env.source
+          #echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          #echo 'export PATH="{$PATH}:/opt/debugpython/bin"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
           source env.source
           echo "${PATH}"
           echo "-----------------------"
@@ -213,6 +213,7 @@ jobs:
         if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
           source env.source
+          cat env.source
           cd tests
           export PYTHONMALLOC=malloc
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind test_mdi.py::test_cxx_py_plug
