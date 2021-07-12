@@ -196,7 +196,6 @@ def test_cxx_f90_plug_mpi(valgrind):
     # convert the driver's output into a string
     driver_out = format_return(driver_tup[0])
     driver_err = parse_stderr(driver_tup[1])
-    assert driver_proc.returncode == 0
 
     expected = '''I am engine instance: 1
  Engine name: MM
@@ -204,6 +203,7 @@ def test_cxx_f90_plug_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_py_plug(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
