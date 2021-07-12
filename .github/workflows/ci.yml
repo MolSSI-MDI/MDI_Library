@@ -108,10 +108,15 @@ jobs:
       - name: Install Python dependencies for custom-built Python (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
         run: |
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          ls /opt/debugpython/bin
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          ls /opt/debugpython/lib
+          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           source env.source
           which python3
           python3 --version
-          ls /opt/debugpython/bin
           /opt/debugpython/bin/python3 --version
           /opt/debugpython/bin/python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && /opt/debugpython/bin/python3 -m pip install mpi4py
