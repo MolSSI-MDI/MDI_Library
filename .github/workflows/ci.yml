@@ -188,6 +188,7 @@ jobs:
           ls
           echo "-----------------------"
           rm -rf build
+          mkdir build
           cd build
           export FC=gfortran
           cmake -Dtest_codes=ON -Dpython_version=3.9.6 ..
