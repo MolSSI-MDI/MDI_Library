@@ -45,6 +45,11 @@ MODULE MDI_INTERNAL
        INTEGER(KIND=C_INT)                      :: MDI_Get_Current_Code_
      END FUNCTION MDI_Get_Current_Code_
 
+     FUNCTION MDI_Get_world_rank_() bind(c, name="MDI_Get_world_rank")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT)                      :: MDI_Get_world_rank_
+     END FUNCTION MDI_Get_world_rank_
+
   END INTERFACE
 
 CONTAINS
@@ -58,18 +63,26 @@ CONTAINS
     LOGICAL                                  :: end_string
     CHARACTER(LEN=str_len)                   :: fbuf
 
-    ! convert from C string to Fortran string
-    fbuf = ""
-    end_string = .false.
-    DO i = 1, str_len
-       IF ( end_string .or. cbuf(i) == c_null_char ) THEN
-          end_string = .true.
-          fbuf(i:i) = ' '
-       ELSE
-          fbuf(i:i) = cbuf(i)
-       END IF
-    ENDDO
-    str_c_to_f = fbuf
+    INTEGER                                  :: my_rank
+
+    my_rank = MDI_Get_world_rank_()
+
+    if ( my_rank .eq. 0 ) THEN
+       ! convert from C string to Fortran string
+       fbuf = ""
+       end_string = .false.
+       DO i = 1, str_len
+          IF ( end_string .or. cbuf(i) == c_null_char ) THEN
+             end_string = .true.
+             fbuf(i:i) = ' '
+          ELSE
+             fbuf(i:i) = cbuf(i)
+          END IF
+       ENDDO
+       str_c_to_f = fbuf
+
+    END IF
+
   END FUNCTION str_c_to_f
 
   FUNCTION str_f_to_c(fbuf, str_len)

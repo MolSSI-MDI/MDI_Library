@@ -841,6 +841,21 @@ void MDI_Set_World_Rank(int world_rank_in)
 }
 
 
+/*! \brief Get the rank of this process within the MPI intra-communicator for the current code
+ *
+ * This function is only used by the Fortran wrapper
+ *
+ */
+int MDI_Get_world_rank(int world_rank_out)
+{
+  if ( is_initialized == 0 ) {
+    mdi_error("MDI_Get_world_rank called but MDI has not been initialized");
+    return 1;
+  }
+  return world_rank;
+}
+
+
 /*! \brief Register a node
  *
  * The function returns \p 0 on a success.
