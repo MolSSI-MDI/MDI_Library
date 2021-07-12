@@ -66,7 +66,7 @@ def get_valgrind_options(valgrind):
                 "--trace-children=yes",
                 "--track-origins=yes",
                 "--error-exitcode=1",
-                "--gen-suppressions=yes",
+                "--gen-suppressions=all",
                 "--suppressions=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind.supp" ]
     else:
         return []
