@@ -274,9 +274,18 @@ int new_code() {
   new_code.intra_MPI_comm = MPI_COMM_WORLD;
   new_code.language = MDI_LANGUAGE_C;
 
+  // initialize the name and role strings
+  int ichar;
+  for (ichar=0; ichar < NAME_LENGTH; ichar++) {
+    new_code.name[ichar] = '\0';
+    new_code.role[ichar] = '\0';
+  }
+
   // initialize the character buffer for the plugin path
   new_code.plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
-  new_code.plugin_path[0] = '\0';
+  for (ichar=0; ichar < PLUGIN_PATH_LENGTH; ichar++) {
+    new_code.plugin_path[ichar] = '\0';
+  }
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
