@@ -60,10 +60,10 @@ def get_valgrind_options(valgrind):
     if valgrind:
         return ["valgrind",
                 "-v",
-                "--log-file=valgrind_%p_%n.txt",
+                #"--log-file=valgrind_%p_%n.txt",
                 "--leak-check=full",
                 "--show-leak-kinds=definite",
-                "--trace-children=yes",
+                #"--trace-children=yes",
                 "--track-origins=yes",
                 "--error-exitcode=1",
                 "--gen-suppressions=all",
