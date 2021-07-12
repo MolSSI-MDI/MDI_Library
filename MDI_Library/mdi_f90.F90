@@ -68,6 +68,7 @@ CONTAINS
     my_rank = MDI_Get_intra_rank_()
 
     if ( my_rank .eq. 0 ) THEN
+
        ! convert from C string to Fortran string
        fbuf = ""
        end_string = .false.
