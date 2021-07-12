@@ -179,10 +179,14 @@ jobs:
           echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython"' >> env.source
           echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
           echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          echo 'export PATH="{$PATH}:/opt/debugpython/bin"' >> env.source
+          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
           source env.source
           echo "${PATH}"
           echo "-----------------------"
           ls /opt/debugpython
+          echo "-----------------------"
+          ls /opt/debugpython/bin
           echo "-----------------------"
           ls /opt/debugpython/lib
           echo "-----------------------"
