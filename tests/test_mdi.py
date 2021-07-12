@@ -60,7 +60,7 @@ def get_valgrind_options(valgrind):
     if valgrind:
         return ["valgrind",
                 "-v",
-                #"--log-file=valgrind_%p_%n.txt",
+                "--log-file=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind_%p_%n.txt",
                 "--leak-check=full",
                 "--show-leak-kinds=definite",
                 #"--trace-children=yes",
