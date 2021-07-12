@@ -141,5 +141,5 @@
    fun:_PyMem_RawMalloc
    fun:PyObject_Malloc
    ...
-   fun:_imp_exec_dynamic
+   fun:PyModule_ExecDef
 }
