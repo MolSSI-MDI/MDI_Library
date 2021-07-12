@@ -45,10 +45,10 @@ MODULE MDI_INTERNAL
        INTEGER(KIND=C_INT)                      :: MDI_Get_Current_Code_
      END FUNCTION MDI_Get_Current_Code_
 
-     FUNCTION MDI_Get_world_rank_() bind(c, name="MDI_Get_world_rank")
+     FUNCTION MDI_Get_intra_rank_() bind(c, name="MDI_Get_intra_rank")
        USE, INTRINSIC :: iso_c_binding
-       INTEGER(KIND=C_INT)                      :: MDI_Get_world_rank_
-     END FUNCTION MDI_Get_world_rank_
+       INTEGER(KIND=C_INT)                      :: MDI_Get_intra_rank_
+     END FUNCTION MDI_Get_intra_rank_
 
   END INTERFACE
 
@@ -65,9 +65,9 @@ CONTAINS
 
     INTEGER                                  :: my_rank
 
-    my_rank = MDI_Get_world_rank_()
+    my_rank = MDI_Get_intra_rank_()
 
-    !if ( my_rank .eq. 0 .or. my_rank .eq. -1 ) THEN
+    if ( my_rank .eq. 0 ) THEN
        ! convert from C string to Fortran string
        fbuf = ""
        end_string = .false.
@@ -81,7 +81,7 @@ CONTAINS
        ENDDO
        str_c_to_f = fbuf
 
-    !END IF
+    END IF
 
   END FUNCTION str_c_to_f
 

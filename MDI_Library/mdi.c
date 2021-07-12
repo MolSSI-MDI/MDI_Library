@@ -846,13 +846,14 @@ void MDI_Set_World_Rank(int world_rank_in)
  * This function is only used by the Fortran wrapper
  *
  */
-int MDI_Get_world_rank(int world_rank_out)
+int MDI_Get_intra_rank(int intra_rank_out)
 {
   if ( is_initialized == 0 ) {
-    mdi_error("MDI_Get_world_rank called but MDI has not been initialized");
+    mdi_error("MDI_Get_intra_rank called but MDI has not been initialized");
     return 1;
   }
-  return world_rank;
+  code* this_code = get_code(current_code);
+  return this_code->intra_rank;
 }
 
 
