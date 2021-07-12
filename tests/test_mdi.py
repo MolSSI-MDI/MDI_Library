@@ -63,6 +63,7 @@ def get_valgrind_options(valgrind):
                 "--log-file=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind_%p_%n.txt",
                 "--leak-check=full",
                 "--show-leak-kinds=definite",
+                "--errors-for-leak-kinds=definite",
                 "--trace-children=yes",
                 "--track-origins=yes",
                 "--error-exitcode=1",
