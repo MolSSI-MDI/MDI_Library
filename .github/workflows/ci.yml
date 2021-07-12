@@ -67,12 +67,16 @@ jobs:
           make install
           cd ..
 
+          # Set the debug Python build paths
+          echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
+          echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+
       - name: Install dependencies (ubuntu, MPICH)
         if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'mpich' }}
         run: |
-          ls /usr/include
+          ls /opt/debugpython
           echo "--------------------------"
-          ls /usr/include/valgrind
+          ls /opt/debugpython
           echo "--------------------------"
           echo 'export PATH="${PATH}:/usr/mpich/bin"' >> env.source
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/mpich/lib"' >> env.source
