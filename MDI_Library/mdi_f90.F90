@@ -54,6 +54,11 @@ MODULE MDI_INTERNAL
 
 CONTAINS
 
+  FUNCTION MDI_Get_intra_rank()
+    INTEGER                                  :: MDI_Get_intra_rank
+    MDI_Get_intra_rank = MDI_Get_intra_rank_()
+  END FUNCTION 
+
   FUNCTION str_c_to_f(cbuf, str_len)
     INTEGER                                  :: str_len
     CHARACTER(LEN=str_len)                   :: str_c_to_f
@@ -65,24 +70,18 @@ CONTAINS
 
     INTEGER                                  :: my_rank
 
-    my_rank = MDI_Get_intra_rank_()
-
-    if ( my_rank .eq. 0 ) THEN
-
-       ! convert from C string to Fortran string
-       fbuf = ""
-       end_string = .false.
-       DO i = 1, str_len
-          IF ( end_string .or. cbuf(i) == c_null_char ) THEN
-             end_string = .true.
-             fbuf(i:i) = ' '
-          ELSE
-             fbuf(i:i) = cbuf(i)
-          END IF
-       ENDDO
-       str_c_to_f = fbuf
-
-    END IF
+    ! convert from C string to Fortran string
+    fbuf = ""
+    end_string = .false.
+    DO i = 1, str_len
+       IF ( end_string .or. cbuf(i) == c_null_char ) THEN
+          end_string = .true.
+          fbuf(i:i) = ' '
+       ELSE
+          fbuf(i:i) = cbuf(i)
+       END IF
+    ENDDO
+    str_c_to_f = fbuf
 
   END FUNCTION str_c_to_f
 
@@ -605,7 +604,7 @@ CONTAINS
     END SUBROUTINE MDI_Send_iv
 
     SUBROUTINE MDI_Recv_s (fbuf, count, datatype, comm, ierr)
-      USE MDI_INTERNAL, ONLY : str_c_to_f
+      USE MDI_INTERNAL, ONLY : str_c_to_f, MDI_Get_intra_rank
       USE ISO_C_BINDING
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_s
@@ -619,10 +618,16 @@ CONTAINS
       LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(count)
 
+      INTEGER                                  :: my_rank
+
       ierr = MDI_Recv_(c_loc(cbuf(1)), count, datatype, comm)
 
-      ! convert from C string to Fortran string
-       fbuf = str_c_to_f(cbuf, count)
+      my_rank = MDI_Get_intra_rank()
+
+      IF ( my_rank .eq. 0 ) THEN
+         ! convert from C string to Fortran string
+         fbuf = str_c_to_f(cbuf, count)
+      END IF
     END SUBROUTINE MDI_Recv_s
 
     SUBROUTINE MDI_Recv_d (fbuf, count, datatype, comm, ierr)
@@ -704,7 +709,7 @@ CONTAINS
 
     SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : MDI_Get_Current_Code_, remove_execute_command, str_c_to_f
+      USE MDI_INTERNAL, ONLY : MDI_Get_Current_Code_, remove_execute_command, str_c_to_f, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
@@ -720,7 +725,9 @@ CONTAINS
       ierr = MDI_Recv_Command_(c_loc(cbuf(1)), comm)
 
       ! convert from C string to Fortran string
-      fbuf = str_c_to_f(cbuf, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         fbuf = str_c_to_f(cbuf, MDI_COMMAND_LENGTH)
+      END IF
 
       ! If this is the EXIT command, delete all Fortran state associated with the code
       !IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
@@ -829,7 +836,7 @@ CONTAINS
 
     SUBROUTINE MDI_Get_Node(index, comm, fnode, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_c_to_f
+      USE MDI_INTERNAL, ONLY : str_c_to_f, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Node
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Node
@@ -842,7 +849,9 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
 
       ierr = MDI_Get_Node_( index, comm, c_loc(cnode) )
-      fnode = str_c_to_f(cnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         fnode = str_c_to_f(cnode, MDI_COMMAND_LENGTH)
+      END IF
     END SUBROUTINE MDI_Get_Node
 
     SUBROUTINE MDI_Register_Command(fnode, fcommand, ierr)
@@ -912,7 +921,7 @@ CONTAINS
 
     SUBROUTINE MDI_Get_Command(fnode, index, comm, fcommand, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Command
@@ -928,7 +937,9 @@ CONTAINS
 
       cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
       ierr = MDI_Get_Command_( c_loc(cnode), index, comm, c_loc(ccommand) )
-      fcommand = str_c_to_f(ccommand, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         fcommand = str_c_to_f(ccommand, MDI_COMMAND_LENGTH)
+      END IF
     END SUBROUTINE MDI_Get_Command
 
     SUBROUTINE MDI_Register_Callback(fnode, fcallback, ierr)
@@ -998,7 +1009,7 @@ CONTAINS
 
     SUBROUTINE MDI_Get_Callback(fnode, index, comm, fcallback, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_c_to_f, str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Callback
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_Callback
@@ -1014,7 +1025,9 @@ CONTAINS
 
       cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
       ierr = MDI_Get_Callback_( c_loc(cnode), index, comm, c_loc(ccallback) )
-      fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
+      END IF
     END SUBROUTINE MDI_Get_Callback
 
     SUBROUTINE MDI_MPI_get_world_comm(fworld_comm, ierr)
