@@ -833,6 +833,11 @@ int general_recv_command(char* buf, MDI_Comm comm) {
  */
 int register_node(vector* node_vec, const char* node_name)
 {
+  // only register on rank 0
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Cannot register node name with length greater than MDI_COMMAND_LENGTH");
@@ -876,6 +881,11 @@ int register_node(vector* node_vec, const char* node_name)
  */
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
+  // only register on rank 0
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
@@ -929,6 +939,11 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
  */
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
+  // only register on rank 0
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
