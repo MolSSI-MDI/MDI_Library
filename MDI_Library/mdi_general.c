@@ -626,7 +626,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   int ret = 0;
 
   // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
-  if ( method == MDI_LINK || this_code->intra_rank ) {
+  if ( method == MDI_LINK || this_code->intra_rank == 0 ) {
     // copy the command string, inserting terminal zeros
     int actual_message_length = 0;
     for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
