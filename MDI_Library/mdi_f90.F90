@@ -528,7 +528,7 @@ CONTAINS
 
     SUBROUTINE MDI_Send_s (fbuf, count, datatype, comm, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_s
@@ -540,7 +540,9 @@ CONTAINS
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(count)
 
-      cbuf = str_f_to_c(fbuf, count)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cbuf = str_f_to_c(fbuf, count)
+      END IF
 
       ierr = MDI_Send_( c_loc(cbuf), count, datatype, comm)
     END SUBROUTINE MDI_Send_s
@@ -690,7 +692,7 @@ CONTAINS
 
     SUBROUTINE MDI_Send_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Send_Command
@@ -702,7 +704,9 @@ CONTAINS
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-       cbuf = str_f_to_c(fbuf, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cbuf = str_f_to_c(fbuf, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Send_Command_( c_loc(cbuf), comm)
     END SUBROUTINE MDI_Send_Command
@@ -782,7 +786,7 @@ CONTAINS
 
     SUBROUTINE MDI_Register_Node(fnode, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Node
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Node
@@ -792,14 +796,16 @@ CONTAINS
 
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Register_Node_( c_loc(cnode) )
     END SUBROUTINE MDI_Register_Node
 
     SUBROUTINE MDI_Check_Node_Exists(fnode, comm, flag, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Node_Exists
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Node_Exists
@@ -812,7 +818,9 @@ CONTAINS
       INTEGER(KIND=C_INT), TARGET              :: cflag
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Check_Node_Exists_( c_loc(cnode), comm, c_loc(cflag) )
       flag = cflag
@@ -856,7 +864,7 @@ CONTAINS
 
     SUBROUTINE MDI_Register_Command(fnode, fcommand, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Command
@@ -868,15 +876,17 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
-      ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+         ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Register_Command_( c_loc(cnode), c_loc(ccommand) )
     END SUBROUTINE MDI_Register_Command
 
     SUBROUTINE MDI_Check_Command_Exists(fnode, fcommand, comm, flag, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Command_Exists
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Command_Exists
@@ -891,8 +901,10 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
-      ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+         ccommand = str_f_to_c(fcommand, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Check_Command_Exists_( c_loc(cnode), c_loc(ccommand), comm, c_loc(cflag) )
       flag = cflag
@@ -900,7 +912,7 @@ CONTAINS
 
     SUBROUTINE MDI_Get_NCommands(fnode, comm, ncommands, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCommands
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCommands
@@ -913,7 +925,9 @@ CONTAINS
       INTEGER(KIND=C_INT), TARGET              :: cncommands
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Get_NCommands_( c_loc(cnode), comm, c_loc(cncommands) )
       ncommands = cncommands
@@ -935,7 +949,9 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccommand(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
       ierr = MDI_Get_Command_( c_loc(cnode), index, comm, c_loc(ccommand) )
       IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
          fcommand = str_c_to_f(ccommand, MDI_COMMAND_LENGTH)
@@ -944,7 +960,7 @@ CONTAINS
 
     SUBROUTINE MDI_Register_Callback(fnode, fcallback, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Callback
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Register_Callback
@@ -956,15 +972,17 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
-      ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+         ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Register_Callback_( c_loc(cnode), c_loc(ccallback) )
     END SUBROUTINE MDI_Register_Callback
 
     SUBROUTINE MDI_Check_Callback_Exists(fnode, fcallback, comm, flag, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Callback_Exists
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_Callback_Exists
@@ -979,8 +997,10 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
-      ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+         ccallback = str_f_to_c(fcallback, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Check_Callback_Exists_( c_loc(cnode), c_loc(ccallback), comm, c_loc(cflag) )
       flag = cflag
@@ -988,7 +1008,7 @@ CONTAINS
 
     SUBROUTINE MDI_Get_NCallbacks(fnode, comm, ncallbacks, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : str_f_to_c
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCallbacks
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_NCallbacks
@@ -1001,7 +1021,9 @@ CONTAINS
       INTEGER(KIND=C_INT), TARGET              :: cncallbacks
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
 
       ierr = MDI_Get_NCallbacks_( c_loc(cnode), comm, c_loc(cncallbacks) )
       ncallbacks = cncallbacks
@@ -1023,7 +1045,9 @@ CONTAINS
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cnode(MDI_COMMAND_LENGTH)
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: ccallback(MDI_COMMAND_LENGTH)
 
-      cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+         cnode = str_f_to_c(fnode, MDI_COMMAND_LENGTH)
+      END IF
       ierr = MDI_Get_Callback_( c_loc(cnode), index, comm, c_loc(ccallback) )
       IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
          fcallback = str_c_to_f(ccallback, MDI_COMMAND_LENGTH)
