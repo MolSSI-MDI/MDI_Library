@@ -834,6 +834,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
 int register_node(vector* node_vec, const char* node_name)
 {
   // only register on rank 0
+  code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -882,6 +883,7 @@ int register_node(vector* node_vec, const char* node_name)
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
   // only register on rank 0
+  code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -940,6 +942,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
   // only register on rank 0
+  code* this_code = get_code(current_code);
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
