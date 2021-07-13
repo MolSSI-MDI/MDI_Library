@@ -90,6 +90,18 @@
 }
 
 {
+   OMPI leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal*_event_base_once
+   ...
+   fun:orte_finalize
+   fun:orterun
+   fun:main
+}
+
+{
    PMIX server fence cond
    Memcheck:Cond
    fun:pmix_server_fence
