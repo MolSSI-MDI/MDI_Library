@@ -617,25 +617,26 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   int method = this->method;
 
   int count = MDI_COMMAND_LENGTH;
-  //char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-  const char* command = buf;
-  int ret = 0;
-
-  // copy the command string, inserting terminal zeros
-  /*
-  int actual_message_length = 0;
+  char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
   int ichar;
-  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
-    actual_message_length++;
-    if ( buf[ichar] == '\0' ) {
-      break;
-    }
-  }
-  snprintf(command, actual_message_length, "%s", buf);
-  for ( ichar=actual_message_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
+  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
     command[ichar] = '\0';
   }
-  */
+  //const char* command = buf;
+  int ret = 0;
+
+  // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
+  if ( method == MDI_LINK || this_code->intra_rank ) {
+    // copy the command string, inserting terminal zeros
+    int actual_message_length = 0;
+    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      actual_message_length++;
+      if ( buf[ichar] == '\0' ) {
+	break;
+      }
+    }
+    snprintf(command, actual_message_length, "%s", buf);
+  }
   
   if ( method == MDI_LINK ) {
     // set the command for the engine to execute
@@ -693,7 +694,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
   }
 
-  //free( command );
+  free( command );
   return ret;
 }
 
