@@ -79,7 +79,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   for (ichar=0; ichar < sizeof(buffer); ichar++) {
     buffer[ichar] = '\0';
   }
-  for (ichar=0; ichar < sizeof(buffer) && ichar < sizeof(code_name); ichar++) {
+  for (ichar=0; ichar < sizeof(buffer) && ichar < strlen(code_name); ichar++) {
     buffer[ichar] = code_name[ichar];
   }
 
