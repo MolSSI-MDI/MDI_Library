@@ -31,6 +31,19 @@
 }
 
 {
+   ORTE run realloc leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   fun:opal_argv_append_nosize
+   fun:opal_argv_append
+   fun:parse_locals
+   fun:orte_submit_job
+   fun:orterun
+   fun:main
+}
+
+{
   ORTE nspace leak
   Memcheck:Leak
   fun:malloc
@@ -105,6 +118,26 @@
    fun:clone
 }
 
+{
+   OMPI create keyval leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal_obj_new
+   ...
+   fun:PMPI_Comm_create_keyval
+}
+
+{
+   OMPI set attribute leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:opal_obj_new
+   ...
+   fun:PMPI_Comm_set_attr
+}
+
 
 
 
@@ -119,7 +152,7 @@
    ...
 }
 
- {
+{
    MPICH split leak
    Memcheck:Leak
    match-leak-kinds: definite
@@ -129,11 +162,10 @@
    fun:MPIR_Comm_commit
    fun:MPIR_Comm_split_impl
    fun:PMPI_Comm_split
-   fun:main
 }
 
 
- {
+{
    Python malloc
    Memcheck:Leak
    match-leak-kinds: definite
