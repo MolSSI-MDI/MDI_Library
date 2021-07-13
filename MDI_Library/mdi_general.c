@@ -681,7 +681,8 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   // if the command was "EXIT", delete this communicator
   // if running in plugin mode, the plugin system will delete the communicator instead
-  if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
+  //if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
+  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
 
     // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
