@@ -83,13 +83,13 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   char* names = NULL;
   names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
   for (ichar=0; ichar < sizeof(names); ichar++) {
-    names[ichar] = '\0'
+    names[ichar] = '\0';
   }
 
   char* unique_names = NULL;
   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
   for (ichar=0; ichar < sizeof(unique_names); ichar++) {
-    unique_names[ichar] = '\0'
+    unique_names[ichar] = '\0';
   }
 
   // gather the name of the code associated with each rank
