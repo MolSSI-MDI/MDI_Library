@@ -482,7 +482,6 @@ def MDI_Init(arg1):
         try:
             # Assume python_plugin_mpi_world_ptr points to a pointer
             __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_void_p))
-            ptr_type = ctypes.c_void_p
             handle_t = ctypes.c_void_p
             newobj = type(MPI.COMM_WORLD)()
             handle_old = __mdi_mpi_comm_ptr__.contents
@@ -491,8 +490,8 @@ def MDI_Init(arg1):
             __mdi_plugin_mpi_intra_comm__ = newobj
 
             # Confirm that the new MPI communicator works
-            world_size = __mdi_plugin_mpi_intra_comm__.Get_size()
-        except:
+            __mdi_plugin_mpi_intra_comm__.Get_size()
+        except Exception as e:
             # Assume python_plugin_mpi_world_ptr points to an int
             __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_int))
             handle_old_value = __mdi_mpi_comm_ptr__.contents.value
@@ -503,7 +502,7 @@ def MDI_Init(arg1):
             __mdi_plugin_mpi_intra_comm__ = newobj
 
             # Confirm that the new MPI communicator works
-            world_size = __mdi_plugin_mpi_intra_comm__.Get_size()
+            __mdi_plugin_mpi_intra_comm__.Get_size()
         comm = __mdi_plugin_mpi_intra_comm__
 
 
@@ -531,8 +530,6 @@ def MDI_Init(arg1):
     if use_mpi4py:
         world_comm = comm
         intra_code_comm = comm
-        mpi_communicator = MPI._addressof(comm)
-        mpi_communicator_ptr = ctypes.c_void_p(mpi_communicator)
 
         # send basic information about the MPI communicator to the MDI libarary
         mpi_rank = comm.Get_rank()
