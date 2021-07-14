@@ -60,12 +60,15 @@ def get_valgrind_options(valgrind):
     if valgrind:
         return ["valgrind",
                 "-v",
-                "--log-file=valgrind_%p_%n.txt",
+                "--log-file=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind_%p_%n.txt",
                 "--leak-check=full",
                 "--show-leak-kinds=definite",
+                "--errors-for-leak-kinds=definite",
                 "--trace-children=yes",
                 "--track-origins=yes",
-                "--error-exitcode=1"]
+                "--error-exitcode=1",
+                "--gen-suppressions=all",
+                "--suppressions=" + os.path.dirname(os.path.realpath(__file__)) + "/valgrind.supp" ]
     else:
         return []
 
@@ -103,6 +106,7 @@ def test_cxx_cxx_plug(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_cxx_plug_mpi(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -135,6 +139,7 @@ def test_cxx_cxx_plug_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_f90_plug(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -166,6 +171,7 @@ def test_cxx_f90_plug(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_f90_plug_mpi(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -198,6 +204,7 @@ def test_cxx_f90_plug_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_py_plug(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -229,6 +236,7 @@ def test_cxx_py_plug(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 def test_cxx_py_plug_mpi(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -261,6 +269,7 @@ def test_cxx_py_plug_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == expected
+    assert driver_proc.returncode == 0
 
 
 ##########################
@@ -287,6 +296,7 @@ def test_cxx_cxx_mpi(valgrind):
 
     assert driver_out == " Engine name: MM\n"
     assert driver_err == ""
+    assert driver_proc.returncode == 0
 
 def test_cxx_cxx_mpi21(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -308,6 +318,7 @@ def test_cxx_cxx_mpi21(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
 def test_cxx_cxx_mpi12(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -329,6 +340,7 @@ def test_cxx_cxx_mpi12(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
 def test_cxx_cxx_mpi_serial(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -350,6 +362,7 @@ def test_cxx_cxx_mpi_serial(valgrind):
 
     assert driver_out == " Engine name: MM\n"
     assert driver_err == ""
+    assert driver_proc.returncode == 0
 
 def test_cxx_f90_mpi(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -371,6 +384,7 @@ def test_cxx_f90_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
 def test_cxx_py_mpi(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -391,6 +405,7 @@ def test_cxx_py_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
 
 def test_f90_cxx_mpi(valgrind):
     global driver_out_expected_f90
@@ -414,6 +429,7 @@ def test_f90_cxx_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
 def test_f90_f90_mpi(valgrind):
     global driver_out_expected_f90
@@ -437,6 +453,7 @@ def test_f90_f90_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
 def test_f90_py_mpi(valgrind):
     global driver_out_expected_f90
@@ -459,6 +476,7 @@ def test_f90_py_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
 
 def test_py_cxx_mpi(valgrind):
     global driver_out_expected_py
@@ -481,6 +499,7 @@ def test_py_cxx_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
 def test_py_f90_mpi(valgrind):
     global driver_out_expected_py
@@ -503,6 +522,7 @@ def test_py_f90_mpi(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
 def test_py_py_mpi(valgrind):
     global driver_out_expected_py
@@ -522,6 +542,7 @@ def test_py_py_mpi(valgrind):
  
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
 def test_py_py_mpi_serial(valgrind):
     global driver_out_expected_py
@@ -543,6 +564,7 @@ def test_py_py_mpi_serial(valgrind):
  
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
 
 
 
@@ -572,6 +594,8 @@ def test_cxx_cxx_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_cxx_cxx_tcp_mpi12(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -595,6 +619,8 @@ def test_cxx_cxx_tcp_mpi12(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_cxx_cxx_tcp_mpi21(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -618,6 +644,8 @@ def test_cxx_cxx_tcp_mpi21(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_cxx_f90_tcp(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -641,6 +669,8 @@ def test_cxx_f90_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_cxx_py_tcp(valgrind):
     valgrind_options = get_valgrind_options(valgrind)
@@ -664,6 +694,8 @@ def test_cxx_py_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_f90_cxx_tcp(valgrind):
     global driver_out_expected_f90
@@ -689,6 +721,8 @@ def test_f90_cxx_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_f90_f90_tcp(valgrind):
     global driver_out_expected_f90
@@ -714,6 +748,8 @@ def test_f90_f90_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_f90_f90_tcp_mpi12(valgrind):
     global driver_out_expected_f90
@@ -739,6 +775,8 @@ def test_f90_f90_tcp_mpi12(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_f90_f90_tcp_mpi21(valgrind):
     global driver_out_expected_f90
@@ -764,6 +802,8 @@ def test_f90_f90_tcp_mpi21(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_f90_py_tcp(valgrind):
     global driver_out_expected_f90
@@ -789,6 +829,8 @@ def test_f90_py_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_py_cxx_tcp(valgrind):
     global driver_out_expected_py
@@ -813,6 +855,8 @@ def test_py_cxx_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_py_f90_tcp(valgrind):
     global driver_out_expected_py
@@ -837,6 +881,8 @@ def test_py_f90_tcp(valgrind):
 
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_py_py_tcp(valgrind):
     global driver_out_expected_py
@@ -862,6 +908,8 @@ def test_py_py_tcp(valgrind):
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_py_py_tcp_mpi12(valgrind):
     global driver_out_expected_py
@@ -887,6 +935,8 @@ def test_py_py_tcp_mpi12(valgrind):
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 def test_py_py_tcp_mpi21(valgrind):
     global driver_out_expected_py
@@ -912,6 +962,8 @@ def test_py_py_tcp_mpi21(valgrind):
     assert driver_err == ""
     assert driver_out == driver_out_expected_py
     assert engine_err == ""
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
 
 
 
@@ -948,3 +1000,5 @@ def test_py_cxx_ipi():
 
     assert driver_err == ""
     #assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0

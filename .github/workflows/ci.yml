@@ -57,16 +57,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install gfortran
           sudo apt-get install valgrind
-          [ "${{ matrix.mpilib }}" == "mpich" ] && sudo apt-get install mpich libmpich-dev
           
           # Custom build Python with Valgrind compatibility
           git clone https://github.com/python/cpython.git
           cd cpython
           git checkout v3.9.6
-          ./configure --with-pydebug --without-pymalloc --prefix /opt/debugpython
+          ./configure --with-pydebug --without-pymalloc --enable-shared --prefix /opt/debugpython
           make OPT=-g
           make install
           cd ..
+
+      - name: Install dependencies (ubuntu, MPICH)
+        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'mpich' }}
+        run: |
+          echo 'export PATH="${PATH}:/usr/mpich/bin"' >> env.source
+          echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/mpich/lib"' >> env.source
+          source env.source
+          wget https://github.com/pmodels/mpich/releases/download/v3.4.2/mpich-3.4.2.tar.gz
+          tar -xvf ./mpich-3.4.2.tar.gz
+          cd mpich-3.4.2
+          ./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=dbg,meminit CPPFLAGS='-I/usr/include/valgrind'
+          make -j 2
+          sudo make install
 
       - name: Install dependencies (ubuntu, OpenMPI)
         if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
@@ -82,7 +94,6 @@ jobs:
           make -j 2
           sudo make install
 
-
       - name: Install Python dependencies (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
         run: |
@@ -97,10 +108,15 @@ jobs:
       - name: Install Python dependencies for custom-built Python (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
         run: |
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          ls /opt/debugpython/bin
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          ls /opt/debugpython/lib
+          echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           source env.source
           which python3
           python3 --version
-          ls /opt/debugpython/bin
           /opt/debugpython/bin/python3 --version
           /opt/debugpython/bin/python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && /opt/debugpython/bin/python3 -m pip install mpi4py
@@ -160,17 +176,50 @@ jobs:
           ls -a -l ../build/MDI_Library/CMakeFiles/mdi.dir
           bash <(curl -s https://codecov.io/bash)
 
+      - name: Install local valgrind build
+        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        run: |
+          # Set the debug Python build paths
+          #echo 'export PATH="{$PATH}:/opt/debugpython"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython"' >> env.source
+          #echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
+          #echo 'export PATH="{$PATH}:/opt/debugpython/bin"' >> env.source
+          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
+          source env.source
+          echo "${PATH}"
+          echo "-----------------------"
+          ls /opt/hostedtoolcache/Python/3.7.10/x64/bin/python3.7
+          echo "-----------------------"
+          ls /opt/debugpython
+          echo "-----------------------"
+          ls /opt/debugpython/bin
+          echo "-----------------------"
+          ls /opt/debugpython/lib
+          echo "-----------------------"
+          ls /opt/debugpython/include
+          echo "-----------------------"
+          ls /opt/debugpython/include/python3.9d
+          echo "-----------------------"
+          rm -rf build
+          mkdir build
+          cd build
+          export FC=gfortran
+          #cmake -Dtest_codes=ON -Dpython_version=3.9.6 -DPython_ROOT_DIR=/opt/debugpython ..
+          cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython ..
+          make VERBOSE=1
+
       - name: Run valgrind tests
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' }}
+        if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
           source env.source
+          cat env.source
           cd tests
           export PYTHONMALLOC=malloc
-          export MDI_TESTS="not mpi"
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
 
       - name: Print valgrind results
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib != 'mpich' && ( success() || failure() ) }}
+        if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
         run: |
           source env.source
           cat tests/valgrind*.txt

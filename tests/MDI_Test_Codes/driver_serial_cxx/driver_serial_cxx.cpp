@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
   MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, comm);
 
   std::cout << " Engine name: " << engine_name << std::endl;
+  delete[] engine_name;
 
   // Send the "EXIT" command to the engine
   MDI_Send_command("EXIT", comm);

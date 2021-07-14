@@ -75,13 +75,24 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 
   //create the name of this process
   char* buffer = malloc( sizeof(char) * MDI_NAME_LENGTH );
-  snprintf(buffer, NAME_LENGTH, "%s", code_name);
+  int ichar;
+  for (ichar=0; ichar < MDI_NAME_LENGTH; ichar++) {
+    buffer[ichar] = '\0';
+  }
+  for (ichar=0; ichar < MDI_NAME_LENGTH && ichar < strlen(code_name); ichar++) {
+    buffer[ichar] = code_name[ichar];
+  }
 
-  char* names = NULL;
-  names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+  char* names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+  for (ichar=0; ichar < world_size*MDI_NAME_LENGTH; ichar++) {
+    names[ichar] = '\0';
+  }
 
   char* unique_names = NULL;
   unique_names = (char*)malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
+  for (ichar=0; ichar < world_size*MDI_NAME_LENGTH; ichar++) {
+    unique_names[ichar] = '\0';
+  }
 
   // gather the name of the code associated with each rank
   if ( use_mpi4py == 0 ) {

@@ -608,6 +608,8 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
+  code* this_code = get_code(current_code);
+
   // ensure that the driver is the current code
   library_set_driver_current();
 
@@ -616,20 +618,24 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   int count = MDI_COMMAND_LENGTH;
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  int ichar;
+  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
+    command[ichar] = '\0';
+  }
+  //const char* command = buf;
   int ret = 0;
 
-  // copy the command string, inserting terminal zeros
-  int actual_message_length = 0;
-  int ichar;
-  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
-    actual_message_length++;
-    if ( buf[ichar] == '\0' ) {
-      break;
+  // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
+  if ( method == MDI_LINK || this_code->intra_rank == 0 ) {
+    // copy the command string, inserting terminal zeros
+    int actual_message_length = 0;
+    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      actual_message_length++;
+      if ( buf[ichar] == '\0' ) {
+	break;
+      }
     }
-  }
-  snprintf(command, actual_message_length, "%s", buf);
-  for ( ichar=actual_message_length; ichar < MDI_COMMAND_LENGTH; ichar++) {
-    command[ichar] = '\0';
+    snprintf(command, actual_message_length, "%s", buf);
   }
   
   if ( method == MDI_LINK ) {
@@ -676,12 +682,12 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 
   // if the command was "EXIT", delete this communicator
   // if running in plugin mode, the plugin system will delete the communicator instead
+  //if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
   if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
     delete_communicator(current_code, comm);
 
     // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
     if ( initialized_mpi == 1 ) {
-      code* this_code = get_code(current_code);
       if ( this_code->comms->size == 0 ) {
 	MPI_Finalize();
       }
@@ -833,6 +839,12 @@ int general_recv_command(char* buf, MDI_Comm comm) {
  */
 int register_node(vector* node_vec, const char* node_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Cannot register node name with length greater than MDI_COMMAND_LENGTH");
@@ -876,6 +888,12 @@ int register_node(vector* node_vec, const char* node_name)
  */
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
@@ -929,6 +947,12 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
  */
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
+  // only register on rank 0
+  code* this_code = get_code(current_code);
+  if ( this_code->intra_rank != 0 ) {
+    return 0;
+  }
+
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
   if ( strlen(node_name) >= COMMAND_LENGTH ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
