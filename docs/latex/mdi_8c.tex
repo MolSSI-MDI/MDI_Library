@@ -52,6 +52,8 @@ void \mbox{\hyperlink{mdi_8c_a8d6c16394da02c29977001487ce109f2}{M\+D\+I\+\_\+\+S
 \begin{DoxyCompactList}\small\item\em Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mdi_8c_a4b95094e7410c4d58739245172019100}{M\+D\+I\+\_\+\+Set\+\_\+\+World\+\_\+\+Rank}} (int world\+\_\+rank\+\_\+in)
 \begin{DoxyCompactList}\small\item\em Set the rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ad82e0e1e83bcbb42aa8f23f96e8807e4}{M\+D\+I\+\_\+\+Get\+\_\+intra\+\_\+rank}} (int intra\+\_\+rank\+\_\+out)
+\begin{DoxyCompactList}\small\item\em Get the rank of this process within the M\+PI intra-\/communicator for the current code. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_ada45c73f15462764df0ac9e733b7d18e}{M\+D\+I\+\_\+\+Register\+\_\+\+Node}} (const char $\ast$node\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Register a node. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node}} (const char $\ast$node\+\_\+name)
@@ -639,7 +641,17 @@ The function returns {\ttfamily 0} on a success.
 
 Get the current code. 
 
-\mbox{\Hypertarget{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}\label{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}} 
+\mbox{\Hypertarget{mdi_8c_ad82e0e1e83bcbb42aa8f23f96e8807e4}\label{mdi_8c_ad82e0e1e83bcbb42aa8f23f96e8807e4}} 
+\index{mdi.c@{mdi.c}!MDI\_Get\_intra\_rank@{MDI\_Get\_intra\_rank}}
+\index{MDI\_Get\_intra\_rank@{MDI\_Get\_intra\_rank}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Get\_intra\_rank()}{MDI\_Get\_intra\_rank()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Get\+\_\+intra\+\_\+rank (\begin{DoxyParamCaption}\item[{int}]{intra\+\_\+rank\+\_\+out }\end{DoxyParamCaption})}
+
+
+
+Get the rank of this process within the M\+PI intra-\/communicator for the current code. 
+
+This function is only used by the Fortran wrapper \mbox{\Hypertarget{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}\label{mdi_8c_a465fefea91d94e1e207c9f87a5af0339}} 
 \index{mdi.c@{mdi.c}!MDI\_Get\_NCallbacks@{MDI\_Get\_NCallbacks}}
 \index{MDI\_Get\_NCallbacks@{MDI\_Get\_NCallbacks}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Get\_NCallbacks()}{MDI\_Get\_NCallbacks()}}
