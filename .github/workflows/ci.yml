@@ -108,12 +108,7 @@ jobs:
       - name: Install Python dependencies for custom-built Python (ubuntu)
         if: matrix.platform == 'ubuntu-18.04'
         run: |
-          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-          ls /opt/debugpython/bin
-          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-          ls /opt/debugpython/lib
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
-          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
           source env.source
           which python3
           python3 --version
@@ -179,33 +174,11 @@ jobs:
       - name: Install local valgrind build
         if: ${{ matrix.platform == 'ubuntu-18.04' }}
         run: |
-          # Set the debug Python build paths
-          #echo 'export PATH="{$PATH}:/opt/debugpython"' >> env.source
-          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython"' >> env.source
-          #echo 'export PATH="{$PATH}:/opt/debugpython/lib"' >> env.source
-          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
-          #echo 'export PATH="{$PATH}:/opt/debugpython/bin"' >> env.source
-          #echo 'export LD_LIBRARY_PATH="{$LD_LIBRARY_PATH}:/opt/debugpython/bin"' >> env.source
           source env.source
-          echo "${PATH}"
-          echo "-----------------------"
-          ls /opt/hostedtoolcache/Python/3.7.10/x64/bin/python3.7
-          echo "-----------------------"
-          ls /opt/debugpython
-          echo "-----------------------"
-          ls /opt/debugpython/bin
-          echo "-----------------------"
-          ls /opt/debugpython/lib
-          echo "-----------------------"
-          ls /opt/debugpython/include
-          echo "-----------------------"
-          ls /opt/debugpython/include/python3.9d
-          echo "-----------------------"
           rm -rf build
           mkdir build
           cd build
           export FC=gfortran
-          #cmake -Dtest_codes=ON -Dpython_version=3.9.6 -DPython_ROOT_DIR=/opt/debugpython ..
           cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython ..
           make VERBOSE=1
 

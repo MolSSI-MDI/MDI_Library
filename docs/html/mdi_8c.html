@@ -142,6 +142,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a4b95094e7410c4d58739245172019100"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a4b95094e7410c4d58739245172019100">MDI_Set_World_Rank</a> (int world_rank_in)</td></tr>
 <tr class="memdesc:a4b95094e7410c4d58739245172019100"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rank of this process within MPI_COMM_WORLD.  <a href="#a4b95094e7410c4d58739245172019100">More...</a><br /></td></tr>
 <tr class="separator:a4b95094e7410c4d58739245172019100"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad82e0e1e83bcbb42aa8f23f96e8807e4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ad82e0e1e83bcbb42aa8f23f96e8807e4">MDI_Get_intra_rank</a> (int intra_rank_out)</td></tr>
+<tr class="memdesc:ad82e0e1e83bcbb42aa8f23f96e8807e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the rank of this process within the MPI intra-communicator for the current code.  <a href="#ad82e0e1e83bcbb42aa8f23f96e8807e4">More...</a><br /></td></tr>
+<tr class="separator:ad82e0e1e83bcbb42aa8f23f96e8807e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada45c73f15462764df0ac9e733b7d18e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#ada45c73f15462764df0ac9e733b7d18e">MDI_Register_Node</a> (const char *node_name)</td></tr>
 <tr class="memdesc:ada45c73f15462764df0ac9e733b7d18e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a node.  <a href="#ada45c73f15462764df0ac9e733b7d18e">More...</a><br /></td></tr>
 <tr class="separator:ada45c73f15462764df0ac9e733b7d18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1140,6 +1143,27 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 </div><div class="memdoc">
 
 <p>Get the current code. </p>
+
+</div>
+</div>
+<a id="ad82e0e1e83bcbb42aa8f23f96e8807e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad82e0e1e83bcbb42aa8f23f96e8807e4">&#9670;&nbsp;</a></span>MDI_Get_intra_rank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MDI_Get_intra_rank </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>intra_rank_out</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the rank of this process within the MPI intra-communicator for the current code. </p>
+<p>This function is only used by the Fortran wrapper </p>
 
 </div>
 </div>
