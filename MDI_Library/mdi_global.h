@@ -92,9 +92,9 @@ typedef struct method_struct {
   /*! \brief ID of this method */
   int id;
   /*! \brief Communication method */
-  int method;
+  int method_id;
   /*! \brief Function pointer for method initialization work */
-  int (*init)();
+  int (*on_selection)();
 } method;
 
 typedef struct communicator_struct {
@@ -252,7 +252,9 @@ int new_code();
 code* get_code(int code_id);
 int delete_code(int code_id);
 
-int new_method();
+int new_method(int method_id);
+method* get_method(int method_id);
+int delete_method(int method_id);
 
 /*! \brief Check whether a file exists */
 int file_exists(const char* file_name);

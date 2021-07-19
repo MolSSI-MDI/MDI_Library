@@ -388,15 +388,65 @@ int delete_code(int code_id) {
 /*! \brief Create a new method structure and add it to the vector of methods
  * Returns the handle of the new method
  */
-int new_method() {
+int new_method(int method_id) {
   method new_method;
   new_method.id = (int)methods.size;
-  new_method.method = 0;
+  new_method.method_id = method_id;
 
   vector_push_back( &methods, &new_method );
 
   return new_method.id;
 }
+
+
+/*! \brief Get a method from a method handle
+ * Returns a pointer to the method
+ */
+method* get_method(int method_id) {
+  // Search through all of the codes for the one that matches code_id
+  int imethod;
+  for (imethod = 0; imethod < methods.size; imethod++ ) {
+    method* this_method = vector_get(&methods, imethod);
+    if ( this_method->method_id == method_id ) {
+      return this_method;
+    }
+  }
+  mdi_error("Method not supported for this build of the MDI Library");
+  return NULL;
+}
+
+
+/*! \brief Delete a method
+ * Returns 0 on success
+ */
+int delete_method(int method_id) {
+  method* this_method = get_method(method_id);
+
+  // Search through all of the methods for the one that matches method
+  int imethod;
+  int method_index;
+  int method_found = 0;
+  for (imethod = 0; imethod < methods.size; imethod++ ) {
+    method* method = vector_get(&methods, imethod);
+    if ( method->method_id == method_id ) {
+      method_found = 1;
+      method_index = imethod;
+
+      // stop searching
+      imethod = (int)methods.size;
+    }
+  }
+  if ( method_found != 1 ) {
+    mdi_error("Method not found during delete");
+    return 1;
+  }
+
+  // delete the data for this method from the global vector of methods
+  vector_delete(&methods, method_index);
+
+  return 0;
+}
+
 
 
 /*! \brief Create a new communicator structure and add it to the list of communicators

@@ -25,7 +25,27 @@
 int general_init(const char* options) {
   // If this is the first time MDI has initialized, initialize the method vector
   if ( ! is_initialized ) {
+
     vector_init(&methods, sizeof(method));
+
+    // Create method objects for each supported method
+    if ( enable_tcp_support() ) {
+      mdi_error("Unable to enable TCP support");
+      return 1;
+    }
+    if ( enable_mpi_support() ) {
+      mdi_error("Unable to enable MPI support");
+      return 1;
+    }
+    if ( enable_plug_support() ) {
+      mdi_error("Unable to enable plugin support");
+      return 1;
+    }
+    if ( enable_test_support() ) {
+      mdi_error("Unable to enable TEST support");
+      return 1;
+    }
+
   }
 
   // If this is the first time MDI has initialized, initialize the code vector
@@ -45,7 +65,7 @@ int general_init(const char* options) {
 
   // values acquired from the input options
   char* role;
-  char* method;
+  char* method_str;
   char* hostname;
   int port;
   char* output_file;
@@ -102,7 +122,7 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: Argument missing from -method option");
 	return 1;
       }
-      method = argv[iarg+1];
+      method_str = argv[iarg+1];
       has_method = 1;
       iarg += 2;
     }
@@ -211,9 +231,34 @@ int general_init(const char* options) {
     return 1;
   }
 
+
+  // determine the method id of the method selected by the user
+  int selected_method_id = 0;
+  if ( strcmp(method_str, "TCP") == 0 ) {
+    selected_method_id = MDI_TCP;
+  }
+  else if ( strcmp(method_str, "MPI") == 0 ) {
+    selected_method_id = MDI_MPI;
+  }
+  else if ( strcmp(method_str, "LINK") == 0 || strcmp(method_str, "PLUG") == 0 ) {
+    selected_method_id = MDI_LINK;
+  }
+  else if ( strcmp(method_str, "TEST") == 0 ) {
+    selected_method_id = MDI_TEST;
+  }
+  else {
+    mdi_error("MDI method not recognized");
+    return 1;
+  }
+  method* selected_method = get_method(selected_method_id);
+
+  // Execute the on_selection() function for the user-selected method
+  selected_method->on_selection();
+
+
   // if using the MPI method, check if MPI has been initialized
   int mpi_init_flag = 0;
-  if ( strcmp(method, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
+  if ( strcmp(method_str, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
 
     ret = MPI_Initialized(&mpi_init_flag);
     if ( ret != 0 ) {
@@ -277,7 +322,7 @@ int general_init(const char* options) {
   }
 
   // if the method is not LINK, ensure that MDI has not been previously initialized
-  if ( strcmp(method, "LINK") != 0 ) {
+  if ( strcmp(method_str, "LINK") != 0 ) {
     if ( is_initialized == 1 ) {
       mdi_error("MDI_Init called after MDI was already initialized");
       return 1;
@@ -297,7 +342,7 @@ int general_init(const char* options) {
 
   // Check if this is an engine being used as a library
   if (strcmp(this_code->role, "ENGINE") == 0) {
-    if ( strcmp(method, "LINK") == 0 ) {
+    if ( strcmp(method_str, "LINK") == 0 ) {
       this_code->is_library = 1;
     }
   }
@@ -324,11 +369,11 @@ int general_init(const char* options) {
   if ( strcmp(role, "DRIVER") == 0 ) {
     // initialize this code as a driver
 
-    if ( strcmp(method, "MPI") == 0 ) {
+    if ( strcmp(method_str, "MPI") == 0 ) {
       mpi_identify_codes("", use_mpi4py, mpi_communicator);
       mpi_initialized = 1;
     }
-    else if ( strcmp(method, "TCP") == 0 ) {
+    else if ( strcmp(method_str, "TCP") == 0 ) {
       if ( has_port == 0 ) {
 	mdi_error("Error in MDI_Init: -port option not provided");
 	return 1;
@@ -341,9 +386,9 @@ int general_init(const char* options) {
 	tcp_socket = 1;
       }
     }
-    else if ( strcmp(method, "LINK") == 0 ) {
+    else if ( strcmp(method_str, "LINK") == 0 ) {
     }
-    else if ( strcmp(method, "TEST") == 0 ) {
+    else if ( strcmp(method_str, "TEST") == 0 ) {
       test_initialize();
     }
     else {
@@ -355,12 +400,12 @@ int general_init(const char* options) {
   else if ( strcmp(role,"ENGINE") == 0 ) {
     // initialize this code as an engine
 
-    if ( strcmp(method, "MPI") == 0 ) {
+    if ( strcmp(method_str, "MPI") == 0 ) {
       code* this_code = get_code(current_code);
       mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
       mpi_initialized = 1;
     }
-    else if ( strcmp(method, "TCP") == 0 ) {
+    else if ( strcmp(method_str, "TCP") == 0 ) {
       if ( has_hostname == 0 ) {
 	mdi_error("Error in MDI_Init: -hostname option not provided");
 	return 1;
@@ -379,10 +424,10 @@ int general_init(const char* options) {
 	}
       }
     }
-    else if ( strcmp(method, "LINK") == 0 ) {
+    else if ( strcmp(method_str, "LINK") == 0 ) {
       library_initialize();
     }
-    else if ( strcmp(method, "TEST") == 0 ) {
+    else if ( strcmp(method_str, "TEST") == 0 ) {
       test_initialize();
     }
     else {

@@ -38,6 +38,25 @@ void sigint_handler(int dummy) {
 /*! \brief Socket over which a driver will listen for incoming connections */
 sock_t tcp_socket = -1;
 
+
+
+/*! \brief Enable support for the TCP method */
+int enable_tcp_support() {
+  new_method(MDI_TCP);
+  method* this_method = get_method(MDI_TCP);
+  this_method->on_selection = on_tcp_selection;
+  return 0;
+}
+
+
+
+/*! \brief Callback when the end-user selects TCP as the method */
+int on_tcp_selection() {
+  return 0;
+}
+
+
+
 /*! \brief Begin listening for incoming TCP connections
  *
  * \param [in]       port

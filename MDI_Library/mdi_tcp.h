@@ -13,6 +13,9 @@ extern sock_t tcp_socket;
 
 void sigint_handler(int dummy);
 
+int enable_tcp_support();
+int on_tcp_selection();
+
 int tcp_listen(int port);
 int tcp_request_connection(int port, char* hostname_ptr);
 int tcp_accept_connection();

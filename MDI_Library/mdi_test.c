@@ -11,6 +11,24 @@
 #include "mdi_test.h"
 #include "mdi_global.h"
 
+
+/*! \brief Enable support for the TEST method */
+int enable_test_support() {
+  new_method(MDI_TEST);
+  method* this_method = get_method(MDI_TEST);
+  this_method->on_selection = on_test_selection;
+  return 0;
+}
+
+
+
+/*! \brief Callback when the end-user selects TCP as the method */
+int on_test_selection() {
+  return 0;
+}
+
+
+
 /*! \brief Perform initialization of a dummy communicator for testing purposes
  *
  */

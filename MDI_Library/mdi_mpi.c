@@ -35,6 +35,22 @@ int set_world_rank(int world_rank_in) {
 }
 
 
+/*! \brief Enable support for the TCP method */
+int enable_mpi_support() {
+  new_method(MDI_MPI);
+  method* this_method = get_method(MDI_MPI);
+  this_method->on_selection = on_mpi_selection;
+  return 0;
+}
+
+
+/*! \brief Callback when the end-user selects MPI as the method */
+int on_mpi_selection() {
+  return 0;
+}
+
+
+
 /*! \brief Identify groups of processes belonging to the same codes
  *
  * If use_mpi4py == 0, this function will call MPI_Comm_split to create an intra-code communicator for each code.

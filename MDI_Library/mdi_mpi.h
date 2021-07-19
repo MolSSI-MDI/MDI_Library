@@ -21,6 +21,9 @@ typedef struct mpi_data_struct {
 int set_world_size(int world_size_in);
 int set_world_rank(int world_rank_in);
 
+int enable_mpi_support();
+int on_mpi_selection();
+
 int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_comm);
 int mpi_update_world_comm(void* world_comm);
 int mpi_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);

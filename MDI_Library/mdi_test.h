@@ -8,6 +8,9 @@
 
 #include "mdi.h"
 
+int enable_test_support();
+int on_test_selection();
+
 int test_initialize();
 int test_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
 int test_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);

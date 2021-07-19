@@ -21,6 +21,23 @@
 #endif
 
 
+/*! \brief Enable support for the PLUG method */
+int enable_plug_support() {
+  new_method(MDI_LINK);
+  method* this_method = get_method(MDI_LINK);
+  this_method->on_selection = on_plug_selection;
+  return 0;
+}
+
+
+
+/*! \brief Callback when the end-user selects PLUG as the method */
+int on_plug_selection() {
+  return 0;
+}
+
+
+
 /*! \brief Launch an MDI plugin
  *
  */
