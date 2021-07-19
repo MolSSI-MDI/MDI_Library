@@ -246,12 +246,6 @@ int general_init(const char* options) {
   }
   method* selected_method = get_method(selected_method_id);
 
-  // Execute the on_selection() function for the user-selected method
-  if ( selected_method->on_selection() ) {
-    mdi_error("MDI method on_selection function failed");
-    return 1;
-  }
-
   // ensure that a valid role has been provided
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
   }
@@ -289,6 +283,25 @@ int general_init(const char* options) {
 	}
       }
     }
+  }
+
+  // Initialize this code's intra-rank
+  // If using the MPI method, this value may change
+  int mpi_init_flag;
+  if ( MPI_Initialized(&mpi_init_flag) ) {
+    mdi_error("Error in MDI_Init: MPI_Initialized failed");
+    return 1;
+  }
+  if ( mpi_init_flag == 1 && this_code->language != MDI_LANGUAGE_PYTHON ) {
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    this_code->intra_rank = world_rank;
+  }
+
+  // Execute the on_selection() function for the user-selected method
+  if ( selected_method->on_selection() ) {
+    mdi_error("MDI method on_selection function failed");
+    return 1;
   }
 
   free( argv_line );
