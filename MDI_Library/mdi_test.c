@@ -16,14 +16,15 @@
 int enable_test_support() {
   new_method(MDI_TEST);
   method* this_method = get_method(MDI_TEST);
-  this_method->on_selection = on_test_selection;
+  this_method->on_selection = test_on_selection;
+  this_method->on_accept_communicator = test_on_accept_communicator;
   return 0;
 }
 
 
 
 /*! \brief Callback when the end-user selects TCP as the method */
-int on_test_selection() {
+int test_on_selection() {
   if ( is_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
     return 1;
@@ -32,6 +33,22 @@ int on_test_selection() {
   test_initialize();
 
   return 0;
+}
+
+
+
+/*! \brief Callback when the TEST method must accept a communicator */
+int test_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
 }
 
 

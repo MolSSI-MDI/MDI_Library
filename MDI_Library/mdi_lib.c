@@ -25,14 +25,15 @@
 int enable_plug_support() {
   new_method(MDI_LINK);
   method* this_method = get_method(MDI_LINK);
-  this_method->on_selection = on_plug_selection;
+  this_method->on_selection = plug_on_selection;
+  this_method->on_accept_communicator = plug_on_accept_communicator;
   return 0;
 }
 
 
 
 /*! \brief Callback when the end-user selects PLUG as the method */
-int on_plug_selection() {
+int plug_on_selection() {
   code* this_code = get_code(current_code);
 
   // Check if this is an engine being used as a library
@@ -42,6 +43,25 @@ int on_plug_selection() {
   }
 
   return 0;
+}
+
+
+
+/*! \brief Callback when the PLUG method must accept a communicator */
+int plug_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // Give the library method an opportunity to update the current code
+  library_accept_communicator();
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
 }
 
 

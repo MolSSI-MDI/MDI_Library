@@ -22,7 +22,8 @@ int set_world_size(int world_size_in);
 int set_world_rank(int world_rank_in);
 
 int enable_mpi_support();
-int on_mpi_selection();
+int mpi_on_selection();
+int mpi_on_accept_communicator();
 
 int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_comm);
 int mpi_update_world_comm(void* world_comm);

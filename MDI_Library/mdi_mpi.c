@@ -39,13 +39,14 @@ int set_world_rank(int world_rank_in) {
 int enable_mpi_support() {
   new_method(MDI_MPI);
   method* this_method = get_method(MDI_MPI);
-  this_method->on_selection = on_mpi_selection;
+  this_method->on_selection = mpi_on_selection;
+  this_method->on_accept_communicator = mpi_on_accept_communicator;
   return 0;
 }
 
 
 /*! \brief Callback when the end-user selects MPI as the method */
-int on_mpi_selection() {
+int mpi_on_selection() {
   int ret;
   code* this_code = get_code(current_code);
   int mpi_initialized = 0;
@@ -137,6 +138,22 @@ int on_mpi_selection() {
   }
 
   return 0;
+}
+
+
+
+/*! \brief Callback when the MPI method must accept a communicator */
+int mpi_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
 }
 
 

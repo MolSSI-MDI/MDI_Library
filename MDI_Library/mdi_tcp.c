@@ -50,14 +50,15 @@ sock_t tcp_socket = -1;
 int enable_tcp_support() {
   new_method(MDI_TCP);
   method* this_method = get_method(MDI_TCP);
-  this_method->on_selection = on_tcp_selection;
+  this_method->on_selection = tcp_on_selection;
+  this_method->on_accept_communicator = tcp_on_accept_communicator;
   return 0;
 }
 
 
 
 /*! \brief Callback when the end-user selects TCP as the method */
-int on_tcp_selection() {
+int tcp_on_selection() {
   if ( is_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
     return 1;
@@ -103,6 +104,35 @@ int on_tcp_selection() {
   }
 
   return 0;
+}
+
+
+
+/*! \brief Callback when the TCP method must accept a communicator */
+int tcp_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // Check for any production codes connecting via TCP
+  if ( tcp_socket > 0 ) {
+    // Accept a connection via TCP
+    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
+    tcp_accept_connection();
+
+    // if MDI hasn't returned some connections, do that now
+    if ( this_code->returned_comms < this_code->comms->size ) {
+      this_code->returned_comms++;
+      return (MDI_Comm)this_code->returned_comms;
+    }
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
 }
 
 

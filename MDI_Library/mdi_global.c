@@ -23,6 +23,9 @@ vector codes;
 /*! \brief Vector containing all supported methods */
 vector methods;
 
+/*! \brief ID of the method being used for inter-code communication */
+int selected_method_id = 0;
+
 /*! \brief Index of the active code */
 int current_code = 0;
 

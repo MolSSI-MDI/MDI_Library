@@ -95,6 +95,7 @@ typedef struct method_struct {
   int method_id;
   /*! \brief Function pointer for method initialization work */
   int (*on_selection)();
+  int (*on_accept_communicator)();
 } method;
 
 typedef struct communicator_struct {
@@ -171,6 +172,9 @@ extern vector codes;
 
 /*! \brief Vector containing all supported methods */
 extern vector methods;
+
+/*! \brief ID of the method being used for inter-code communication */
+extern int selected_method_id;
 
 /*! \brief Index of the active code */
 extern int current_code;

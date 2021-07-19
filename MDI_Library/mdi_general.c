@@ -227,7 +227,6 @@ int general_init(const char* options) {
 
 
   // determine the method id of the method selected by the user
-  int selected_method_id = 0;
   if ( strcmp(method_str, "TCP") == 0 ) {
     selected_method_id = MDI_TCP;
   }
@@ -318,33 +317,8 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  // Give the library method an opportunity to update the current code
-  library_accept_communicator();
-
-  // If MDI hasn't returned some connections, do that now
-  code* this_code = get_code(current_code);
-  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
-    this_code->returned_comms++;
-    return this_code->returned_comms;
-  }
-
-  // Check for any production codes connecting via TCP
-  if ( tcp_socket > 0 ) {
-
-    // Accept a connection via TCP
-    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
-    tcp_accept_connection();
-
-    // if MDI hasn't returned some connections, do that now
-    if ( this_code->returned_comms < this_code->comms->size ) {
-      this_code->returned_comms++;
-      return (MDI_Comm)this_code->returned_comms;
-    }
-
-  }
-
-  // unable to accept any connections
-  return MDI_COMM_NULL;
+  method* selected_method = get_method(selected_method_id);
+  return selected_method->on_accept_communicator();
 }
 
 
