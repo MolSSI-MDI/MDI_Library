@@ -24,6 +24,13 @@ int enable_test_support() {
 
 /*! \brief Callback when the end-user selects TCP as the method */
 int on_test_selection() {
+  if ( is_initialized == 1 ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+    return 1;
+  }
+
+  test_initialize();
+
   return 0;
 }
 

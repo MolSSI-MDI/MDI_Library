@@ -46,6 +46,96 @@ int enable_mpi_support() {
 
 /*! \brief Callback when the end-user selects MPI as the method */
 int on_mpi_selection() {
+  int ret;
+  code* this_code = get_code(current_code);
+  int mpi_initialized = 0;
+
+  if ( is_initialized == 1 ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+    return 1;
+  }
+
+  // ensure MPI has been initialized
+  int mpi_init_flag = 0;
+  if ( this_code->language != MDI_LANGUAGE_PYTHON ) {
+
+    ret = MPI_Initialized(&mpi_init_flag);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init: MPI_Initialized failed");
+      return ret;
+    }
+
+    if ( mpi_init_flag == 0 ) {
+
+      // initialize MPI
+      int mpi_argc = 0;
+      char** mpi_argv;
+      ret = MPI_Init( &mpi_argc, &mpi_argv );
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Init failed");
+	return ret;
+      }
+
+      // confirm that MPI is now initialized
+      // if it isn't, that indicates that the MPI stubs are being used
+      ret = MPI_Initialized(&mpi_init_flag);
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Initialized failed");
+	return ret;
+      }
+      if ( mpi_init_flag == 0 ) {
+	mdi_error("Error in MDI_Init: Failed to initialize MPI. Check that the MDI Library is linked to an MPI library.");
+	return 1;
+      }
+
+      initialized_mpi = 1;
+    }
+
+  }
+
+  // get the appropriate MPI communicator to use
+  MPI_Comm mpi_communicator;
+  ret = MPI_Initialized(&mpi_init_flag);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init: MPI_Initialized failed");
+    return ret;
+  }
+  if ( mpi_init_flag == 0 ) {
+    mpi_communicator = 0;
+  }
+  else {
+    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+      mpi_communicator = 0;
+    }
+    else {
+      mpi_communicator = MPI_COMM_WORLD;
+      MPI_Comm_rank(mpi_communicator, &world_rank);
+      MPI_Comm_size(mpi_communicator, &world_size);
+      this_code->intra_rank = world_rank;
+    }
+  }
+
+  // determine whether the intra-code MPI communicator should be split
+  int use_mpi4py = 0;
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+    use_mpi4py = 1;
+  }
+
+  // split intra-communicators for each code
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
+    mpi_identify_codes("", use_mpi4py, mpi_communicator);
+    mpi_initialized = 1;
+  }
+  else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
+    code* this_code = get_code(current_code);
+    mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
+    mpi_initialized = 1;
+  }
+  else {
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
+  }
+
   return 0;
 }
 

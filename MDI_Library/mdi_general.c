@@ -61,20 +61,16 @@ int general_init(const char* options) {
   char* strtol_ptr;
   int i, ret;
 
-  int mpi_initialized = 0;
+  //int mpi_initialized = 0;
 
   // values acquired from the input options
   char* role;
   char* method_str;
-  char* hostname;
-  int port;
   char* output_file;
   char* language_argument = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
-  int has_hostname = 0;
-  int has_port = 0;
   int has_plugin_path = 0;
   int has_output_file = 0;
 
@@ -147,7 +143,6 @@ int general_init(const char* options) {
 	return 1;
       }
       hostname = argv[iarg+1];
-      has_hostname = 1;
       iarg += 2;
     }
     //-port
@@ -157,7 +152,6 @@ int general_init(const char* options) {
 	return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
-      has_port = 1;
       iarg += 2;
     }
     //-ipi
@@ -247,86 +241,30 @@ int general_init(const char* options) {
     selected_method_id = MDI_TEST;
   }
   else {
-    mdi_error("MDI method not recognized");
+    mdi_error("Error in MDI_Init: Method not recognized");
     return 1;
   }
   method* selected_method = get_method(selected_method_id);
 
   // Execute the on_selection() function for the user-selected method
-  selected_method->on_selection();
-
-
-  // if using the MPI method, check if MPI has been initialized
-  int mpi_init_flag = 0;
-  if ( strcmp(method_str, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
-
-    ret = MPI_Initialized(&mpi_init_flag);
-    if ( ret != 0 ) {
-      mdi_error("Error in MDI_Init: MPI_Initialized failed");
-      return ret;
-    }
-
-    if ( mpi_init_flag == 0 ) {
-
-      // initialize MPI
-      int mpi_argc = 0;
-      char** mpi_argv;
-      ret = MPI_Init( &mpi_argc, &mpi_argv );
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Init: MPI_Init failed");
-	return ret;
-      }
-
-      // confirm that MPI is now initialized
-      // if it isn't, that indicates that the MPI stubs are being used
-      ret = MPI_Initialized(&mpi_init_flag);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Init: MPI_Initialized failed");
-	return ret;
-      }
-      if ( mpi_init_flag == 0 ) {
-	mdi_error("Error in MDI_Init: Failed to initialize MPI. Check that the MDI Library is linked to an MPI library.");
-	return 1;
-      }
-
-      initialized_mpi = 1;
-    }
-
+  if ( selected_method->on_selection() ) {
+    mdi_error("MDI method on_selection function failed");
+    return 1;
   }
 
-  // get the appropriate MPI communicator to use
-  MPI_Comm mpi_communicator;
-  ret = MPI_Initialized(&mpi_init_flag);
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init: MPI_Initialized failed");
-    return ret;
+  // ensure that a valid role has been provided
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
   }
-  if ( mpi_init_flag == 0 ) {
-    mpi_communicator = 0;
+  else if ( strcmp(this_code->role, "ENGINE") == 0 ) {
   }
-  else {
-    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-      mpi_communicator = 0;
-    }
-    else {
-      mpi_communicator = MPI_COMM_WORLD;
-      MPI_Comm_rank(mpi_communicator, &world_rank);
-      MPI_Comm_size(mpi_communicator, &world_size);
-      this_code->intra_rank = world_rank;
-    }
+  else{
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
   }
 
   // redirect the standard output
   if ( has_output_file == 1 ) {
     freopen(output_file, "w", stdout);
-  }
-
-  // if the method is not LINK, ensure that MDI has not been previously initialized
-  if ( strcmp(method_str, "LINK") != 0 ) {
-    if ( is_initialized == 1 ) {
-      mdi_error("MDI_Init called after MDI was already initialized");
-      return 1;
-    }
   }
 
   // ensure that the name of this code is not the same as the name of any of the other codes
@@ -340,15 +278,8 @@ int general_init(const char* options) {
     }
   }
 
-  // Check if this is an engine being used as a library
-  if (strcmp(this_code->role, "ENGINE") == 0) {
-    if ( strcmp(method_str, "LINK") == 0 ) {
-      this_code->is_library = 1;
-    }
-  }
-
   // ensure that at most one driver has been initialized
-  if (strcmp(this_code->role, "DRIVER") == 0) {
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     for (i = 0; i < codes.size; i++) {
       if ( i != current_code ) {
 	code* other_code = vector_get(&codes, i);
@@ -358,88 +289,6 @@ int general_init(const char* options) {
 	}
       }
     }
-  }
-
-  // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
-  int use_mpi4py = 0;
-  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-    use_mpi4py = 1;
-  }
-
-  if ( strcmp(role, "DRIVER") == 0 ) {
-    // initialize this code as a driver
-
-    if ( strcmp(method_str, "MPI") == 0 ) {
-      mpi_identify_codes("", use_mpi4py, mpi_communicator);
-      mpi_initialized = 1;
-    }
-    else if ( strcmp(method_str, "TCP") == 0 ) {
-      if ( has_port == 0 ) {
-	mdi_error("Error in MDI_Init: -port option not provided");
-	return 1;
-      }
-      if ( this_code->intra_rank == 0 ) {
-	tcp_listen(port);
-      }
-      else {
-	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-	tcp_socket = 1;
-      }
-    }
-    else if ( strcmp(method_str, "LINK") == 0 ) {
-    }
-    else if ( strcmp(method_str, "TEST") == 0 ) {
-      test_initialize();
-    }
-    else {
-      mdi_error("Error in MDI_Init: Method not recognized");
-      return 1;
-    }
-
-  }
-  else if ( strcmp(role,"ENGINE") == 0 ) {
-    // initialize this code as an engine
-
-    if ( strcmp(method_str, "MPI") == 0 ) {
-      code* this_code = get_code(current_code);
-      mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
-      mpi_initialized = 1;
-    }
-    else if ( strcmp(method_str, "TCP") == 0 ) {
-      if ( has_hostname == 0 ) {
-	mdi_error("Error in MDI_Init: -hostname option not provided");
-	return 1;
-      }
-      if ( has_port == 0 ) {
-	mdi_error("Error in MDI_Init: -port option not provided");
-	return 1;
-      }
-      if ( this_code->intra_rank == 0 ) {
-	tcp_request_connection(port, hostname);
-      }
-      else {
-	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-	if ( this_code->intra_rank != 0 ) {
-	  tcp_socket = 1;
-	}
-      }
-    }
-    else if ( strcmp(method_str, "LINK") == 0 ) {
-      library_initialize();
-    }
-    else if ( strcmp(method_str, "TEST") == 0 ) {
-      test_initialize();
-    }
-    else {
-      mdi_error("Error in MDI_Init: method not recognized");
-      return 1;
-    }
-
-    
-  }
-  else {
-    mdi_error("Error in MDI_Init: Role not recognized");
-    return 1;
   }
 
   free( argv_line );

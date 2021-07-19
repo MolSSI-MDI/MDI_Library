@@ -33,6 +33,14 @@ int enable_plug_support() {
 
 /*! \brief Callback when the end-user selects PLUG as the method */
 int on_plug_selection() {
+  code* this_code = get_code(current_code);
+
+  // Check if this is an engine being used as a library
+  if (strcmp(this_code->role, "ENGINE") == 0) {
+    this_code->is_library = 1;
+    library_initialize();
+  }
+
   return 0;
 }
 

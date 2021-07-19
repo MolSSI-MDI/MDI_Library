@@ -22,6 +22,12 @@
 
 static sock_t sigint_sockfd;
 
+/*! \brief Hostname of the driver */
+char* hostname = NULL;
+
+/*! \brief Port over which the driver will listen */
+int port = -1;
+
 /*! \brief SIGINT handler to ensure the socket is closed on termination
  *
  * \param [in]       dummy
@@ -52,6 +58,50 @@ int enable_tcp_support() {
 
 /*! \brief Callback when the end-user selects TCP as the method */
 int on_tcp_selection() {
+  if ( is_initialized == 1 ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+    return 1;
+  }
+
+  code* this_code = get_code(current_code);
+
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
+    if ( port == -1 ) {
+      mdi_error("Error in MDI_Init: -port option not provided");
+      return 1;
+    }
+    if ( this_code->intra_rank == 0 ) {
+      tcp_listen(port);
+    }
+    else {
+      // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+      tcp_socket = 1;
+    }
+  }
+  else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
+    if ( hostname == NULL ) {
+      mdi_error("Error in MDI_Init: -hostname option not provided");
+      return 1;
+    }
+    if ( port == -1 ) {
+      mdi_error("Error in MDI_Init: -port option not provided");
+      return 1;
+    }
+    if ( this_code->intra_rank == 0 ) {
+      tcp_request_connection(port, hostname);
+    }
+    else {
+      // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+      if ( this_code->intra_rank != 0 ) {
+	tcp_socket = 1;
+      }
+    }
+  }
+  else {
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
+  }
+
   return 0;
 }
 
