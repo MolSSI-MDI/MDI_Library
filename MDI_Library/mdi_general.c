@@ -23,6 +23,11 @@
  *                   Options describing the communication method used to connect to codes.
  */
 int general_init(const char* options) {
+  // If this is the first time MDI has initialized, initialize the method vector
+  if ( ! is_initialized ) {
+    vector_init(&methods, sizeof(method));
+  }
+
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! is_initialized ) {
     vector_init(&codes, sizeof(code));
@@ -239,10 +244,7 @@ int general_init(const char* options) {
 	return 1;
       }
 
-      // get the world_comm
-      mdi_mpi_comm_world = MPI_COMM_WORLD;
       initialized_mpi = 1;
-
     }
 
   }
@@ -274,7 +276,7 @@ int general_init(const char* options) {
     freopen(output_file, "w", stdout);
   }
 
-  // if the method is not LIB, ensure that MDI has not been previously initialized
+  // if the method is not LINK, ensure that MDI has not been previously initialized
   if ( strcmp(method, "LINK") != 0 ) {
     if ( is_initialized == 1 ) {
       mdi_error("MDI_Init called after MDI was already initialized");
@@ -340,7 +342,6 @@ int general_init(const char* options) {
       }
     }
     else if ( strcmp(method, "LINK") == 0 ) {
-      //library_initialize();
     }
     else if ( strcmp(method, "TEST") == 0 ) {
       test_initialize();

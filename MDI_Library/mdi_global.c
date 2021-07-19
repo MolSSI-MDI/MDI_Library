@@ -20,6 +20,9 @@
  * Typically, this will only include a single code, unless the communication method is LIBRARY */
 vector codes;
 
+/*! \brief Vector containing all supported methods */
+vector methods;
+
 /*! \brief Index of the active code */
 int current_code = 0;
 
@@ -379,6 +382,20 @@ int delete_code(int code_id) {
   vector_delete(&codes, code_index);
 
   return 0;
+}
+
+
+/*! \brief Create a new method structure and add it to the vector of methods
+ * Returns the handle of the new method
+ */
+int new_method() {
+  method new_method;
+  new_method.id = (int)methods.size;
+  new_method.method = 0;
+
+  vector_push_back( &methods, &new_method );
+
+  return new_method.id;
 }
 
 

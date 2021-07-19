@@ -88,6 +88,15 @@ typedef struct dynamic_array_struct {
   size_t size; //number of elements actually stored
 } vector;
 
+typedef struct method_struct {
+  /*! \brief ID of this method */
+  int id;
+  /*! \brief Communication method */
+  int method;
+  /*! \brief Function pointer for method initialization work */
+  int (*init)();
+} method;
+
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator */
   int method;
@@ -156,9 +165,12 @@ typedef struct code_struct {
   int is_library;
 } code;
 
-/*! \brief Vector containing all codes that have been initiailized on this rank Typically, 
-this will only include a single code, unless the communication method is LIBRARY */
+/*! \brief Vector containing all codes that have been initiailized on this rank. Typically, 
+this will only include a single code, unless the communication method is LINK */
 extern vector codes;
+
+/*! \brief Vector containing all supported methods */
+extern vector methods;
 
 /*! \brief Index of the active code */
 extern int current_code;
@@ -239,6 +251,8 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id);
 int new_code();
 code* get_code(int code_id);
 int delete_code(int code_id);
+
+int new_method();
 
 /*! \brief Check whether a file exists */
 int file_exists(const char* file_name);
