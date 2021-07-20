@@ -52,6 +52,9 @@ int enable_tcp_support() {
   method* this_method = get_method(MDI_TCP);
   this_method->on_selection = tcp_on_selection;
   this_method->on_accept_communicator = tcp_on_accept_communicator;
+  this_method->on_send_command = tcp_on_send_command;
+  this_method->after_send_command = tcp_after_send_command;
+  this_method->on_recv_command = tcp_on_recv_command;
   return 0;
 }
 
@@ -133,6 +136,27 @@ int tcp_on_accept_communicator() {
 
   // unable to accept any connections
   return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the TCP method must send a command */
+int tcp_on_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the TCP method has received a command */
+int tcp_after_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback when the TCP method must receive a command */
+int tcp_on_recv_command(MDI_Comm comm) {
+  return 0;
 }
 
 

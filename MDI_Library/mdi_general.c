@@ -61,8 +61,6 @@ int general_init(const char* options) {
   char* strtol_ptr;
   int i, ret;
 
-  //int mpi_initialized = 0;
-
   // values acquired from the input options
   char* role;
   char* method_str;
@@ -519,7 +517,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
     snprintf(command, actual_message_length, "%s", buf);
   }
-  
+
   if ( method == MDI_LINK ) {
     // set the command for the engine to execute
     library_set_command(command, comm);

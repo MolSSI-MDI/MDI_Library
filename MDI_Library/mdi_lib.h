@@ -34,6 +34,9 @@ typedef int (*MDI_Plugin_init_t)();
 int enable_plug_support();
 int plug_on_selection();
 int plug_on_accept_communicator();
+int plug_on_send_command(const char* command, MDI_Comm comm);
+int plug_after_send_command(const char* command, MDI_Comm comm);
+int plug_on_recv_command(MDI_Comm comm);
 
 int library_launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                           MDI_Driver_node_callback_t driver_node_callback,

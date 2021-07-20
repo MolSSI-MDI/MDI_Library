@@ -41,6 +41,9 @@ int enable_mpi_support() {
   method* this_method = get_method(MDI_MPI);
   this_method->on_selection = mpi_on_selection;
   this_method->on_accept_communicator = mpi_on_accept_communicator;
+  this_method->on_send_command = mpi_on_send_command;
+  this_method->after_send_command = mpi_after_send_command;
+  this_method->on_recv_command = mpi_on_recv_command;
   return 0;
 }
 
@@ -154,6 +157,27 @@ int mpi_on_accept_communicator() {
 
   // unable to accept any connections
   return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the MPI method must send a command */
+int mpi_on_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the MPI method has received a command */
+int mpi_after_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback when the MPI method must receive a command */
+int mpi_on_recv_command(MDI_Comm comm) {
+  return 0;
 }
 
 

@@ -27,6 +27,9 @@ int enable_plug_support() {
   method* this_method = get_method(MDI_LINK);
   this_method->on_selection = plug_on_selection;
   this_method->on_accept_communicator = plug_on_accept_communicator;
+  this_method->on_send_command = plug_on_send_command;
+  this_method->after_send_command = plug_after_send_command;
+  this_method->on_recv_command = plug_on_recv_command;
   return 0;
 }
 
@@ -62,6 +65,27 @@ int plug_on_accept_communicator() {
 
   // unable to accept any connections
   return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the PLUG method must send a command */
+int plug_on_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the PLUG method has received a command */
+int plug_after_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback when the PLUG method must receive a command */
+int plug_on_recv_command(MDI_Comm comm) {
+  return 0;
 }
 
 

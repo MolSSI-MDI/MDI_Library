@@ -18,6 +18,9 @@ int enable_test_support() {
   method* this_method = get_method(MDI_TEST);
   this_method->on_selection = test_on_selection;
   this_method->on_accept_communicator = test_on_accept_communicator;
+  this_method->on_send_command = test_on_send_command;
+  this_method->after_send_command = test_after_send_command;
+  this_method->on_recv_command = test_on_recv_command;
   return 0;
 }
 
@@ -49,6 +52,27 @@ int test_on_accept_communicator() {
 
   // unable to accept any connections
   return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the TEST method must send a command */
+int test_on_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the TEST method has received a command */
+int test_after_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback when the TEST method must receive a command */
+int test_on_recv_command(MDI_Comm comm) {
+  return 0;
 }
 
 
