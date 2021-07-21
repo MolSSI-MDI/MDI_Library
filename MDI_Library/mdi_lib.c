@@ -70,8 +70,48 @@ int plug_on_accept_communicator() {
 
 
 /*! \brief Callback when the PLUG method must send a command */
-int plug_on_send_command(const char* command, MDI_Comm comm) {
-  return 0;
+int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
+  code* this_code = get_code(current_code);
+  method* selected_method = get_method(selected_method_id);
+  int ret = 0;
+
+  // ensure that the driver is the current code
+  library_set_driver_current();
+
+  // set the command for the engine to execute
+  library_set_command(command, comm);
+
+  if ( command[0] == '<' ) {
+    // execute the command, so that the data from the engine can be received later by the driver
+    ret = library_execute_command(comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
+      return ret;
+    }
+    *skip_flag = 1;
+  }
+  else if ( command[0] == '>' ) {
+    // flag the command to be executed after the next call to MDI_Send
+    communicator* this = get_communicator(current_code, comm);
+    library_data* libd = (library_data*) this->method_data;
+    libd->execute_on_send = 1;
+    *skip_flag = 1;
+  }
+  else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
+    // this command should be received by MDI_Recv_command, rather than through the execute_command callback
+    return 0;
+  }
+  else {
+    // this is a command that neither sends nor receives data, so execute it now
+    ret = library_execute_command(comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      return ret;
+    }
+    *skip_flag = 1;
+  }
+
+  return ret;
 }
 
 

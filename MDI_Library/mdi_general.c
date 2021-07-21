@@ -491,56 +491,19 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   code* this_code = get_code(current_code);
   method* selected_method = get_method(selected_method_id);
 
-  // ensure that the driver is the current code
-  library_set_driver_current();
-
-  communicator* this = get_communicator(current_code, comm);
-  int method = this->method;
-
   int count = MDI_COMMAND_LENGTH;
   const char* command = buf;
   int ret = 0;
+  int skip_flag = 0;
 
-  if ( selected_method->on_send_command(command, comm) ) {
+  ret = selected_method->on_send_command(command, comm, &skip_flag);
+  if ( ret != 0 ) {
     mdi_error("MDI Send Command error: method-specific on_send_command() function failed");
-    return 1;
+    return ret;
   }
 
-  if ( method == MDI_LINK ) {
-    // set the command for the engine to execute
-    library_set_command(command, comm);
-
-    if ( command[0] == '<' ) {
-      // execute the command, so that the data from the engine can be received later by the driver
-      ret = library_execute_command(comm);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
-	return ret;
-      }
-    }
-    else if ( command[0] == '>' ) {
-      // flag the command to be executed after the next call to MDI_Send
-      library_data* libd = (library_data*) this->method_data;
-      libd->execute_on_send = 1;
-    }
-    else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
-      // this command should be received by MDI_Recv_command, rather than through the execute_command callback
-      ret = general_send( command, count, MDI_CHAR, comm );
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to send command");
-	return ret;
-      }
-    }
-    else {
-      // this is a command that neither sends nor receives data, so execute it now
-      ret = library_execute_command(comm);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
-	return ret;
-      }
-    }
-  }
-  else {
+  // send the command, unless the method's on_send_command function set the skip_flag
+  if ( ! skip_flag ) {
     ret = general_send( command, count, MDI_CHAR, comm );
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to send command");
@@ -548,12 +511,12 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
   }
 
-  if ( selected_method->after_send_command(command, comm) ) {
+  ret = selected_method->after_send_command(command, comm);
+  if ( ret != 0 ) {
     mdi_error("MDI Send Command error: method-specific after_send_command() function failed");
-    return 1;
+    return ret;
   }
 
-  //free( command );
   return ret;
 }
 

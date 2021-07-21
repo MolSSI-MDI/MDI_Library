@@ -11,7 +11,7 @@
 int enable_test_support();
 int test_on_selection();
 int test_on_accept_communicator();
-int test_on_send_command(const char* command, MDI_Comm comm);
+int test_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);
 int test_after_send_command(const char* command, MDI_Comm comm);
 int test_on_recv_command(MDI_Comm comm);
 

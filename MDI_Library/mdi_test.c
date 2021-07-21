@@ -57,7 +57,7 @@ int test_on_accept_communicator() {
 
 
 /*! \brief Callback when the TEST method must send a command */
-int test_on_send_command(const char* command, MDI_Comm comm) {
+int test_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   return 0;
 }
 

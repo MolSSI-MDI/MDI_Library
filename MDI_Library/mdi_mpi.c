@@ -162,7 +162,7 @@ int mpi_on_accept_communicator() {
 
 
 /*! \brief Callback when the MPI method must send a command */
-int mpi_on_send_command(const char* command, MDI_Comm comm) {
+int mpi_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   return 0;
 }
 

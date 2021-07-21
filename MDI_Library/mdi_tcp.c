@@ -141,7 +141,7 @@ int tcp_on_accept_communicator() {
 
 
 /*! \brief Callback when the TCP method must send a command */
-int tcp_on_send_command(const char* command, MDI_Comm comm) {
+int tcp_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   return 0;
 }
 
