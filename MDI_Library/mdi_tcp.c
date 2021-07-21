@@ -149,6 +149,11 @@ int tcp_on_send_command(const char* command, MDI_Comm comm) {
 
 /*! \brief Callback after the TCP method has received a command */
 int tcp_after_send_command(const char* command, MDI_Comm comm) {
+  // if the command was "EXIT", delete this communicator
+  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
+    delete_communicator(current_code, comm);
+  }
+
   return 0;
 }
 

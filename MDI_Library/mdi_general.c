@@ -489,6 +489,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
   code* this_code = get_code(current_code);
+  method* selected_method = get_method(selected_method_id);
 
   // ensure that the driver is the current code
   library_set_driver_current();
@@ -560,18 +561,10 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
   }
 
-  // if the command was "EXIT", delete this communicator
-  // if running in plugin mode, the plugin system will delete the communicator instead
-  //if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
-  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
-    delete_communicator(current_code, comm);
-
-    // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
-    if ( initialized_mpi == 1 ) {
-      if ( this_code->comms->size == 0 ) {
-	MPI_Finalize();
-      }
-    }
+  
+  if ( selected_method->after_send_command(command, comm) ) {
+    mdi_error("MDI Send Command error: method-specific after_send_command() function failed");
+    return 1;
   }
 
   free( command );

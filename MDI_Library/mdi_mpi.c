@@ -170,6 +170,20 @@ int mpi_on_send_command(const char* command, MDI_Comm comm) {
 
 /*! \brief Callback after the MPI method has received a command */
 int mpi_after_send_command(const char* command, MDI_Comm comm) {
+  code* this_code = get_code(current_code);
+
+  // if the command was "EXIT", delete this communicator
+  if ( strcmp( command, "EXIT" ) == 0 ) {
+    delete_communicator(current_code, comm);
+  }
+
+  // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
+  if ( initialized_mpi == 1 ) {
+    if ( this_code->comms->size == 0 ) {
+      MPI_Finalize();
+    }
+  }
+  
   return 0;
 }
 
