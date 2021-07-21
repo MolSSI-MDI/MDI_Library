@@ -492,9 +492,21 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   method* selected_method = get_method(selected_method_id);
 
   int count = MDI_COMMAND_LENGTH;
-  const char* command = buf;
+  //const char* command = buf;
   int ret = 0;
   int skip_flag = 0;
+
+  // Copy the command
+  char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  int ichar;
+  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
+    command[ichar] = '\0';
+  }
+  if ( this_code->intra_rank == 0 ) {
+    for ( ichar=0; ichar < strlen(buf) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      command[ichar] = buf[ichar];
+    }
+  }
 
   ret = selected_method->on_send_command(command, comm, &skip_flag);
   if ( ret != 0 ) {
@@ -517,6 +529,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     return ret;
   }
 
+  free( command );
   return ret;
 }
 

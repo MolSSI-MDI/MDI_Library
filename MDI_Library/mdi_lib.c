@@ -75,13 +75,26 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   method* selected_method = get_method(selected_method_id);
   int ret = 0;
 
+  // broadcast the command to each rank
+  char* command_bcast = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  if ( this_code->intra_rank == 0 ) {
+    int ichar;
+    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
+      command_bcast[ichar] = '\0';
+    }
+    for ( ichar=0; ichar < strlen(command) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      command_bcast[ichar] = command[ichar];
+    }
+  }
+  MPI_Bcast( command_bcast, MDI_COMMAND_LENGTH, MPI_CHAR, 0, this_code->intra_MPI_comm);
+
   // ensure that the driver is the current code
   library_set_driver_current();
 
   // set the command for the engine to execute
-  library_set_command(command, comm);
+  library_set_command(command_bcast, comm);
 
-  if ( command[0] == '<' ) {
+  if ( command_bcast[0] == '<' ) {
     // execute the command, so that the data from the engine can be received later by the driver
     ret = library_execute_command(comm);
     if ( ret != 0 ) {
@@ -90,14 +103,14 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     }
     *skip_flag = 1;
   }
-  else if ( command[0] == '>' ) {
+  else if ( command_bcast[0] == '>' ) {
     // flag the command to be executed after the next call to MDI_Send
     communicator* this = get_communicator(current_code, comm);
     library_data* libd = (library_data*) this->method_data;
     libd->execute_on_send = 1;
     *skip_flag = 1;
   }
-  else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
+  else if ( plugin_mode && ( strcmp( command_bcast, "EXIT" ) == 0 || command_bcast[0] == '@' ) ) {
     // this command should be received by MDI_Recv_command, rather than through the execute_command callback
     return 0;
   }
