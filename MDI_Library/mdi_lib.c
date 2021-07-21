@@ -112,7 +112,6 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   }
   else if ( plugin_mode && ( strcmp( command_bcast, "EXIT" ) == 0 || command_bcast[0] == '@' ) ) {
     // this command should be received by MDI_Recv_command, rather than through the execute_command callback
-    return 0;
   }
   else {
     // this is a command that neither sends nor receives data, so execute it now
@@ -124,6 +123,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     *skip_flag = 1;
   }
 
+  free( command_bcast );
   return ret;
 }
 
