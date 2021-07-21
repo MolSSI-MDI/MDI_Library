@@ -498,25 +498,12 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   int method = this->method;
 
   int count = MDI_COMMAND_LENGTH;
-  char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-  int ichar;
-  for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
-    command[ichar] = '\0';
-  }
-  //const char* command = buf;
+  const char* command = buf;
   int ret = 0;
 
-  // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
-  if ( method == MDI_LINK || this_code->intra_rank == 0 ) {
-    // copy the command string, inserting terminal zeros
-    int actual_message_length = 0;
-    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
-      actual_message_length++;
-      if ( buf[ichar] == '\0' ) {
-	break;
-      }
-    }
-    snprintf(command, actual_message_length, "%s", buf);
+  if ( selected_method->on_send_command(command, comm) ) {
+    mdi_error("MDI Send Command error: method-specific on_send_command() function failed");
+    return 1;
   }
 
   if ( method == MDI_LINK ) {
@@ -561,13 +548,12 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
   }
 
-  
   if ( selected_method->after_send_command(command, comm) ) {
     mdi_error("MDI Send Command error: method-specific after_send_command() function failed");
     return 1;
   }
 
-  free( command );
+  //free( command );
   return ret;
 }
 
