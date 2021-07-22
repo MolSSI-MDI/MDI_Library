@@ -171,7 +171,7 @@ int tcp_on_recv_command(MDI_Comm comm) {
  * \param [in]       port
  *                   Port to listen over
  */
-int tcp_listen(int port) {
+int tcp_listen(int port_in) {
   code* this_code = get_code(current_code);
 
   int ret;
@@ -201,7 +201,7 @@ int tcp_listen(int port) {
   memset( &serv_addr, 0, sizeof(serv_addr) );
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  serv_addr.sin_port = htons(port);
+  serv_addr.sin_port = htons(port_in);
 
   // enable reuse of the socket
   ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char*) &reuse_value, sizeof(int));
@@ -238,7 +238,7 @@ int tcp_listen(int port) {
  * \param [in]       hostname_ptr
  *                   Hostname of the driver
  */
-int tcp_request_connection(int port, char* hostname_ptr) {
+int tcp_request_connection(int port_in, char* hostname_ptr) {
   int ret;
   sock_t sockfd;
 
@@ -269,7 +269,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   driver_address.sin_family = AF_INET;
   driver_address.sin_addr.s_addr = 
     ((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
-  driver_address.sin_port = htons(port);
+  driver_address.sin_port = htons(port_in);
 
   // connect to the driver
   // if the connection is refused, try again

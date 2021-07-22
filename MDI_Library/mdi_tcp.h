@@ -27,8 +27,8 @@ int tcp_after_send_command(const char* command, MDI_Comm comm);
 int tcp_on_recv_command(MDI_Comm comm);
 
 
-int tcp_listen(int port);
-int tcp_request_connection(int port, char* hostname_ptr);
+int tcp_listen(int port_in);
+int tcp_request_connection(int port_in, char* hostname_ptr);
 int tcp_accept_connection();
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
 int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);

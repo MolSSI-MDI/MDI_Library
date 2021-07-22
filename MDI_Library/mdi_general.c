@@ -246,11 +246,8 @@ int general_init(const char* options) {
   method* selected_method = get_method(selected_method_id);
 
   // ensure that a valid role has been provided
-  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
-  }
-  else if ( strcmp(this_code->role, "ENGINE") == 0 ) {
-  }
-  else{
+  if ( strcmp(this_code->role, "DRIVER") != 0 &&
+       strcmp(this_code->role, "ENGINE") != 0 ) {
     mdi_error("Error in MDI_Init: Role not recognized");
     return 1;
   }
