@@ -609,31 +609,12 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int ret;
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
+  method* selected_method = get_method(selected_method_id);
 
-  // if this is a linked library, call the driver's node callback
-  if ( this->method == MDI_LINK ) {
-    int iengine = current_code;
-    communicator* engine_comm = get_communicator(current_code, comm);
-
-    // get the driver code to which this communicator connects
-    library_data* libd = (library_data*) engine_comm->method_data;
-    int idriver = libd->connected_code;
-    code* driver_code = get_code(idriver);
-
-    MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
-    communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
-    library_data* driver_lib = (library_data*) driver_comm->method_data;
-
-    // set the current code to the driver
-    current_code = idriver;
-
-    void* class_obj = driver_lib->driver_callback_obj;
-    ret = driver_lib->driver_node_callback(&driver_lib->mpi_comm, driver_comm_handle, class_obj);
-
-    // set the current code to the engine
-    current_code = iengine;
-
-    //return 0;
+  ret = selected_method->on_recv_command(comm);
+  if ( ret != 0 ) {
+    mdi_error("MDI Recv Command error: method-specific on_recv_command() function failed");
+    return ret;
   }
 
   // only receive on rank 0

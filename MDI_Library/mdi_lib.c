@@ -138,6 +138,32 @@ int plug_after_send_command(const char* command, MDI_Comm comm) {
 
 /*! \brief Callback when the PLUG method must receive a command */
 int plug_on_recv_command(MDI_Comm comm) {
+  int ret = 0;
+  int iengine = current_code;
+  communicator* engine_comm = get_communicator(current_code, comm);
+
+  // get the driver code to which this communicator connects
+  library_data* libd = (library_data*) engine_comm->method_data;
+  int idriver = libd->connected_code;
+  code* driver_code = get_code(idriver);
+
+  MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
+  communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
+  library_data* driver_lib = (library_data*) driver_comm->method_data;
+
+  // set the current code to the driver
+  current_code = idriver;
+
+  void* class_obj = driver_lib->driver_callback_obj;
+  ret = driver_lib->driver_node_callback(&driver_lib->mpi_comm, driver_comm_handle, class_obj);
+  if ( ret != 0 ) {
+    mdi_error("PLUG error in on_recv_command: driver_node_callback failed");
+    return ret;
+  }
+
+  // set the current code to the engine
+  current_code = iengine;
+
   return 0;
 }
 
