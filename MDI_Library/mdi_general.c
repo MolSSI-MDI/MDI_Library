@@ -37,10 +37,12 @@ int general_init(const char* options) {
       mdi_error("Unable to enable MPI support");
       return 1;
     }
+#if _MDI_PLUGIN_SUPPORT == 1
     if ( enable_plug_support() ) {
       mdi_error("Unable to enable plugin support");
       return 1;
     }
+#endif
     if ( enable_test_support() ) {
       mdi_error("Unable to enable TEST support");
       return 1;
