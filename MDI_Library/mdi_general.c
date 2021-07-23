@@ -23,6 +23,33 @@
  *                   Options describing the communication method used to connect to codes.
  */
 int general_init(const char* options) {
+  // If this is the first time MDI has initialized, initialize the method vector
+  if ( ! is_initialized ) {
+
+    vector_init(&methods, sizeof(method));
+
+    // Create method objects for each supported method
+    if ( enable_tcp_support() ) {
+      mdi_error("Unable to enable TCP support");
+      return 1;
+    }
+    if ( enable_mpi_support() ) {
+      mdi_error("Unable to enable MPI support");
+      return 1;
+    }
+#if _MDI_PLUGIN_SUPPORT == 1
+    if ( enable_plug_support() ) {
+      mdi_error("Unable to enable plugin support");
+      return 1;
+    }
+#endif
+    if ( enable_test_support() ) {
+      mdi_error("Unable to enable TEST support");
+      return 1;
+    }
+
+  }
+
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! is_initialized ) {
     vector_init(&codes, sizeof(code));
@@ -36,20 +63,14 @@ int general_init(const char* options) {
   char* strtol_ptr;
   int i, ret;
 
-  int mpi_initialized = 0;
-
   // values acquired from the input options
   char* role;
-  char* method;
-  char* hostname;
-  int port;
+  char* method_str;
   char* output_file;
   char* language_argument = ((char*)"");
   int has_role = 0;
   int has_method = 0;
   int has_name = 0;
-  int has_hostname = 0;
-  int has_port = 0;
   int has_plugin_path = 0;
   int has_output_file = 0;
 
@@ -97,7 +118,7 @@ int general_init(const char* options) {
 	mdi_error("Error in MDI_Init: Argument missing from -method option");
 	return 1;
       }
-      method = argv[iarg+1];
+      method_str = argv[iarg+1];
       has_method = 1;
       iarg += 2;
     }
@@ -122,7 +143,6 @@ int general_init(const char* options) {
 	return 1;
       }
       hostname = argv[iarg+1];
-      has_hostname = 1;
       iarg += 2;
     }
     //-port
@@ -132,7 +152,6 @@ int general_init(const char* options) {
 	return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
-      has_port = 1;
       iarg += 2;
     }
     //-ipi
@@ -206,80 +225,36 @@ int general_init(const char* options) {
     return 1;
   }
 
-  // if using the MPI method, check if MPI has been initialized
-  int mpi_init_flag = 0;
-  if ( strcmp(method, "MPI") == 0 && this_code->language != MDI_LANGUAGE_PYTHON ) {
 
-    ret = MPI_Initialized(&mpi_init_flag);
-    if ( ret != 0 ) {
-      mdi_error("Error in MDI_Init: MPI_Initialized failed");
-      return ret;
-    }
-
-    if ( mpi_init_flag == 0 ) {
-
-      // initialize MPI
-      int mpi_argc = 0;
-      char** mpi_argv;
-      ret = MPI_Init( &mpi_argc, &mpi_argv );
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Init: MPI_Init failed");
-	return ret;
-      }
-
-      // confirm that MPI is now initialized
-      // if it isn't, that indicates that the MPI stubs are being used
-      ret = MPI_Initialized(&mpi_init_flag);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Init: MPI_Initialized failed");
-	return ret;
-      }
-      if ( mpi_init_flag == 0 ) {
-	mdi_error("Error in MDI_Init: Failed to initialize MPI. Check that the MDI Library is linked to an MPI library.");
-	return 1;
-      }
-
-      // get the world_comm
-      mdi_mpi_comm_world = MPI_COMM_WORLD;
-      initialized_mpi = 1;
-
-    }
-
+  // determine the method id of the method selected by the user
+  if ( strcmp(method_str, "TCP") == 0 ) {
+    selected_method_id = MDI_TCP;
   }
-
-  // get the appropriate MPI communicator to use
-  MPI_Comm mpi_communicator;
-  ret = MPI_Initialized(&mpi_init_flag);
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init: MPI_Initialized failed");
-    return ret;
+  else if ( strcmp(method_str, "MPI") == 0 ) {
+    selected_method_id = MDI_MPI;
   }
-  if ( mpi_init_flag == 0 ) {
-    mpi_communicator = 0;
+  else if ( strcmp(method_str, "LINK") == 0 || strcmp(method_str, "PLUG") == 0 ) {
+    selected_method_id = MDI_LINK;
+  }
+  else if ( strcmp(method_str, "TEST") == 0 ) {
+    selected_method_id = MDI_TEST;
   }
   else {
-    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-      mpi_communicator = 0;
-    }
-    else {
-      mpi_communicator = MPI_COMM_WORLD;
-      MPI_Comm_rank(mpi_communicator, &world_rank);
-      MPI_Comm_size(mpi_communicator, &world_size);
-      this_code->intra_rank = world_rank;
-    }
+    mdi_error("Error in MDI_Init: Method not recognized");
+    return 1;
+  }
+  method* selected_method = get_method(selected_method_id);
+
+  // ensure that a valid role has been provided
+  if ( strcmp(this_code->role, "DRIVER") != 0 &&
+       strcmp(this_code->role, "ENGINE") != 0 ) {
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
   }
 
   // redirect the standard output
   if ( has_output_file == 1 ) {
     freopen(output_file, "w", stdout);
-  }
-
-  // if the method is not LIB, ensure that MDI has not been previously initialized
-  if ( strcmp(method, "LINK") != 0 ) {
-    if ( is_initialized == 1 ) {
-      mdi_error("MDI_Init called after MDI was already initialized");
-      return 1;
-    }
   }
 
   // ensure that the name of this code is not the same as the name of any of the other codes
@@ -293,15 +268,8 @@ int general_init(const char* options) {
     }
   }
 
-  // Check if this is an engine being used as a library
-  if (strcmp(this_code->role, "ENGINE") == 0) {
-    if ( strcmp(method, "LINK") == 0 ) {
-      this_code->is_library = 1;
-    }
-  }
-
   // ensure that at most one driver has been initialized
-  if (strcmp(this_code->role, "DRIVER") == 0) {
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     for (i = 0; i < codes.size; i++) {
       if ( i != current_code ) {
 	code* other_code = vector_get(&codes, i);
@@ -313,86 +281,22 @@ int general_init(const char* options) {
     }
   }
 
-  // determine whether the intra-code MPI communicator should be split by mpi_init_mdi
-  int use_mpi4py = 0;
-  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-    use_mpi4py = 1;
+  // Initialize this code's intra-rank
+  // If using the MPI method, this value may change
+  int mpi_init_flag;
+  if ( MPI_Initialized(&mpi_init_flag) ) {
+    mdi_error("Error in MDI_Init: MPI_Initialized failed");
+    return 1;
+  }
+  if ( mpi_init_flag == 1 && this_code->language != MDI_LANGUAGE_PYTHON ) {
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    this_code->intra_rank = world_rank;
   }
 
-  if ( strcmp(role, "DRIVER") == 0 ) {
-    // initialize this code as a driver
-
-    if ( strcmp(method, "MPI") == 0 ) {
-      mpi_identify_codes("", use_mpi4py, mpi_communicator);
-      mpi_initialized = 1;
-    }
-    else if ( strcmp(method, "TCP") == 0 ) {
-      if ( has_port == 0 ) {
-	mdi_error("Error in MDI_Init: -port option not provided");
-	return 1;
-      }
-      if ( this_code->intra_rank == 0 ) {
-	tcp_listen(port);
-      }
-      else {
-	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-	tcp_socket = 1;
-      }
-    }
-    else if ( strcmp(method, "LINK") == 0 ) {
-      //library_initialize();
-    }
-    else if ( strcmp(method, "TEST") == 0 ) {
-      test_initialize();
-    }
-    else {
-      mdi_error("Error in MDI_Init: Method not recognized");
-      return 1;
-    }
-
-  }
-  else if ( strcmp(role,"ENGINE") == 0 ) {
-    // initialize this code as an engine
-
-    if ( strcmp(method, "MPI") == 0 ) {
-      code* this_code = get_code(current_code);
-      mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
-      mpi_initialized = 1;
-    }
-    else if ( strcmp(method, "TCP") == 0 ) {
-      if ( has_hostname == 0 ) {
-	mdi_error("Error in MDI_Init: -hostname option not provided");
-	return 1;
-      }
-      if ( has_port == 0 ) {
-	mdi_error("Error in MDI_Init: -port option not provided");
-	return 1;
-      }
-      if ( this_code->intra_rank == 0 ) {
-	tcp_request_connection(port, hostname);
-      }
-      else {
-	// If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-	if ( this_code->intra_rank != 0 ) {
-	  tcp_socket = 1;
-	}
-      }
-    }
-    else if ( strcmp(method, "LINK") == 0 ) {
-      library_initialize();
-    }
-    else if ( strcmp(method, "TEST") == 0 ) {
-      test_initialize();
-    }
-    else {
-      mdi_error("Error in MDI_Init: method not recognized");
-      return 1;
-    }
-
-    
-  }
-  else {
-    mdi_error("Error in MDI_Init: Role not recognized");
+  // Execute the on_selection() function for the user-selected method
+  if ( selected_method->on_selection() ) {
+    mdi_error("MDI method on_selection function failed");
     return 1;
   }
 
@@ -410,33 +314,8 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  // Give the library method an opportunity to update the current code
-  library_accept_communicator();
-
-  // If MDI hasn't returned some connections, do that now
-  code* this_code = get_code(current_code);
-  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
-    this_code->returned_comms++;
-    return this_code->returned_comms;
-  }
-
-  // Check for any production codes connecting via TCP
-  if ( tcp_socket > 0 ) {
-
-    // Accept a connection via TCP
-    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
-    tcp_accept_connection();
-
-    // if MDI hasn't returned some connections, do that now
-    if ( this_code->returned_comms < this_code->comms->size ) {
-      this_code->returned_comms++;
-      return (MDI_Comm)this_code->returned_comms;
-    }
-
-  }
-
-  // unable to accept any connections
-  return MDI_COMM_NULL;
+  method* selected_method = get_method(selected_method_id);
+  return selected_method->on_accept_communicator();
 }
 
 
@@ -609,70 +488,33 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
   code* this_code = get_code(current_code);
-
-  // ensure that the driver is the current code
-  library_set_driver_current();
-
-  communicator* this = get_communicator(current_code, comm);
-  int method = this->method;
+  method* selected_method = get_method(selected_method_id);
 
   int count = MDI_COMMAND_LENGTH;
+  //const char* command = buf;
+  int ret = 0;
+  int skip_flag = 0;
+
+  // Copy the command
   char* command = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
   int ichar;
   for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
     command[ichar] = '\0';
   }
-  //const char* command = buf;
-  int ret = 0;
-
-  // only need to copy the command if this is a plugin (for all ranks) or if this is rank 0
-  if ( method == MDI_LINK || this_code->intra_rank == 0 ) {
-    // copy the command string, inserting terminal zeros
-    int actual_message_length = 0;
-    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++ ) {
-      actual_message_length++;
-      if ( buf[ichar] == '\0' ) {
-	break;
-      }
-    }
-    snprintf(command, actual_message_length, "%s", buf);
-  }
-  
-  if ( method == MDI_LINK ) {
-    // set the command for the engine to execute
-    library_set_command(command, comm);
-
-    if ( command[0] == '<' ) {
-      // execute the command, so that the data from the engine can be received later by the driver
-      ret = library_execute_command(comm);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
-	return ret;
-      }
-    }
-    else if ( command[0] == '>' ) {
-      // flag the command to be executed after the next call to MDI_Send
-      library_data* libd = (library_data*) this->method_data;
-      libd->execute_on_send = 1;
-    }
-    else if ( plugin_mode && ( strcmp( command, "EXIT" ) == 0 || command[0] == '@' ) ) {
-      // this command should be received by MDI_Recv_command, rather than through the execute_command callback
-      ret = general_send( command, count, MDI_CHAR, comm );
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to send command");
-	return ret;
-      }
-    }
-    else {
-      // this is a command that neither sends nor receives data, so execute it now
-      ret = library_execute_command(comm);
-      if ( ret != 0 ) {
-	mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
-	return ret;
-      }
+  if ( this_code->intra_rank == 0 ) {
+    for ( ichar=0; ichar < strlen(buf) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      command[ichar] = buf[ichar];
     }
   }
-  else {
+
+  ret = selected_method->on_send_command(command, comm, &skip_flag);
+  if ( ret != 0 ) {
+    mdi_error("MDI Send Command error: method-specific on_send_command() function failed");
+    return ret;
+  }
+
+  // send the command, unless the method's on_send_command function set the skip_flag
+  if ( ! skip_flag ) {
     ret = general_send( command, count, MDI_CHAR, comm );
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to send command");
@@ -680,18 +522,10 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     }
   }
 
-  // if the command was "EXIT", delete this communicator
-  // if running in plugin mode, the plugin system will delete the communicator instead
-  //if ( ! plugin_mode && this_code->intra_rank == 0 && strcmp( command, "EXIT" ) == 0 ) {
-  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
-    delete_communicator(current_code, comm);
-
-    // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
-    if ( initialized_mpi == 1 ) {
-      if ( this_code->comms->size == 0 ) {
-	MPI_Finalize();
-      }
-    }
+  ret = selected_method->after_send_command(command, comm);
+  if ( ret != 0 ) {
+    mdi_error("MDI Send Command error: method-specific after_send_command() function failed");
+    return ret;
   }
 
   free( command );
@@ -774,31 +608,12 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int ret;
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
+  method* selected_method = get_method(selected_method_id);
 
-  // if this is a linked library, call the driver's node callback
-  if ( this->method == MDI_LINK ) {
-    int iengine = current_code;
-    communicator* engine_comm = get_communicator(current_code, comm);
-
-    // get the driver code to which this communicator connects
-    library_data* libd = (library_data*) engine_comm->method_data;
-    int idriver = libd->connected_code;
-    code* driver_code = get_code(idriver);
-
-    MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
-    communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
-    library_data* driver_lib = (library_data*) driver_comm->method_data;
-
-    // set the current code to the driver
-    current_code = idriver;
-
-    void* class_obj = driver_lib->driver_callback_obj;
-    ret = driver_lib->driver_node_callback(&driver_lib->mpi_comm, driver_comm_handle, class_obj);
-
-    // set the current code to the engine
-    current_code = iengine;
-
-    //return 0;
+  ret = selected_method->on_recv_command(comm);
+  if ( ret != 0 ) {
+    mdi_error("MDI Recv Command error: method-specific on_recv_command() function failed");
+    return ret;
   }
 
   // only receive on rank 0

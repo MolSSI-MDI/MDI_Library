@@ -88,6 +88,19 @@ typedef struct dynamic_array_struct {
   size_t size; //number of elements actually stored
 } vector;
 
+typedef struct method_struct {
+  /*! \brief ID of this method */
+  int id;
+  /*! \brief Communication method */
+  int method_id;
+  /*! \brief Function pointer for method initialization work */
+  int (*on_selection)();
+  int (*on_accept_communicator)();
+  int (*on_send_command)(const char*, MDI_Comm_Type, int* skip_flag);
+  int (*after_send_command)(const char*, MDI_Comm_Type);
+  int (*on_recv_command)(MDI_Comm_Type);
+} method;
+
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator */
   int method;
@@ -156,9 +169,15 @@ typedef struct code_struct {
   int is_library;
 } code;
 
-/*! \brief Vector containing all codes that have been initiailized on this rank Typically, 
-this will only include a single code, unless the communication method is LIBRARY */
+/*! \brief Vector containing all codes that have been initiailized on this rank. Typically, 
+this will only include a single code, unless the communication method is LINK */
 extern vector codes;
+
+/*! \brief Vector containing all supported methods */
+extern vector methods;
+
+/*! \brief ID of the method being used for inter-code communication */
+extern int selected_method_id;
 
 /*! \brief Index of the active code */
 extern int current_code;
@@ -239,6 +258,10 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id);
 int new_code();
 code* get_code(int code_id);
 int delete_code(int code_id);
+
+int new_method(int method_id);
+method* get_method(int method_id);
+int delete_method(int method_id);
 
 /*! \brief Check whether a file exists */
 int file_exists(const char* file_name);

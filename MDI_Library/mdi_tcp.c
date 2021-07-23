@@ -22,6 +22,12 @@
 
 static sock_t sigint_sockfd;
 
+/*! \brief Hostname of the driver */
+char* hostname = NULL;
+
+/*! \brief Port over which the driver will listen */
+int port = -1;
+
 /*! \brief SIGINT handler to ensure the socket is closed on termination
  *
  * \param [in]       dummy
@@ -38,12 +44,134 @@ void sigint_handler(int dummy) {
 /*! \brief Socket over which a driver will listen for incoming connections */
 sock_t tcp_socket = -1;
 
+
+
+/*! \brief Enable support for the TCP method */
+int enable_tcp_support() {
+  new_method(MDI_TCP);
+  method* this_method = get_method(MDI_TCP);
+  this_method->on_selection = tcp_on_selection;
+  this_method->on_accept_communicator = tcp_on_accept_communicator;
+  this_method->on_send_command = tcp_on_send_command;
+  this_method->after_send_command = tcp_after_send_command;
+  this_method->on_recv_command = tcp_on_recv_command;
+  return 0;
+}
+
+
+
+/*! \brief Callback when the end-user selects TCP as the method */
+int tcp_on_selection() {
+  if ( is_initialized == 1 ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+    return 1;
+  }
+
+  code* this_code = get_code(current_code);
+
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
+    if ( port == -1 ) {
+      mdi_error("Error in MDI_Init: -port option not provided");
+      return 1;
+    }
+    if ( this_code->intra_rank == 0 ) {
+      tcp_listen(port);
+    }
+    else {
+      // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+      tcp_socket = 1;
+    }
+  }
+  else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
+    if ( hostname == NULL ) {
+      mdi_error("Error in MDI_Init: -hostname option not provided");
+      return 1;
+    }
+    if ( port == -1 ) {
+      mdi_error("Error in MDI_Init: -port option not provided");
+      return 1;
+    }
+    if ( this_code->intra_rank == 0 ) {
+      tcp_request_connection(port, hostname);
+    }
+    else {
+      // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
+      if ( this_code->intra_rank != 0 ) {
+	tcp_socket = 1;
+      }
+    }
+  }
+  else {
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
+  }
+
+  return 0;
+}
+
+
+
+/*! \brief Callback when the TCP method must accept a communicator */
+int tcp_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // Check for any production codes connecting via TCP
+  if ( tcp_socket > 0 ) {
+    // Accept a connection via TCP
+    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
+    tcp_accept_connection();
+
+    // if MDI hasn't returned some connections, do that now
+    if ( this_code->returned_comms < this_code->comms->size ) {
+      this_code->returned_comms++;
+      return (MDI_Comm)this_code->returned_comms;
+    }
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the TCP method must send a command */
+int tcp_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the TCP method has received a command */
+int tcp_after_send_command(const char* command, MDI_Comm comm) {
+  // if the command was "EXIT", delete this communicator
+  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
+    delete_communicator(current_code, comm);
+  }
+
+  return 0;
+}
+
+
+
+/*! \brief Callback when the TCP method must receive a command */
+int tcp_on_recv_command(MDI_Comm comm) {
+  return 0;
+}
+
+
+
 /*! \brief Begin listening for incoming TCP connections
  *
  * \param [in]       port
  *                   Port to listen over
  */
-int tcp_listen(int port) {
+int tcp_listen(int port_in) {
   code* this_code = get_code(current_code);
 
   int ret;
@@ -73,7 +201,7 @@ int tcp_listen(int port) {
   memset( &serv_addr, 0, sizeof(serv_addr) );
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  serv_addr.sin_port = htons(port);
+  serv_addr.sin_port = htons(port_in);
 
   // enable reuse of the socket
   ret = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char*) &reuse_value, sizeof(int));
@@ -110,7 +238,7 @@ int tcp_listen(int port) {
  * \param [in]       hostname_ptr
  *                   Hostname of the driver
  */
-int tcp_request_connection(int port, char* hostname_ptr) {
+int tcp_request_connection(int port_in, char* hostname_ptr) {
   int ret;
   sock_t sockfd;
 
@@ -141,7 +269,7 @@ int tcp_request_connection(int port, char* hostname_ptr) {
   driver_address.sin_family = AF_INET;
   driver_address.sin_addr.s_addr = 
     ((struct in_addr *)host_ptr->h_addr_list[0])->s_addr;
-  driver_address.sin_port = htons(port);
+  driver_address.sin_port = htons(port_in);
 
   // connect to the driver
   // if the connection is refused, try again

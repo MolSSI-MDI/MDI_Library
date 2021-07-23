@@ -146,6 +146,7 @@ def test_init_errors():
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
     expected_err = """Error in MDI_Init: -port option not provided
+MDI method on_selection function failed
 """
     assert driver_err == expected_err
     assert driver_out == ""
@@ -157,6 +158,7 @@ def test_init_errors():
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
     expected_err = """Error in MDI_Init: -port option not provided
+MDI method on_selection function failed
 """
     assert driver_err == expected_err
     assert driver_out == ""
@@ -168,6 +170,7 @@ def test_init_errors():
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
     expected_err = """Error in MDI_Init: -hostname option not provided
+MDI method on_selection function failed
 """
     assert driver_err == expected_err
     assert driver_out == ""
@@ -287,7 +290,7 @@ def test_init_errors():
     driver_tup = driver_proc.communicate()
     driver_out = format_return(driver_tup[0])
     driver_err = format_return(driver_tup[1])
-    expected_err = """MDI_Init called after MDI was already initialized
+    expected_err = """MDI_Init found multiple codes with the same name
 """
     assert driver_err == expected_err
     assert driver_out == ""

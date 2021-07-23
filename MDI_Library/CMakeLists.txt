@@ -34,6 +34,14 @@ elseif ( (NOT libtype STREQUAL "STATIC") AND
    message( FATAL_ERROR "Value of libtype not recognized. Accepted values are: SHARED; STATIC; PACKAGE." )
 endif()
 
+# Set flag for whether to build plugins
+if( ${plugins} )
+  add_definitions(-D_MDI_PLUGIN_SUPPORT=1)
+else()
+  add_definitions(-D_MDI_PLUGIN_SUPPORT=0)
+endif()
+
+
 #construct the list of source files
 list(APPEND sources "mdi.c")
 list(APPEND sources "mdi_global.h")
@@ -46,17 +54,19 @@ list(APPEND sources "mdi_tcp.h")
 list(APPEND sources "mdi_tcp.c")
 list(APPEND sources "mdi_test.h")
 list(APPEND sources "mdi_test.c")
-list(APPEND sources "mdi_lib.h")
-list(APPEND sources "mdi_lib.c")
+if( ${plugins} )
+  list(APPEND sources "mdi_lib.h")
+  list(APPEND sources "mdi_lib.c")
 
-# Either add Python Plugin support, or Python Plugin stubs
-if ( Python_Development_FOUND )
-  list(APPEND sources "mdi_plug_py.h")
-  list(APPEND sources "mdi_plug_py.c")
-else()
-  message( WARNING "Could not find Python development libraries.  Compiling without Python plugin support." )
-  list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.h")
-  list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.c")
+  # Either add Python Plugin support, or Python Plugin stubs
+  if ( Python_Development_FOUND )
+    list(APPEND sources "mdi_plug_py.h")
+    list(APPEND sources "mdi_plug_py.c")
+  else()
+    message( WARNING "Could not find Python development libraries.  Compiling without Python plugin support." )
+    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.h")
+    list(APPEND sources "${CMAKE_CURRENT_SOURCE_DIR}/STUBS_Python/mdi_plug_py.c")
+  endif()
 endif()
 
 # Add MPI stubs, if needed

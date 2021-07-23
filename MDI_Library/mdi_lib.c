@@ -21,6 +21,154 @@
 #endif
 
 
+/*! \brief Enable support for the PLUG method */
+int enable_plug_support() {
+  new_method(MDI_LINK);
+  method* this_method = get_method(MDI_LINK);
+  this_method->on_selection = plug_on_selection;
+  this_method->on_accept_communicator = plug_on_accept_communicator;
+  this_method->on_send_command = plug_on_send_command;
+  this_method->after_send_command = plug_after_send_command;
+  this_method->on_recv_command = plug_on_recv_command;
+  return 0;
+}
+
+
+
+/*! \brief Callback when the end-user selects PLUG as the method */
+int plug_on_selection() {
+  code* this_code = get_code(current_code);
+
+  // Check if this is an engine being used as a library
+  if (strcmp(this_code->role, "ENGINE") == 0) {
+    this_code->is_library = 1;
+    library_initialize();
+  }
+
+  return 0;
+}
+
+
+
+/*! \brief Callback when the PLUG method must accept a communicator */
+int plug_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // Give the library method an opportunity to update the current code
+  library_accept_communicator();
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the PLUG method must send a command */
+int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
+  code* this_code = get_code(current_code);
+  method* selected_method = get_method(selected_method_id);
+  int ret = 0;
+
+  // broadcast the command to each rank
+  char* command_bcast = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
+  if ( this_code->intra_rank == 0 ) {
+    int ichar;
+    for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
+      command_bcast[ichar] = '\0';
+    }
+    for ( ichar=0; ichar < strlen(command) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+      command_bcast[ichar] = command[ichar];
+    }
+  }
+  MPI_Bcast( command_bcast, MDI_COMMAND_LENGTH, MPI_CHAR, 0, this_code->intra_MPI_comm);
+
+  // ensure that the driver is the current code
+  library_set_driver_current();
+
+  // set the command for the engine to execute
+  library_set_command(command_bcast, comm);
+
+  if ( command_bcast[0] == '<' ) {
+    // execute the command, so that the data from the engine can be received later by the driver
+    ret = library_execute_command(comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
+      return ret;
+    }
+    *skip_flag = 1;
+  }
+  else if ( command_bcast[0] == '>' ) {
+    // flag the command to be executed after the next call to MDI_Send
+    communicator* this = get_communicator(current_code, comm);
+    library_data* libd = (library_data*) this->method_data;
+    libd->execute_on_send = 1;
+    *skip_flag = 1;
+  }
+  else if ( plugin_mode && ( strcmp( command_bcast, "EXIT" ) == 0 || command_bcast[0] == '@' ) ) {
+    // this command should be received by MDI_Recv_command, rather than through the execute_command callback
+  }
+  else {
+    // this is a command that neither sends nor receives data, so execute it now
+    ret = library_execute_command(comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      return ret;
+    }
+    *skip_flag = 1;
+  }
+
+  free( command_bcast );
+  return ret;
+}
+
+
+
+/*! \brief Callback after the PLUG method has received a command */
+int plug_after_send_command(const char* command, MDI_Comm comm) {
+  return 0;
+}
+
+
+
+/*! \brief Callback when the PLUG method must receive a command */
+int plug_on_recv_command(MDI_Comm comm) {
+  int ret = 0;
+  int iengine = current_code;
+  communicator* engine_comm = get_communicator(current_code, comm);
+
+  // get the driver code to which this communicator connects
+  library_data* libd = (library_data*) engine_comm->method_data;
+  int idriver = libd->connected_code;
+  code* driver_code = get_code(idriver);
+
+  MDI_Comm driver_comm_handle = library_get_matching_handle(comm);
+  communicator* driver_comm = get_communicator(idriver, driver_comm_handle);
+  library_data* driver_lib = (library_data*) driver_comm->method_data;
+
+  // set the current code to the driver
+  current_code = idriver;
+
+  void* class_obj = driver_lib->driver_callback_obj;
+  ret = driver_lib->driver_node_callback(&driver_lib->mpi_comm, driver_comm_handle, class_obj);
+  if ( ret != 0 ) {
+    mdi_error("PLUG error in on_recv_command: driver_node_callback failed");
+    return ret;
+  }
+
+  // set the current code to the engine
+  current_code = iengine;
+
+  return 0;
+}
+
+
+
 /*! \brief Launch an MDI plugin
  *
  */

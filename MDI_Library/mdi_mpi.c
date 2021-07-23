@@ -35,6 +35,167 @@ int set_world_rank(int world_rank_in) {
 }
 
 
+/*! \brief Enable support for the TCP method */
+int enable_mpi_support() {
+  new_method(MDI_MPI);
+  method* this_method = get_method(MDI_MPI);
+  this_method->on_selection = mpi_on_selection;
+  this_method->on_accept_communicator = mpi_on_accept_communicator;
+  this_method->on_send_command = mpi_on_send_command;
+  this_method->after_send_command = mpi_after_send_command;
+  this_method->on_recv_command = mpi_on_recv_command;
+  return 0;
+}
+
+
+/*! \brief Callback when the end-user selects MPI as the method */
+int mpi_on_selection() {
+  int ret;
+  code* this_code = get_code(current_code);
+  int mpi_initialized = 0;
+
+  if ( is_initialized == 1 ) {
+    mdi_error("MDI_Init called after MDI was already initialized");
+    return 1;
+  }
+
+  // ensure MPI has been initialized
+  int mpi_init_flag = 0;
+  if ( this_code->language != MDI_LANGUAGE_PYTHON ) {
+
+    ret = MPI_Initialized(&mpi_init_flag);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init: MPI_Initialized failed");
+      return ret;
+    }
+
+    if ( mpi_init_flag == 0 ) {
+
+      // initialize MPI
+      int mpi_argc = 0;
+      char** mpi_argv;
+      ret = MPI_Init( &mpi_argc, &mpi_argv );
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Init failed");
+	return ret;
+      }
+
+      // confirm that MPI is now initialized
+      // if it isn't, that indicates that the MPI stubs are being used
+      ret = MPI_Initialized(&mpi_init_flag);
+      if ( ret != 0 ) {
+	mdi_error("Error in MDI_Init: MPI_Initialized failed");
+	return ret;
+      }
+      if ( mpi_init_flag == 0 ) {
+	mdi_error("Error in MDI_Init: Failed to initialize MPI. Check that the MDI Library is linked to an MPI library.");
+	return 1;
+      }
+
+      initialized_mpi = 1;
+    }
+
+  }
+
+  // get the appropriate MPI communicator to use
+  MPI_Comm mpi_communicator;
+  ret = MPI_Initialized(&mpi_init_flag);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init: MPI_Initialized failed");
+    return ret;
+  }
+  if ( mpi_init_flag == 0 ) {
+    mpi_communicator = 0;
+  }
+  else {
+    if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+      mpi_communicator = 0;
+    }
+    else {
+      mpi_communicator = MPI_COMM_WORLD;
+      MPI_Comm_rank(mpi_communicator, &world_rank);
+      MPI_Comm_size(mpi_communicator, &world_size);
+      this_code->intra_rank = world_rank;
+    }
+  }
+
+  // determine whether the intra-code MPI communicator should be split
+  int use_mpi4py = 0;
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+    use_mpi4py = 1;
+  }
+
+  // split intra-communicators for each code
+  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
+    mpi_identify_codes("", use_mpi4py, mpi_communicator);
+    mpi_initialized = 1;
+  }
+  else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
+    code* this_code = get_code(current_code);
+    mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
+    mpi_initialized = 1;
+  }
+  else {
+    mdi_error("Error in MDI_Init: Role not recognized");
+    return 1;
+  }
+
+  return 0;
+}
+
+
+
+/*! \brief Callback when the MPI method must accept a communicator */
+int mpi_on_accept_communicator() {
+  code* this_code = get_code(current_code);
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    this_code->returned_comms++;
+    return this_code->returned_comms;
+  }
+
+  // unable to accept any connections
+  return MDI_COMM_NULL;
+}
+
+
+
+/*! \brief Callback when the MPI method must send a command */
+int mpi_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
+  return 0;
+}
+
+
+
+/*! \brief Callback after the MPI method has received a command */
+int mpi_after_send_command(const char* command, MDI_Comm comm) {
+  code* this_code = get_code(current_code);
+
+  // if the command was "EXIT", delete this communicator
+  if ( strcmp( command, "EXIT" ) == 0 ) {
+    delete_communicator(current_code, comm);
+  }
+
+  // if MDI called MPI_Init, and there are no more communicators, call MPI_Finalize now
+  if ( initialized_mpi == 1 ) {
+    if ( this_code->comms->size == 0 ) {
+      MPI_Finalize();
+    }
+  }
+  
+  return 0;
+}
+
+
+
+/*! \brief Callback when the MPI method must receive a command */
+int mpi_on_recv_command(MDI_Comm comm) {
+  return 0;
+}
+
+
+
 /*! \brief Identify groups of processes belonging to the same codes
  *
  * If use_mpi4py == 0, this function will call MPI_Comm_split to create an intra-code communicator for each code.
