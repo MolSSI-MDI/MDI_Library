@@ -1644,9 +1644,14 @@ int MDI_MPI_set_world_comm(void* world_comm)
 int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                       MDI_Driver_node_callback_t driver_node_callback,
                       void* driver_callback_object) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
                                   driver_node_callback, driver_callback_object);
   return ret;
+#else
+  mdi_error("MDI_Launch_plugin was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
