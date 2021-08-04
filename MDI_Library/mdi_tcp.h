@@ -15,7 +15,7 @@ extern sock_t tcp_socket;
 extern char* hostname;
 
 /*! \brief Port over which the driver will listen */
-int port;
+extern int port;
 
 void sigint_handler(int dummy);
 
