@@ -21,6 +21,24 @@ int \mbox{\hyperlink{mdi__mpi_8c_a027fc7cf6eb7e67c2b54a6091ee4ebd5}{set\+\_\+wor
 \begin{DoxyCompactList}\small\item\em Set the size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__mpi_8c_a0639f31fe7860f028614354b78b22205}{set\+\_\+world\+\_\+rank}} (int world\+\_\+rank\+\_\+in)
 \begin{DoxyCompactList}\small\item\em Set the rank of this process in M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_a5388d25c27504059f579f020283e8e62}\label{mdi__mpi_8c_a5388d25c27504059f579f020283e8e62}} 
+int \mbox{\hyperlink{mdi__mpi_8c_a5388d25c27504059f579f020283e8e62}{enable\+\_\+mpi\+\_\+support}} ()
+\begin{DoxyCompactList}\small\item\em Enable support for the T\+CP method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_ae032bc6ef7a446927f7326767c9b0162}\label{mdi__mpi_8c_ae032bc6ef7a446927f7326767c9b0162}} 
+int \mbox{\hyperlink{mdi__mpi_8c_ae032bc6ef7a446927f7326767c9b0162}{mpi\+\_\+on\+\_\+selection}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the end-\/user selects M\+PI as the method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_adef834500d9d26158121e8ce3683b00f}\label{mdi__mpi_8c_adef834500d9d26158121e8ce3683b00f}} 
+int \mbox{\hyperlink{mdi__mpi_8c_adef834500d9d26158121e8ce3683b00f}{mpi\+\_\+on\+\_\+accept\+\_\+communicator}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the M\+PI method must accept a communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_aa098cc466a809718abfe60d8b0e328c2}\label{mdi__mpi_8c_aa098cc466a809718abfe60d8b0e328c2}} 
+int \mbox{\hyperlink{mdi__mpi_8c_aa098cc466a809718abfe60d8b0e328c2}{mpi\+\_\+on\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm, int $\ast$skip\+\_\+flag)
+\begin{DoxyCompactList}\small\item\em Callback when the M\+PI method must send a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_a223bd117110a35fb549654cba21b552c}\label{mdi__mpi_8c_a223bd117110a35fb549654cba21b552c}} 
+int \mbox{\hyperlink{mdi__mpi_8c_a223bd117110a35fb549654cba21b552c}{mpi\+\_\+after\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback after the M\+PI method has received a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__mpi_8c_a77171623c5d52d85ec77453fcf9aa921}\label{mdi__mpi_8c_a77171623c5d52d85ec77453fcf9aa921}} 
+int \mbox{\hyperlink{mdi__mpi_8c_a77171623c5d52d85ec77453fcf9aa921}{mpi\+\_\+on\+\_\+recv\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback when the M\+PI method must receive a command. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__mpi_8c_a44c7d40baf40b4ece1ab6208dab790eb}{mpi\+\_\+identify\+\_\+codes}} (const char $\ast$code\+\_\+name, int use\+\_\+mpi4py, M\+P\+I\+\_\+\+Comm world\+\_\+comm)
 \begin{DoxyCompactList}\small\item\em Identify groups of processes belonging to the same codes. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__mpi_8c_ae66fead66748e44e6c85283f44b98a15}{mpi\+\_\+update\+\_\+world\+\_\+comm}} (void $\ast$world\+\_\+comm)

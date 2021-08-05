@@ -22,9 +22,27 @@ T\+CP communication implementation.
 \item 
 void \mbox{\hyperlink{mdi__tcp_8c_a47630f8f823b92ad9333c3c5f130cf90}{sigint\+\_\+handler}} (int dummy)
 \begin{DoxyCompactList}\small\item\em S\+I\+G\+I\+NT handler to ensure the socket is closed on termination. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__tcp_8c_a87d3f43c944c0e9a5d67c9a4157afe71}{tcp\+\_\+listen}} (int port)
+\mbox{\Hypertarget{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}\label{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}} 
+int \mbox{\hyperlink{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}{enable\+\_\+tcp\+\_\+support}} ()
+\begin{DoxyCompactList}\small\item\em Enable support for the T\+CP method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}\label{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}} 
+int \mbox{\hyperlink{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}{tcp\+\_\+on\+\_\+selection}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the end-\/user selects T\+CP as the method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a9b8435f5033a5fd6a14310324854f7df}\label{mdi__tcp_8c_a9b8435f5033a5fd6a14310324854f7df}} 
+int \mbox{\hyperlink{mdi__tcp_8c_a9b8435f5033a5fd6a14310324854f7df}{tcp\+\_\+on\+\_\+accept\+\_\+communicator}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the T\+CP method must accept a communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_ab4cfd63fb562e43a1237fa229841c56c}\label{mdi__tcp_8c_ab4cfd63fb562e43a1237fa229841c56c}} 
+int \mbox{\hyperlink{mdi__tcp_8c_ab4cfd63fb562e43a1237fa229841c56c}{tcp\+\_\+on\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm, int $\ast$skip\+\_\+flag)
+\begin{DoxyCompactList}\small\item\em Callback when the T\+CP method must send a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a7a65b903a90360e2d1adef63e2e63aef}\label{mdi__tcp_8c_a7a65b903a90360e2d1adef63e2e63aef}} 
+int \mbox{\hyperlink{mdi__tcp_8c_a7a65b903a90360e2d1adef63e2e63aef}{tcp\+\_\+after\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback after the T\+CP method has received a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a10fd67e4f26f799e0f5c6b45782a4a6d}\label{mdi__tcp_8c_a10fd67e4f26f799e0f5c6b45782a4a6d}} 
+int \mbox{\hyperlink{mdi__tcp_8c_a10fd67e4f26f799e0f5c6b45782a4a6d}{tcp\+\_\+on\+\_\+recv\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback when the T\+CP method must receive a command. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__tcp_8c_a5a88b9f08abe704bafbcb4e6f6768ed6}{tcp\+\_\+listen}} (int port\+\_\+in)
 \begin{DoxyCompactList}\small\item\em Begin listening for incoming T\+CP connections. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__tcp_8c_a4db9ca27b7a981a696957689cd35b20d}{tcp\+\_\+request\+\_\+connection}} (int port, char $\ast$hostname\+\_\+ptr)
+int \mbox{\hyperlink{mdi__tcp_8c_a4e01d97465e426f6fbbe98f3f6eba4de}{tcp\+\_\+request\+\_\+connection}} (int port\+\_\+in, char $\ast$hostname\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Request a connection over T\+CP. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__tcp_8c_ad9d6ed32787d7fb6cd0a555fd8b63b91}\label{mdi__tcp_8c_ad9d6ed32787d7fb6cd0a555fd8b63b91}} 
 int \mbox{\hyperlink{mdi__tcp_8c_ad9d6ed32787d7fb6cd0a555fd8b63b91}{tcp\+\_\+accept\+\_\+connection}} ()
@@ -36,6 +54,12 @@ int \mbox{\hyperlink{mdi__tcp_8c_a1debb8c0b825d277a70db864450d1ac0}{tcp\+\_\+rec
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
+\mbox{\Hypertarget{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}\label{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}} 
+char $\ast$ \mbox{\hyperlink{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}{hostname}} = N\+U\+LL
+\begin{DoxyCompactList}\small\item\em Hostname of the driver. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}\label{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}} 
+int \mbox{\hyperlink{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}{port}} = -\/1
+\begin{DoxyCompactList}\small\item\em Port over which the driver will listen. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}\label{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}} 
 sock\+\_\+t \mbox{\hyperlink{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}{tcp\+\_\+socket}} = -\/1
 \begin{DoxyCompactList}\small\item\em Socket over which a driver will listen for incoming connections. \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -62,11 +86,11 @@ S\+I\+G\+I\+NT handler to ensure the socket is closed on termination.
 \mbox{\texttt{ in}}  & {\em dummy} & Dummy argument. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__tcp_8c_a87d3f43c944c0e9a5d67c9a4157afe71}\label{mdi__tcp_8c_a87d3f43c944c0e9a5d67c9a4157afe71}} 
+\mbox{\Hypertarget{mdi__tcp_8c_a5a88b9f08abe704bafbcb4e6f6768ed6}\label{mdi__tcp_8c_a5a88b9f08abe704bafbcb4e6f6768ed6}} 
 \index{mdi\_tcp.c@{mdi\_tcp.c}!tcp\_listen@{tcp\_listen}}
 \index{tcp\_listen@{tcp\_listen}!mdi\_tcp.c@{mdi\_tcp.c}}
 \doxysubsubsection{\texorpdfstring{tcp\_listen()}{tcp\_listen()}}
-{\footnotesize\ttfamily int tcp\+\_\+listen (\begin{DoxyParamCaption}\item[{int}]{port }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int tcp\+\_\+listen (\begin{DoxyParamCaption}\item[{int}]{port\+\_\+in }\end{DoxyParamCaption})}
 
 
 
@@ -100,11 +124,11 @@ Receive data through an M\+DI connection, using T\+CP.
 \mbox{\texttt{ in}}  & {\em msg\+\_\+flag} & Type of role this data has within a message. 0\+: Not part of a message. 1\+: The header of a message. 2\+: The body (data) of a message. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__tcp_8c_a4db9ca27b7a981a696957689cd35b20d}\label{mdi__tcp_8c_a4db9ca27b7a981a696957689cd35b20d}} 
+\mbox{\Hypertarget{mdi__tcp_8c_a4e01d97465e426f6fbbe98f3f6eba4de}\label{mdi__tcp_8c_a4e01d97465e426f6fbbe98f3f6eba4de}} 
 \index{mdi\_tcp.c@{mdi\_tcp.c}!tcp\_request\_connection@{tcp\_request\_connection}}
 \index{tcp\_request\_connection@{tcp\_request\_connection}!mdi\_tcp.c@{mdi\_tcp.c}}
 \doxysubsubsection{\texorpdfstring{tcp\_request\_connection()}{tcp\_request\_connection()}}
-{\footnotesize\ttfamily int tcp\+\_\+request\+\_\+connection (\begin{DoxyParamCaption}\item[{int}]{port,  }\item[{char $\ast$}]{hostname\+\_\+ptr }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int tcp\+\_\+request\+\_\+connection (\begin{DoxyParamCaption}\item[{int}]{port\+\_\+in,  }\item[{char $\ast$}]{hostname\+\_\+ptr }\end{DoxyParamCaption})}
 
 
 

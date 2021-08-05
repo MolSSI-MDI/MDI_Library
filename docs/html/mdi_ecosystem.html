@@ -125,6 +125,7 @@ OpenMM</h1>
 Psi4</h1>
 <p>To use Psi4 as an engine, follow these steps:</p>
 <ol type="1">
+<li>Install MDI as a Python package, using either Conda (<code>conda install -c conda-forge pymdi</code>) or pip (<code>pip install pymdi</code>).</li>
 <li>Acquire and compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.</li>
 <li>Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, call the <b>mdi</b> command, which accepts as its only argument the computational method that should be used for any energy or gradient calculations that are requested by the driver. For example: <pre class="fragment">molecule {
 O 4.92718 4.99809 1.10308

@@ -103,6 +103,30 @@ Functions</h2></td></tr>
 <tr class="memitem:a0639f31fe7860f028614354b78b22205"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a0639f31fe7860f028614354b78b22205">set_world_rank</a> (int world_rank_in)</td></tr>
 <tr class="memdesc:a0639f31fe7860f028614354b78b22205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rank of this process in MPI_COMM_WORLD.  <a href="#a0639f31fe7860f028614354b78b22205">More...</a><br /></td></tr>
 <tr class="separator:a0639f31fe7860f028614354b78b22205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5388d25c27504059f579f020283e8e62"><td class="memItemLeft" align="right" valign="top"><a id="a5388d25c27504059f579f020283e8e62"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a5388d25c27504059f579f020283e8e62">enable_mpi_support</a> ()</td></tr>
+<tr class="memdesc:a5388d25c27504059f579f020283e8e62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable support for the TCP method. <br /></td></tr>
+<tr class="separator:a5388d25c27504059f579f020283e8e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae032bc6ef7a446927f7326767c9b0162"><td class="memItemLeft" align="right" valign="top"><a id="ae032bc6ef7a446927f7326767c9b0162"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#ae032bc6ef7a446927f7326767c9b0162">mpi_on_selection</a> ()</td></tr>
+<tr class="memdesc:ae032bc6ef7a446927f7326767c9b0162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the end-user selects MPI as the method. <br /></td></tr>
+<tr class="separator:ae032bc6ef7a446927f7326767c9b0162"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adef834500d9d26158121e8ce3683b00f"><td class="memItemLeft" align="right" valign="top"><a id="adef834500d9d26158121e8ce3683b00f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#adef834500d9d26158121e8ce3683b00f">mpi_on_accept_communicator</a> ()</td></tr>
+<tr class="memdesc:adef834500d9d26158121e8ce3683b00f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the MPI method must accept a communicator. <br /></td></tr>
+<tr class="separator:adef834500d9d26158121e8ce3683b00f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa098cc466a809718abfe60d8b0e328c2"><td class="memItemLeft" align="right" valign="top"><a id="aa098cc466a809718abfe60d8b0e328c2"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#aa098cc466a809718abfe60d8b0e328c2">mpi_on_send_command</a> (const char *command, MDI_Comm comm, int *skip_flag)</td></tr>
+<tr class="memdesc:aa098cc466a809718abfe60d8b0e328c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the MPI method must send a command. <br /></td></tr>
+<tr class="separator:aa098cc466a809718abfe60d8b0e328c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a223bd117110a35fb549654cba21b552c"><td class="memItemLeft" align="right" valign="top"><a id="a223bd117110a35fb549654cba21b552c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a223bd117110a35fb549654cba21b552c">mpi_after_send_command</a> (const char *command, MDI_Comm comm)</td></tr>
+<tr class="memdesc:a223bd117110a35fb549654cba21b552c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback after the MPI method has received a command. <br /></td></tr>
+<tr class="separator:a223bd117110a35fb549654cba21b552c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77171623c5d52d85ec77453fcf9aa921"><td class="memItemLeft" align="right" valign="top"><a id="a77171623c5d52d85ec77453fcf9aa921"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a77171623c5d52d85ec77453fcf9aa921">mpi_on_recv_command</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a77171623c5d52d85ec77453fcf9aa921"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the MPI method must receive a command. <br /></td></tr>
+<tr class="separator:a77171623c5d52d85ec77453fcf9aa921"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44c7d40baf40b4ece1ab6208dab790eb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__mpi_8h.html#a44c7d40baf40b4ece1ab6208dab790eb">mpi_identify_codes</a> (const char *code_name, int use_mpi4py, MPI_Comm world_comm)</td></tr>
 <tr class="memdesc:a44c7d40baf40b4ece1ab6208dab790eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identify groups of processes belonging to the same codes.  <a href="#a44c7d40baf40b4ece1ab6208dab790eb">More...</a><br /></td></tr>
 <tr class="separator:a44c7d40baf40b4ece1ab6208dab790eb"><td class="memSeparator" colspan="2">&#160;</td></tr>

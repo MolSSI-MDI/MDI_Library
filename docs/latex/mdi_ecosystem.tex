@@ -58,6 +58,7 @@ To use Psi4 as an engine, follow these steps\+:
 
 
 \begin{DoxyEnumerate}
+\item Install M\+DI as a Python package, using either Conda ({\ttfamily conda install -\/c conda-\/forge pymdi}) or pip ({\ttfamily pip install pymdi}).
 \item Acquire and compile Psi4, following the \href{http://www.psicode.org/psi4manual/master/external.html}{\texttt{ Psi4 installation guide}}.
 \item Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, call the {\bfseries{mdi}} command, which accepts as its only argument the computational method that should be used for any energy or gradient calculations that are requested by the driver. For example\+: \begin{DoxyVerb}molecule {
 O 4.92718 4.99809 1.10308

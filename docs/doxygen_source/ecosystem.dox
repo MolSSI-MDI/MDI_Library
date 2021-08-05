@@ -89,6 +89,9 @@ At the end of the run script (or at whatever point OpenMM should begin accepting
 To use Psi4 as an engine, follow these steps:
 
   -#
+Install MDI as a Python package, using either Conda (`conda install -c conda-forge pymdi`) or pip (`pip install pymdi`).
+
+  -#
 Acquire and compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.
 
   -#

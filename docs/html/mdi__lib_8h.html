@@ -100,6 +100,30 @@ typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Plugin_i
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ad7abe35c94a10f7dd9f040df674dba70"><td class="memItemLeft" align="right" valign="top"><a id="ad7abe35c94a10f7dd9f040df674dba70"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#ad7abe35c94a10f7dd9f040df674dba70">enable_plug_support</a> ()</td></tr>
+<tr class="memdesc:ad7abe35c94a10f7dd9f040df674dba70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable support for the PLUG method. <br /></td></tr>
+<tr class="separator:ad7abe35c94a10f7dd9f040df674dba70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34394b3dbbaeefacfde090e639b82edd"><td class="memItemLeft" align="right" valign="top"><a id="a34394b3dbbaeefacfde090e639b82edd"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a34394b3dbbaeefacfde090e639b82edd">plug_on_selection</a> ()</td></tr>
+<tr class="memdesc:a34394b3dbbaeefacfde090e639b82edd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the end-user selects PLUG as the method. <br /></td></tr>
+<tr class="separator:a34394b3dbbaeefacfde090e639b82edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb75c19aec47e0a2bbfca541fc7b367d"><td class="memItemLeft" align="right" valign="top"><a id="aeb75c19aec47e0a2bbfca541fc7b367d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#aeb75c19aec47e0a2bbfca541fc7b367d">plug_on_accept_communicator</a> ()</td></tr>
+<tr class="memdesc:aeb75c19aec47e0a2bbfca541fc7b367d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the PLUG method must accept a communicator. <br /></td></tr>
+<tr class="separator:aeb75c19aec47e0a2bbfca541fc7b367d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae55dc0e0110270471bb359602f56a6fc"><td class="memItemLeft" align="right" valign="top"><a id="ae55dc0e0110270471bb359602f56a6fc"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#ae55dc0e0110270471bb359602f56a6fc">plug_on_send_command</a> (const char *command, MDI_Comm comm, int *skip_flag)</td></tr>
+<tr class="memdesc:ae55dc0e0110270471bb359602f56a6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the PLUG method must send a command. <br /></td></tr>
+<tr class="separator:ae55dc0e0110270471bb359602f56a6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06553ad67f75bba59f571d7e4bc38926"><td class="memItemLeft" align="right" valign="top"><a id="a06553ad67f75bba59f571d7e4bc38926"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a06553ad67f75bba59f571d7e4bc38926">plug_after_send_command</a> (const char *command, MDI_Comm comm)</td></tr>
+<tr class="memdesc:a06553ad67f75bba59f571d7e4bc38926"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback after the PLUG method has received a command. <br /></td></tr>
+<tr class="separator:a06553ad67f75bba59f571d7e4bc38926"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d94420b38e4dcd7008498385fbea604"><td class="memItemLeft" align="right" valign="top"><a id="a6d94420b38e4dcd7008498385fbea604"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a6d94420b38e4dcd7008498385fbea604">plug_on_recv_command</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a6d94420b38e4dcd7008498385fbea604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the PLUG method must receive a command. <br /></td></tr>
+<tr class="separator:a6d94420b38e4dcd7008498385fbea604"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a1ab96bea21c7b704373638570a70b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__lib_8h.html#a1a1ab96bea21c7b704373638570a70b4">library_launch_plugin</a> (const char *plugin_name, const char *options, void *mpi_comm_ptr, MDI_Driver_node_callback_t driver_node_callback, void *driver_callback_object)</td></tr>
 <tr class="memdesc:a1a1ab96bea21c7b704373638570a70b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch an MDI plugin.  <a href="#a1a1ab96bea21c7b704373638570a70b4">More...</a><br /></td></tr>
 <tr class="separator:a1a1ab96bea21c7b704373638570a70b4"><td class="memSeparator" colspan="2">&#160;</td></tr>

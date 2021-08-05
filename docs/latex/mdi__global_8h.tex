@@ -11,6 +11,8 @@ Global structures used by M\+DI.
 \item 
 struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}}
 \item 
+struct \mbox{\hyperlink{structmethod__struct}{method\+\_\+struct}}
+\item 
 struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}}
 \item 
 struct \mbox{\hyperlink{structnode__struct}{node\+\_\+struct}}
@@ -51,7 +53,7 @@ struct \mbox{\hyperlink{structcode__struct}{code\+\_\+struct}}
 \#define {\bfseries M\+D\+I\+\_\+\+M\+I\+N\+O\+R\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+}~2
 \item 
 \mbox{\Hypertarget{mdi__global_8h_ae00623daf324fbcb5836b054fa0836b8}\label{mdi__global_8h_ae00623daf324fbcb5836b054fa0836b8}} 
-\#define {\bfseries M\+D\+I\+\_\+\+P\+A\+T\+C\+H\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+}~12
+\#define {\bfseries M\+D\+I\+\_\+\+P\+A\+T\+C\+H\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+}~15
 \item 
 \mbox{\Hypertarget{mdi__global_8h_a474fb80c9b424fce2f9f207a749d8602}\label{mdi__global_8h_a474fb80c9b424fce2f9f207a749d8602}} 
 \#define {\bfseries M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+T\+H\+\_\+}~12
@@ -134,6 +136,9 @@ typedef int {\bfseries M\+D\+I\+\_\+\+Datatype\+\_\+\+Type}
 \mbox{\Hypertarget{mdi__global_8h_ae301b80284ed481523c43e095398ba92}\label{mdi__global_8h_ae301b80284ed481523c43e095398ba92}} 
 typedef struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}} {\bfseries vector}
 \item 
+\mbox{\Hypertarget{mdi__global_8h_a791e106c73cebc1f4a88714c66e33fe9}\label{mdi__global_8h_a791e106c73cebc1f4a88714c66e33fe9}} 
+typedef struct \mbox{\hyperlink{structmethod__struct}{method\+\_\+struct}} {\bfseries method}
+\item 
 \mbox{\Hypertarget{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}\label{mdi__global_8h_a7f1369263a8fc2bfc5c3f69302d4dea7}} 
 typedef struct \mbox{\hyperlink{structcommunicator__struct}{communicator\+\_\+struct}} {\bfseries communicator}
 \item 
@@ -166,7 +171,7 @@ int \mbox{\hyperlink{mdi__global_8h_a62da6acd5dbe977614e689e6000a3b18}{get\+\_\+
 int \mbox{\hyperlink{mdi__global_8h_afa8e15c40e69dda04607b59612c1dc96}{free\+\_\+node\+\_\+vector}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v)
 \begin{DoxyCompactList}\small\item\em Determine the index of a callback within a node. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}\label{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}} 
-int \mbox{\hyperlink{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}{new\+\_\+communicator}} (int code\+\_\+id, int method)
+int \mbox{\hyperlink{mdi__global_8h_ad59915f6116d24ff6553770ec547ae6f}{new\+\_\+communicator}} (int code\+\_\+id, int \mbox{\hyperlink{structmethod__struct}{method}})
 \begin{DoxyCompactList}\small\item\em Create a new communicator structure and add it to the list of communicators Returns the handle of the new communicator. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}\label{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}} 
 \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$ \mbox{\hyperlink{mdi__global_8h_ac3ed0e0f9fb95ecc713383b340d0ff69}{get\+\_\+communicator}} (int code\+\_\+id, M\+D\+I\+\_\+\+Comm\+\_\+\+Type comm\+\_\+id)
@@ -183,6 +188,15 @@ int \mbox{\hyperlink{mdi__global_8h_a85db1717518f106b85b41bb98963a11e}{new\+\_\+
 \mbox{\Hypertarget{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}\label{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}} 
 int \mbox{\hyperlink{mdi__global_8h_a94f5f8596796093d0b04835f37d2f0bf}{delete\+\_\+code}} (int code\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Delete a code Returns 0 on success. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a3b00d42805e039c46d31a67dd21b2d0a}\label{mdi__global_8h_a3b00d42805e039c46d31a67dd21b2d0a}} 
+int \mbox{\hyperlink{mdi__global_8h_a3b00d42805e039c46d31a67dd21b2d0a}{new\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Create a new method structure and add it to the vector of methods Returns the handle of the new method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_af888b00d3331f8e6b9923100dccda0ad}\label{mdi__global_8h_af888b00d3331f8e6b9923100dccda0ad}} 
+\mbox{\hyperlink{structmethod__struct}{method}} $\ast$ \mbox{\hyperlink{mdi__global_8h_af888b00d3331f8e6b9923100dccda0ad}{get\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get a method from a method handle Returns a pointer to the method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a9cece53ee550c577ac2590185240f36b}\label{mdi__global_8h_a9cece53ee550c577ac2590185240f36b}} 
+int \mbox{\hyperlink{mdi__global_8h_a9cece53ee550c577ac2590185240f36b}{delete\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Delete a method Returns 0 on success. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8h_a76edb8071574cfd3b322e0df10a18718}{file\+\_\+exists}} (const char $\ast$file\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Check whether a file exists. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8h_aee63109d024677e514597584cdb5c70b}\label{mdi__global_8h_aee63109d024677e514597584cdb5c70b}} 
@@ -202,9 +216,14 @@ int \mbox{\hyperlink{mdi__global_8h_ab0e3600e7cb339375fbeecf035de7385}{convert\+
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}\label{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}} 
 \mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}{codes}}
-\begin{DoxyCompactList}\small\item\em Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is L\+I\+B\+R\+A\+RY. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_a75c645c2f3c79db1685f3b82976781b6}\label{mdi__global_8h_a75c645c2f3c79db1685f3b82976781b6}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8h_a75c645c2f3c79db1685f3b82976781b6}{methods}}
+\begin{DoxyCompactList}\small\item\em Vector containing all supported methods. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8h_ad5882cd552349a651f6ea14cab11874b}\label{mdi__global_8h_ad5882cd552349a651f6ea14cab11874b}} 
+int \mbox{\hyperlink{mdi__global_8h_ad5882cd552349a651f6ea14cab11874b}{selected\+\_\+method\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em ID of the method being used for inter-\/code communication. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}\label{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}} 
 int \mbox{\hyperlink{mdi__global_8h_abf9d1ed5f34468bd87ea673484ea5925}{current\+\_\+code}}
 \begin{DoxyCompactList}\small\item\em Index of the active code. \end{DoxyCompactList}\item 
@@ -492,3 +511,17 @@ Append a new element to the end of the vector.
 \mbox{\texttt{ in}}  & {\em element} & Pointer to the element that will be appended to the vector \\
 \hline
 \end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}\label{mdi__global_8h_a436cd63cce6bc5fda01cf665c6d3dc3d}} 
+\index{mdi\_global.h@{mdi\_global.h}!codes@{codes}}
+\index{codes@{codes}!mdi\_global.h@{mdi\_global.h}}
+\doxysubsubsection{\texorpdfstring{codes}{codes}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdynamic__array__struct}{vector}} codes}
+
+
+
+Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. 
+
+Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. 

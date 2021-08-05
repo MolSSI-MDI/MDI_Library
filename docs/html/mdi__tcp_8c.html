@@ -96,12 +96,36 @@ Functions</h2></td></tr>
 <tr class="memitem:a47630f8f823b92ad9333c3c5f130cf90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a47630f8f823b92ad9333c3c5f130cf90">sigint_handler</a> (int dummy)</td></tr>
 <tr class="memdesc:a47630f8f823b92ad9333c3c5f130cf90"><td class="mdescLeft">&#160;</td><td class="mdescRight">SIGINT handler to ensure the socket is closed on termination.  <a href="#a47630f8f823b92ad9333c3c5f130cf90">More...</a><br /></td></tr>
 <tr class="separator:a47630f8f823b92ad9333c3c5f130cf90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87d3f43c944c0e9a5d67c9a4157afe71"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a87d3f43c944c0e9a5d67c9a4157afe71">tcp_listen</a> (int port)</td></tr>
-<tr class="memdesc:a87d3f43c944c0e9a5d67c9a4157afe71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin listening for incoming TCP connections.  <a href="#a87d3f43c944c0e9a5d67c9a4157afe71">More...</a><br /></td></tr>
-<tr class="separator:a87d3f43c944c0e9a5d67c9a4157afe71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4db9ca27b7a981a696957689cd35b20d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a4db9ca27b7a981a696957689cd35b20d">tcp_request_connection</a> (int port, char *hostname_ptr)</td></tr>
-<tr class="memdesc:a4db9ca27b7a981a696957689cd35b20d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a connection over TCP.  <a href="#a4db9ca27b7a981a696957689cd35b20d">More...</a><br /></td></tr>
-<tr class="separator:a4db9ca27b7a981a696957689cd35b20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2b6606fb814d29a69fb2cdfa416c437"><td class="memItemLeft" align="right" valign="top"><a id="ab2b6606fb814d29a69fb2cdfa416c437"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ab2b6606fb814d29a69fb2cdfa416c437">enable_tcp_support</a> ()</td></tr>
+<tr class="memdesc:ab2b6606fb814d29a69fb2cdfa416c437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable support for the TCP method. <br /></td></tr>
+<tr class="separator:ab2b6606fb814d29a69fb2cdfa416c437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2a9634d0b8e19bb873bf501ca72a04f"><td class="memItemLeft" align="right" valign="top"><a id="ac2a9634d0b8e19bb873bf501ca72a04f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ac2a9634d0b8e19bb873bf501ca72a04f">tcp_on_selection</a> ()</td></tr>
+<tr class="memdesc:ac2a9634d0b8e19bb873bf501ca72a04f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the end-user selects TCP as the method. <br /></td></tr>
+<tr class="separator:ac2a9634d0b8e19bb873bf501ca72a04f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b8435f5033a5fd6a14310324854f7df"><td class="memItemLeft" align="right" valign="top"><a id="a9b8435f5033a5fd6a14310324854f7df"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a9b8435f5033a5fd6a14310324854f7df">tcp_on_accept_communicator</a> ()</td></tr>
+<tr class="memdesc:a9b8435f5033a5fd6a14310324854f7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the TCP method must accept a communicator. <br /></td></tr>
+<tr class="separator:a9b8435f5033a5fd6a14310324854f7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4cfd63fb562e43a1237fa229841c56c"><td class="memItemLeft" align="right" valign="top"><a id="ab4cfd63fb562e43a1237fa229841c56c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ab4cfd63fb562e43a1237fa229841c56c">tcp_on_send_command</a> (const char *command, MDI_Comm comm, int *skip_flag)</td></tr>
+<tr class="memdesc:ab4cfd63fb562e43a1237fa229841c56c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the TCP method must send a command. <br /></td></tr>
+<tr class="separator:ab4cfd63fb562e43a1237fa229841c56c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a65b903a90360e2d1adef63e2e63aef"><td class="memItemLeft" align="right" valign="top"><a id="a7a65b903a90360e2d1adef63e2e63aef"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a7a65b903a90360e2d1adef63e2e63aef">tcp_after_send_command</a> (const char *command, MDI_Comm comm)</td></tr>
+<tr class="memdesc:a7a65b903a90360e2d1adef63e2e63aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback after the TCP method has received a command. <br /></td></tr>
+<tr class="separator:a7a65b903a90360e2d1adef63e2e63aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10fd67e4f26f799e0f5c6b45782a4a6d"><td class="memItemLeft" align="right" valign="top"><a id="a10fd67e4f26f799e0f5c6b45782a4a6d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a10fd67e4f26f799e0f5c6b45782a4a6d">tcp_on_recv_command</a> (MDI_Comm comm)</td></tr>
+<tr class="memdesc:a10fd67e4f26f799e0f5c6b45782a4a6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the TCP method must receive a command. <br /></td></tr>
+<tr class="separator:a10fd67e4f26f799e0f5c6b45782a4a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a88b9f08abe704bafbcb4e6f6768ed6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a5a88b9f08abe704bafbcb4e6f6768ed6">tcp_listen</a> (int port_in)</td></tr>
+<tr class="memdesc:a5a88b9f08abe704bafbcb4e6f6768ed6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin listening for incoming TCP connections.  <a href="#a5a88b9f08abe704bafbcb4e6f6768ed6">More...</a><br /></td></tr>
+<tr class="separator:a5a88b9f08abe704bafbcb4e6f6768ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e01d97465e426f6fbbe98f3f6eba4de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a4e01d97465e426f6fbbe98f3f6eba4de">tcp_request_connection</a> (int port_in, char *hostname_ptr)</td></tr>
+<tr class="memdesc:a4e01d97465e426f6fbbe98f3f6eba4de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a connection over TCP.  <a href="#a4e01d97465e426f6fbbe98f3f6eba4de">More...</a><br /></td></tr>
+<tr class="separator:a4e01d97465e426f6fbbe98f3f6eba4de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9d6ed32787d7fb6cd0a555fd8b63b91"><td class="memItemLeft" align="right" valign="top"><a id="ad9d6ed32787d7fb6cd0a555fd8b63b91"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ad9d6ed32787d7fb6cd0a555fd8b63b91">tcp_accept_connection</a> ()</td></tr>
 <tr class="memdesc:ad9d6ed32787d7fb6cd0a555fd8b63b91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept a TCP connection request. <br /></td></tr>
@@ -115,6 +139,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:af203df082d5c6dcaa0c88b07cf86466d"><td class="memItemLeft" align="right" valign="top"><a id="af203df082d5c6dcaa0c88b07cf86466d"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#af203df082d5c6dcaa0c88b07cf86466d">hostname</a> = NULL</td></tr>
+<tr class="memdesc:af203df082d5c6dcaa0c88b07cf86466d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hostname of the driver. <br /></td></tr>
+<tr class="separator:af203df082d5c6dcaa0c88b07cf86466d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63c89c04d1feae07ca35558055155ffb"><td class="memItemLeft" align="right" valign="top"><a id="a63c89c04d1feae07ca35558055155ffb"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#a63c89c04d1feae07ca35558055155ffb">port</a> = -1</td></tr>
+<tr class="memdesc:a63c89c04d1feae07ca35558055155ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Port over which the driver will listen. <br /></td></tr>
+<tr class="separator:a63c89c04d1feae07ca35558055155ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="memItemLeft" align="right" valign="top"><a id="ab6f3723dc8b08cb2534fa22a58cf7553"></a>
 sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8c.html#ab6f3723dc8b08cb2534fa22a58cf7553">tcp_socket</a> = -1</td></tr>
 <tr class="memdesc:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket over which a driver will listen for incoming connections. <br /></td></tr>
@@ -149,8 +181,8 @@ sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="md
 
 </div>
 </div>
-<a id="a87d3f43c944c0e9a5d67c9a4157afe71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87d3f43c944c0e9a5d67c9a4157afe71">&#9670;&nbsp;</a></span>tcp_listen()</h2>
+<a id="a5a88b9f08abe704bafbcb4e6f6768ed6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a88b9f08abe704bafbcb4e6f6768ed6">&#9670;&nbsp;</a></span>tcp_listen()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,7 +191,7 @@ sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="md
           <td class="memname">int tcp_listen </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>port</em></td><td>)</td>
+          <td class="paramname"><em>port_in</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -233,8 +265,8 @@ sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="md
 
 </div>
 </div>
-<a id="a4db9ca27b7a981a696957689cd35b20d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4db9ca27b7a981a696957689cd35b20d">&#9670;&nbsp;</a></span>tcp_request_connection()</h2>
+<a id="a4e01d97465e426f6fbbe98f3f6eba4de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e01d97465e426f6fbbe98f3f6eba4de">&#9670;&nbsp;</a></span>tcp_request_connection()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +275,7 @@ sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="md
           <td class="memname">int tcp_request_connection </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>port</em>, </td>
+          <td class="paramname"><em>port_in</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

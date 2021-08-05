@@ -43,8 +43,17 @@ int \mbox{\hyperlink{mdi__global_8c_a85db1717518f106b85b41bb98963a11e}{new\+\_\+
 \mbox{\Hypertarget{mdi__global_8c_a94f5f8596796093d0b04835f37d2f0bf}\label{mdi__global_8c_a94f5f8596796093d0b04835f37d2f0bf}} 
 int \mbox{\hyperlink{mdi__global_8c_a94f5f8596796093d0b04835f37d2f0bf}{delete\+\_\+code}} (int code\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Delete a code Returns 0 on success. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a3b00d42805e039c46d31a67dd21b2d0a}\label{mdi__global_8c_a3b00d42805e039c46d31a67dd21b2d0a}} 
+int \mbox{\hyperlink{mdi__global_8c_a3b00d42805e039c46d31a67dd21b2d0a}{new\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Create a new method structure and add it to the vector of methods Returns the handle of the new method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_af888b00d3331f8e6b9923100dccda0ad}\label{mdi__global_8c_af888b00d3331f8e6b9923100dccda0ad}} 
+\mbox{\hyperlink{structmethod__struct}{method}} $\ast$ \mbox{\hyperlink{mdi__global_8c_af888b00d3331f8e6b9923100dccda0ad}{get\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get a method from a method handle Returns a pointer to the method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a9cece53ee550c577ac2590185240f36b}\label{mdi__global_8c_a9cece53ee550c577ac2590185240f36b}} 
+int \mbox{\hyperlink{mdi__global_8c_a9cece53ee550c577ac2590185240f36b}{delete\+\_\+method}} (int method\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Delete a method Returns 0 on success. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_ad59915f6116d24ff6553770ec547ae6f}\label{mdi__global_8c_ad59915f6116d24ff6553770ec547ae6f}} 
-int \mbox{\hyperlink{mdi__global_8c_ad59915f6116d24ff6553770ec547ae6f}{new\+\_\+communicator}} (int code\+\_\+id, int method)
+int \mbox{\hyperlink{mdi__global_8c_ad59915f6116d24ff6553770ec547ae6f}{new\+\_\+communicator}} (int code\+\_\+id, int \mbox{\hyperlink{structmethod__struct}{method}})
 \begin{DoxyCompactList}\small\item\em Create a new communicator structure and add it to the list of communicators Returns the handle of the new communicator. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_ac3ed0e0f9fb95ecc713383b340d0ff69}\label{mdi__global_8c_ac3ed0e0f9fb95ecc713383b340d0ff69}} 
 \mbox{\hyperlink{structcommunicator__struct}{communicator}} $\ast$ \mbox{\hyperlink{mdi__global_8c_ac3ed0e0f9fb95ecc713383b340d0ff69}{get\+\_\+communicator}} (int code\+\_\+id, M\+D\+I\+\_\+\+Comm\+\_\+\+Type comm\+\_\+id)
@@ -71,9 +80,14 @@ int \mbox{\hyperlink{mdi__global_8c_ab0e3600e7cb339375fbeecf035de7385}{convert\+
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__global_8c_a436cd63cce6bc5fda01cf665c6d3dc3d}\label{mdi__global_8c_a436cd63cce6bc5fda01cf665c6d3dc3d}} 
 \mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8c_a436cd63cce6bc5fda01cf665c6d3dc3d}{codes}}
 \begin{DoxyCompactList}\small\item\em Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is L\+I\+B\+R\+A\+RY. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_a75c645c2f3c79db1685f3b82976781b6}\label{mdi__global_8c_a75c645c2f3c79db1685f3b82976781b6}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} \mbox{\hyperlink{mdi__global_8c_a75c645c2f3c79db1685f3b82976781b6}{methods}}
+\begin{DoxyCompactList}\small\item\em Vector containing all supported methods. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_ad5882cd552349a651f6ea14cab11874b}\label{mdi__global_8c_ad5882cd552349a651f6ea14cab11874b}} 
+int \mbox{\hyperlink{mdi__global_8c_ad5882cd552349a651f6ea14cab11874b}{selected\+\_\+method\+\_\+id}} = 0
+\begin{DoxyCompactList}\small\item\em ID of the method being used for inter-\/code communication. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_abf9d1ed5f34468bd87ea673484ea5925}\label{mdi__global_8c_abf9d1ed5f34468bd87ea673484ea5925}} 
 int \mbox{\hyperlink{mdi__global_8c_abf9d1ed5f34468bd87ea673484ea5925}{current\+\_\+code}} = 0
 \begin{DoxyCompactList}\small\item\em Index of the active code. \end{DoxyCompactList}\item 
@@ -361,3 +375,17 @@ Append a new element to the end of the vector.
 \mbox{\texttt{ in}}  & {\em element} & Pointer to the element that will be appended to the vector \\
 \hline
 \end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{mdi__global_8c_a436cd63cce6bc5fda01cf665c6d3dc3d}\label{mdi__global_8c_a436cd63cce6bc5fda01cf665c6d3dc3d}} 
+\index{mdi\_global.c@{mdi\_global.c}!codes@{codes}}
+\index{codes@{codes}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{codes}{codes}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdynamic__array__struct}{vector}} codes}
+
+
+
+Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is L\+I\+B\+R\+A\+RY. 
+
+Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. 

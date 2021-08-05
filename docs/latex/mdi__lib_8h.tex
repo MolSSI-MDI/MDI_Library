@@ -24,6 +24,24 @@ typedef int($\ast$ {\bfseries M\+D\+I\+\_\+\+Plugin\+\_\+init\+\_\+t}) ()
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+\mbox{\Hypertarget{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}\label{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}} 
+int \mbox{\hyperlink{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}{enable\+\_\+plug\+\_\+support}} ()
+\begin{DoxyCompactList}\small\item\em Enable support for the P\+L\+UG method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}\label{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}} 
+int \mbox{\hyperlink{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}{plug\+\_\+on\+\_\+selection}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the end-\/user selects P\+L\+UG as the method. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_aeb75c19aec47e0a2bbfca541fc7b367d}\label{mdi__lib_8h_aeb75c19aec47e0a2bbfca541fc7b367d}} 
+int \mbox{\hyperlink{mdi__lib_8h_aeb75c19aec47e0a2bbfca541fc7b367d}{plug\+\_\+on\+\_\+accept\+\_\+communicator}} ()
+\begin{DoxyCompactList}\small\item\em Callback when the P\+L\+UG method must accept a communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_ae55dc0e0110270471bb359602f56a6fc}\label{mdi__lib_8h_ae55dc0e0110270471bb359602f56a6fc}} 
+int \mbox{\hyperlink{mdi__lib_8h_ae55dc0e0110270471bb359602f56a6fc}{plug\+\_\+on\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm, int $\ast$skip\+\_\+flag)
+\begin{DoxyCompactList}\small\item\em Callback when the P\+L\+UG method must send a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_a06553ad67f75bba59f571d7e4bc38926}\label{mdi__lib_8h_a06553ad67f75bba59f571d7e4bc38926}} 
+int \mbox{\hyperlink{mdi__lib_8h_a06553ad67f75bba59f571d7e4bc38926}{plug\+\_\+after\+\_\+send\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback after the P\+L\+UG method has received a command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}\label{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}} 
+int \mbox{\hyperlink{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}{plug\+\_\+on\+\_\+recv\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
+\begin{DoxyCompactList}\small\item\em Callback when the P\+L\+UG method must receive a command. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a1a1ab96bea21c7b704373638570a70b4}{library\+\_\+launch\+\_\+plugin}} (const char $\ast$plugin\+\_\+name, const char $\ast$options, void $\ast$mpi\+\_\+comm\+\_\+ptr, M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t driver\+\_\+node\+\_\+callback, void $\ast$driver\+\_\+callback\+\_\+object)
 \begin{DoxyCompactList}\small\item\em Launch an M\+DI plugin. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()

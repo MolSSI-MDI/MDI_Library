@@ -128,8 +128,20 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a94f5f8596796093d0b04835f37d2f0bf">delete_code</a> (int code_id)</td></tr>
 <tr class="memdesc:a94f5f8596796093d0b04835f37d2f0bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a code Returns 0 on success. <br /></td></tr>
 <tr class="separator:a94f5f8596796093d0b04835f37d2f0bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b00d42805e039c46d31a67dd21b2d0a"><td class="memItemLeft" align="right" valign="top"><a id="a3b00d42805e039c46d31a67dd21b2d0a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a3b00d42805e039c46d31a67dd21b2d0a">new_method</a> (int method_id)</td></tr>
+<tr class="memdesc:a3b00d42805e039c46d31a67dd21b2d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new method structure and add it to the vector of methods Returns the handle of the new method. <br /></td></tr>
+<tr class="separator:a3b00d42805e039c46d31a67dd21b2d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af888b00d3331f8e6b9923100dccda0ad"><td class="memItemLeft" align="right" valign="top"><a id="af888b00d3331f8e6b9923100dccda0ad"></a>
+<a class="el" href="structmethod__struct.html">method</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#af888b00d3331f8e6b9923100dccda0ad">get_method</a> (int method_id)</td></tr>
+<tr class="memdesc:af888b00d3331f8e6b9923100dccda0ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a method from a method handle Returns a pointer to the method. <br /></td></tr>
+<tr class="separator:af888b00d3331f8e6b9923100dccda0ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cece53ee550c577ac2590185240f36b"><td class="memItemLeft" align="right" valign="top"><a id="a9cece53ee550c577ac2590185240f36b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a9cece53ee550c577ac2590185240f36b">delete_method</a> (int method_id)</td></tr>
+<tr class="memdesc:a9cece53ee550c577ac2590185240f36b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a method Returns 0 on success. <br /></td></tr>
+<tr class="separator:a9cece53ee550c577ac2590185240f36b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad59915f6116d24ff6553770ec547ae6f"><td class="memItemLeft" align="right" valign="top"><a id="ad59915f6116d24ff6553770ec547ae6f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ad59915f6116d24ff6553770ec547ae6f">new_communicator</a> (int code_id, int method)</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ad59915f6116d24ff6553770ec547ae6f">new_communicator</a> (int code_id, int <a class="el" href="structmethod__struct.html">method</a>)</td></tr>
 <tr class="memdesc:ad59915f6116d24ff6553770ec547ae6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new communicator structure and add it to the list of communicators Returns the handle of the new communicator. <br /></td></tr>
 <tr class="separator:ad59915f6116d24ff6553770ec547ae6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3ed0e0f9fb95ecc713383b340d0ff69"><td class="memItemLeft" align="right" valign="top"><a id="ac3ed0e0f9fb95ecc713383b340d0ff69"></a>
@@ -166,10 +178,17 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="memItemLeft" align="right" valign="top"><a id="a436cd63cce6bc5fda01cf665c6d3dc3d"></a>
-<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a436cd63cce6bc5fda01cf665c6d3dc3d">codes</a></td></tr>
-<tr class="memdesc:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is LIBRARY. <br /></td></tr>
+<tr class="memitem:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a436cd63cce6bc5fda01cf665c6d3dc3d">codes</a></td></tr>
+<tr class="memdesc:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is LIBRARY.  <a href="#a436cd63cce6bc5fda01cf665c6d3dc3d">More...</a><br /></td></tr>
 <tr class="separator:a436cd63cce6bc5fda01cf665c6d3dc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75c645c2f3c79db1685f3b82976781b6"><td class="memItemLeft" align="right" valign="top"><a id="a75c645c2f3c79db1685f3b82976781b6"></a>
+<a class="el" href="structdynamic__array__struct.html">vector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#a75c645c2f3c79db1685f3b82976781b6">methods</a></td></tr>
+<tr class="memdesc:a75c645c2f3c79db1685f3b82976781b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing all supported methods. <br /></td></tr>
+<tr class="separator:a75c645c2f3c79db1685f3b82976781b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5882cd552349a651f6ea14cab11874b"><td class="memItemLeft" align="right" valign="top"><a id="ad5882cd552349a651f6ea14cab11874b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#ad5882cd552349a651f6ea14cab11874b">selected_method_id</a> = 0</td></tr>
+<tr class="memdesc:ad5882cd552349a651f6ea14cab11874b"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the method being used for inter-code communication. <br /></td></tr>
+<tr class="separator:ad5882cd552349a651f6ea14cab11874b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf9d1ed5f34468bd87ea673484ea5925"><td class="memItemLeft" align="right" valign="top"><a id="abf9d1ed5f34468bd87ea673484ea5925"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8c.html#abf9d1ed5f34468bd87ea673484ea5925">current_code</a> = 0</td></tr>
 <tr class="memdesc:abf9d1ed5f34468bd87ea673484ea5925"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of the active code. <br /></td></tr>
@@ -697,6 +716,24 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a436cd63cce6bc5fda01cf665c6d3dc3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a436cd63cce6bc5fda01cf665c6d3dc3d">&#9670;&nbsp;</a></span>codes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdynamic__array__struct.html">vector</a> codes</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is LIBRARY. </p>
+<p>Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is LINK. </p>
 
 </div>
 </div>
