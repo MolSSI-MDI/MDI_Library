@@ -93,10 +93,11 @@ Install MDI as a Python package, using either Conda (`conda install -c conda-for
 
   -#
 Acquire and compile Psi4, following the <a href="http://www.psicode.org/psi4manual/master/external.html">Psi4 installation guide</a>.
+Installing via Conda is recommended.
 
   -#
 Prepare a Psi4 input file that specifies the initial molecular geometry of the system and any other desired settings.
-At the end of the input file, call the \b mdi command, which accepts as its only argument the computational method that should be used for any energy or gradient calculations that are requested by the driver.
+At the end of the input file, call the \b energy command with the `mdi=True` optional argument.
 For example:
 
     molecule {
@@ -105,7 +106,7 @@ For example:
     H 4.87602 4.14701 0.667997
     }
     
-    mdi("scf/sto-3g")
+    energy("scf/sto-3g", mdi=True)
 
   -#
 Launch Psi4 using the \"\c --mdi\" runtime option, which is described in \ref library_launching_sec.
@@ -197,6 +198,6 @@ Prepare Tinker input files that specify the initial molecular geometry of the sy
 Launch Tinker using the \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
 For example:
 
-    time dynamic.x input -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" 1000 1.0 10.0 2 298.0 778.0
+    dynamic.x input -mdi "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost" 1000 1.0 10.0 2 298.0 778.0
 
 **/
