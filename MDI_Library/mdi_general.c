@@ -742,7 +742,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   for ( ichar = 0; ichar < COMMAND_LENGTH; ichar++) {
     new_command[ichar] = '\0';
   }
-  snprintf(new_command, strlen(node_name)+1, "%s", command_name);
+  snprintf(new_command, strlen(command_name)+1, "%s", command_name);
   vector_push_back( target_node->commands, &new_command );
 
   return 0;
