@@ -43,7 +43,7 @@ endmacro(link_against_mpi _TAR)
 # Macro to link target to MPI (Fortran version)
 
 macro(link_against_mpi_fortran _TAR)
-   if( MPI_Fortran_FOUND )
+   if( (mpi STREQUAL "ON") AND MPI_Fortran_FOUND )
 
       #include MPI
       string_to_list(MPI_Fortran_COMPILE_OPTIONS   "${MPI_Fortran_COMPILE_FLAGS}")
