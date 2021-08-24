@@ -146,11 +146,11 @@ QCEngine</h1>
 <li>Prepare a QCEngine input file that specifies the initial molecular geometry of the system and any other desired settings. At the end of the input file, create an "<code>MDIServer"</code> object and call the "<code>start()"</code> method on it. For example: <pre class="fragment">import qcengine as qcng
 import qcelemental as qcel
 
-molecule {
-O 4.92718 4.99809 1.10308
-H 5.80905 5.31488 0.90767
-H 4.87602 4.14701 0.667997
-}
+mol = qcel.models.Molecule.from_data("""
+O  0.0  0.000  -0.129
+H  0.0 -1.494  1.027
+H  0.0  1.494  1.027
+""")
 
 o = qcng.MDIServer(mdi_options = "-role ENGINE -name QM -method TCP -port 8021 -hostname localhost",
                    program = "psi4",
