@@ -174,7 +174,6 @@ def test_cxx_f90_plug(valgrind):
     # run the calculation
     driver_command = get_command_line(
         valgrind=valgrind,
-        nproc1=0,
         command1=[driver_name,
                   "-driver_nranks", "0",
                   "-plugin_nranks", "1",
