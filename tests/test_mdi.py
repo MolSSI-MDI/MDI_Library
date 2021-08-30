@@ -83,11 +83,11 @@ def get_command_line(valgrind=False, nproc1=None, command1=None, nproc2=1, comma
     command_line = get_valgrind_options(valgrind)
 
     if nproc1 is not None:
-        command_line += [str(mpiexec_name), "-n", str(nproc1),]
-    command_line += [str(command1),]
+        command_line += [str(mpiexec_name), "-n", str(nproc1)]
+    command_line += command1
 
     if command2 is not None:
-        command_line += [":", "-n", str(nproc2), str(command2),]
+        command_line += [":", "-n", str(nproc2)] + command2
 
     return command_line
 
