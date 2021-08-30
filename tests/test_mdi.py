@@ -73,6 +73,22 @@ def get_valgrind_options(valgrind):
     else:
         return []
 
+# Construct launch command correctly, respecting whether the code(s) should be launched with mpiexec or srun
+def get_command_line(valgrind=False, nproc1=1, command1=None, nproc2=1, command2=None):
+    if command1 is None:
+        raise Exception("Error in test_mdi.py script: get_command_line called without command1 argument")
+    if nproc2 != 1 and command2 is None:
+        raise Exception("Error in test_mdi.py script: get_command_line called with nproc2 but without command2")
+
+    valgrind_options = get_valgrind_options(valgrind)
+
+    command_line = valgrind_options + [str(mpiexec_name),]
+    command_line += ["-n", str(nproc1), str(command1)]
+    if command2 is not None:
+        command_line += [":", "-n", str(nproc2), str(command2)]
+
+    return command_line
+
 ##########################
 # Plugin Tests           #
 ##########################
@@ -110,8 +126,6 @@ def test_cxx_cxx_plug(valgrind):
     assert driver_proc.returncode == 0
 
 def test_cxx_cxx_plug_mpi(valgrind):
-    valgrind_options = get_valgrind_options(valgrind)
-
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -120,14 +134,19 @@ def test_cxx_cxx_plug_mpi(valgrind):
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen(valgrind_options +
-                                   [mpiexec_name, "-n", "2",
-                                    driver_name,
-                                    "-driver_nranks", "0",
-                                    "-plugin_nranks", "2",
-                                    "-plugin_name", "engine_cxx",
-                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        nproc1=2,
+        command1=[driver_name,
+                  "-driver_nranks", "0",
+                  "-plugin_nranks", "2",
+                  "-plugin_name", "engine_cxx",
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+        ],
+    )
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
@@ -186,7 +205,7 @@ def test_cxx_f90_plug_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2",
+                                   [mpiexec_name, "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -251,7 +270,7 @@ def test_cxx_py_plug_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2",
+                                   [mpiexec_name, "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -286,7 +305,7 @@ def test_cxx_cxx_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -308,7 +327,7 @@ def test_cxx_cxx_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -330,7 +349,7 @@ def test_cxx_cxx_mpi12(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","2",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -352,7 +371,7 @@ def test_cxx_cxx_mpi_serial(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -374,7 +393,7 @@ def test_cxx_f90_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -395,7 +414,7 @@ def test_cxx_py_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -419,7 +438,7 @@ def test_f90_cxx_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -443,7 +462,7 @@ def test_f90_f90_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -466,7 +485,7 @@ def test_f90_py_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",driver_name, "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -489,7 +508,7 @@ def test_py_cxx_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -512,7 +531,7 @@ def test_py_f90_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",engine_name,"-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -532,7 +551,7 @@ def test_py_py_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
+                                   [mpiexec_name,"-n","1",sys.executable,"driver_py.py", "-mdi", "-role DRIVER -name driver -method MPI",":",
                                     "-n","1",sys.executable,"engine_py.py","-mdi","-role ENGINE -name MM -method MPI"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
@@ -552,7 +571,7 @@ def test_py_py_mpi_serial(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","1",sys.executable,"driver_py.py", 
+                                   [mpiexec_name,"-n","1",sys.executable,"driver_py.py", 
                                     "-mdi", "-role DRIVER -name driver -method MPI","-nompi",":",
                                     "-n","1",sys.executable,"engine_py.py",
                                     "-mdi","-role ENGINE -name MM -method MPI","-nompi"],
@@ -610,7 +629,7 @@ def test_cxx_cxx_tcp_mpi12(valgrind):
                                    [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
+                                   [mpiexec_name,"-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -632,7 +651,7 @@ def test_cxx_cxx_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
+                                   [mpiexec_name,"-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
                                    [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
@@ -766,7 +785,7 @@ def test_f90_f90_tcp_mpi12(valgrind):
                                    [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
+                                   [mpiexec_name, "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -790,7 +809,7 @@ def test_f90_f90_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
+                                   [mpiexec_name, "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
                                    [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
@@ -922,7 +941,7 @@ def test_py_py_tcp_mpi12(valgrind):
                                    [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
+                                   [mpiexec_name, "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
@@ -946,7 +965,7 @@ def test_py_py_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
+                                   [mpiexec_name, "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
                                    [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
