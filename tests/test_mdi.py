@@ -74,18 +74,20 @@ def get_valgrind_options(valgrind):
         return []
 
 # Construct launch command correctly, respecting whether the code(s) should be launched with mpiexec or srun
-def get_command_line(valgrind=False, nproc1=1, command1=None, nproc2=1, command2=None):
+def get_command_line(valgrind=False, nproc1=None, command1=None, nproc2=1, command2=None):
     if command1 is None:
         raise Exception("Error in test_mdi.py script: get_command_line called without command1 argument")
     if nproc2 != 1 and command2 is None:
         raise Exception("Error in test_mdi.py script: get_command_line called with nproc2 but without command2")
 
-    valgrind_options = get_valgrind_options(valgrind)
+    command_line = get_valgrind_options(valgrind)
 
-    command_line = valgrind_options + [str(mpiexec_name),]
-    command_line += ["-n", str(nproc1), str(command1)]
+    if nproc1 is not None:
+        command_line += [str(mpiexec_name), "-n", str(nproc1),]
+    command_line += [str(command1),]
+
     if command2 is not None:
-        command_line += [":", "-n", str(nproc2), str(command2)]
+        command_line += [":", "-n", str(nproc2), str(command2),]
 
     return command_line
 
@@ -162,8 +164,6 @@ def test_cxx_cxx_plug_mpi(valgrind):
     assert driver_proc.returncode == 0
 
 def test_cxx_f90_plug(valgrind):
-    valgrind_options = get_valgrind_options(valgrind)
-
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_plug_cxx*")[0]
 
@@ -172,13 +172,21 @@ def test_cxx_f90_plug(valgrind):
     build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
-    driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name,
-                                    "-driver_nranks", "0",
-                                    "-plugin_nranks", "1",
-                                    "-plugin_name", "engine_f90",
-                                    "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path)],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        nproc1=0,
+        command1=[driver_name,
+                  "-driver_nranks", "0",
+                  "-plugin_nranks", "1",
+                  "-plugin_name", "engine_f90",
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+        ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
