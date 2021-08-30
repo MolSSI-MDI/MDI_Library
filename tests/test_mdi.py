@@ -32,8 +32,9 @@ FORCES_B: [0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11,
 
 
 # Includes flags to prevent warning messages
-mpiexec_general = "mpiexec "
+mpiexec_name = "mpiexec"
 mpiexec_mca = "mpiexec --mca btl_base_warn_component_unused 0 "
+port = 60000
 
 def format_return(input_string):
     my_string = input_string.decode('utf-8')
@@ -120,7 +121,7 @@ def test_cxx_cxx_plug_mpi(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2",
+                                   [mpiexec_name, "-n", "2",
                                     driver_name,
                                     "-driver_nranks", "0",
                                     "-plugin_nranks", "2",
@@ -581,10 +582,10 @@ def test_cxx_cxx_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -606,10 +607,10 @@ def test_cxx_cxx_tcp_mpi12(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   ["mpiexec","-n","2",engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -631,10 +632,10 @@ def test_cxx_cxx_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   ["mpiexec","-n","2",driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -656,10 +657,10 @@ def test_cxx_f90_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -680,10 +681,10 @@ def test_cxx_py_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"], 
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
@@ -708,10 +709,10 @@ def test_f90_cxx_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -735,10 +736,10 @@ def test_f90_f90_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -762,10 +763,10 @@ def test_f90_f90_tcp_mpi12(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   ["mpiexec", "-n", "2", engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -789,10 +790,10 @@ def test_f90_f90_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   ["mpiexec", "-n", "2", driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -815,10 +816,10 @@ def test_f90_py_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [driver_name, "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
@@ -842,10 +843,10 @@ def test_py_cxx_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -868,10 +869,10 @@ def test_py_f90_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"])
+                                   [engine_name, "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)])
     driver_tup = driver_proc.communicate()
     engine_proc.communicate()
 
@@ -891,10 +892,10 @@ def test_py_py_tcp(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
@@ -918,10 +919,10 @@ def test_py_py_tcp_mpi12(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   [sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   ["mpiexec", "-n", "2", sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
@@ -945,10 +946,10 @@ def test_py_py_tcp_mpi21(valgrind):
 
     # run the calculation
     driver_proc = subprocess.Popen(valgrind_options +
-                                   ["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021"],
+                                   ["mpiexec", "-n", "2", sys.executable, "../build/driver_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     engine_proc = subprocess.Popen(valgrind_options +
-                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -port 8021 -hostname localhost"],
+                                   [sys.executable, "../build/engine_py.py", "-mdi", "-role ENGINE -name MM -method TCP -hostname localhost -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
     driver_tup = driver_proc.communicate()
     engine_tup = engine_proc.communicate()
@@ -981,14 +982,14 @@ def test_py_cxx_ipi():
     engine_name = glob.glob("../build/engine_ipi_cxx*")[0]
 
     # start the driver subprocess
-    driver_proc = subprocess.Popen([sys.executable, "../build/driver_ipicomp_py.py", "-mdi", "-role DRIVER -name driver -method TCP -port 8021 -ipi"],
+    driver_proc = subprocess.Popen([sys.executable, "../build/driver_ipicomp_py.py", "-mdi", "-role DRIVER -name driver -method TCP -ipi -port " + str(port)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
 
     # Ensure that the driver has started, since i-PI requires that the driver is listening when the engines attempt to connect
     time.sleep(3)
 
     # start the engine subprocess
-    engine_proc = subprocess.Popen([engine_name, "-port", "8021", "-hostname", "localhost"])
+    engine_proc = subprocess.Popen([engine_name, "-port", str(port), "-hostname", "localhost"])
 
     # receive the output from the subprocesses
     driver_tup = driver_proc.communicate()
