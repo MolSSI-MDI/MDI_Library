@@ -291,10 +291,16 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
       if ( sock_error == WSAECONNREFUSED ) {
 	// close the socket, so that a new one can be created
 	ret = closesocket(sockfd);
+
+	// wait a short period before attempting to connect again
+	Sleep(1000);
 #else
       if ( errno == ECONNREFUSED ) {
 	// close the socket, so that a new one can be created
 	ret = close(sockfd);
+
+	// wait a short period before attempting to connect again
+	sleep(1);
 #endif
 	if (ret != 0) {
 	  mdi_error("Could not close socket");
