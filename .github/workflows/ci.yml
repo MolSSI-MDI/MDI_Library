@@ -38,7 +38,7 @@ jobs:
 
           # Set MDI_TESTS, which defines which tests will be performed for this job
           [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
-          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug"' >> env.source
+          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug and not py_cxx_plug"' >> env.source
 
           cat env.source
 
@@ -262,7 +262,7 @@ jobs:
         run: |
           ls
           cd tests
-          pytest -vv --cov-report=xml --cov=MDI_Library -k "not mpi and not f90_plug and not py_plug"
+          pytest -vv --cov-report=xml --cov=MDI_Library -k "not mpi and not f90_plug and not py_plug and not py_cxx_plug"
 
       - name: Get code coverage report
         run: |

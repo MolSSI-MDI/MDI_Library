@@ -75,6 +75,13 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   method* selected_method = get_method(selected_method_id);
   int ret = 0;
 
+  // Check whether MPI has been initialized
+  int mpi_init_flag;
+  if ( MPI_Initialized(&mpi_init_flag) ) {
+    mdi_error("Error in MDI_plug_on_send_command: MPI_Initialized failed");
+    return 1;
+  }
+
   // broadcast the command to each rank
   char* command_bcast = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
   if ( this_code->intra_rank == 0 ) {
@@ -86,7 +93,9 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
       command_bcast[ichar] = command[ichar];
     }
   }
-  MPI_Bcast( command_bcast, MDI_COMMAND_LENGTH, MPI_CHAR, 0, this_code->intra_MPI_comm);
+  if ( mpi_init_flag == 1) {
+    MPI_Bcast( command_bcast, MDI_COMMAND_LENGTH, MPI_CHAR, 0, this_code->intra_MPI_comm);
+  }
 
   // ensure that the driver is the current code
   library_set_driver_current();
@@ -427,7 +436,21 @@ int library_initialize() {
       library_data* driver_libd = (library_data*) driver_comm->method_data;
       libd->mpi_comm = driver_libd->mpi_comm;
       this_code->intra_MPI_comm = libd->mpi_comm;
-      MPI_Comm_rank( this_code->intra_MPI_comm, &this_code->intra_rank );
+
+      // Check whether MPI has been initialized
+      int mpi_init_flag;
+      if ( MPI_Initialized(&mpi_init_flag) ) {
+	mdi_error("Error in MDI_Init: MPI_Initialized failed");
+	return 1;
+      }
+
+      // Set the engine's MPI rank
+      if ( mpi_init_flag == 1 ) {
+	MPI_Comm_rank( this_code->intra_MPI_comm, &this_code->intra_rank );
+      }
+      else {
+	this_code->intra_rank = 0;
+      }
     }
   }
 
