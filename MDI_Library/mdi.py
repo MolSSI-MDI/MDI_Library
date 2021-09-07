@@ -13,12 +13,8 @@ try:
 except ImportError:
     found_numpy = False
 
-# attempt to import mpi4py
-try:
-    from mpi4py import MPI
-    use_mpi4py = True
-except ImportError:
-    use_mpi4py = False
+use_mpi4py = False
+MPI = None
 
 # get the path to the MDI Library
 mdi_name_path = os.path.join( dir_path, "mdi_name" )
@@ -470,6 +466,19 @@ mdi.MDI_Init_with_options.restype = ctypes.c_int
 def MDI_Init(arg1, arg2 = None):
     global world_comm
     global intra_code_comm
+    global use_mpi4py
+    global MPI
+
+    # attempt to import mpi4py
+    try:
+        import mpi4py
+        mpi4py.rc.initialize = False
+        from mpi4py import MPI
+        mpi4py.rc.initialize = True
+        if MPI.Is_initialized():
+            use_mpi4py = True
+    except ImportError:
+        pass
 
     comm = None
     if use_mpi4py:
@@ -520,12 +529,13 @@ def MDI_Init(arg1, arg2 = None):
 
     if mdi_method == "MPI":
         # ensure that mpi4py is available
-        if not use_mpi4py:
-            raise Exception("MDI Error: When using the MPI communication method, mpi4py must be available")
+        #if not use_mpi4py:
+        #    raise Exception("MDI Error: When using the MPI communication method, mpi4py must be available")
 
         # ensure that numpy is available
-        if not found_numpy:
-            raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
+        if use_mpi4py:
+            if not found_numpy:
+                raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
     if use_mpi4py:
         world_comm = comm
