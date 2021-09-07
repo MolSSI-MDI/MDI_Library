@@ -13,17 +13,8 @@ try:
 except ImportError:
     found_numpy = False
 
-# attempt to import mpi4py
-found_mpi4py = False
 use_mpi4py = False
-try:
-    import mpi4py
-    mpi4py.rc.initialize = False
-    from mpi4py import MPI
-    mpi4py.rc.initialize = True
-    found_mpi4py = True
-except ImportError:
-    pass
+MPI = None
 
 # get the path to the MDI Library
 mdi_name_path = os.path.join( dir_path, "mdi_name" )
@@ -476,11 +467,18 @@ def MDI_Init(arg1, arg2 = None):
     global world_comm
     global intra_code_comm
     global use_mpi4py
-    global found_mpi4py
+    global MPI
 
-    if found_mpi4py:
+    # attempt to import mpi4py
+    try:
+        import mpi4py
+        mpi4py.rc.initialize = False
+        from mpi4py import MPI
+        mpi4py.rc.initialize = True
         if MPI.Is_initialized():
             use_mpi4py = True
+    except ImportError:
+        pass
 
     comm = None
     if use_mpi4py:
