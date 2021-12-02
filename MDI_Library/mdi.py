@@ -71,6 +71,10 @@ mpi4py_comms = {}
 # dictionary of function callbacks
 execute_command_dict = {}
 
+# function callback for the driver
+# only used when the driver is running a plugin
+driver_node_callback = None
+
 # set_world_size
 mdi.MDI_Set_World_Size.argtypes = [ctypes.c_int]
 mdi.MDI_Set_World_Size.restype = None
@@ -487,31 +491,20 @@ def MDI_Init(arg1, arg2 = None):
     # if this is a plugin code, get the plugin's MPI communicator
     plugin_mode = MDI_Get_plugin_mode()
     if ( plugin_mode == 1  and use_mpi4py ):
+        # Get a pointer to the C MPI communicator
         python_plugin_mpi_world_ptr = MDI_Get_python_plugin_mpi_world_ptr()
-        try:
-            # Assume python_plugin_mpi_world_ptr points to a pointer
-            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_void_p))
-            handle_t = ctypes.c_void_p
-            newobj = type(MPI.COMM_WORLD)()
-            handle_old = __mdi_mpi_comm_ptr__.contents
-            handle_new = handle_t.from_address(MPI._addressof(newobj))
-            handle_new.value = handle_old.value
-            __mdi_plugin_mpi_intra_comm__ = newobj
 
-            # Confirm that the new MPI communicator works
-            __mdi_plugin_mpi_intra_comm__.Get_size()
-        except Exception as e:
-            # Assume python_plugin_mpi_world_ptr points to an int
-            __mdi_mpi_comm_ptr__ = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_int))
-            handle_old_value = __mdi_mpi_comm_ptr__.contents.value
-            handle_t = ctypes.c_void_p
-            newobj = type(MPI.COMM_WORLD)()
-            handle_new = handle_t.from_address(MPI._addressof(newobj))
-            handle_new.value = handle_old_value
-            __mdi_plugin_mpi_intra_comm__ = newobj
+        # Convert the C MPI communicator to an MPI4Py communicator
+        c_mpi_communicator = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_void_p)).contents.value
+        handle_t = ctypes.c_void_p
+        newobj = type(MPI.COMM_WORLD)()
+        handle_new = handle_t.from_address(MPI._addressof(newobj))
+        handle_new.value = c_mpi_communicator
+        __mdi_plugin_mpi_intra_comm__ = newobj
 
-            # Confirm that the new MPI communicator works
-            __mdi_plugin_mpi_intra_comm__.Get_size()
+        # Confirm that the new MPI communicator works
+        __mdi_plugin_mpi_intra_comm__.Get_size()
+
         comm = __mdi_plugin_mpi_intra_comm__
 
 
@@ -1040,3 +1033,54 @@ def MDI_Plugin_get_arg(index):
     if ret != 0:
         raise Exception("MDI Error: MDI_Plugin_get_arg failed")
     return c_ptr_to_py_str(arg, len(arg.value) )
+
+
+def MDI_plugin_driver_callback_py(mpi_comm_ptr, mdi_comm, class_obj):
+    global driver_node_callback
+
+    # Instead of converting these values from C, use the saved values
+    mdi_comm_real = mdi_comm
+    mpi_comm_real = driver_node_callback[2]
+    class_obj_real = driver_node_callback[1]
+
+    return driver_node_callback[0](mpi_comm_real, mdi_comm_real, class_obj_real)
+
+
+# MDI_Launch_plugin
+driver_node_callback_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p)
+MDI_plugin_driver_callback_c = driver_node_callback_type( MDI_plugin_driver_callback_py )
+mdi.MDI_Launch_plugin.argtypes = [ctypes.POINTER(ctypes.c_char),
+                                  ctypes.POINTER(ctypes.c_char),
+                                  ctypes.POINTER(ctypes.c_void_p),
+                                  driver_node_callback_type,
+                                  ctypes.c_void_p]
+mdi.MDI_Launch_plugin.restype = ctypes.c_int
+def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driver_callback_obj):
+    global driver_node_callback
+
+    driver_node_callback = ( driver_callback_func, driver_callback_obj, mpi_comm )
+
+    plugin_name_c = plugin_name.encode('utf-8')
+    options_c = options.encode('utf-8')
+
+    # this is just a dummy pointer; the actual object is stored in execute_command_dict
+    class_obj_pointer = ctypes.c_void_p()
+
+    # if this is a plugin code, get the plugin's MPI communicator
+    c_mpi_communicator_ptr = ctypes.c_void_p()
+    if ( use_mpi4py ):
+
+        #handle_t = ctypes.c_void_p
+        handle_t = ctypes.c_void_p
+        c_mpi_communicator_ptr = handle_t.from_address(MPI._addressof(mpi_comm))
+
+    ret = mdi.MDI_Launch_plugin( ctypes.c_char_p(plugin_name_c),
+                                 ctypes.c_char_p(options_c),
+                                 c_mpi_communicator_ptr,
+                                 MDI_plugin_driver_callback_c,
+                                 class_obj_pointer )
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Launch_plugin failed")
+
+    return ret
+

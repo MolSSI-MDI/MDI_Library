@@ -94,6 +94,7 @@ endif()
 
 if ( use_Python )
    add_subdirectory(driver_py)
+   add_subdirectory(driver_plug_py)
    add_subdirectory(driver_ipicomp_py)
    add_subdirectory(engine_py)
    add_subdirectory(lib_py)

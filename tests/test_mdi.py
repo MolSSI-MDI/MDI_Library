@@ -737,6 +737,81 @@ def test_py_cxx_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_py
     assert driver_proc.returncode == 0
 
+def test_py_cxx_plug(valgrind, manager):
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[sys.executable, "driver_plug_py.py",
+                  "-driver_nranks", "0",
+                  "-plugin_nranks", "1",
+                  "-plugin_name", "engine_cxx",
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+ natoms: 10
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+    assert driver_proc.returncode == 0
+
+def test_py_cxx_plug_mpi(valgrind, manager):
+
+    # get the directory of the plugins
+    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
+    build_path = os.path.join( repo_path, "build" )
+
+    # run the calculation
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        nproc1=2,
+        command1=[sys.executable, "driver_plug_py.py",
+                  "-driver_nranks", "0",
+                  "-plugin_nranks", "2",
+                  "-plugin_name", "engine_cxx",
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  ],
+    )
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   cwd=build_dir)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    expected = '''I am engine instance: 1
+ Engine name: MM
+ natoms: 10
+'''
+
+    assert driver_err == ""
+    assert driver_out == expected
+    assert driver_proc.returncode == 0
+
 def test_py_f90_mpi(valgrind, manager):
     global driver_out_expected_py
 
