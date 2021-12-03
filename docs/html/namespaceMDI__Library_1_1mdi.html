@@ -2,6 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+ <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TFBQ45D');</script>
+<!-- End Google Tag Manager -->
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
@@ -16,6 +23,10 @@
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+ <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFBQ45D"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -277,6 +288,12 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Plugin_get_argc</b
 <tr class="memitem:a45e914b63a1f73ff56673ba746f1c802"><td class="memItemLeft" align="right" valign="top"><a id="a45e914b63a1f73ff56673ba746f1c802"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Plugin_get_arg</b> (index)</td></tr>
 <tr class="separator:a45e914b63a1f73ff56673ba746f1c802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1896205215e05f6fe9730f1191b6bd4"><td class="memItemLeft" align="right" valign="top"><a id="ab1896205215e05f6fe9730f1191b6bd4"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_plugin_driver_callback_py</b> (mpi_comm_ptr, mdi_comm, class_obj)</td></tr>
+<tr class="separator:ab1896205215e05f6fe9730f1191b6bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5994315e634ccbeb725ab5c60366865b"><td class="memItemLeft" align="right" valign="top"><a id="a5994315e634ccbeb725ab5c60366865b"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Launch_plugin</b> (plugin_name, options, mpi_comm, driver_callback_func, driver_callback_obj)</td></tr>
+<tr class="separator:a5994315e634ccbeb725ab5c60366865b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -286,9 +303,12 @@ Variables</h2></td></tr>
 <tr class="memitem:a91254bc2e29a5cb3f85b1f6de1efef42"><td class="memItemLeft" align="right" valign="top"><a id="a91254bc2e29a5cb3f85b1f6de1efef42"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>found_numpy</b> = True</td></tr>
 <tr class="separator:a91254bc2e29a5cb3f85b1f6de1efef42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e4a0eca806b846248c7ce679b5e6d0a"><td class="memItemLeft" align="right" valign="top"><a id="a9e4a0eca806b846248c7ce679b5e6d0a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = True</td></tr>
-<tr class="separator:a9e4a0eca806b846248c7ce679b5e6d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fff5f0ecfdfa81e07d0e3af907976ea"><td class="memItemLeft" align="right" valign="top"><a id="a0fff5f0ecfdfa81e07d0e3af907976ea"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_mpi4py</b> = False</td></tr>
+<tr class="separator:a0fff5f0ecfdfa81e07d0e3af907976ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84c6a19357e327bf0bc6b9fb1200f668"><td class="memItemLeft" align="right" valign="top"><a id="a84c6a19357e327bf0bc6b9fb1200f668"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MPI</b> = None</td></tr>
+<tr class="separator:a84c6a19357e327bf0bc6b9fb1200f668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0a970a41ee51c2796a9722dd5826d8c"><td class="memItemLeft" align="right" valign="top"><a id="ab0a970a41ee51c2796a9722dd5826d8c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>mdi_name_path</b> = os.path.join( dir_path, &quot;mdi_name&quot; )</td></tr>
 <tr class="separator:ab0a970a41ee51c2796a9722dd5826d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -420,6 +440,9 @@ dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>mpi4py_comms</b
 <tr class="memitem:a171152371862b08e54a57cc59eb719c3"><td class="memItemLeft" align="right" valign="top"><a id="a171152371862b08e54a57cc59eb719c3"></a>
 dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>execute_command_dict</b> = {}</td></tr>
 <tr class="separator:a171152371862b08e54a57cc59eb719c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee318c918e0007c965c6dc14f561b8ff"><td class="memItemLeft" align="right" valign="top"><a id="aee318c918e0007c965c6dc14f561b8ff"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>driver_node_callback</b> = None</td></tr>
+<tr class="separator:aee318c918e0007c965c6dc14f561b8ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf6086861f386d0ab85484d36b25fdc4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#adf6086861f386d0ab85484d36b25fdc4">argtypes</a></td></tr>
 <tr class="memdesc:adf6086861f386d0ab85484d36b25fdc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Node / Command / Callback management functions #.  <a href="#adf6086861f386d0ab85484d36b25fdc4">More...</a><br /></td></tr>
 <tr class="separator:adf6086861f386d0ab85484d36b25fdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -474,6 +497,12 @@ dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>execute_command
 <tr class="memitem:a15bcce29db417b36d0be1c6a58fa6338"><td class="memItemLeft" align="right" valign="top"><a id="a15bcce29db417b36d0be1c6a58fa6338"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Execute_Command_c</b> = execute_command_func_type( <a class="el" href="namespaceMDI__Library_1_1mdi.html#af8f258aa1d2131f1cc658395f4011b81">MDI_Execute_Command_py</a> )</td></tr>
 <tr class="separator:a15bcce29db417b36d0be1c6a58fa6338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3590a7b96e2c1f609b37f45afe246ed7"><td class="memItemLeft" align="right" valign="top"><a id="a3590a7b96e2c1f609b37f45afe246ed7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>driver_node_callback_type</b> = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p)</td></tr>
+<tr class="separator:a3590a7b96e2c1f609b37f45afe246ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dcffe26f3d8ea5c41912918470f9ecd"><td class="memItemLeft" align="right" valign="top"><a id="a5dcffe26f3d8ea5c41912918470f9ecd"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_plugin_driver_callback_c</b> = driver_node_callback_type( MDI_plugin_driver_callback_py )</td></tr>
+<tr class="separator:a5dcffe26f3d8ea5c41912918470f9ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Python wrapper for MDI. </pre> </div><h2 class="groupheader">Function Documentation</h2>
