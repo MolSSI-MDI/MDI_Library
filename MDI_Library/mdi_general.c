@@ -501,10 +501,8 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
     command[ichar] = '\0';
   }
-  if ( this_code->intra_rank == 0 ) {
-    for ( ichar=0; ichar < strlen(buf) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
-      command[ichar] = buf[ichar];
-    }
+  for ( ichar=0; ichar < strlen(buf) && ichar < MDI_COMMAND_LENGTH; ichar++ ) {
+    command[ichar] = buf[ichar];
   }
 
   ret = selected_method->on_send_command(command, comm, &skip_flag);
