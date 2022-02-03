@@ -704,9 +704,9 @@ CONTAINS
       INTEGER                                  :: i
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-      IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
-         cbuf = str_f_to_c(fbuf, MDI_COMMAND_LENGTH)
-      END IF
+      !IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
+      cbuf = str_f_to_c(fbuf, MDI_COMMAND_LENGTH)
+      !END IF
 
       ierr = MDI_Send_Command_( c_loc(cbuf), comm)
     END SUBROUTINE MDI_Send_Command
