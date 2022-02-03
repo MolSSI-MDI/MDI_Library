@@ -187,3 +187,34 @@
    ...
    fun:PyModule_ExecDef
 }
+
+
+
+{
+   Python NewWithPosOnlyArgs
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:PyObject_Malloc
+   fun:_PyObject_New
+   fun:PyCode_NewWithPosOnlyArgs
+   fun:PyCode_New
+   ...
+}
+
+
+{
+   Python NewVar
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:PyObject_Malloc
+   fun:_PyObject_GC_Alloc
+   fun:_PyObject_GC_Malloc
+   fun:_PyObject_GC_NewVar
+   fun:tuple_alloc
+   fun:PyTuple_Pack
+   ...
+}
