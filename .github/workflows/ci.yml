@@ -123,7 +123,7 @@ jobs:
         run: |
           source env.source
           brew update > /dev/null
-          brew uninstall gcc || true
+          brew uninstall --ignore-dependencies gcc || true
           brew install gcc
           [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich
           [ "${{ matrix.mpilib }}" == "openmpi" ] && brew install openmpi
@@ -218,9 +218,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Set the Python version
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
       - name: Install dependencies
         run: |
-          choco install python --version 3.6.8
           choco install codecov
           python -m pip install --upgrade pip
           pip install -U pytest pytest-cov
