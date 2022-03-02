@@ -25,10 +25,10 @@ mdi_name_file.close()
 
 # load the MDI Library
 try:
-    mdi = ctypes.CDLL(mdi_path)
+    mdi = ctypes.CDLL(mdi_path, ctypes.RTLD_GLOBAL)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 except (ValueError, AttributeError, OSError) as e:
-    mdi = ctypes.WinDLL(mdi_path)
+    mdi = ctypes.WinDLL(mdi_path, ctypes.RTLD_GLOBAL)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
 # MDI Variables
