@@ -1295,11 +1295,20 @@ vector* get_node_vector(MDI_Comm comm) {
   }
   else {
     communicator* this = get_communicator(current_code, comm);
-    if ( this->nodes->size == 0 ) {
-      // acquire node information for this communicator
-      get_node_info(comm);
+    if ( this->method == MDI_LINK ) {
+      // get the engine code to which this communicator connects
+      library_data* libd = (library_data*) this->method_data;
+      int iengine = libd->connected_code;
+      code* engine_code = get_code(iengine);
+      node_vec = engine_code->nodes;
     }
-    node_vec = this->nodes;
+    else {
+      if ( this->nodes->size == 0 ) {
+        // acquire node information for this communicator
+        get_node_info(comm);
+      }
+      node_vec = this->nodes;
+    }
   }
   return node_vec;
 }
