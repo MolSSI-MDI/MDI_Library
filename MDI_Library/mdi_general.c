@@ -1295,7 +1295,7 @@ vector* get_node_vector(MDI_Comm comm) {
   }
   else {
     communicator* this = get_communicator(current_code, comm);
-    if ( this->method == MDI_LINK ) {
+    if ( this->method_id == MDI_LINK ) {
       // get the engine code to which this communicator connects
       library_data* libd = (library_data*) this->method_data;
       int iengine = libd->connected_code;

@@ -459,7 +459,7 @@ int new_communicator(int code_id, int method) {
   code* this_code = get_code(code_id);
 
   communicator new_comm;
-  new_comm.method = method;
+  new_comm.method_id = method;
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
   new_comm.nodes = node_vec;

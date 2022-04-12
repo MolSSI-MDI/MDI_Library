@@ -39,6 +39,7 @@ MDI_COMM_NULL = ctypes.c_int.in_dll(mdi, "MDI_COMM_NULL").value
 MDI_TCP = ctypes.c_int.in_dll(mdi, "MDI_TCP").value
 MDI_MPI = ctypes.c_int.in_dll(mdi, "MDI_MPI").value
 MDI_LINK = ctypes.c_int.in_dll(mdi, "MDI_LINK").value
+MDI_PLUGIN = ctypes.c_int.in_dll(mdi, "MDI_PLUGIN").value
 MDI_TEST = ctypes.c_int.in_dll(mdi, "MDI_TEST").value
 MDI_DRIVER = ctypes.c_int.in_dll(mdi, "MDI_DRIVER").value
 MDI_ENGINE = ctypes.c_int.in_dll(mdi, "MDI_ENGINE").value
@@ -746,17 +747,28 @@ def MDI_Conversion_factor(arg1, arg2):
 def MDI_Conversion_Factor(arg1, arg2):
     return MDI_Conversion_factor(arg1, arg2)
 
-# MDI_Get_Role
-mdi.MDI_Get_Role.argtypes = [ctypes.POINTER(ctypes.c_int)]
-mdi.MDI_Get_Role.restype = ctypes.c_int
+# MDI_Get_role
+mdi.MDI_Get_role.argtypes = [ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Get_role.restype = ctypes.c_int
 def MDI_Get_role():
     role = ctypes.c_int()
     ret = mdi.MDI_Get_Role(ctypes.byref(role))
     if ret != 0:
-        raise Exception("MDI Error: MDI_Get_Role failed")
+        raise Exception("MDI Error: MDI_Get_role failed")
     return role.value
 def MDI_Get_Role():
     return MDI_Get_role()
+
+
+# MDI_Get_method
+mdi.MDI_Get_method.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+mdi.MDI_Get_method.restype = ctypes.c_int
+def MDI_Get_method(comm):
+    method = ctypes.c_int()
+    ret = mdi.MDI_Get_method(ctypes.byref(method), comm)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Get_method failed")
+    return method.value
 
 
 #####################################

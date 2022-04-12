@@ -87,8 +87,10 @@ const int MDI_BYTE         = MDI_BYTE_;
 const int MDI_TCP    = MDI_TCP_;
 /*! \brief MPI communication method */
 const int MDI_MPI    = MDI_MPI_;
-/*! \brief Library communication method */
+/*! \brief Library communication method (deprecated) */
 const int MDI_LINK   = MDI_LINK_;
+/*! \brief Library communication method */
+const int MDI_PLUGIN   = MDI_LINK_;
 /*! \brief Test communication method */
 const int MDI_TEST   = MDI_TEST_;
 
@@ -815,6 +817,24 @@ int MDI_Get_role(int* role)
     mdi_error("Error in MDI_Get_Role: Unrecognized role");
     return 1;
   }
+  return 0;
+}
+
+
+/*! \brief Get the communication method of a communicator
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      method
+ *                   Role of the code (either \p MDI_TCP, \p MDI_MPI, \p MDI_TEST, or \p MDI_PLUGIN)
+ * \param [in]       comm
+ *                   MDI communicator for which the library will return the communication method.
+ *
+ */
+int MDI_Get_method(int* method, MDI_Comm comm)
+{
+  communicator* comm_obj = get_communicator(current_code, comm);
+  *method = comm_obj->method_id;
   return 0;
 }
 

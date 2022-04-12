@@ -74,6 +74,7 @@ DllExport extern const int MDI_BYTE;
 DllExport extern const int MDI_TCP;
 DllExport extern const int MDI_MPI;
 DllExport extern const int MDI_LINK;
+DllExport extern const int MDI_PLUGIN;
 DllExport extern const int MDI_TEST;
 
 // MDI role types
@@ -96,6 +97,7 @@ DllExport int MDI_Conversion_Factor(const char* in_unit, const char* out_unit, d
 DllExport int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* conv);
 DllExport int MDI_Get_Role(int* role);
 DllExport int MDI_Get_role(int* role);
+DllExport int MDI_Get_Method(int* role, MDI_Comm comm);
 
 // functions for managing Nodes, Commands, and Callbacks
 DllExport int MDI_Register_Node(const char* node_name);

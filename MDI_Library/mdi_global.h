@@ -103,7 +103,7 @@ typedef struct method_struct {
 
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator */
-  int method;
+  int method_id;
   /*! \brief MDI_Comm handle that corresponds to this communicator */
   MDI_Comm_Type id;
   /*! \brief Handle for the id of the associated code */
