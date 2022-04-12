@@ -98,6 +98,7 @@ DllExport int MDI_Conversion_factor(const char* in_unit, const char* out_unit, d
 DllExport int MDI_Get_Role(int* role);
 DllExport int MDI_Get_role(int* role);
 DllExport int MDI_Get_method(int* role, MDI_Comm comm);
+DllExport int MDI_Get_communicator(MDI_Comm* comm, int index);
 
 // functions for managing Nodes, Commands, and Callbacks
 DllExport int MDI_Register_Node(const char* node_name);

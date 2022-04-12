@@ -839,6 +839,32 @@ int MDI_Get_method(int* method, MDI_Comm comm)
 }
 
 
+/*! \brief Get the previously accepted MDI communicator at a specific index in the array of all communicators.
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      comm
+ *                   Value of the communicator.
+ *                   If no communicator exists at the given index, returns \p MDI_COMM_NULL.
+ * \param [in]       index
+ *                   Request the i'th communicator in the list of accepted and valid communicators.
+ *                   The list begins at \p 0.
+ *
+ */
+int MDI_Get_communicator(MDI_Comm* comm, int index)
+{
+  code* this_code = get_code(current_code);
+  if ( index >= this_code->comms->size || index < 0 ) {
+    *comm = MDI_COMM_NULL;
+  }
+  else {
+    communicator* comm_obj = vector_get(this_code->comms, index);
+    *comm = comm_obj->id;
+  }
+  return 0;
+}
+
+
 /*! \brief Set the size of MPI_COMM_WORLD
  *
  * This function is only used if the linked program uses MPI4PY.

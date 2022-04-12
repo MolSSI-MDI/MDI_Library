@@ -340,6 +340,13 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Get_method_
      END FUNCTION MDI_Get_method_
 
+     FUNCTION MDI_Get_communicator_(comm, comm_index) bind(c, name="MDI_Get_communicator")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: comm
+       INTEGER(KIND=C_INT), VALUE               :: comm_index
+       INTEGER(KIND=C_INT)                      :: MDI_Get_communicator_
+     END FUNCTION MDI_Get_communicator_
+
      SUBROUTINE MDI_Set_Execute_Command_Func_(command_func, class_obj, ierr)
        USE MDI_INTERNAL
        PROCEDURE(execute_command)               :: command_func 
@@ -807,6 +814,22 @@ CONTAINS
       ierr = MDI_Get_method_( c_loc(cmethod), comm )
       method = cmethod
     END SUBROUTINE MDI_Get_method
+
+    SUBROUTINE MDI_Get_communicator(comm, comm_index, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_communicator
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_communicator
+#endif
+      INTEGER, INTENT(OUT)                     :: comm
+      INTEGER, INTENT(IN)                      :: comm_index
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: ccomm
+
+      ierr = MDI_Get_communicator_( c_loc(ccomm), comm_index )
+      comm = ccomm
+    END SUBROUTINE MDI_Get_communicator
 
     SUBROUTINE MDI_Register_Node(fnode, ierr)
       USE ISO_C_BINDING

@@ -771,6 +771,17 @@ def MDI_Get_method(comm):
     return method.value
 
 
+# MDI_Get_communicator
+mdi.MDI_Get_communicator.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+mdi.MDI_Get_communicator.restype = ctypes.c_int
+def MDI_Get_communicator(index):
+    comm = ctypes.c_int()
+    ret = mdi.MDI_Get_communicator(ctypes.byref(comm), index)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Get_communicator failed")
+    return comm.value
+
+
 #####################################
 # Callback functions                #
 #####################################
