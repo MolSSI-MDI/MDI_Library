@@ -87,8 +87,10 @@ const int MDI_BYTE         = MDI_BYTE_;
 const int MDI_TCP    = MDI_TCP_;
 /*! \brief MPI communication method */
 const int MDI_MPI    = MDI_MPI_;
-/*! \brief Library communication method */
+/*! \brief Library communication method (deprecated) */
 const int MDI_LINK   = MDI_LINK_;
+/*! \brief Library communication method */
+const int MDI_PLUGIN   = MDI_LINK_;
 /*! \brief Test communication method */
 const int MDI_TEST   = MDI_TEST_;
 
@@ -814,6 +816,50 @@ int MDI_Get_role(int* role)
   else {
     mdi_error("Error in MDI_Get_Role: Unrecognized role");
     return 1;
+  }
+  return 0;
+}
+
+
+/*! \brief Get the communication method of a communicator
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      method
+ *                   Role of the code (either \p MDI_TCP, \p MDI_MPI, \p MDI_TEST, or \p MDI_PLUGIN)
+ * \param [in]       comm
+ *                   MDI communicator for which the library will return the communication method.
+ *
+ */
+int MDI_Get_method(int* method, MDI_Comm comm)
+{
+  communicator* comm_obj = get_communicator(current_code, comm);
+  *method = comm_obj->method_id;
+  return 0;
+}
+
+
+/*! \brief Get the previously accepted MDI communicator at a specific index in the array of all communicators.
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [out]      comm
+ *                   Value of the communicator.
+ *                   If no communicator exists at the given index, returns \p MDI_COMM_NULL.
+ * \param [in]       index
+ *                   Request the i'th communicator in the list of accepted and valid communicators.
+ *                   The list begins at \p 0.
+ *
+ */
+int MDI_Get_communicator(MDI_Comm* comm, int index)
+{
+  code* this_code = get_code(current_code);
+  if ( index >= this_code->comms->size || index < 0 ) {
+    *comm = MDI_COMM_NULL;
+  }
+  else {
+    communicator* comm_obj = vector_get(this_code->comms, index);
+    *comm = comm_obj->id;
   }
   return 0;
 }

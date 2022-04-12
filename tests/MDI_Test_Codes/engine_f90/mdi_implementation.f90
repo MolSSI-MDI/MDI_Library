@@ -7,7 +7,8 @@ MODULE MDI_IMPLEMENTATION
        MDI_Set_execute_command_func, MDI_MPI_get_world_comm, MDI_DOUBLE, MDI_BYTE, &
        MDI_ENGINE, MDI_Get_role, MDI_Register_command, MDI_Register_node, &
        MDI_Register_callback, MDI_COMMAND_LENGTH, MDI_MPI_get_world_comm, &
-       MDI_Plugin_get_argc, MDI_Plugin_get_arg
+       MDI_Plugin_get_argc, MDI_Plugin_get_arg, MDI_Get_communicator, &
+       MDI_Get_method
 
   IMPLICIT NONE
 
@@ -141,6 +142,17 @@ CONTAINS
     INTEGER                       :: icoord
     INTEGER                       :: natoms, count
     DOUBLE PRECISION, ALLOCATABLE :: coords(:), forces(:)
+	
+	INTEGER func_comm, func_method
+
+    ! Confirm that MDI_Get_communicator works
+	CALL MDI_Get_communicator(func_comm, 0, ierr)
+	IF ( func_comm .ne. comm ) THEN
+	   STOP 1
+	END IF
+
+    ! Confirm that MDI_Get_method runs
+	CALL MDI_Get_method(func_method, comm, ierr)
 
     ! set dummy molecular properties
     natoms = 10

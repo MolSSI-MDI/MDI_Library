@@ -32,6 +32,18 @@ def code_for_plugin_instance(mpi_comm, mdi_comm, class_object):
     if use_mpi4py:
         mpi_rank = mpi_comm.Get_rank()
 
+    # Confirm that we can receive the MDI communicator for MDI_Get_communicator
+    if mdi.MDI_Get_communicator(0) != mdi_comm:
+        raise Exception("Error: MDI_Get_communicator returned the wrong communicator")
+    if mdi.MDI_Get_communicator(-1) != mdi.MDI_COMM_NULL:
+        raise Exception("Error: MDI_Get_communicator returned the wrong communicator")
+    if mdi.MDI_Get_communicator(1) != mdi.MDI_COMM_NULL:
+        raise Exception("Error: MDI_Get_communicator returned the wrong communicator")
+
+    # Confirm that MDI_Get_method returns the correct values
+    if mdi.MDI_Get_method(mdi_comm) != mdi.MDI_PLUGIN:
+        raise Exception("Error: MDI_Get_method return the wrong value")
+
     # Determine the name of the engine
     mdi.MDI_Send_Command("<NAME", mdi_comm)
     name = mdi.MDI_Recv(mdi.MDI_NAME_LENGTH, mdi.MDI_CHAR, mdi_comm)

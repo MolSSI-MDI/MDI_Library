@@ -34,7 +34,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 3
-#define MDI_PATCH_VERSION_ 0
+#define MDI_PATCH_VERSION_ 1
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 12
@@ -103,7 +103,7 @@ typedef struct method_struct {
 
 typedef struct communicator_struct {
   /*! \brief Communication method used by this communicator */
-  int method;
+  int method_id;
   /*! \brief MDI_Comm handle that corresponds to this communicator */
   MDI_Comm_Type id;
   /*! \brief Handle for the id of the associated code */

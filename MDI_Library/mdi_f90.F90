@@ -257,6 +257,7 @@ MODULE MDI
    INTEGER(KIND=C_INT), PARAMETER :: MDI_TCP            = 1
    INTEGER(KIND=C_INT), PARAMETER :: MDI_MPI            = 2
    INTEGER(KIND=C_INT), PARAMETER :: MDI_LINK           = 3
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_PLUGIN         = 3
    INTEGER(KIND=C_INT), PARAMETER :: MDI_TEST           = 4
 
    INTEGER(KIND=C_INT), PARAMETER :: MDI_DRIVER         = 1
@@ -326,11 +327,25 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
-     FUNCTION MDI_Get_Role_(role) bind(c, name="MDI_Get_Role")
+     FUNCTION MDI_Get_Role_(role) bind(c, name="MDI_Get_role")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: role
        INTEGER(KIND=C_INT)                      :: MDI_Get_Role_
      END FUNCTION MDI_Get_Role_
+ 
+     FUNCTION MDI_Get_method_(method, comm) bind(c, name="MDI_Get_method")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: method
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       INTEGER(KIND=C_INT)                      :: MDI_Get_method_
+     END FUNCTION MDI_Get_method_
+
+     FUNCTION MDI_Get_communicator_(comm, comm_index) bind(c, name="MDI_Get_communicator")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: comm
+       INTEGER(KIND=C_INT), VALUE               :: comm_index
+       INTEGER(KIND=C_INT)                      :: MDI_Get_communicator_
+     END FUNCTION MDI_Get_communicator_
 
      SUBROUTINE MDI_Set_Execute_Command_Func_(command_func, class_obj, ierr)
        USE MDI_INTERNAL
@@ -783,6 +798,38 @@ CONTAINS
       ierr = MDI_Get_Role_( c_loc(crole) )
       role = crole
     END SUBROUTINE MDI_Get_Role
+
+    SUBROUTINE MDI_Get_method(method, comm, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_method
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_method
+#endif
+      INTEGER, INTENT(OUT)                     :: method
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cmethod
+
+      ierr = MDI_Get_method_( c_loc(cmethod), comm )
+      method = cmethod
+    END SUBROUTINE MDI_Get_method
+
+    SUBROUTINE MDI_Get_communicator(comm, comm_index, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Get_communicator
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Get_communicator
+#endif
+      INTEGER, INTENT(OUT)                     :: comm
+      INTEGER, INTENT(IN)                      :: comm_index
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: ccomm
+
+      ierr = MDI_Get_communicator_( c_loc(ccomm), comm_index )
+      comm = ccomm
+    END SUBROUTINE MDI_Get_communicator
 
     SUBROUTINE MDI_Register_Node(fnode, ierr)
       USE ISO_C_BINDING

@@ -378,7 +378,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   int icomm;
   for ( icomm = 0; icomm < this_code->comms->size; icomm++ ) {
     communicator* this_comm = vector_get(this_code->comms, icomm);
-    if (this_comm->method == MDI_MPI) {
+    if (this_comm->method_id == MDI_MPI) {
       // only communicate the version number if not using i-PI compatibility mode
       if ( ipi_compatibility != 1 ) {
 	int version[3];
