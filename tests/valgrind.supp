@@ -218,3 +218,21 @@
    fun:PyTuple_Pack
    ...
 }
+
+
+{
+   MPI_Allgatherv
+   Memcheck:Addr2
+   fun:memmove
+   fun:opal_convertor_pack
+   fun:mca_btl_vader_sendi
+   fun:mca_bml_base_sendi
+   fun:mca_pml_ob1_send_inline
+   fun:mca_pml_ob1_send
+   fun:ompi_coll_base_sendrecv_actual
+   fun:ompi_coll_base_sendrecv
+   fun:ompi_coll_base_allgatherv_intra_bruck
+   fun:ompi_coll_tuned_allgatherv_intra_dec_fixed
+   fun:PMPI_Allgatherv
+   fun:mpi_identify_codes
+}

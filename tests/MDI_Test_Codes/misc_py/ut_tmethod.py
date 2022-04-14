@@ -25,7 +25,9 @@ with pytest.raises(Exception):
 mdi.MDI_Register_Node("REALNODE")
 
 comm = mdi.MDI_COMM_NULL
-long_name = "LONG_NAME_________________________________________________________"
+long_name = "LONG_NAME"
+for i in range(mdi.MDI_NAME_LENGTH):
+    long_name += "_"
 
 # Test invalid node names
 with pytest.raises(Exception):
@@ -54,7 +56,7 @@ with pytest.raises(Exception):
     mdi.MDI_Get_Command("REALNODE", 0, comm)
 
 # Test using invalid callback names
-mdi.MDI_Check_Callback_Exists("REALNODE","CBKNAME", comm) == 0
+assert mdi.MDI_Check_Callback_Exists("REALNODE","CBKNAME", comm) == 0
 with pytest.raises(Exception):
     mdi.MDI_Check_Callback_Exists(long_name, "NAME", comm)
 with pytest.raises(Exception):

@@ -66,8 +66,11 @@ int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
 /*! \brief Python callback pointer for MPI_Send */
 int (*mpi4py_send_callback)(void*, int, int, int, MDI_Comm_Type);
 
+/*! \brief Python callback pointer for initial MPI allgather */
+int (*mpi4py_allgather_callback)(void*, void*);
+
 /*! \brief Python callback pointer for gathering names */
-int (*mpi4py_gather_names_callback)(void*, void*);
+int (*mpi4py_gather_names_callback)(void*, void*, int*, int*);
 
 /*! \brief Python callback pointer for MPI_Comm_split */
 int (*mpi4py_split_callback)(int, int, MDI_Comm_Type, int);
@@ -282,7 +285,7 @@ int new_code() {
 
   // initialize the name and role strings
   int ichar;
-  for (ichar=0; ichar < NAME_LENGTH; ichar++) {
+  for (ichar=0; ichar < MDI_NAME_LENGTH_; ichar++) {
     new_code.name[ichar] = '\0';
     new_code.role[ichar] = '\0';
   }
@@ -466,6 +469,11 @@ int new_communicator(int code_id, int method) {
   new_comm.nodes = node_vec;
   new_comm.id = this_code->next_comm;
   new_comm.code_id = code_id;
+
+  // For version 1.4.0 of the MDI Library and above, will receive this from the other code
+  new_comm.name_length = 12;
+  new_comm.command_length = 12;
+
   new_comm.mdi_version[0] = 0;
   new_comm.mdi_version[1] = 0;
   new_comm.mdi_version[2] = 0;

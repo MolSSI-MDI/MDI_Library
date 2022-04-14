@@ -309,6 +309,53 @@ def set_mpi4py_rank_callback():
     global mpi4py_rank_callback_c
     mdi.MDI_Set_Mpi4py_Rank_Callback( mpi4py_rank_callback_c )
 
+
+
+##################################################
+# MPI4Py Allgather Callback                   #
+##################################################
+
+# define the type of the callback function
+mpi4py_allgather_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
+                                         ctypes.POINTER(ctypes.c_int), # sendbuf
+                                         ctypes.POINTER(ctypes.c_int)) # recvbuf
+
+# define the c function that allows the callback function to be set
+mdi.MDI_Set_Mpi4py_Allgather_Callback.restype = ctypes.c_int
+mdi.MDI_Set_Mpi4py_Allgather_Callback.argtypes = [mpi4py_allgather_func_type]
+
+# define the python callback function
+def mpi4py_allgather_callback(buf, names):
+    try:
+
+        global world_comm
+        world_size = world_comm.Get_size()
+
+        # Create numpy arrays from the C pointers
+        buf_shape = tuple( [5] )
+        buf_np = np.ctypeslib.as_array(buf, shape=buf_shape)
+        names_shape = tuple( [5 * world_size] )
+        names_np = np.ctypeslib.as_array(names, shape=names_shape)
+
+        # Gather the names
+        world_comm.Allgather([buf_np, MPI.INT], [names_np, MPI.INT])
+
+        return 0
+
+    except Exception as e:
+
+        sys.stderr.write("MDI Error in mpi4py_allgather_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
+        return -1
+
+# define the python function that will set the callback function in c
+mpi4py_allgather_callback_c = mpi4py_allgather_func_type( mpi4py_allgather_callback )
+def set_mpi4py_allgather_callback():
+    global mpi4py_allgather_callback_c
+    mdi.MDI_Set_Mpi4py_Allgather_Callback( mpi4py_allgather_callback_c )
+
+
+
 ##################################################
 # MPI4Py Gather Names Callback                   #
 ##################################################
@@ -316,27 +363,33 @@ def set_mpi4py_rank_callback():
 # define the type of the callback function
 mpi4py_gather_names_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
                                          ctypes.POINTER(ctypes.c_char), # buf
-                                         ctypes.POINTER(ctypes.c_char)) # names
+                                         ctypes.POINTER(ctypes.c_char), # names
+                                         ctypes.POINTER(ctypes.c_int),  # name_lengths
+                                         ctypes.POINTER(ctypes.c_int))  # name_displs
 
 # define the c function that allows the callback function to be set
 mdi.MDI_Set_Mpi4py_Gather_Names_Callback.restype = ctypes.c_int
 mdi.MDI_Set_Mpi4py_Gather_Names_Callback.argtypes = [mpi4py_gather_names_func_type]
 
 # define the python callback function
-def mpi4py_gather_names_callback(buf, names):
+def mpi4py_gather_names_callback(buf, names, name_lengths, name_displs):
     try:
 
         global world_comm
         world_size = world_comm.Get_size()
 
-       # Create numpy arrays from the C pointers
+        # Create numpy arrays from the C pointers
         buf_shape = tuple( [MDI_NAME_LENGTH] )
         buf_np = np.ctypeslib.as_array(buf, shape=buf_shape)
         names_shape = tuple( [MDI_NAME_LENGTH * world_size] )
         names_np = np.ctypeslib.as_array(names, shape=names_shape)
+        names_lengths_shape = tuple( [world_size] )
+        name_lengths_np = np.ctypeslib.as_array(name_lengths, shape=names_lengths_shape)
+        name_displs_np = np.ctypeslib.as_array(name_displs, shape=names_lengths_shape)
 
-       # Gather the names
-        world_comm.Allgather([buf_np, MPI.CHAR], [names_np, MPI.CHAR])
+        # Gather the names
+        #world_comm.Allgather([buf_np, MPI.CHAR], [names_np, MPI.CHAR])
+        world_comm.Allgatherv([buf_np, MPI.CHAR], [names_np, name_lengths_np, name_displs_np, MPI.CHAR])
 
         return 0
 
@@ -546,6 +599,7 @@ def MDI_Init(arg1, arg2 = None):
     set_mpi4py_send_callback()
     set_mpi4py_size_callback()
     set_mpi4py_rank_callback()
+    set_mpi4py_allgather_callback()
     set_mpi4py_gather_names_callback()
     set_mpi4py_barrier_callback()
     set_mpi4py_split_callback()

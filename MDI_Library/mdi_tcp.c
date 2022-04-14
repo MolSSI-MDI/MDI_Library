@@ -334,11 +334,22 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
   // only do this if not in i-PI compatibility mode
   if ( ipi_compatibility != 1 ) {
     int version[3];
+    int length_send[2];
+    int length_recv[2];
     version[0] = MDI_MAJOR_VERSION;
     version[1] = MDI_MINOR_VERSION;
     version[2] = MDI_PATCH_VERSION;
     tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
     tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
+    if ( new_comm->mdi_version[0] > 1 ||
+      ( new_comm->mdi_version[0] == 1 && new_comm->mdi_version[1] >= 4 ) ) {
+          length_send[0] = MDI_NAME_LENGTH_;
+          length_send[1] = MDI_COMMAND_LENGTH_;
+          tcp_send(&length_send[0], 2, MDI_INT, new_comm->id, 0);
+          tcp_recv(&length_recv[0], 2, MDI_INT, new_comm->id, 0);
+          new_comm->name_length = length_recv[0];
+          new_comm->command_length = length_recv[1];
+    }
   }
 
   return 0;
@@ -369,11 +380,22 @@ int tcp_accept_connection() {
     // only do this if not in i-PI compatibility mode
     if ( ipi_compatibility != 1 ) {
       int version[3];
+      int length_send[2];
+      int length_recv[2];
       version[0] = MDI_MAJOR_VERSION;
       version[1] = MDI_MINOR_VERSION;
       version[2] = MDI_PATCH_VERSION;
       tcp_send(&version[0], 3, MDI_INT, new_comm->id, 0);
       tcp_recv(&new_comm->mdi_version[0], 3, MDI_INT, new_comm->id, 0);
+      if ( new_comm->mdi_version[0] > 1 ||
+        ( new_comm->mdi_version[0] == 1 && new_comm->mdi_version[1] >= 4 ) ) {
+            length_send[0] = MDI_NAME_LENGTH_;
+            length_send[1] = MDI_COMMAND_LENGTH_;
+            tcp_send(&length_send[0], 2, MDI_INT, new_comm->id, 0);
+            tcp_recv(&length_recv[0], 2, MDI_INT, new_comm->id, 0);
+            new_comm->name_length = length_recv[0];
+            new_comm->command_length = length_recv[1];
+      }
     }
 
   }
