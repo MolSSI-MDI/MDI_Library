@@ -47,6 +47,8 @@ int test_on_accept_communicator() {
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
+    communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
+    comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
 

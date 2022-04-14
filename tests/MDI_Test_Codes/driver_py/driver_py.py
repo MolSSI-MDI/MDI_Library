@@ -35,6 +35,12 @@ else:
 
 # Initialize the MDI Library
 mdi.MDI_Init(sys.argv[2])
+
+# Test MDI_Get_communicator, which should currently return MDI_COMM_NULL
+nullcomm = mdi.MDI_Get_communicator(0)
+assert nullcomm == mdi.MDI_COMM_NULL
+
+# Get the world rank
 if use_mpi4py:
     mpi_world = mdi.MDI_MPI_get_world_comm()
     world_rank = mpi_world.Get_rank()

@@ -106,6 +106,8 @@ typedef struct communicator_struct {
   int method_id;
   /*! \brief MDI_Comm handle that corresponds to this communicator */
   MDI_Comm_Type id;
+  /*! \brief Indicate whether this communicator has been accepted yet */
+  int is_accepted;
   /*! \brief Handle for the id of the associated code */
   int code_id;
   /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (WINDOWS) */
