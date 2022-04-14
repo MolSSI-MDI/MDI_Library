@@ -859,7 +859,13 @@ int MDI_Get_communicator(MDI_Comm* comm, int index)
   }
   else {
     communicator* comm_obj = vector_get(this_code->comms, index);
-    *comm = comm_obj->id;
+    if ( comm_obj->is_accepted == 0 ) {
+      // If the code hasn't accepted this communicator, return null
+      *comm = MDI_COMM_NULL;
+    }
+    else {
+      *comm = comm_obj->id;
+    }
   }
   return 0;
 }

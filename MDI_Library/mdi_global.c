@@ -460,6 +460,7 @@ int new_communicator(int code_id, int method) {
 
   communicator new_comm;
   new_comm.method_id = method;
+  new_comm.is_accepted = 0;
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
   new_comm.nodes = node_vec;
