@@ -43,6 +43,9 @@ static int MPI_Gather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
 static int MPI_Allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                MPI_Comm comm) { return 0; };
+static int MPI_Allgatherv(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+               void *recvbuf, const int *recvcounts, const int *displs,
+               MPI_Datatype recvtype, MPI_Comm comm) { return 0; };
 static int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag,
              MPI_Comm comm) { return 0; };
 static int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,

@@ -984,7 +984,7 @@ int MDI_Check_node_exists(const char* node_name, MDI_Comm comm, int* flag)
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 2;
   }
@@ -1190,13 +1190,13 @@ int MDI_Check_command_exists(const char* node_name, const char* command_name, MD
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 2;
   }
 
   // confirm that the command_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(command_name) > COMMAND_LENGTH ) {
+  if ( strlen(command_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Cannot chcek command name with length greater than MDI_COMMAND_LENGTH");
     return 3;
   }
@@ -1269,7 +1269,7 @@ int MDI_Get_ncommands(const char* node_name, MDI_Comm comm, int* ncommands)
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 2;
   }
@@ -1440,13 +1440,13 @@ int MDI_Check_callback_exists(const char* node_name, const char* callback_name, 
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 2;
   }
 
   // confirm that the callback_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(callback_name) > COMMAND_LENGTH ) {
+  if ( strlen(callback_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Cannot check callback name with length greater than MDI_COMMAND_LENGTH");
     return 3;
   }
@@ -1519,7 +1519,7 @@ int MDI_Get_ncallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
   }
 
   // confirm that the node_name size is not greater than MDI_COMMAND_LENGTH
-  if ( strlen(node_name) > COMMAND_LENGTH ) {
+  if ( strlen(node_name) > MDI_COMMAND_LENGTH_ ) {
     mdi_error("Node name is greater than MDI_COMMAND_LENGTH");
     return 2;
   }
@@ -1847,6 +1847,19 @@ int MDI_Set_Mpi4py_Send_Callback(int (*mpi4py_send)(void*, int, int, int, MDI_Co
 }
 
 
+/*! \brief Set the callback MDI uses for gathering MDI versions when using mpi4py
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       mpi4py_allgather
+ *                   Function pointer to the mpi4py_allgather callback
+ */
+int MDI_Set_Mpi4py_Allgather_Callback(int (*mpi4py_allgather)(void*, void*)) {
+  mpi4py_allgather_callback = mpi4py_allgather;
+  return 0;
+}
+
+
 /*! \brief Set the callback MDI uses for gathering code names when using mpi4py
  *
  * The function returns \p 0 on a success.
@@ -1854,7 +1867,7 @@ int MDI_Set_Mpi4py_Send_Callback(int (*mpi4py_send)(void*, int, int, int, MDI_Co
  * \param [in]       mpi4py_gather_names
  *                   Function pointer to the mpi4py_gather_names callback
  */
-int MDI_Set_Mpi4py_Gather_Names_Callback(int (*mpi4py_gather_names)(void*, void*)) {
+int MDI_Set_Mpi4py_Gather_Names_Callback(int (*mpi4py_gather_names)(void*, void*, int*, int*)) {
   mpi4py_gather_names_callback = mpi4py_gather_names;
   return 0;
 }

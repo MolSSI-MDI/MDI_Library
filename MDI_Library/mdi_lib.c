@@ -413,6 +413,8 @@ int library_initialize() {
   new_comm->mdi_version[0] = MDI_MAJOR_VERSION;
   new_comm->mdi_version[1] = MDI_MINOR_VERSION;
   new_comm->mdi_version[2] = MDI_PATCH_VERSION;
+  new_comm->name_length = MDI_NAME_LENGTH;
+  new_comm->command_length = MDI_COMMAND_LENGTH;
 
   // allocate the method data
   library_data* libd = malloc(sizeof(library_data));
@@ -603,7 +605,7 @@ int library_set_command(const char* command, MDI_Comm comm) {
 
   // set the command
   library_data* engine_lib = (library_data*) engine_comm->method_data;
-  snprintf(engine_lib->command, COMMAND_LENGTH, "%s", command);
+  snprintf(engine_lib->command, MDI_COMMAND_LENGTH_, "%s", command);
 
   return 0;
 }

@@ -233,7 +233,39 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     world_rank = mpi4py_rank_callback(comm_flag);
   }
 
-  //create the name of this process
+  // determine the MDI version of each code
+  int* my_version = malloc( sizeof(int) * 5 );
+  int* all_versions = malloc( sizeof(int) * 5 * world_size );
+  my_version[0] = MDI_MAJOR_VERSION;
+  my_version[1] = MDI_MINOR_VERSION;
+  my_version[2] = MDI_PATCH_VERSION;
+  my_version[3] = MDI_COMMAND_LENGTH;
+  my_version[4] = MDI_NAME_LENGTH;
+  if ( use_mpi4py == 0 ) {
+    MPI_Allgather(my_version, 5, MPI_INT, all_versions, 5, 
+        MPI_INT, world_comm);
+  }
+  else {
+    ret = mpi4py_allgather_callback(my_version, all_versions);
+    if ( ret != 0 ) {
+      mdi_error("Error in mpi4py_allgather_callback");
+      return ret;
+    }
+  }
+
+  // create a list of the name lengths of each rank
+  int* name_lengths = malloc( sizeof(int) * world_size );
+  int* name_displs = malloc( sizeof(int) * world_size );
+  name_displs[0] = 0;
+  for (i=0; i < world_size; i++) {
+      name_lengths[i] = all_versions[i*5 + 4];
+      if ( i > 0 ) {
+          name_displs[i] = name_displs[i-1] + name_lengths[i-1];
+      }
+  }
+  int name_array_length = name_displs[world_size-1] + name_lengths[world_size-1];
+
+  // create the name of this process
   char* buffer = malloc( sizeof(char) * MDI_NAME_LENGTH );
   int ichar;
   for (ichar=0; ichar < MDI_NAME_LENGTH; ichar++) {
@@ -243,8 +275,8 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     buffer[ichar] = code_name[ichar];
   }
 
-  char* names = malloc(sizeof(char) * world_size*MDI_NAME_LENGTH);
-  for (ichar=0; ichar < world_size*MDI_NAME_LENGTH; ichar++) {
+  char* names = malloc(sizeof(char) * name_array_length);
+  for (ichar=0; ichar < name_array_length; ichar++) {
     names[ichar] = '\0';
   }
 
@@ -256,11 +288,14 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
 
   // gather the name of the code associated with each rank
   if ( use_mpi4py == 0 ) {
-    MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-		  MPI_CHAR, world_comm);
+    //MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
+	//	  MPI_CHAR, world_comm);
+    MPI_Allgatherv(buffer, MDI_NAME_LENGTH, MPI_CHAR, names,
+        name_lengths, name_displs,
+        MPI_CHAR, world_comm);
   }
   else {
-    ret = mpi4py_gather_names_callback(buffer, names);
+    ret = mpi4py_gather_names_callback(buffer, names, name_lengths, name_displs);
     if ( ret != 0 ) {
       mdi_error("Error in mpi4py_gather_names_callback");
       return ret;
@@ -311,7 +346,16 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       // if this rank is a member of either the driver or the engine, create a new communicator
       MDI_Comm comm_id = MDI_COMM_NULL;
       if ( strcmp(my_name, "") == 0 || strcmp(my_name, name) == 0 ) {
-	comm_id = new_communicator(this_code->id, MDI_MPI);
+        comm_id = new_communicator(this_code->id, MDI_MPI);
+        communicator* new_comm = get_communicator(this_code->id, comm_id);
+
+        // set the communicator's version numbers
+
+        new_comm->mdi_version[0] = all_versions[0]; // MDI_MAJOR_VERSION
+        new_comm->mdi_version[1] = all_versions[1]; // MDI_MINOR_VERSION
+        new_comm->mdi_version[2] = all_versions[2]; // MDI_PATCH_VERSION
+        new_comm->command_length = all_versions[3]; // MDI_COMMAND_LENGTH
+        new_comm->name_length = all_versions[4]; // MDI_NAME_LENGTH
       }
 
       // create an MPI communicator for inter-code communication
@@ -377,6 +421,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   }
 
   // communicate the version number between codes
+  /*
   int icomm;
   for ( icomm = 0; icomm < this_code->comms->size; icomm++ ) {
     communicator* this_comm = vector_get(this_code->comms, icomm);
@@ -392,6 +437,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       }
     }
   }
+  */
 
   free( buffer );
   free( names );
@@ -399,6 +445,10 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   free( name );
   free( prev_name );
   free( my_name );
+  free( my_version );
+  free( all_versions );
+  free( name_lengths );
+  free( name_displs );
 
   return 0;
 }
