@@ -134,6 +134,8 @@ DllExport int MDI_MPI_set_world_comm(void* world_comm);
 DllExport int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                                 MDI_Driver_node_callback_t driver_node_callback,
                                 void* driver_callback_object);
+DllExport int MDI_Open_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr, MDI_Comm* mdi_comm_ptr);
+DllExport int MDI_Close_plugin(MDI_Comm mdi_comm);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Get_plugin_mode(int* plugin_mode);

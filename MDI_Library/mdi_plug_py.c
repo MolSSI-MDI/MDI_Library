@@ -68,7 +68,7 @@ int print_traceback()
   return 0;
 }
 
-int python_plugin_init( const char* engine_name, const char* engine_path, const char* options, void* engine_comm_ptr ) {
+int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr ) {
   // Initialize the Python interpreter
   // Because Python has problems with reinitialization, only initialize Python once
   if ( ! python_interpreter_initialized ) {
