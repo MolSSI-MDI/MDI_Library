@@ -1707,6 +1707,56 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
 }
 
 
+/*! \brief Open an MDI plugin instance in the background
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       plugin_name
+ *                   Name of the plugin.
+ * \param [in]       options
+ *                   Command-line options for the plugin.
+ * \param [in]       mpi_comm_ptr
+ *                   Pointer to an MPI intra-communicator that spans all ranks that will run this plugin instance.
+ * \param [out]      mdi_comm_ptr
+ *                   Pointer to an MDI communicator for communication with the launched plugin.
+ */
+int MDI_Open_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
+                       MDI_Comm* mdi_comm_ptr) {
+#if _MDI_PLUGIN_SUPPORT == 1
+  int ret = library_open_plugin(plugin_name, options, mpi_comm_ptr,
+                                   mdi_comm_ptr);
+  return ret;
+#else
+  mdi_error("MDI_Ilaunch_plugin was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
+}
+
+
+/*! \brief Close an MDI plugin instance
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       plugin_name
+ *                   Name of the plugin.
+ * \param [in]       options
+ *                   Command-line options for the plugin.
+ * \param [in]       mpi_comm_ptr
+ *                   Pointer to an MPI intra-communicator that spans all ranks that will run this plugin instance.
+ * \param [out]      mdi_comm_ptr
+ *                   Pointer to an MDI communicator for communication with the launched plugin.
+ */
+int MDI_Close_plugin(MDI_Comm mdi_comm) {
+#if _MDI_PLUGIN_SUPPORT == 1
+  int ret = library_close_plugin(mdi_comm);
+  return ret;
+#else
+  mdi_error("MDI_Close_plugin was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
+}
+
+
 /*! \brief Set the callback MDI uses for MDI_Execute_Command
  *
  * The function returns \p 0 on a success.

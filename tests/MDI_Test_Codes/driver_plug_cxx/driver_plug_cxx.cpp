@@ -200,6 +200,30 @@ int main(int argc, char **argv) {
       std::cout << "I am engine instance: " << color << std::endl;
     }
 
+    ////////////////////////////////////////////////////////
+/*
+    // Initialize and run an instance of the engine library
+    MDI_Comm mdi_comm;
+    if ( MDI_Open_plugin(plugin_name,
+			   "-mdi \"-name MM -role ENGINE -method LINK\"",
+			   &intra_comm,
+			   &mdi_comm) != 0 ) {
+      mpi_error("MDI_Launch_plugin returned non-zero exit code.");
+    }
+    char* engine_name = new char[MDI_NAME_LENGTH];
+    if ( MDI_Send_command("<NAME", mdi_comm) != 0 ) {
+      mpi_error("MDI_Send_command returned non-zero exit code.");
+    }
+    if ( MDI_Recv(engine_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_comm) != 0 ) {
+      mpi_error("MDI_Recv returned non-zero exit code.");
+    }
+    if ( intra_rank == 0 ) {
+      std::cout << "TEST VALUE: " << engine_name << std::endl;
+    }
+    MDI_Close_plugin(mdi_comm);
+*/
+    ////////////////////////////////////////////////////////
+
     // Initialize and run an instance of the engine library
     if ( MDI_Launch_plugin(plugin_name,
 			   "-mdi \"-name MM -role ENGINE -method LINK\"",
