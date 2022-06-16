@@ -73,6 +73,7 @@ include_directories( ${mdi_include_path} )
 
 if ( use_CXX )
    add_subdirectory(driver_cxx)
+   add_subdirectory(driver_repeat_cxx)
    add_subdirectory(driver_serial_cxx)
    add_subdirectory(engine_cxx)
    add_subdirectory(driver_plug_cxx)

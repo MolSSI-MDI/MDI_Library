@@ -127,10 +127,12 @@ int tcp_on_accept_communicator() {
   if ( tcp_socket > 0 ) {
     // Accept a connection via TCP
     // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
+    int size_before = this_code->comms->size;
     tcp_accept_connection();
+    int size_after = this_code->comms->size;
 
     // if MDI hasn't returned some connections, do that now
-    if ( this_code->returned_comms < this_code->comms->size ) {
+    if ( size_before < size_after ) {
       this_code->returned_comms++;
       communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
       comm_obj->is_accepted = 1;

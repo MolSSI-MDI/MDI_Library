@@ -993,6 +993,62 @@ def test_cxx_cxx_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
+def test_cxx_cxx_tcp_repeat(valgrind, manager):
+
+    # get the names of the driver and engine codes, which include a .exe extension on Windows
+    driver_name = glob.glob("../build/driver_repeat_cxx*")[0]
+    engine_name = glob.glob("../build/engine_cxx*")[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+
+    # run the first engine
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+
+    for iengine in range(10):
+        engine_command = get_command_line(
+            valgrind=valgrind,
+            manager=manager,
+            command1=[engine_name,
+                "-mdi", "-role ENGINE -method TCP" + " -name MM" + str(iengine+1) + " -hostname " + hostname + " -port " + str(port),
+                ],
+        )
+
+        engine_proc = subprocess.Popen(engine_command)
+        engine_tup = engine_proc.communicate()
+
+    # wait for the driver to complete
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    #assert driver_out == " Engine name: MM\n"
+    assert driver_out == ''' Engine name: MM1
+ Engine name: MM2
+ Engine name: MM3
+ Engine name: MM4
+ Engine name: MM5
+ Engine name: MM6
+ Engine name: MM7
+ Engine name: MM8
+ Engine name: MM9
+ Engine name: MM10
+'''
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
 def test_cxx_cxx_tcp_mpi12(valgrind, manager):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
