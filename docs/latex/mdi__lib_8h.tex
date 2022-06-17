@@ -1,5 +1,5 @@
-\hypertarget{mdi__lib_8h}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
-\label{mdi__lib_8h}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h}}
+\hypertarget{mdi__lib_8h}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
+\label{mdi__lib_8h}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_lib.h@{/repo/build/MDI\_Library/MDI\_Library/mdi\_lib.h}}
 
 
 Implementation of library-\/based communication.  
@@ -15,11 +15,11 @@ struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+stru
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__lib_8h_a3d48c114fe82db8c91a621dc43bb4a4b}\label{mdi__lib_8h_a3d48c114fe82db8c91a621dc43bb4a4b}} 
-typedef struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+struct}} {\bfseries library\+\_\+data}
-\item 
 \mbox{\Hypertarget{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}\label{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}} 
 typedef int($\ast$ {\bfseries M\+D\+I\+\_\+\+Plugin\+\_\+init\+\_\+t}) ()
+\item 
+\mbox{\Hypertarget{mdi__lib_8h_a9b2a0470cc67b6fbebdee644c0218c89}\label{mdi__lib_8h_a9b2a0470cc67b6fbebdee644c0218c89}} 
+typedef struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+struct}} {\bfseries library\+\_\+data}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -42,8 +42,17 @@ int \mbox{\hyperlink{mdi__lib_8h_a06553ad67f75bba59f571d7e4bc38926}{plug\+\_\+af
 \mbox{\Hypertarget{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}\label{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}} 
 int \mbox{\hyperlink{mdi__lib_8h_a6d94420b38e4dcd7008498385fbea604}{plug\+\_\+on\+\_\+recv\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Callback when the P\+L\+UG method must receive a command. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8h_a694877b333ae9f03242d9c76085db458}{library\+\_\+load\+\_\+init}} (const char $\ast$plugin\+\_\+name, void $\ast$mpi\+\_\+comm\+\_\+ptr, \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$libd, int mode)
+\begin{DoxyCompactList}\small\item\em Load the initialization function for a plugin. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8h_a59aeed93abcd460174a9acfac8dec011}{library\+\_\+parse\+\_\+options}} (const char $\ast$options, \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$libd)
+\begin{DoxyCompactList}\small\item\em Parse command-\/line plugin options. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a1a1ab96bea21c7b704373638570a70b4}{library\+\_\+launch\+\_\+plugin}} (const char $\ast$plugin\+\_\+name, const char $\ast$options, void $\ast$mpi\+\_\+comm\+\_\+ptr, M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t driver\+\_\+node\+\_\+callback, void $\ast$driver\+\_\+callback\+\_\+object)
 \begin{DoxyCompactList}\small\item\em Launch an M\+DI plugin. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi__lib_8h_ad058a08159abbfda680eebc02f7da9dd}{library\+\_\+open\+\_\+plugin}} (const char $\ast$plugin\+\_\+name, const char $\ast$options, void $\ast$mpi\+\_\+comm\+\_\+ptr, M\+D\+I\+\_\+\+Comm $\ast$mdi\+\_\+comm\+\_\+ptr)
+\begin{DoxyCompactList}\small\item\em Open an M\+DI plugin in the background. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_aeb507269f5981f155ee7a75908a5f36b}\label{mdi__lib_8h_aeb507269f5981f155ee7a75908a5f36b}} 
+int {\bfseries library\+\_\+close\+\_\+plugin} (M\+D\+I\+\_\+\+Comm mdi\+\_\+comm)
+\item 
 int \mbox{\hyperlink{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()
 \begin{DoxyCompactList}\small\item\em Perform initialization of a communicator for library-\/based communication. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a63ecbf6a80c775d9977153e69ada09d1}{library\+\_\+accept\+\_\+communicator}} ()
@@ -142,6 +151,36 @@ Perform initialization of a communicator for library-\/based communication.
 
 
 Launch an M\+DI plugin. 
+
+\mbox{\Hypertarget{mdi__lib_8h_a694877b333ae9f03242d9c76085db458}\label{mdi__lib_8h_a694877b333ae9f03242d9c76085db458}} 
+\index{mdi\_lib.h@{mdi\_lib.h}!library\_load\_init@{library\_load\_init}}
+\index{library\_load\_init@{library\_load\_init}!mdi\_lib.h@{mdi\_lib.h}}
+\doxysubsubsection{\texorpdfstring{library\_load\_init()}{library\_load\_init()}}
+{\footnotesize\ttfamily int library\+\_\+load\+\_\+init (\begin{DoxyParamCaption}\item[{const char $\ast$}]{plugin\+\_\+name,  }\item[{void $\ast$}]{mpi\+\_\+comm\+\_\+ptr,  }\item[{\mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$}]{libd,  }\item[{int}]{mode }\end{DoxyParamCaption})}
+
+
+
+Load the initialization function for a plugin. 
+
+\mbox{\Hypertarget{mdi__lib_8h_ad058a08159abbfda680eebc02f7da9dd}\label{mdi__lib_8h_ad058a08159abbfda680eebc02f7da9dd}} 
+\index{mdi\_lib.h@{mdi\_lib.h}!library\_open\_plugin@{library\_open\_plugin}}
+\index{library\_open\_plugin@{library\_open\_plugin}!mdi\_lib.h@{mdi\_lib.h}}
+\doxysubsubsection{\texorpdfstring{library\_open\_plugin()}{library\_open\_plugin()}}
+{\footnotesize\ttfamily int library\+\_\+open\+\_\+plugin (\begin{DoxyParamCaption}\item[{const char $\ast$}]{plugin\+\_\+name,  }\item[{const char $\ast$}]{options,  }\item[{void $\ast$}]{mpi\+\_\+comm\+\_\+ptr,  }\item[{M\+D\+I\+\_\+\+Comm $\ast$}]{mdi\+\_\+comm\+\_\+ptr }\end{DoxyParamCaption})}
+
+
+
+Open an M\+DI plugin in the background. 
+
+\mbox{\Hypertarget{mdi__lib_8h_a59aeed93abcd460174a9acfac8dec011}\label{mdi__lib_8h_a59aeed93abcd460174a9acfac8dec011}} 
+\index{mdi\_lib.h@{mdi\_lib.h}!library\_parse\_options@{library\_parse\_options}}
+\index{library\_parse\_options@{library\_parse\_options}!mdi\_lib.h@{mdi\_lib.h}}
+\doxysubsubsection{\texorpdfstring{library\_parse\_options()}{library\_parse\_options()}}
+{\footnotesize\ttfamily int library\+\_\+parse\+\_\+options (\begin{DoxyParamCaption}\item[{const char $\ast$}]{options,  }\item[{\mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$}]{libd }\end{DoxyParamCaption})}
+
+
+
+Parse command-\/line plugin options. 
 
 \mbox{\Hypertarget{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}\label{mdi__lib_8h_af6088e90893c28807b1b147a2db1995e}} 
 \index{mdi\_lib.h@{mdi\_lib.h}!library\_recv@{library\_recv}}

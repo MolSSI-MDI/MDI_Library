@@ -6,8 +6,8 @@
 \mbox{\Hypertarget{structlibrary__data__struct_ae1a7ced6becb9629333af1b62efdd493}\label{structlibrary__data__struct_ae1a7ced6becb9629333af1b62efdd493}} 
 int \mbox{\hyperlink{structlibrary__data__struct_ae1a7ced6becb9629333af1b62efdd493}{connected\+\_\+code}}
 \begin{DoxyCompactList}\small\item\em Handle of the code to which this communicator connects. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}\label{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}} 
-char \mbox{\hyperlink{structlibrary__data__struct_a7e0aee6fd84931a1b0d3d2bc67cf3769}{command}} \mbox{[}C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\mbox{]}
+\mbox{\Hypertarget{structlibrary__data__struct_ad4f7910999f6adb747db7eb4f814d975}\label{structlibrary__data__struct_ad4f7910999f6adb747db7eb4f814d975}} 
+char \mbox{\hyperlink{structlibrary__data__struct_ad4f7910999f6adb747db7eb4f814d975}{command}} \mbox{[}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+T\+H\+\_\+\mbox{]}
 \begin{DoxyCompactList}\small\item\em Name of the next command to be executed on this code. This is only used by engines. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}\label{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}} 
 int \mbox{\hyperlink{structlibrary__data__struct_a021b6e6e52dfa86e3e741522dba24606}{buf\+\_\+allocated}}
@@ -26,9 +26,27 @@ M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t \mbox{\hyperlink{structlibr
 \begin{DoxyCompactList}\small\item\em Function pointer to the driver node\textquotesingle{}s callback function. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}\label{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}} 
 void $\ast$ \mbox{\hyperlink{structlibrary__data__struct_a0cb01c720e09bce66c6f88828bf5e54b}{buf}}
-\begin{DoxyCompactList}\small\item\em Buffer used for communication of data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Buffer used for communication of data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a11ce13912407d0f389705bc4249bef42}\label{structlibrary__data__struct_a11ce13912407d0f389705bc4249bef42}} 
+void $\ast$ \mbox{\hyperlink{structlibrary__data__struct_a11ce13912407d0f389705bc4249bef42}{plugin\+\_\+handle}}
+\begin{DoxyCompactList}\small\item\em Non-\/windows handle for the plugin library. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_ab6048ef1b522e466ac1a6bd8d63e096b}\label{structlibrary__data__struct_ab6048ef1b522e466ac1a6bd8d63e096b}} 
+M\+D\+I\+\_\+\+Plugin\+\_\+init\+\_\+t \mbox{\hyperlink{structlibrary__data__struct_ab6048ef1b522e466ac1a6bd8d63e096b}{plugin\+\_\+init}}
+\begin{DoxyCompactList}\small\item\em Initialization function for the plugin library. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a60400de4ad249924ccc296c30a674ace}\label{structlibrary__data__struct_a60400de4ad249924ccc296c30a674ace}} 
+int \mbox{\hyperlink{structlibrary__data__struct_a60400de4ad249924ccc296c30a674ace}{is\+\_\+python}}
+\begin{DoxyCompactList}\small\item\em Flag whether this communicator connects to a Python library. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a18176e4d1f8a830005d16016e9646be6}\label{structlibrary__data__struct_a18176e4d1f8a830005d16016e9646be6}} 
+int \mbox{\hyperlink{structlibrary__data__struct_a18176e4d1f8a830005d16016e9646be6}{plugin\+\_\+argc}}
+\begin{DoxyCompactList}\small\item\em Argument count for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_a97d57ba6dd773c48344871d3d4c6f9b9}\label{structlibrary__data__struct_a97d57ba6dd773c48344871d3d4c6f9b9}} 
+char $\ast$$\ast$ \mbox{\hyperlink{structlibrary__data__struct_a97d57ba6dd773c48344871d3d4c6f9b9}{plugin\+\_\+argv}}
+\begin{DoxyCompactList}\small\item\em Argument vector for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structlibrary__data__struct_aad7a705a750f4ea8d8ae03cbf6313b89}\label{structlibrary__data__struct_aad7a705a750f4ea8d8ae03cbf6313b89}} 
+int \mbox{\hyperlink{structlibrary__data__struct_aad7a705a750f4ea8d8ae03cbf6313b89}{plugin\+\_\+argv\+\_\+allocated}}
+\begin{DoxyCompactList}\small\item\em Flag whether plugin\+\_\+argv is allocted for this code. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__lib_8h}{mdi\+\_\+lib.\+h}}\end{DoxyCompactItemize}
+/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__lib_8h}{mdi\+\_\+lib.\+h}}\end{DoxyCompactItemize}

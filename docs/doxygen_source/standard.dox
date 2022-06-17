@@ -319,7 +319,18 @@ This command is typically only appropriate for quantum mechanics engines.
 
 \subsection recv_elements <ELEMENTS
 
-The engine sends the atomic number of each element in its system to the driver.
+The engine sends the atomic number of each atom in its system to the driver.
+
+\par
+<b> Data Type: </b> \c MDI_INT <br>
+<b> Quantity: </b> \c NATOMS <br>
+<b> Format: </b> Sequentially ascending order of atomic index
+
+
+
+\subsection send_elements >ELEMENTS
+
+The driver sends a set of atomic numbers to the engine, which replaces the atomic number of each atom in its system with the values sent by the driver.
 
 \par
 <b> Data Type: </b> \c MDI_INT <br>
@@ -456,7 +467,7 @@ If the engine is not at the \c @DEFAULT node, it sends its most recently calcula
 
 
 
-\subsection send_stress <LABELS
+\subsection send_labels <LABELS
 
 The engine sends a label for each atom in its system.
 "Labels" are intended primarily for the purpose of providing a human-readable identifier for each of the atoms, and do not have a standardized physical meaning.

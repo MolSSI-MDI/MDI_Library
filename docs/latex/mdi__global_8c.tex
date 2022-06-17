@@ -1,5 +1,5 @@
-\hypertarget{mdi__global_8c}{}\doxysection{/\+Users/tbarnes/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.c File Reference}
-\label{mdi__global_8c}\index{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.c@{/Users/tbarnes/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.c}}
+\hypertarget{mdi__global_8c}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.c File Reference}
+\label{mdi__global_8c}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.c@{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.c}}
 
 
 Global structures used by M\+DI.  
@@ -127,8 +127,10 @@ int($\ast$ \mbox{\hyperlink{mdi__global_8c_a81771e72698989541351fc9fdd75eba6}{mp
 \mbox{\Hypertarget{mdi__global_8c_a82a5f280995d31f672679214e1c2826d}\label{mdi__global_8c_a82a5f280995d31f672679214e1c2826d}} 
 int($\ast$ \mbox{\hyperlink{mdi__global_8c_a82a5f280995d31f672679214e1c2826d}{mpi4py\+\_\+send\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
 \begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Send. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__global_8c_ae634d1b105d43241fc302bf541ecb40f}\label{mdi__global_8c_ae634d1b105d43241fc302bf541ecb40f}} 
-int($\ast$ \mbox{\hyperlink{mdi__global_8c_ae634d1b105d43241fc302bf541ecb40f}{mpi4py\+\_\+gather\+\_\+names\+\_\+callback}} )(void $\ast$, void $\ast$)
+int($\ast$ \mbox{\hyperlink{mdi__global_8c_a4a735a25308b0b824a682f58edb46c6a}{mpi4py\+\_\+allgather\+\_\+callback}} )(void $\ast$, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for initial M\+PI allgather. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__global_8c_aef0348a97b0dc9231e8acf590587d3d1}\label{mdi__global_8c_aef0348a97b0dc9231e8acf590587d3d1}} 
+int($\ast$ \mbox{\hyperlink{mdi__global_8c_aef0348a97b0dc9231e8acf590587d3d1}{mpi4py\+\_\+gather\+\_\+names\+\_\+callback}} )(void $\ast$, void $\ast$, int $\ast$, int $\ast$)
 \begin{DoxyCompactList}\small\item\em Python callback pointer for gathering names. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__global_8c_a2fb5147122802109f77955d8fdf870d3}\label{mdi__global_8c_a2fb5147122802109f77955d8fdf870d3}} 
 int($\ast$ \mbox{\hyperlink{mdi__global_8c_a2fb5147122802109f77955d8fdf870d3}{mpi4py\+\_\+split\+\_\+callback}} )(int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, int)
@@ -388,4 +390,14 @@ Append a new element to the end of the vector.
 
 Vector containing all codes that have been initiailized on this rank Typically, this will only include a single code, unless the communication method is L\+I\+B\+R\+A\+RY. 
 
-Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. 
+Vector containing all codes that have been initiailized on this rank. Typically, this will only include a single code, unless the communication method is L\+I\+NK. \mbox{\Hypertarget{mdi__global_8c_a4a735a25308b0b824a682f58edb46c6a}\label{mdi__global_8c_a4a735a25308b0b824a682f58edb46c6a}} 
+\index{mdi\_global.c@{mdi\_global.c}!mpi4py\_allgather\_callback@{mpi4py\_allgather\_callback}}
+\index{mpi4py\_allgather\_callback@{mpi4py\_allgather\_callback}!mdi\_global.c@{mdi\_global.c}}
+\doxysubsubsection{\texorpdfstring{mpi4py\_allgather\_callback}{mpi4py\_allgather\_callback}}
+{\footnotesize\ttfamily int($\ast$ mpi4py\+\_\+allgather\+\_\+callback) (void $\ast$, void $\ast$)}
+
+
+
+Python callback pointer for initial M\+PI allgather. 
+
+Python callback pointer for the initial M\+PI allgather. 

@@ -41,8 +41,14 @@ def {\bfseries mpi4py\+\_\+rank\+\_\+callback} (comm\+\_\+flag)
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a3d651c66a90feb2243f1ed5606cdc931}\label{namespaceMDI__Library_1_1mdi_a3d651c66a90feb2243f1ed5606cdc931}} 
 def {\bfseries set\+\_\+mpi4py\+\_\+rank\+\_\+callback} ()
 \item 
-\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ae586d34f6b1d98ce5e11e3cd37805a69}\label{namespaceMDI__Library_1_1mdi_ae586d34f6b1d98ce5e11e3cd37805a69}} 
-def {\bfseries mpi4py\+\_\+gather\+\_\+names\+\_\+callback} (buf, names)
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a147dfd7b8bf9ac3518cc8cb192bdcc8a}\label{namespaceMDI__Library_1_1mdi_a147dfd7b8bf9ac3518cc8cb192bdcc8a}} 
+def {\bfseries mpi4py\+\_\+allgather\+\_\+callback} (buf, names)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acd2679f9ef066bca66af696f5b56dee9}\label{namespaceMDI__Library_1_1mdi_acd2679f9ef066bca66af696f5b56dee9}} 
+def {\bfseries set\+\_\+mpi4py\+\_\+allgather\+\_\+callback} ()
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a195e3cfd04e94d2fa27ea7f6480604df}\label{namespaceMDI__Library_1_1mdi_a195e3cfd04e94d2fa27ea7f6480604df}} 
+def {\bfseries mpi4py\+\_\+gather\+\_\+names\+\_\+callback} (buf, names, name\+\_\+lengths, name\+\_\+displs)
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6b8ba4c9142e5213e279c343d9c8d3d8}\label{namespaceMDI__Library_1_1mdi_a6b8ba4c9142e5213e279c343d9c8d3d8}} 
 def {\bfseries set\+\_\+mpi4py\+\_\+gather\+\_\+names\+\_\+callback} ()
@@ -112,6 +118,12 @@ def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+role} ()
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a2fc0bde5e7cc1279b7f956814867c3ff}\label{namespaceMDI__Library_1_1mdi_a2fc0bde5e7cc1279b7f956814867c3ff}} 
 def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+\+Role} ()
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a5b0234c41b59758e2443b82f6829df9e}\label{namespaceMDI__Library_1_1mdi_a5b0234c41b59758e2443b82f6829df9e}} 
+def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+method} (comm)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a744745d7fe4955bff3972b350941c836}\label{namespaceMDI__Library_1_1mdi_a744745d7fe4955bff3972b350941c836}} 
+def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+communicator} (index)
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_af8f258aa1d2131f1cc658395f4011b81}\label{namespaceMDI__Library_1_1mdi_af8f258aa1d2131f1cc658395f4011b81}} 
 def \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_af8f258aa1d2131f1cc658395f4011b81}{M\+D\+I\+\_\+\+Execute\+\_\+\+Command\+\_\+py}} (command, comm, class\+\_\+obj)
@@ -234,7 +246,7 @@ bool {\bfseries use\+\_\+mpi4py} = False
 {\bfseries mdi\+\_\+path} = os.\+path.\+join( dir\+\_\+path, mdi\+\_\+name )
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}\label{namespaceMDI__Library_1_1mdi_aa95785436e5114a22d0ded423da84b1d}} 
-{\bfseries mdi} = ctypes.\+C\+D\+LL(mdi\+\_\+path)
+{\bfseries mdi} = ctypes.\+C\+D\+LL(mdi\+\_\+path, ctypes.\+R\+T\+L\+D\+\_\+\+G\+L\+O\+B\+AL)
 \item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}\label{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a0710a54c5275d6bfefbfb38d885034a4}{M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH\char`\"{}).value
@@ -256,6 +268,9 @@ bool {\bfseries use\+\_\+mpi4py} = False
 \begin{DoxyCompactList}\small\item\em M\+PI communication method. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_ab86765c8fb3f9312ff42897b4f59af07}\label{namespaceMDI__Library_1_1mdi_ab86765c8fb3f9312ff42897b4f59af07}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_ab86765c8fb3f9312ff42897b4f59af07}{M\+D\+I\+\_\+\+L\+I\+NK}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+L\+I\+NK\char`\"{}).value
+\begin{DoxyCompactList}\small\item\em Library communication method (deprecated) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a2901dbe4ba1c4c6fbf1428fbb50c3de1}\label{namespaceMDI__Library_1_1mdi_a2901dbe4ba1c4c6fbf1428fbb50c3de1}} 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a2901dbe4ba1c4c6fbf1428fbb50c3de1}{M\+D\+I\+\_\+\+P\+L\+U\+G\+IN}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+P\+L\+U\+G\+IN\char`\"{}).value
 \begin{DoxyCompactList}\small\item\em Library communication method. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_accb0538047d61d30f261889693a08f4c}\label{namespaceMDI__Library_1_1mdi_accb0538047d61d30f261889693a08f4c}} 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_accb0538047d61d30f261889693a08f4c}{M\+D\+I\+\_\+\+T\+E\+ST}} = ctypes.\+c\+\_\+int.\+in\+\_\+dll(mdi, \char`\"{}M\+D\+I\+\_\+\+T\+E\+ST\char`\"{}).value
@@ -354,6 +369,11 @@ dictionary {\bfseries execute\+\_\+command\+\_\+dict} = \{\}
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a87d53b22b6cb61234c7d3d4c4ded78eb}\label{namespaceMDI__Library_1_1mdi_a87d53b22b6cb61234c7d3d4c4ded78eb}} 
 {\bfseries mpi4py\+\_\+rank\+\_\+callback\+\_\+c} = \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a2c2520da9623c724df8469136cd25def}{mpi4py\+\_\+rank\+\_\+func\+\_\+type}}( mpi4py\+\_\+rank\+\_\+callback )
 \item 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}{mpi4py\+\_\+allgather\+\_\+func\+\_\+type}}
+\begin{DoxyCompactList}\small\item\em M\+P\+I4\+Py Allgather Callback \#. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a9b3f1c7d31b3bde2426c34a4d78a9274}\label{namespaceMDI__Library_1_1mdi_a9b3f1c7d31b3bde2426c34a4d78a9274}} 
+{\bfseries mpi4py\+\_\+allgather\+\_\+callback\+\_\+c} = \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}{mpi4py\+\_\+allgather\+\_\+func\+\_\+type}}( mpi4py\+\_\+allgather\+\_\+callback )
+\item 
 \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a75c8c3feabd2c5debd811af7d780835b}{mpi4py\+\_\+gather\+\_\+names\+\_\+func\+\_\+type}}
 \begin{DoxyCompactList}\small\item\em M\+P\+I4\+Py Gather Names Callback \#. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a42869ecd4d648bdb5954dd613829447c}\label{namespaceMDI__Library_1_1mdi_a42869ecd4d648bdb5954dd613829447c}} 
@@ -413,7 +433,24 @@ Node / Command / Callback management functions \#.
 
 Plugin functions \#.
 
-M\+D\+I\+\_\+\+Register\+\_\+\+Node \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6c2d0080726f799eef77825121bdd115}\label{namespaceMDI__Library_1_1mdi_a6c2d0080726f799eef77825121bdd115}} 
+M\+D\+I\+\_\+\+Register\+\_\+\+Node \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}\label{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}} 
+\index{MDI\_Library.mdi@{MDI\_Library.mdi}!mpi4py\_allgather\_func\_type@{mpi4py\_allgather\_func\_type}}
+\index{mpi4py\_allgather\_func\_type@{mpi4py\_allgather\_func\_type}!MDI\_Library.mdi@{MDI\_Library.mdi}}
+\doxysubsubsection{\texorpdfstring{mpi4py\_allgather\_func\_type}{mpi4py\_allgather\_func\_type}}
+{\footnotesize\ttfamily M\+D\+I\+\_\+\+Library.\+mdi.\+mpi4py\+\_\+allgather\+\_\+func\+\_\+type}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 =  ctypes.CFUNCTYPE(ctypes.c\_int, \textcolor{comment}{\# return}}
+\DoxyCodeLine{2                                          ctypes.POINTER(ctypes.c\_int), \textcolor{comment}{\# sendbuf}}
+\DoxyCodeLine{3                                          ctypes.POINTER(ctypes.c\_int))}
+
+\end{DoxyCode}
+
+
+M\+P\+I4\+Py Allgather Callback \#. 
+
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6c2d0080726f799eef77825121bdd115}\label{namespaceMDI__Library_1_1mdi_a6c2d0080726f799eef77825121bdd115}} 
 \index{MDI\_Library.mdi@{MDI\_Library.mdi}!mpi4py\_barrier\_func\_type@{mpi4py\_barrier\_func\_type}}
 \index{mpi4py\_barrier\_func\_type@{mpi4py\_barrier\_func\_type}!MDI\_Library.mdi@{MDI\_Library.mdi}}
 \doxysubsubsection{\texorpdfstring{mpi4py\_barrier\_func\_type}{mpi4py\_barrier\_func\_type}}
@@ -439,7 +476,9 @@ M\+P\+I4\+Py Barrier Callback \#.
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 =  ctypes.CFUNCTYPE(ctypes.c\_int, \textcolor{comment}{\# return}}
 \DoxyCodeLine{2                                          ctypes.POINTER(ctypes.c\_char), \textcolor{comment}{\# buf}}
-\DoxyCodeLine{3                                          ctypes.POINTER(ctypes.c\_char))}
+\DoxyCodeLine{3                                          ctypes.POINTER(ctypes.c\_char), \textcolor{comment}{\# names}}
+\DoxyCodeLine{4                                          ctypes.POINTER(ctypes.c\_int),  \textcolor{comment}{\# name\_lengths}}
+\DoxyCodeLine{5                                          ctypes.POINTER(ctypes.c\_int))}
 
 \end{DoxyCode}
 
