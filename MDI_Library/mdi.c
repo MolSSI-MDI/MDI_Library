@@ -779,7 +779,7 @@ int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* con
 }
 
 /* \brief Convert an element name to its atomic number */
-int MDI_Atomic_Number(const char* element_symbol, int* atomic_number)
+int MDI_String_to_Atomic_Number(const char* element_symbol, int* atomic_number)
 {
   int i;
   int found_number = -1;
