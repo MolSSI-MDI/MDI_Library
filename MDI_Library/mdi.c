@@ -32,6 +32,7 @@ Contents:
 #include "mdi_mpi.h"
 #include "mdi_lib.h"
 #include "physconst.h"
+#include "elements.h"
 
 /*! \brief MDI major version number */
 const int MDI_MAJOR_VERSION = MDI_MAJOR_VERSION_;
@@ -777,6 +778,31 @@ int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* con
   return 0;
 }
 
+/* \brief Convert an element name to its atomic number */
+int MDI_Atomic_Number(const char* element_symbol, int* atomic_number)
+{
+  int i;
+  int found_number = -1;
+
+  for (i=0; i<118; i++){
+    if ( strcmp(element_symbol, elements[i]) == 0 ) {
+
+      // The atomic number is 1 + the index in the list.
+      found_number = i + 1;
+      break;
+    };
+  };
+
+  if ( found_number == -1 ) {
+    mdi_error("Unrecognized element name, unable to look up atomic number.");
+    return 1;
+  }
+  else {
+    *atomic_number = found_number;
+    return 0;
+  };
+
+}
 
 /*! \brief Get the role of the code
  *

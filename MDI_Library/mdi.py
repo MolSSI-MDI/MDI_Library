@@ -801,6 +801,19 @@ def MDI_Conversion_factor(arg1, arg2):
 def MDI_Conversion_Factor(arg1, arg2):
     return MDI_Conversion_factor(arg1, arg2)
 
+# MDI_Atomic_Number
+mdi.MDI_Atomic_Number.argtypes = [ ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int) ]
+mdi.MDI_Atomic_Number.restype = ctypes.c_int
+def MDI_Atomic_Number(arg1):
+    in_name = arg1.encode('utf-8')
+    atomic_number = ctypes.c_int()
+
+    ret = mdi.MDI_Atomic_Number(ctypes.c_char_p(in_name), ctypes.byref(atomic_number))
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Atomic_Number failed")
+    return atomic_number.value
+
+
 # MDI_Get_role
 mdi.MDI_Get_role.argtypes = [ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Get_role.restype = ctypes.c_int

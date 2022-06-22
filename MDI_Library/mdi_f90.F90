@@ -327,6 +327,12 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
+     FUNCTION MDI_Atomic_Number_(atomic_name, atomic_number) bind(c, name="MDI_Atomic_Number")
+      USE, INTRINSIC :: iso_c_binding
+      TYPE(C_PTR), VALUE                        :: atomic_name, atomic_number
+      INTEGER(KIND=C_INT)                       :: MDI_Atomic_Number_
+     END FUNCTION MDI_Atomic_Number_
+
      FUNCTION MDI_Get_Role_(role) bind(c, name="MDI_Get_role")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: role
@@ -783,6 +789,31 @@ CONTAINS
       ierr = MDI_Conversion_Factor_( c_loc(cin_unit), c_loc(cout_unit), c_loc(cfactor) )
       factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
+
+    SUBROUTINE MDI_Atomic_Number(fin_name, num, ierr)
+      USE ISO_C_BINDING
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Atomic_Number
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Atomic_Number
+#endif
+      CHARACTER(LEN=*), INTENT(IN)             :: fin_name
+      INTEGER, INTENT(OUT)                     :: num
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER                                  :: i
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cin_name(LEN_TRIM(fin_name)+1)
+      INTEGER(KIND=C_INT), TARGET              :: cnum
+
+      DO i = 1, LEN_TRIM(fin_name)
+        cin_name(i) = fin_name(i:i)
+     END DO
+     cin_name( LEN_TRIM(fin_name) + 1 ) = c_null_char
+
+     ierr = MDI_Atomic_Number_( c_loc(cin_name), c_loc(cnum) )
+
+     num = cnum
+
+    END SUBROUTINE MDI_Atomic_Number
 
     SUBROUTINE MDI_Get_Role(role, ierr)
       USE ISO_C_BINDING
