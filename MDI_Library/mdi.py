@@ -801,16 +801,16 @@ def MDI_Conversion_factor(arg1, arg2):
 def MDI_Conversion_Factor(arg1, arg2):
     return MDI_Conversion_factor(arg1, arg2)
 
-# MDI_String_to_Atomic_Number
-mdi.MDI_String_to_Atomic_Number.argtypes = [ ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int) ]
-mdi.MDI_String_to_Atomic_Number.restype = ctypes.c_int
-def MDI_String_to_Atomic_Number(arg1):
+# MDI_String_to_Atomic_Numbe
+mdi.MDI_String_to_atomic_number.argtypes = [ ctypes.POINTER(ctypes.c_char), ctypes.POINTER(ctypes.c_int) ]
+mdi.MDI_String_to_atomic_number.restype = ctypes.c_int
+def MDI_String_to_atomic_number(arg1):
     in_name = arg1.encode('utf-8')
     atomic_number = ctypes.c_int()
 
-    ret = mdi.MDI_String_to_Atomic_Number(ctypes.c_char_p(in_name), ctypes.byref(atomic_number))
+    ret = mdi.MDI_String_to_atomic_number(ctypes.c_char_p(in_name), ctypes.byref(atomic_number))
     if ret != 0:
-        raise Exception("MDI Error: MDI_String_to_Atomic_Number failed")
+        raise Exception("MDI Error: MDI_String_to_atomic_number failed")
     return atomic_number.value
 
 

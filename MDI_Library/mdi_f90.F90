@@ -327,11 +327,11 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Conversion_Factor_
      END FUNCTION MDI_Conversion_Factor_
 
-     FUNCTION MDI_String_to_Atomic_Number_(atomic_name, atomic_number) bind(c, name="MDI_String_to_Atomic_Number")
+     FUNCTION MDI_String_to_atomic_number_(atomic_name, atomic_number) bind(c, name="MDI_String_to_atomic_number")
       USE, INTRINSIC :: iso_c_binding
       TYPE(C_PTR), VALUE                        :: atomic_name, atomic_number
-      INTEGER(KIND=C_INT)                       :: MDI_String_to_Atomic_Number_
-     END FUNCTION MDI_String_to_Atomic_Number_
+      INTEGER(KIND=C_INT)                       :: MDI_String_to_atomic_number_
+     END FUNCTION MDI_String_to_atomic_number_
 
      FUNCTION MDI_Get_Role_(role) bind(c, name="MDI_Get_role")
        USE, INTRINSIC :: iso_c_binding
@@ -790,11 +790,11 @@ CONTAINS
       factor = cfactor
     END SUBROUTINE MDI_Conversion_Factor
 
-    SUBROUTINE MDI_String_to_Atomic_Number(fin_name, num, ierr)
+    SUBROUTINE MDI_String_to_atomic_number(fin_name, num, ierr)
       USE ISO_C_BINDING
 #if MDI_WINDOWS
-      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_String_to_Atomic_Number
-      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_String_to_Atomic_Number
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_String_to_atomic_number
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_String_to_atomic_number
 #endif
       CHARACTER(LEN=*), INTENT(IN)             :: fin_name
       INTEGER, INTENT(OUT)                     :: num
@@ -809,11 +809,11 @@ CONTAINS
      END DO
      cin_name( LEN_TRIM(fin_name) + 1 ) = c_null_char
 
-     ierr = MDI_String_to_Atomic_Number_( c_loc(cin_name), c_loc(cnum) )
+     ierr = MDI_String_to_atomic_number_( c_loc(cin_name), c_loc(cnum) )
 
      num = cnum
 
-    END SUBROUTINE MDI_String_to_Atomic_Number
+    END SUBROUTINE MDI_String_to_atomic_number
 
     SUBROUTINE MDI_Get_Role(role, ierr)
       USE ISO_C_BINDING

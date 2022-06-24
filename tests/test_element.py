@@ -31,6 +31,7 @@ def import_mdi():
 def test_atomic_number():
     mdi = import_mdi()
 
-    assert mdi.MDI_String_to_Atomic_Number("H") == 1
-    assert mdi.MDI_String_to_Atomic_Number("He") == 2
-    assert mdi.MDI_String_to_Atomic_Number("Li") == 3
+    assert mdi.MDI_String_to_atomic_number("H") == 1
+    assert mdi.MDI_String_to_atomic_number("He") == 2
+    assert mdi.MDI_String_to_atomic_number("Li") == 3
+    assert mdi.MDI_String_to_atomic_number("Os") == 76
