@@ -34,4 +34,11 @@ def test_atomic_number():
     assert mdi.MDI_String_to_atomic_number("H") == 1
     assert mdi.MDI_String_to_atomic_number("He") == 2
     assert mdi.MDI_String_to_atomic_number("Li") == 3
+    assert mdi.MDI_String_to_atomic_number("Se") == 34
     assert mdi.MDI_String_to_atomic_number("Os") == 76
+
+def test_atomic_number_unrecognized():
+    mdi = import_mdi()
+
+    with pytest.raises(Exception):
+        mdi.MDI_String_to_atomic_number("YY")
