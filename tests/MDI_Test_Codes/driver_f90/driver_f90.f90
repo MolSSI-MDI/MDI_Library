@@ -7,11 +7,11 @@ USE mdi,              ONLY : MDI_CHAR, MDI_NAME_LENGTH, MDI_COMMAND_LENGTH, &
      MDI_Accept_communicator, MDI_Send_command, MDI_Recv, MDI_Conversion_factor, &
      MDI_Check_Node_exists, MDI_Check_command_exists, MDI_Check_callback_exists, &
      MDI_Get_nnodes, MDI_Get_ncommands, MDI_Get_ncallbacks, &
-     MDI_Get_node, MDI_Get_command, MDI_Get_callback, MDI_DRIVER
+     MDI_Get_node, MDI_Get_command, MDI_Get_callback, MDI_DRIVER, MDI_String_to_atomic_number
 
 IMPLICIT NONE
 
-   INTEGER :: iarg, ierr, exists, role
+   INTEGER :: iarg, ierr, exists, role, atomic_num
    INTEGER :: world_comm, world_rank
    INTEGER :: comm
    CHARACTER(len=1024) :: arg, mdi_options
@@ -72,6 +72,10 @@ IMPLICIT NONE
    ! Determine the name of the engine
    call MDI_Send_command("<NAME", comm, ierr)
    call MDI_Recv(message, MDI_NAME_LENGTH, MDI_CHAR, comm, ierr)
+
+   ! Use string to atomic number converter
+   call MDI_String_to_atomic_number("He", atomic_num, ierr)
+   WRITE(*,*) "Atomic Number for He: ", atomic_num
 
    IF ( world_rank .eq. 0 ) WRITE(6,*)'Engine name: ', TRIM(message)
 
