@@ -75,7 +75,7 @@ IMPLICIT NONE
 
    ! Use string to atomic number converter
    call MDI_String_to_atomic_number("He", atomic_num, ierr)
-   WRITE(*,*) "Atomic Number for He: ", atomic_num
+   IF ( atomic_num .ne. 2 ) WRITE(*,*) "Incorrect Atomic Number for He: ", atomic_num
 
    IF ( world_rank .eq. 0 ) WRITE(6,*)'Engine name: ', TRIM(message)
 
