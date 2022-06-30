@@ -267,6 +267,12 @@ jobs:
           cmake -G "MinGW Makefiles" -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX="$(pwd)/install" ..
           mingw32-make VERBOSE=1
           mingw32-make install
+          echo "$(dirname $(which gfortran))/../lib/mingw/tools/install/mingw64/bin" >> $GITHUB_PATH
+          echo "$(dirname $(which gfortran))/../lib/mingw/tools/install/mingw64/lib" >> $GITHUB_PATH
+
+      - name: Copy libgfortran-5.dll into the path
+        run: |
+          cp C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin\libgfortran* C:\ProgramData\chocolatey\bin
 
       - name: Fortran executables don't seem to search the $PATH variable
         run: |
@@ -276,6 +282,11 @@ jobs:
           cp "$(pwd)/install/lib/mdi/*.dll*" "$(pwd)"
           cp "$(pwd)/tests/MDI_Test_Codes/STUBS_MPI/*.dll*" "$(pwd)"
           ls
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
       - name: Run test scripts
         run: |
