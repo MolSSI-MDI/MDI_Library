@@ -176,12 +176,20 @@ o.start()
 Quantum ESPRESSO</h1>
 <p>MolSSI provides <a href="https://github.com/MolSSI/q-e/tree/mdi">an MDI-enabled fork</a> of <a href="https://www.quantum-espresso.org/">Quantum ESPRESSO</a> (QE) that can be run as an MDI engine. To use QE as an engine, follow these steps:</p>
 <ol type="1">
-<li>Acquire the MDI-enabled fork of QE: <pre class="fragment">git clone --branch mdi git@github.com:MolSSI/q-e.git
+<li>Acquire the MDI-enabled fork of QE: <pre class="fragment">git clone --branch mdi_plugin https://github.com/MolSSI-MDI/q-e.git
 </pre></li>
-<li>Compile pw.x, following the <a href="https://www.quantum-espresso.org/Doc/user_guide/node10.html">QE build guide</a>.</li>
+<li>Configure QE. You will need to configure QE to be compiled with position-independent code. If using GCC compilers, you can acomplish this by passing the "\c -fPIC" flag to the "\c FFLAGS", "\c FCFLAGS", "\c CFLAGS", and "\c try_foxflags" configuration options. For example: <pre class="fragment">cd q-e
+./configure --enable-parallel --enable-openmp --enable-shared FFLAGS="-fPIC" FCFLAGS="-fPIC" CFLAGS="-fPIC" try_foxflags="-fPIC -cpp"
+</pre></li>
+</ol>
+<p>For additional information about configuring QE, see the <a href="https://www.quantum-espresso.org/Doc/user_guide/node10.html">QE build guide</a>.</p>
+<ol type="1">
+<li>Compile "\c qemdi.x". <pre class="fragment">make mdi
+</pre></li>
 <li>Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.</li>
-<li>Launch QE using the "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
+<li>Launch QE using the "\c qemdi.x" executable (which is located in "\c q-e/MDI/src" "<code>-mdi"</code> runtime option, which is described in <a class="el" href="library_page.html#library_launching_sec">Launching Codes with the MDI Library</a>. For example: <pre class="fragment">qemdi.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &amp;
 </pre></li>
+<li>The "\c q-e/MDI/src" directory also contains a QE MDI Plugin, called "\c qemdi".</li>
 </ol>
 <h1><a class="anchor" id="ecosystem_tinker"></a>
 Tinker</h1>

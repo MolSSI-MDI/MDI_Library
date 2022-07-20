@@ -15,6 +15,7 @@ Functions callable by users of the Mol\+S\+SI Driver Interface.
 {\ttfamily \#include \char`\"{}mdi\+\_\+mpi.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}mdi\+\_\+lib.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}physconst.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}elements.\+h\char`\"{}}\newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -44,6 +45,9 @@ int \mbox{\hyperlink{mdi_8c_aa1ccf61d45e842b50d72084735cb984a}{M\+D\+I\+\_\+\+Co
 \begin{DoxyCompactList}\small\item\em Determine the conversion factor between two units. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_aa66cd1dab228089f35563dba18f36d08}{M\+D\+I\+\_\+\+Conversion\+\_\+factor}} (const char $\ast$in\+\_\+unit, const char $\ast$out\+\_\+unit, double $\ast$conv)
 \begin{DoxyCompactList}\small\item\em Determine the conversion factor between two units. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi_8c_a4192271f6e3d7e6bc7939223be2ba8a8}\label{mdi_8c_a4192271f6e3d7e6bc7939223be2ba8a8}} 
+int {\bfseries M\+D\+I\+\_\+\+String\+\_\+to\+\_\+atomic\+\_\+number} (const char $\ast$element\+\_\+symbol, int $\ast$atomic\+\_\+number)
+\item 
 int \mbox{\hyperlink{mdi_8c_ab73b88af2ee5e9bbb5d7dfb8e84068a1}{M\+D\+I\+\_\+\+Get\+\_\+\+Role}} (int $\ast$role)
 \begin{DoxyCompactList}\small\item\em Get the role of the code. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a83a9b8af3ed1ae53dd6af69a14a00deb}{M\+D\+I\+\_\+\+Get\+\_\+role}} (int $\ast$role)

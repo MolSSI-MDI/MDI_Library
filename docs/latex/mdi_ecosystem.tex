@@ -101,14 +101,27 @@ Mol\+S\+SI provides \href{https://github.com/MolSSI/q-e/tree/mdi}{\texttt{ an M\
 
 
 \begin{DoxyEnumerate}
-\item Acquire the M\+D\+I-\/enabled fork of QE\+: \begin{DoxyVerb}git clone --branch mdi git@github.com:MolSSI/q-e.git
+\item Acquire the M\+D\+I-\/enabled fork of QE\+: \begin{DoxyVerb}git clone --branch mdi_plugin https://github.com/MolSSI-MDI/q-e.git
 \end{DoxyVerb}
 
-\item Compile pw.\+x, following the \href{https://www.quantum-espresso.org/Doc/user_guide/node10.html}{\texttt{ QE build guide}}.
+\item Configure QE. You will need to configure QE to be compiled with position-\/independent code. If using G\+CC compilers, you can acomplish this by passing the \char`\"{}\textbackslash{}c -\/f\+P\+I\+C\char`\"{} flag to the \char`\"{}\textbackslash{}c F\+F\+L\+A\+G\+S\char`\"{}, \char`\"{}\textbackslash{}c F\+C\+F\+L\+A\+G\+S\char`\"{}, \char`\"{}\textbackslash{}c C\+F\+L\+A\+G\+S\char`\"{}, and \char`\"{}\textbackslash{}c try\+\_\+foxflags\char`\"{} configuration options. For example\+: \begin{DoxyVerb}cd q-e
+./configure --enable-parallel --enable-openmp --enable-shared FFLAGS="-fPIC" FCFLAGS="-fPIC" CFLAGS="-fPIC" try_foxflags="-fPIC -cpp"
+\end{DoxyVerb}
+
+\end{DoxyEnumerate}
+
+For additional information about configuring QE, see the \href{https://www.quantum-espresso.org/Doc/user_guide/node10.html}{\texttt{ QE build guide}}.
+
+
+\begin{DoxyEnumerate}
+\item Compile \char`\"{}\textbackslash{}c qemdi.\+x\char`\"{}. \begin{DoxyVerb}make mdi
+\end{DoxyVerb}
+
 \item Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.
-\item Launch QE using the "{\ttfamily -\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}pw.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
+\item Launch QE using the \char`\"{}\textbackslash{}c qemdi.\+x\char`\"{} executable (which is located in \char`\"{}\textbackslash{}c q-\/e/\+M\+D\+I/src\char`\"{} "{\ttfamily -\/mdi"} runtime option, which is described in \mbox{\hyperlink{library_page_library_launching_sec}{Launching Codes with the M\+DI Library}}. For example\+: \begin{DoxyVerb}qemdi.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
 \end{DoxyVerb}
 
+\item The \char`\"{}\textbackslash{}c q-\/e/\+M\+D\+I/src\char`\"{} directory also contains a QE M\+DI Plugin, called \char`\"{}\textbackslash{}c qemdi\char`\"{}.
 \end{DoxyEnumerate}\hypertarget{mdi_ecosystem_ecosystem_tinker}{}\doxysection{Tinker}\label{mdi_ecosystem_ecosystem_tinker}
 \href{https://github.com/taylor-a-barnes/Tinker/tree/mdi}{\texttt{ An M\+D\+I-\/enabled fork}} of \href{https://dasher.wustl.edu/tinker/}{\texttt{ Tinker}} is available that can be run as an M\+DI engine. To use Tinker as an engine, follow these steps\+:
 
