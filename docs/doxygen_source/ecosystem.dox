@@ -167,7 +167,7 @@ Acquire the MDI-enabled fork of QE:
   -#
 Configure QE.
 You will need to configure QE to be compiled with position-independent code.
-If using GCC compilers, you can acomplish this by passing the "\c -fPIC" flag to the "\c FFLAGS", "\c FCFLAGS", "\c CFLAGS", and "\c try_foxflags" configuration options.
+If using GCC compilers, you can acomplish this by passing the \c "-fPIC" flag to the \c "FFLAGS", \c "FCFLAGS", \c "CFLAGS", and \c "try_foxflags" configuration options.
 For example:
 
     cd q-e
@@ -176,7 +176,7 @@ For example:
 For additional information about configuring QE, see the <a href="https://www.quantum-espresso.org/Doc/user_guide/node10.html">QE build guide</a>.
 
   -#
-Compile "\c qemdi.x".
+Compile \c "qemdi.x".
 
     make mdi
 
@@ -184,13 +184,13 @@ Compile "\c qemdi.x".
 Prepare a QE input file that specifies the initial molecular geometry of the system and any other desired settings.
 
   -#
-Launch QE using the "\c qemdi.x" executable (which is located in "\c q-e/MDI/src" \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
+Launch QE using the \c "qemdi.x" executable (which is located in \c "q-e/MDI/src") \"\c -mdi\" runtime option, which is described in \ref library_launching_sec.
 For example:
 
     qemdi.x -in qe.in -mdi "-role ENGINE -name my_name -method TCP -port 8021 -hostname localhost" &
 
   -#
-The "\c q-e/MDI/src" directory also contains a QE MDI Plugin, called "\c qemdi".
+The \c "q-e/MDI/src" directory also contains a QE MDI Plugin, called \c "qemdi".
 
 
 \section ecosystem_tinker Tinker
