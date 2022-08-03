@@ -74,7 +74,10 @@ int plug_on_accept_communicator() {
 /*! \brief Callback when the PLUG method must send a command */
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   code* this_code = get_code(current_code);
-  method* selected_method = get_method(selected_method_id);
+  communicator* this_comm = get_communicator(current_code, comm);
+  library_data* libd = (library_data*) this_comm->method_data;
+  int iengine = libd->connected_code;
+  code* engine_code = get_code(iengine);
   int ret = 0;
 
   // Check whether MPI has been initialized
@@ -86,7 +89,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
 
   // broadcast the command to each rank
   char* command_bcast = malloc( MDI_COMMAND_LENGTH * sizeof(char) );
-  if ( this_code->intra_rank == 0 ) {
+  if ( engine_code->intra_rank == 0 ) {
     int ichar;
     for ( ichar=0; ichar < MDI_COMMAND_LENGTH; ichar++) {
       command_bcast[ichar] = '\0';
@@ -96,7 +99,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     }
   }
   if ( mpi_init_flag == 1) {
-    MPI_Bcast( command_bcast, MDI_COMMAND_LENGTH, MPI_CHAR, 0, this_code->intra_MPI_comm);
+    MPI_Bcast( &command_bcast[0], MDI_COMMAND_LENGTH, MPI_CHAR, 0, engine_code->intra_MPI_comm);
   }
 
   // ensure that the driver is the current code
@@ -110,6 +113,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     ret = library_execute_command(comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
+      free( command_bcast );
       return ret;
     }
     *skip_flag = 1;
@@ -129,6 +133,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     ret = library_execute_command(comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
+      free( command_bcast );
       return ret;
     }
     *skip_flag = 1;
