@@ -236,3 +236,23 @@
    fun:PMPI_Allgatherv
    fun:mpi_identify_codes
 }
+
+
+{
+   MPI_Bcast
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:MPL_malloc
+   fun:MPII_Treeutil_tree_kary_init
+   fun:MPIR_Treealgo_tree_create
+   fun:MPIDI_POSIX_mpi_release_gather_comm_init
+   fun:MPIDI_POSIX_mpi_bcast_release_gather
+   fun:MPIDI_POSIX_mpi_bcast
+   fun:MPIDI_SHM_mpi_bcast
+   fun:MPIDI_Bcast_intra_composition_alpha
+   fun:MPID_Bcast
+   fun:MPIR_Bcast
+   fun:PMPI_Bcast
+   ...
+}
