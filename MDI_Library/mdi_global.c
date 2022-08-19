@@ -51,9 +51,6 @@ void* python_plugin_mpi_world_ptr = NULL;
 /*! \brief Unedited command-line options for currently running plugin */
 char* plugin_unedited_options = NULL;
 
-/*! \brief Command-line options for currently running plugin */
-char* plugin_options = NULL;
-
 /*! \brief Argument count for plugin command-line options */
 int plugin_argc = 0;
 
@@ -282,6 +279,7 @@ int new_code() {
   new_code.next_comm = 1;
   new_code.intra_MPI_comm = MPI_COMM_WORLD;
   new_code.language = MDI_LANGUAGE_C;
+  new_code.language_on_destroy = NULL;
 
   // initialize the name and role strings
   int ichar;
@@ -349,6 +347,14 @@ code* get_code(int code_id) {
  */
 int delete_code(int code_id) {
   code* this_code = get_code(code_id);
+
+  // Call the langauge-specific destructor
+  if ( this_code->language_on_destroy != NULL ) {
+    if ( this_code->language_on_destroy(code_id) != 0 ) {
+      mdi_error("Language-specific code deletion function failed");
+      return 1;
+    }
+  }
 
   // Search through all of the codes for the one that matches code_id
   int icode;

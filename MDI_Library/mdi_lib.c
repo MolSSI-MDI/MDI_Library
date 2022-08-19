@@ -299,10 +299,11 @@ int library_parse_options(const char* options, library_data* libd) {
 
   // copy the input options array
   int options_len = strlen(options) + 1;
-  plugin_options = malloc( options_len * sizeof(char) );
-  snprintf(plugin_options, options_len, "%s", options);
-  plugin_unedited_options = malloc( options_len * sizeof(char) );
-  snprintf(plugin_unedited_options, options_len, "%s", options);
+  libd->plugin_options = malloc( options_len * sizeof(char) );
+  snprintf(libd->plugin_options, options_len, "%s", options);
+  libd->plugin_unedited_options = malloc( options_len * sizeof(char) );
+  snprintf(libd->plugin_unedited_options, options_len, "%s", options);
+  libd->plugin_options_allocated = 1;
 
   // determine the number of arguments
   libd->plugin_argc = 0;
@@ -311,7 +312,7 @@ int library_parse_options(const char* options, library_data* libd) {
   int in_single_quotes = 0; // was the previous character part of a single quote?
   int in_double_quotes = 0; // was the previous character part of a double quote?
   for (ichar=0; ichar < options_len; ichar++) {
-    if ( plugin_options[ichar] == '\0' ) {
+    if ( libd->plugin_options[ichar] == '\0' ) {
       if ( in_double_quotes ) {
         mdi_error("Unterminated double quotes received in MDI_Launch_plugin \"options\" argument.");
       }
@@ -320,30 +321,30 @@ int library_parse_options(const char* options, library_data* libd) {
       }
       in_argument = 0;
     }
-    else if (plugin_options[ichar] == ' ') {
+    else if (libd->plugin_options[ichar] == ' ') {
       if ( ! in_double_quotes && ! in_single_quotes ) {
         if ( in_argument ) {
           libd->plugin_argc++;
         }
         in_argument = 0;
-        plugin_options[ichar] = '\0';
+        libd->plugin_options[ichar] = '\0';
       }
     }
-    else if (plugin_options[ichar] == '\"') {
+    else if (libd->plugin_options[ichar] == '\"') {
       if ( in_single_quotes ) {
         mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
       }
       in_argument = 1;
       in_double_quotes = (in_double_quotes + 1) % 2;
-      plugin_options[ichar] = '\0';
+      libd->plugin_options[ichar] = '\0';
     }
-    else if (plugin_options[ichar] == '\'') { 
+    else if (libd->plugin_options[ichar] == '\'') { 
       if ( in_double_quotes ) {
         mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
       }
       in_argument = 1;
       in_single_quotes = (in_single_quotes + 1) % 2;
-      plugin_options[ichar] = '\0';
+      libd->plugin_options[ichar] = '\0';
     }
     else {
       in_argument = 1;
@@ -355,9 +356,9 @@ int library_parse_options(const char* options, library_data* libd) {
   libd->plugin_argv_allocated = 1;
   int iarg = 0;
   for (ichar=0; ichar < options_len; ichar++) {
-    if ( plugin_options[ichar] != '\0' ) {
-      if ( ichar == 0 || plugin_options[ichar-1] == '\0' ) {
-        libd->plugin_argv[iarg] = &plugin_options[ichar];
+    if ( libd->plugin_options[ichar] != '\0' ) {
+      if ( ichar == 0 || libd->plugin_options[ichar-1] == '\0' ) {
+        libd->plugin_argv[iarg] = &libd->plugin_options[ichar];
         iarg++;
       }
     }
@@ -492,6 +493,7 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   // Assign the global command-line options variables to the values for this plugin  
   plugin_argc = libd->plugin_argc;
   plugin_argv = libd->plugin_argv;
+  plugin_unedited_options = libd->plugin_unedited_options;
 
   //
   // Get the path to the plugin
@@ -576,6 +578,10 @@ int library_initialize() {
   libd->execute_on_send = 0;
   libd->mpi_comm = MPI_COMM_NULL;
   libd->plugin_argv_allocated = 0;
+  libd->plugin_options_allocated = 0;
+  libd->plugin_argc = 0;
+  libd->plugin_options = NULL;
+  libd->plugin_unedited_options = NULL;
   new_comm->method_data = libd;
 
   // if this is an engine, go ahead and set the driver as the connected code
@@ -1036,9 +1042,14 @@ int communicator_delete_lib(void* comm) {
   if ( this_code->is_library == 0 ) {
     delete_code(libd->connected_code);
   }
-  
+
   if ( libd->plugin_argv_allocated ) {
     free( libd->plugin_argv );
+  }
+
+  if ( libd->plugin_options_allocated ) {
+    free( libd->plugin_options );
+    free( libd->plugin_unedited_options );
   }
 
   // delete the method-specific information

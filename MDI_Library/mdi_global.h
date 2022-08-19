@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 2
+#define MDI_PATCH_VERSION_ 3
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -164,6 +164,8 @@ typedef struct code_struct {
   char* plugin_path;
   /*! \brief Function pointer to the generic execute_command_function */
   int (*execute_command)(const char*, MDI_Comm_Type, void*);
+  /*! \brief Function pointer to the language-specific destructor function */
+  int (*language_on_destroy)(int);
   /*! \brief Pointer to the class object that is passed to any call to execute_command */
   void* execute_command_obj;
   /*! \brief Flag whether this code is being used as a library
@@ -207,9 +209,6 @@ extern void* python_plugin_mpi_world_ptr;
 
 /*! \brief Unedited command-line options for currently running plugin */
 extern char* plugin_unedited_options;
-
-/*! \brief Command-line options for currently running plugin */
-extern char* plugin_options;
 
 /*! \brief Argument count for plugin command-line options */
 extern int plugin_argc;
