@@ -40,6 +40,12 @@ MODULE MDI_INTERNAL
        INTEGER(KIND=C_INT)                      :: MDI_Set_Execute_Command_Func_c
      END FUNCTION MDI_Set_Execute_Command_Func_c
 
+     FUNCTION MDI_Set_on_destroy_code_c(on_destroy_func) bind(c, name="MDI_Set_on_destroy_code")
+       USE ISO_C_BINDING
+       TYPE(C_FUNPTR), VALUE, INTENT(IN)        :: on_destroy_func
+       INTEGER(KIND=C_INT)                      :: MDI_Set_on_destroy_code_c
+     END FUNCTION MDI_Set_on_destroy_code_c
+
      FUNCTION MDI_Get_Current_Code_() bind(c, name="MDI_Get_Current_Code")
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT)                      :: MDI_Get_Current_Code_
@@ -160,8 +166,9 @@ CONTAINS
   END SUBROUTINE add_execute_command
 
   ! Remove a value from the execute_command dictionary
-  SUBROUTINE remove_execute_command(key)
+  SUBROUTINE remove_execute_command(key, ierr)
     INTEGER, INTENT(IN)                      :: key
+    INTEGER, INTENT(OUT)                     :: ierr
     INTEGER                                  :: index
     TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
 
@@ -169,6 +176,7 @@ CONTAINS
 
     ! Ensure that this key was actually found in the execute_command dictionary
     IF ( index .eq. -1 ) THEN
+      ierr = 1
       RETURN
     END IF
 
@@ -178,12 +186,16 @@ CONTAINS
 
     ! Replace the deleted element with the last element
     temp_dict(index) = temp_dict( SIZE(temp_dict) )
-      
+
     ! Reallocate execute_commands to the correct size
     DEALLOCATE( execute_commands )
-    ALLOCATE( execute_commands( SIZE(temp_dict) - 1 ) )
-    execute_commands(1:SIZE(execute_commands)) = temp_dict
+    IF ( size(temp_dict) .gt. 1 ) THEN
+      ALLOCATE( execute_commands( SIZE(temp_dict) - 1 ) )
+      execute_commands(1:SIZE(execute_commands)) = temp_dict
+    END IF
     DEALLOCATE( temp_dict )
+    
+    ierr = 0
 
   END SUBROUTINE remove_execute_command
 
@@ -220,6 +232,23 @@ CONTAINS
     MDI_Execute_Command_f = ierr
 
   END FUNCTION MDI_Execute_Command_f
+
+  FUNCTION MDI_On_destroy_code_f(code_id) bind(c)
+    INTEGER(KIND=C_INT)                      :: MDI_On_destroy_code_f
+    INTEGER                                  :: ierr
+    INTEGER(KIND=C_INT), VALUE               :: code_id
+
+    !INTEGER                                  :: i, current_code
+    LOGICAL                                  :: end_string
+
+    !current_code = MDI_Get_Current_Code_()
+
+    ! Perform memory cleanup for this code's language-specific data
+    CALL remove_execute_command( code_id, ierr )
+
+    MDI_On_destroy_code_f = ierr
+
+  END FUNCTION MDI_On_destroy_code_f
 
 END MODULE
 
@@ -520,15 +549,20 @@ CONTAINS
       ! determine if plugin mode is active
       ! if this rank has previously run a Fortran plugin, need to remove its state now
       ! NOTE: Should consider whether the C code can call these at end of MDI_Launch_plugin
+      !ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      !plugin_mode = cplugin_mode
+      !IF ( plugin_mode .eq. 1 ) THEN
+      !   current_code = MDI_Get_Current_Code_()
+      !   index = find_execute_command( current_code )
+      !   IF ( index .ne. -1 ) THEN
+      !      CALL remove_execute_command( current_code )
+      !   END IF
+      !ENDIF
       ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
       plugin_mode = cplugin_mode
       IF ( plugin_mode .eq. 1 ) THEN
-         current_code = MDI_Get_Current_Code_()
-         index = find_execute_command( current_code )
-         IF ( index .ne. -1 ) THEN
-            CALL remove_execute_command( current_code )
-         END IF
-      ENDIF
+        ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
+      END IF
 
     END SUBROUTINE MDI_Init
 
@@ -747,7 +781,14 @@ CONTAINS
       LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
+      INTEGER                                  :: plugin_mode, ierr2
+      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
+
       ierr = MDI_Recv_Command_(c_loc(cbuf(1)), comm)
+
+      ! get whether this is code is running in plugin mode
+      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      plugin_mode = cplugin_mode
 
       ! convert from C string to Fortran string
       IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
@@ -755,9 +796,11 @@ CONTAINS
       END IF
 
       ! If this is the EXIT command, delete all Fortran state associated with the code
-      !IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
-      !  current_code = MDI_Get_Current_Code_()
-      !  CALL remove_execute_command( current_code )
+      !IF ( plugin_mode .eq. 1 ) THEN
+      !  IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
+      !    current_code = MDI_Get_Current_Code_()
+      !    CALL remove_execute_command( current_code )
+      !  END IF
       !END IF
     END SUBROUTINE MDI_Recv_Command
 

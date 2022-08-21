@@ -12,6 +12,12 @@
 typedef int (*MDI_Plugin_init_t)();
 
 typedef struct library_data_struct {
+  /*! \brief Command-line options for currently running plugin */
+  char* plugin_options;
+  /*! \brief Unedited command-line options for currently running plugin */
+  char* plugin_unedited_options;
+  /*! \brief Flag whether plugin_options is allocted for this code */
+  int plugin_options_allocated;
   /*! \brief Handle of the code to which this communicator connects */
   int connected_code;
   /*! \brief Name of the next command to be executed on this code.

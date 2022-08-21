@@ -162,6 +162,7 @@ DllExport void MDI_Set_World_Rank(int world_rank_in);
 DllExport int MDI_Get_intra_rank(int intra_rank_out);
 DllExport int MDI_Get_Current_Code();
 DllExport int MDI_Get_python_plugin_mpi_world_ptr(void** plugin_mode);
+DllExport int MDI_Set_on_destroy_code(int (*func)(int));
 
 #ifdef __cplusplus
 }

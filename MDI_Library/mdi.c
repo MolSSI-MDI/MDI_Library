@@ -1811,6 +1811,18 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
 }
 
 
+/*! \brief Set the language-based callback for when a code is destroyed
+ *
+ * This is currently only used by Fortran plugins
+ *
+ */
+int MDI_Set_on_destroy_code(int (*func)(int)) {
+  code* this_code = get_code(current_code);
+  this_code->language_on_destroy = func;
+  return 0;
+}
+
+
 /*! \brief Get the current code
  *
  */
