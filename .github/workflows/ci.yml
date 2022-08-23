@@ -194,7 +194,7 @@ jobs:
           mkdir build
           cd build
           export FC=gfortran
-          cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython ..
+          cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython -DCMAKE_BUILD_TYPE=Debug ..
           make VERBOSE=1
 
       - name: Run valgrind tests
