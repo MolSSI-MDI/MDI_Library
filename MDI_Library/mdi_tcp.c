@@ -47,9 +47,9 @@ sock_t tcp_socket = -1;
 
 
 /*! \brief Enable support for the TCP method */
-int enable_tcp_support() {
-  new_method(MDI_TCP);
-  method* this_method = get_method(MDI_TCP);
+int enable_tcp_support(int code_id) {
+  new_method(code_id, MDI_TCP);
+  method* this_method = get_method(code_id, MDI_TCP);
   this_method->on_selection = tcp_on_selection;
   this_method->on_accept_communicator = tcp_on_accept_communicator;
   this_method->on_send_command = tcp_on_send_command;

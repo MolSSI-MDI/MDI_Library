@@ -72,15 +72,21 @@ include_directories( ${mdi_include_path} )
 
 
 if ( use_CXX )
-   add_subdirectory(driver_cxx)
-   add_subdirectory(driver_repeat_cxx)
-   add_subdirectory(driver_serial_cxx)
-   add_subdirectory(engine_cxx)
-   add_subdirectory(driver_plug_cxx)
-   # Can't compile the i-PI test on Windows
-if(NOT WIN32)
-   add_subdirectory(engine_ipi_cxx)
-endif()
+
+   if ( test_drivers )
+      add_subdirectory(driver_cxx)
+      add_subdirectory(driver_repeat_cxx)
+      add_subdirectory(driver_serial_cxx)
+      add_subdirectory(driver_plug_cxx)
+   endif()
+
+   if ( test_engines )
+      add_subdirectory(engine_cxx)
+      # Can't compile the i-PI test on Windows
+      if(NOT WIN32)
+         add_subdirectory(engine_ipi_cxx)
+      endif()
+   endif()
 
 endif()
 
@@ -88,9 +94,18 @@ if ( use_Fortran )
    # Fortran requires that the MPI stubs be compiled
    add_subdirectory(STUBS_MPI)
 
-   add_subdirectory(driver_f90)
-   add_subdirectory(engine_f90)
-   add_subdirectory(lib_f90)
+   if ( test_drivers )
+      add_subdirectory(driver_f90)
+   endif()
+
+   if ( test_engines )
+      add_subdirectory(engine_f90)
+   endif()
+
+   if ( test_drivers AND test_engines )
+      add_subdirectory(lib_f90)
+   endif()
+
 endif()
 
 if ( use_Python )

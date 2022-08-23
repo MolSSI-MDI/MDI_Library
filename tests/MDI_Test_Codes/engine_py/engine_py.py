@@ -68,13 +68,13 @@ class MDIEngine:
         else:
             self.forces = forces
 
-    def run(self, mdi_options):
+    def run(self):
+
         # get the MPI communicator
         if use_mpi4py:
             self.mpi_world = MPI.COMM_WORLD
 
         # Initialize the MDI Library
-        mdi.MDI_Init(mdi_options)
         if use_mpi4py:
             self.mpi_world = mdi.MDI_MPI_get_world_comm()
             self.world_rank = self.mpi_world.Get_rank()
@@ -105,31 +105,21 @@ class MDIEngine:
         comm = mdi.MDI_Accept_Communicator()
 
         while not self.exit_flag:
+
             command = mdi.MDI_Recv_Command(comm)
             if use_mpi4py:
                 command = self.mpi_world.bcast(command, root=0)
 
             execute_command( command, comm, self )
 
-def MDI_Plugin_init_engine_py():
-    # Get command-line information from the driver
-    argc = mdi.MDI_Plugin_get_argc()
-    found_mdi_options = False
-    mdi_options = ""
-    for iarg in range(argc):
-        arg = mdi.MDI_Plugin_get_arg(iarg)
-        if arg == "-mdi" or arg == "--mdi":
-            if argc > iarg + 1:
-                mdi_options = mdi.MDI_Plugin_get_arg(iarg+1)
-            else:
-                raise Exception("Error in engine_py.py: -mdi argument not provided")
-            found_mdi_options = True
-    if not found_mdi_options:
-        raise Exception("Error in engine_py.py: -mdi option not provided")
+def MDI_Plugin_init_engine_py(plugin_state):
+
+    mdi.MDI_Set_plugin_state(plugin_state)
 
     engine = MDIEngine()
-    engine.run(mdi_options)
+    engine.run()
 
 if __name__== "__main__":
+    mdi.MDI_Init(sys.argv[2])
     engine = MDIEngine()
-    engine.run(sys.argv[2])
+    engine.run()

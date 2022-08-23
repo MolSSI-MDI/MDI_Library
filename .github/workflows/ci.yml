@@ -196,6 +196,11 @@ jobs:
           export FC=gfortran
           cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython -DCMAKE_BUILD_TYPE=Debug ..
           make VERBOSE=1
+          cd ..
+          mkdir build2
+          cd build2
+          cmake -Dtest_codes=ON -DPython_FIND_STRATEGY=LOCATION -DPython_ROOT_DIR=/opt/debugpython -DCMAKE_BUILD_TYPE=Debug -Dtest_engines=OFF -Dlibtype=STATIC ..
+          make VERBOSE=1
 
       - name: Run valgrind tests
         if: ${{ matrix.platform == 'ubuntu-18.04' }}

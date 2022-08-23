@@ -8,6 +8,8 @@ option(plugins "on or off" ON)
 option(python_plugins "on or off" ${plugins})
 option(python_version "python version number" OFF)
 option(test_codes "on or off" OFF)
+option(test_drivers "on or off" ${test_codes})
+option(test_engines "on or off" ${test_codes})
 
 set(use_C "")
 set(use_CXX "")

@@ -8,7 +8,7 @@
 
 #include "mdi.h"
 
-int enable_test_support();
+int enable_test_support(int code_id);
 int test_on_selection();
 int test_on_accept_communicator();
 int test_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);

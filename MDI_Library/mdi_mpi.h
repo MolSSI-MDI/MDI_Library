@@ -21,7 +21,7 @@ typedef struct mpi_data_struct {
 int set_world_size(int world_size_in);
 int set_world_rank(int world_rank_in);
 
-int enable_mpi_support();
+int enable_mpi_support(int code_id);
 int mpi_on_selection();
 int mpi_on_accept_communicator();
 int mpi_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);

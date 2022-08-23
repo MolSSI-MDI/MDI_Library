@@ -13,9 +13,9 @@
 
 
 /*! \brief Enable support for the TEST method */
-int enable_test_support() {
-  new_method(MDI_TEST);
-  method* this_method = get_method(MDI_TEST);
+int enable_test_support(int code_id) {
+  new_method(code_id, MDI_TEST);
+  method* this_method = get_method(code_id, MDI_TEST);
   this_method->on_selection = test_on_selection;
   this_method->on_accept_communicator = test_on_accept_communicator;
   this_method->on_send_command = test_on_send_command;

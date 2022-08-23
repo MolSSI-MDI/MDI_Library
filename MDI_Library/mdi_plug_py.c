@@ -4,6 +4,7 @@
 #include "mdi_global.h"
 #include "mdi_plug_py.h"
 #include <Python.h>
+#include <stdint.h>
 
 /*! \brief Flag whether the Python interpreter has been initialized */
 int python_interpreter_initialized = 0;
@@ -68,7 +69,7 @@ int print_traceback()
   return 0;
 }
 
-int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr ) {
+int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr, void* shared_state ) {
   // Initialize the Python interpreter
   // Because Python has problems with reinitialization, only initialize Python once
   if ( ! python_interpreter_initialized ) {
@@ -92,15 +93,20 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
     // Set the python_plugin_mpi_world_ptr
     python_plugin_mpi_world_ptr = engine_comm_ptr;
 
+    // Get the pointer to the plugin state
+    uintptr_t plugin_state_int = (uintptr_t)shared_state;
+
     // Set the name to anything other than __main__
     // Also, ensure that sys.argv exists
     PyObject* sysrun = PyRun_String("import sys\n"
-				    "sys.path.insert(0, '')\n"
-				    "if not hasattr(sys, 'argv'):\n"
-				    "    sys.argv = ['']\n"
-				    "__name__ = '__mdi__'",
-				    Py_file_input,
-				    main_dict, main_dict);
+                    "sys.path.insert(0, '')\n"
+                    "if not hasattr(sys, 'argv'):\n"
+                    "    sys.argv = ['']\n"
+                    "__name__ = '__mdi__'\n"
+                    "import ctypes\n"
+                    "plugin_state = ctypes.c_void_p(1)\n",
+                    Py_file_input,
+                    main_dict, main_dict);
     if ( PyErr_Occurred() ) {
       mdi_error("Unable to set system properties for Python plugin");
       print_traceback();
@@ -110,8 +116,8 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
 
     // Run the engine file, which will make the MDI_Plugin_init function available
     PyObject* filerun = PyRun_File(engine_script, engine_path,
-				   Py_file_input,
-				   main_dict, main_dict);
+                   Py_file_input,
+                   main_dict, main_dict);
     if ( PyErr_Occurred() ) {
       mdi_error("Error when loading Python plugin file");
       print_traceback();
@@ -121,10 +127,10 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
 
     // Call the MDI_Plugin_init function for this plugin
     char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
-    snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "MDI_Plugin_init_%s()", engine_name);
+    snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "plugin_state = ctypes.c_void_p(%ld)\nMDI_Plugin_init_%s(plugin_state)", plugin_state_int, engine_name);
     PyObject* initrun = PyRun_String(plugin_init_name,
-				     Py_file_input,
-				     main_dict, main_dict);
+                     Py_file_input,
+                     main_dict, main_dict);
     free( plugin_init_name );
     if ( PyErr_Occurred() ) {
       mdi_error("Error when running MDI_Plugin_init function");

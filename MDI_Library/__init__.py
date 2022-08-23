@@ -21,4 +21,5 @@ from .mdi import MDI_COMMAND_LENGTH, MDI_NAME_LENGTH, MDI_LABEL_LENGTH, \
     MDI_Register_node, MDI_Check_node_exists, MDI_Get_nnodes, MDI_Get_node, \
     MDI_Register_command, MDI_Check_command_exists, MDI_Get_ncommands, MDI_Get_command, \
     MDI_Register_callback, MDI_Check_callback_exists, MDI_Get_ncallbacks, MDI_Get_callback, \
-    MDI_Plugin_get_argc, MDI_Plugin_get_arg, MDI_Launch_plugin, MDI_String_to_atomic_number
+    MDI_Plugin_get_argc, MDI_Plugin_get_arg, MDI_Launch_plugin, MDI_String_to_atomic_number, \
+    MDI_Set_plugin_state

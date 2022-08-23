@@ -14,6 +14,6 @@ extern int python_interpreter_initialized;
 extern void* python_interpreter_dict;
 
 int print_traceback();
-int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr );
+int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr, void* shared_state );
 
 #endif

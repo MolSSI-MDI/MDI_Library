@@ -23,32 +23,6 @@
  *                   Options describing the communication method used to connect to codes.
  */
 int general_init(const char* options) {
-  // If this is the first time MDI has initialized, initialize the method vector
-  if ( ! is_initialized ) {
-
-    vector_init(&methods, sizeof(method));
-
-    // Create method objects for each supported method
-    if ( enable_tcp_support() ) {
-      mdi_error("Unable to enable TCP support");
-      return 1;
-    }
-    if ( enable_mpi_support() ) {
-      mdi_error("Unable to enable MPI support");
-      return 1;
-    }
-#if _MDI_PLUGIN_SUPPORT == 1
-    if ( enable_plug_support() ) {
-      mdi_error("Unable to enable plugin support");
-      return 1;
-    }
-#endif
-    if ( enable_test_support() ) {
-      mdi_error("Unable to enable TEST support");
-      return 1;
-    }
-
-  }
 
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! is_initialized ) {
@@ -59,6 +33,33 @@ int general_init(const char* options) {
   // Note that unless using the LINK communication method, general_init should only be called once
   current_code = new_code();
   code* this_code = get_code(current_code);
+
+  // If this is the first time MDI has initialized, initialize the method vector
+  //if ( ! is_initialized ) {
+
+    //vector_init(&methods, sizeof(method));
+
+  // Create method objects for each supported method
+  if ( enable_tcp_support(current_code) ) {
+    mdi_error("Unable to enable TCP support");
+    return 1;
+  }
+  if ( enable_mpi_support(current_code) ) {
+    mdi_error("Unable to enable MPI support");
+    return 1;
+  }
+#if _MDI_PLUGIN_SUPPORT == 1
+  if ( enable_plug_support(current_code) ) {
+    mdi_error("Unable to enable plugin support");
+    return 1;
+  }
+#endif
+  if ( enable_test_support(current_code) ) {
+    mdi_error("Unable to enable TEST support");
+    return 1;
+  }
+
+  //}
 
   char* strtol_ptr;
   int i, ret;
@@ -100,13 +101,13 @@ int general_init(const char* options) {
     //-role
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -role option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -role option");
+        return 1;
       }
       role = argv[iarg+1];
       if ( strlen(role) > MDI_NAME_LENGTH_ ) {
-	mdi_error("Error in MDI_Init: Role option is larger than MDI_NAME_LENGTH");
-	return 1;
+        mdi_error("Error in MDI_Init: Role option is larger than MDI_NAME_LENGTH");
+        return 1;
       }
       snprintf(this_code->role, strlen(role)+1, "%s", role);
       has_role = 1;
@@ -115,8 +116,8 @@ int general_init(const char* options) {
     //-method
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -method option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -method option");
+        return 1;
       }
       method_str = argv[iarg+1];
       has_method = 1;
@@ -125,12 +126,12 @@ int general_init(const char* options) {
     //-name
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -name option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -name option");
+        return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH_ ) {
-	mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
-	return 1;
+        mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
+        return 1;
       }
       snprintf(this_code->name, strlen(argv[iarg+1])+1, "%s", argv[iarg+1]);
       has_name = 1;
@@ -139,8 +140,8 @@ int general_init(const char* options) {
     //-hostname
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -hostname option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -hostname option");
+        return 1;
       }
       hostname = argv[iarg+1];
       iarg += 2;
@@ -148,8 +149,8 @@ int general_init(const char* options) {
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -port option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -port option");
+        return 1;
       }
       port = strtol( argv[iarg+1], &strtol_ptr, 10 );
       iarg += 2;
@@ -162,8 +163,8 @@ int general_init(const char* options) {
     //-out
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -out option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -out option");
+        return 1;
       }
       has_output_file = 1;
       output_file = argv[iarg+1];
@@ -172,12 +173,12 @@ int general_init(const char* options) {
     //-plugin_path
     else if (strcmp(argv[iarg],"-plugin_path") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
+        return 1;
       }
       if ( strlen(argv[iarg+1]) > PLUGIN_PATH_LENGTH ) {
-	mdi_error("Error in MDI_Init: Plugin path is larger than PLUGIN_PATH_LENGTH");
-	return 1;
+        mdi_error("Error in MDI_Init: Plugin path is larger than PLUGIN_PATH_LENGTH");
+        return 1;
       }
       snprintf(this_code->plugin_path, strlen(argv[iarg+1])+1, "%s", argv[iarg+1]);
       has_plugin_path = 1;
@@ -186,8 +187,8 @@ int general_init(const char* options) {
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
-	mdi_error("Error in MDI_Init: Argument missing from -_language option");
-	return 1;
+        mdi_error("Error in MDI_Init: Argument missing from -_language option");
+        return 1;
       }
       language_argument = argv[iarg+1];
       if ( strcmp(language_argument, "Python") == 0 ) {
@@ -225,6 +226,12 @@ int general_init(const char* options) {
     return 1;
   }
 
+  // if this is a plugin, get the langauge from the shared value
+  if ( strcmp(method_str, "LINK") == 0 || strcmp(method_str, "PLUG") == 0 ) {
+    if ( strcmp(this_code->role, "ENGINE") == 0 ) {
+      this_code->language = shared_state_from_driver->engine_language;
+    }
+  }
 
   // determine the method id of the method selected by the user
   if ( strcmp(method_str, "TCP") == 0 ) {
@@ -243,7 +250,7 @@ int general_init(const char* options) {
     mdi_error("Error in MDI_Init: Method not recognized");
     return 1;
   }
-  method* selected_method = get_method(selected_method_id);
+  method* selected_method = get_method(current_code, selected_method_id);
 
   // ensure that a valid role has been provided
   if ( strcmp(this_code->role, "DRIVER") != 0 &&
@@ -314,7 +321,7 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  method* selected_method = get_method(selected_method_id);
+  method* selected_method = get_method(current_code, selected_method_id);
   return selected_method->on_accept_communicator();
 }
 
@@ -488,7 +495,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
   code* this_code = get_code(current_code);
-  method* selected_method = get_method(selected_method_id);
+  method* selected_method = get_method(current_code, selected_method_id);
   communicator* this = get_communicator(current_code, comm);
 
   // For the count, use the smaller of MDI_COMMAND_LENGTH between the two codes
@@ -620,7 +627,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   int ret;
   code* this_code = get_code(current_code);
   communicator* this = get_communicator(current_code, comm);
-  method* selected_method = get_method(selected_method_id);
+  method* selected_method = get_method(current_code, selected_method_id);
 
   ret = selected_method->on_recv_command(comm);
   if ( ret != 0 ) {

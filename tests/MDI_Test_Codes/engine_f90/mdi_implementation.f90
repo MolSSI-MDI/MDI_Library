@@ -8,7 +8,7 @@ MODULE MDI_IMPLEMENTATION
        MDI_ENGINE, MDI_Get_role, MDI_Register_command, MDI_Register_node, &
        MDI_Register_callback, MDI_COMMAND_LENGTH, MDI_MPI_get_world_comm, &
        MDI_Plugin_get_argc, MDI_Plugin_get_arg, MDI_Get_communicator, &
-       MDI_Get_method
+       MDI_Get_method, MDI_Set_plugin_state
 
   IMPLICIT NONE
 
@@ -25,7 +25,8 @@ MODULE MDI_IMPLEMENTATION
 
 CONTAINS
 
-  FUNCTION MDI_Plugin_init_engine_f90() bind ( C, name="MDI_Plugin_init_engine_f90" )
+  FUNCTION MDI_Plugin_init_engine_f90(plugin_state) bind ( C, name="MDI_Plugin_init_engine_f90" )
+    TYPE(C_PTR), VALUE :: plugin_state
     INTEGER :: MDI_Plugin_init_engine_f90
     INTEGER :: ierr
     INTEGER :: argc
@@ -34,31 +35,7 @@ CONTAINS
     CHARACTER(LEN=1024) :: mdi_options
     LOGICAL :: mdi_options_found
 
-    ! Get the command-line options from the driver
-    mdi_options_found = .false.
-    CALL MDI_Plugin_get_argc(argc, ierr)
-    DO iarg=0, argc-1
-       CALL MDI_Plugin_get_arg(iarg, option, ierr)
-       IF ( (TRIM(option) .eq. "-mdi") .or. (TRIM(option) .eq. "--mdi") ) THEN
-          IF ( argc .gt. (iarg+1) ) THEN
-             CALL MDI_Plugin_get_arg(iarg+1, mdi_options, ierr)
-             mdi_options_found = .true.
-          ELSE
-             WRITE(6,*)'ERROR: argument to -mdi option not provided'
-             MDI_Plugin_init_engine_f90 = 1
-             RETURN
-          END IF
-       END IF
-    END DO
-    IF ( .not. mdi_options_found ) THEN
-       WRITE(6,*)'ERROR: -mdi option not provided'
-       MDI_Plugin_init_engine_f90 = 1
-       RETURN
-    END IF
-
-    ! Call MDI_Init
-    world_comm = MPI_COMM_WORLD
-    CALL MDI_Init(mdi_options, ierr)
+    CALL MDI_Set_plugin_state(plugin_state, ierr)
 
     ! Get the MPI intra-communicator over which this plugin will run
     CALL MDI_MPI_get_world_comm(world_comm, ierr);

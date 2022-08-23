@@ -1811,6 +1811,11 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
 }
 
 
+int MDI_Set_plugin_state(void* state) {
+  return library_set_state(state);
+}
+
+
 /*! \brief Set the language-based callback for when a code is destroyed
  *
  * This is currently only used by Fortran plugins
@@ -2008,5 +2013,19 @@ int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int)) {
  */
 int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int)) {
   mpi4py_barrier_callback = mpi4py_barrier;
+  return 0;
+}
+
+
+/*! \brief Set the language of an MDI plugin
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       language
+ *                   Language of the plugin
+ */
+int MDI_Set_plugin_language(int language, void* plugin_state) {
+  plugin_shared_state* this_state = (plugin_shared_state*) plugin_state;
+  this_state->engine_language = language;
   return 0;
 }
