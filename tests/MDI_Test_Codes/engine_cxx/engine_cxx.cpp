@@ -21,6 +21,7 @@ int initialize_mdi(MDI_Comm* comm_ptr) {
   MDI_Register_command("@DEFAULT","EXIT");
   MDI_Register_command("@DEFAULT","<NATOMS");
   MDI_Register_command("@DEFAULT","<COORDS");
+  MDI_Register_command("@DEFAULT",">COORDS");
   MDI_Register_command("@DEFAULT","<FORCES");
   MDI_Register_command("@DEFAULT","<FORCES_B");
   MDI_Register_node("@FORCES");
@@ -78,6 +79,9 @@ int execute_command(const char* command, MDI_Comm comm, void* class_obj) {
   }
   else if ( strcmp(command, "<COORDS") == 0 ) {
     MDI_Send(&coords, 3 * natoms, MDI_DOUBLE, comm);
+  }
+  else if ( strcmp(command, ">COORDS") == 0 ) {
+    MDI_Recv(&coords, 3 * natoms, MDI_DOUBLE, comm);
   }
   else if ( strcmp(command, "<FORCES") == 0 ) {
     MDI_Send(&forces, 3 * natoms, MDI_DOUBLE, comm);

@@ -46,6 +46,14 @@ int code_for_plugin_instance(void* mpi_comm_ptr, MDI_Comm mdi_comm, void* class_
   if ( MDI_Recv(coords, 3*natoms, MDI_DOUBLE, mdi_comm) != 0 ) {
     mpi_error("MDI_Recv returned non-zero exit code.");
   }
+
+  // Send the nuclear coordinates
+  if ( MDI_Send_command(">COORDS", mdi_comm) != 0 ) {
+    mpi_error("MDI_Send_command returned non-zero exit code.");
+  }
+  if ( MDI_Send(coords, 3*natoms, MDI_DOUBLE, mdi_comm) != 0 ) {
+    mpi_error("MDI_Send returned non-zero exit code.");
+  }
   delete[] coords;
 
   if ( my_rank == 0 ) {
