@@ -1909,7 +1909,7 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
  *
  */
 int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr) {
-  *python_plugin_mpi_world_ptr_ptr = python_plugin_mpi_world_ptr;
+  *python_plugin_mpi_world_ptr_ptr = shared_state_from_driver->mpi_comm_ptr;
   return 0;
 }
 

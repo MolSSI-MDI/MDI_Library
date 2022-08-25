@@ -90,9 +90,6 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
 
   if( engine_script ) {
 
-    // Set the python_plugin_mpi_world_ptr
-    python_plugin_mpi_world_ptr = engine_comm_ptr;
-
     // Get the pointer to the plugin state
     uintptr_t plugin_state_int = (uintptr_t)shared_state;
 

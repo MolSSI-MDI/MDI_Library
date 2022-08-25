@@ -217,7 +217,20 @@ jobs:
           source env.source
           cat tests/valgrind*.txt
 
+      - name: Run valgrind tests that span two different MDI builds
+        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        run: |
+          source env.source
+          cat env.source
+          cd tests
+          export PYTHONMALLOC=malloc
+          /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --driver_dir="../build2" --valgrind
 
+      - name: Print valgrind results
+        if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
+        run: |
+          source env.source
+          cat tests/valgrind*.txt
 
   windows:
 

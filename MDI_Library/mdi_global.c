@@ -44,10 +44,6 @@ int plugin_mode = 0;
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 MPI_Comm mdi_mpi_comm_world;
 
-/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
- * Only used for Python plugins */
-void* python_plugin_mpi_world_ptr = NULL;
-
 /*! \brief Unedited command-line options for currently running plugin */
 char* plugin_unedited_options = NULL;
 

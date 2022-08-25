@@ -202,10 +202,6 @@ extern int plugin_mode;
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 extern MPI_Comm mdi_mpi_comm_world;
 
-/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
- * Only used for Python plugins */
-extern void* python_plugin_mpi_world_ptr;
-
 /*! \brief Unedited command-line options for currently running plugin */
 extern char* plugin_unedited_options;
 
