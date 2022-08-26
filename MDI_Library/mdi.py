@@ -518,10 +518,7 @@ def MDI_Get_python_plugin_mpi_world_ptr():
     return python_plugin_mpi_world_ptr.value
 
 
-# MDI_Init
-mdi.MDI_Init_with_options.argtypes = [ctypes.POINTER(ctypes.c_char)]
-mdi.MDI_Init_with_options.restype = ctypes.c_int
-def MDI_Init(arg1, arg2 = None):
+def MDI_MPI_initialization():
     global world_comm
     global intra_code_comm
     global use_mpi4py
@@ -561,7 +558,31 @@ def MDI_Init(arg1, arg2 = None):
 
         comm = __mdi_plugin_mpi_intra_comm__
 
+    if use_mpi4py:
+        world_comm = comm
+        intra_code_comm = comm
 
+        # send basic information about the MPI communicator to the MDI libarary
+        mpi_rank = comm.Get_rank()
+        mpi_world_size = comm.Get_size()
+        mdi.MDI_Set_World_Rank(mpi_rank)
+        mdi.MDI_Set_World_Size(mpi_world_size)
+
+    # set the MPI4Py callback functions
+    set_mpi4py_recv_callback()
+    set_mpi4py_send_callback()
+    set_mpi4py_size_callback()
+    set_mpi4py_rank_callback()
+    set_mpi4py_allgather_callback()
+    set_mpi4py_gather_names_callback()
+    set_mpi4py_barrier_callback()
+    set_mpi4py_split_callback()
+
+
+# MDI_Init
+mdi.MDI_Init_with_options.argtypes = [ctypes.POINTER(ctypes.c_char)]
+mdi.MDI_Init_with_options.restype = ctypes.c_int
+def MDI_Init(arg1, arg2 = None):
     # prepend the _language option, so that MDI knows this is a Python code
     arg1 = "_language Python " + arg1
 
@@ -584,25 +605,7 @@ def MDI_Init(arg1, arg2 = None):
             if not found_numpy:
                 raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
-    if use_mpi4py:
-        world_comm = comm
-        intra_code_comm = comm
-
-        # send basic information about the MPI communicator to the MDI libarary
-        mpi_rank = comm.Get_rank()
-        mpi_world_size = comm.Get_size()
-        mdi.MDI_Set_World_Rank(mpi_rank)
-        mdi.MDI_Set_World_Size(mpi_world_size)
-
-    # set the MPI4Py callback functions
-    set_mpi4py_recv_callback()
-    set_mpi4py_send_callback()
-    set_mpi4py_size_callback()
-    set_mpi4py_rank_callback()
-    set_mpi4py_allgather_callback()
-    set_mpi4py_gather_names_callback()
-    set_mpi4py_barrier_callback()
-    set_mpi4py_split_callback()
+    MDI_MPI_initialization()
 
     # call MDI_Init
     command = arg1.encode('utf-8')
@@ -1174,3 +1177,16 @@ def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driv
 
     return ret
 
+
+# MDI_Set_plugin_state
+mdi.MDI_Set_plugin_state.argtypes = [ctypes.c_void_p]
+mdi.MDI_Set_plugin_state.restye = ctypes.c_int
+def MDI_Set_plugin_state(plugin_state):
+    ret = mdi.MDI_Set_plugin_state( plugin_state )
+
+    MDI_MPI_initialization()
+
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Set_plugin_state failed")
+
+    return ret

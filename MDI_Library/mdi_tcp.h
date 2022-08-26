@@ -19,7 +19,7 @@ extern int port;
 
 void sigint_handler(int dummy);
 
-int enable_tcp_support();
+int enable_tcp_support(int code_id);
 int tcp_on_selection();
 int tcp_on_accept_communicator();
 int tcp_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);

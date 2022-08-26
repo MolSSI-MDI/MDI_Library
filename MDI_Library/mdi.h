@@ -139,6 +139,7 @@ DllExport int MDI_Open_plugin(const char* plugin_name, const char* options, void
 DllExport int MDI_Close_plugin(MDI_Comm mdi_comm);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
+DllExport int MDI_Set_plugin_state(void* state);
 DllExport int MDI_Get_plugin_mode(int* plugin_mode);
 DllExport int MDI_Plugin_get_argc(int* argc_ptr);
 DllExport int MDI_Plugin_get_argv(char*** argv_ptr);
@@ -163,6 +164,7 @@ DllExport int MDI_Get_intra_rank(int intra_rank_out);
 DllExport int MDI_Get_Current_Code();
 DllExport int MDI_Get_python_plugin_mpi_world_ptr(void** plugin_mode);
 DllExport int MDI_Set_on_destroy_code(int (*func)(int));
+DllExport int MDI_Set_plugin_language(int language, void* plugin_state);
 
 #ifdef __cplusplus
 }

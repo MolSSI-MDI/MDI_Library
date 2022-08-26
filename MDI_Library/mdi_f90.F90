@@ -292,6 +292,10 @@ MODULE MDI
    INTEGER(KIND=C_INT), PARAMETER :: MDI_DRIVER         = 1
    INTEGER(KIND=C_INT), PARAMETER :: MDI_ENGINE         = 2
 
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_LANGUAGE_C     = 1
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_LANGUAGE_FORTRAN = 2
+   INTEGER(KIND=C_INT), PARAMETER :: MDI_LANGUAGE_PYTHON = 3
+
    INTEGER(KIND=C_INT), PROTECTED, BIND(C, name="MDI_MAJOR_VERSION")         :: MDI_MAJOR_VERSION
    INTEGER(KIND=C_INT), PROTECTED, BIND(C, name="MDI_MINOR_VERSION")         :: MDI_MINOR_VERSION
    INTEGER(KIND=C_INT), PROTECTED, BIND(C, name="MDI_PATCH_VERSION")         :: MDI_PATCH_VERSION
@@ -521,6 +525,19 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Plugin_get_arg_
      END FUNCTION MDI_Plugin_get_arg_
 
+     FUNCTION MDI_Set_plugin_language_(language, state_ptr) bind(c, name="MDI_Set_plugin_language")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: language
+       TYPE(C_PTR), VALUE                       :: state_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Set_plugin_language_
+     END FUNCTION MDI_Set_plugin_language_
+
+     FUNCTION MDI_Set_plugin_state_(state_ptr) bind(c, name="MDI_Set_plugin_state")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: state_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Set_plugin_state_
+     END FUNCTION MDI_Set_plugin_state_
+
   END INTERFACE
 
 
@@ -537,13 +554,6 @@ CONTAINS
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(OUT) :: ierr
 
-      INTEGER                                  :: plugin_mode
-      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
-      INTEGER                                  :: current_code
-      INTEGER                                  :: index
-      INTEGER                                  :: ierr2
-
-
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
 
       ! determine if plugin mode is active
@@ -558,11 +568,7 @@ CONTAINS
       !      CALL remove_execute_command( current_code )
       !   END IF
       !ENDIF
-      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
-      plugin_mode = cplugin_mode
-      IF ( plugin_mode .eq. 1 ) THEN
-        ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
-      END IF
+
 
     END SUBROUTINE MDI_Init
 
@@ -1294,5 +1300,34 @@ CONTAINS
       ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
     END SUBROUTINE MDI_Set_Execute_Command_Func
+
+    SUBROUTINE MDI_Set_plugin_state(state_ptr, ierr)
+      USE MDI_INTERNAL, ONLY : MDI_On_destroy_code_f, MDI_Set_on_destroy_code_c
+
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_plugin_state
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_plugin_state
+#endif
+      TYPE(C_PTR), VALUE                       :: state_ptr
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      INTEGER                                  :: plugin_mode
+      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
+      INTEGER                                  :: ierr2
+
+      INTEGER(KIND=C_INT)                      :: language
+
+      language = MDI_LANGUAGE_FORTRAN
+      ierr2 = MDI_Set_plugin_language_(language, state_ptr)
+
+      ierr = MDI_Set_plugin_state_(state_ptr)
+
+      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
+      plugin_mode = cplugin_mode
+      IF ( plugin_mode .eq. 1 ) THEN
+        ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
+      END IF
+
+    END SUBROUTINE MDI_Set_plugin_state
 
 END MODULE

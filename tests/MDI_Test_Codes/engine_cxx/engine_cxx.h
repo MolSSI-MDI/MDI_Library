@@ -10,7 +10,7 @@
   #define DllExport
 #endif
 
-extern "C" DllExport int MDI_Plugin_init_engine_cxx();
+extern "C" DllExport int MDI_Plugin_init_engine_cxx(void* plugin_state);
 extern "C" DllExport int MDI_Plugin_open_engine_cxx();
 extern "C" DllExport int MDI_Plugin_close_engine_cxx();
 int initialize_mdi(MDI_Comm* comm_ptr);

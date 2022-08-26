@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 4
+#define MDI_PATCH_VERSION_ 5
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -142,6 +142,10 @@ typedef struct code_struct {
   char name[MDI_NAME_LENGTH_];
   /*! \brief Role of the driver/engine */
   char role[MDI_NAME_LENGTH_];
+  /*! \brief Function pointer to the generic execute_command_function */
+  int (*execute_command)(const char*, MDI_Comm_Type, void*);
+  /*! \brief Pointer to the class object that is passed to any call to execute_command */
+  void* execute_command_obj;
   /*! \brief Handle for this code */
   int id;
   /*! \brief The number of communicator handles that have been returned by MDI_Accept_Connection() */
@@ -160,14 +164,12 @@ typedef struct code_struct {
   vector* nodes;
   /*! \brief Vector containing all communicators associated with this code */
   vector* comms;
+  /*! \brief Vector containing all supported methods */
+  vector* methods;
   /*! \brief Path to the plugins available to this code */
   char* plugin_path;
-  /*! \brief Function pointer to the generic execute_command_function */
-  int (*execute_command)(const char*, MDI_Comm_Type, void*);
   /*! \brief Function pointer to the language-specific destructor function */
   int (*language_on_destroy)(int);
-  /*! \brief Pointer to the class object that is passed to any call to execute_command */
-  void* execute_command_obj;
   /*! \brief Flag whether this code is being used as a library
   0: Not a library
   1: Is an ENGINE library, but has not connected to the driver
@@ -178,9 +180,6 @@ typedef struct code_struct {
 /*! \brief Vector containing all codes that have been initiailized on this rank. Typically, 
 this will only include a single code, unless the communication method is LINK */
 extern vector codes;
-
-/*! \brief Vector containing all supported methods */
-extern vector methods;
 
 /*! \brief ID of the method being used for inter-code communication */
 extern int selected_method_id;
@@ -202,10 +201,6 @@ extern int plugin_mode;
 
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 extern MPI_Comm mdi_mpi_comm_world;
-
-/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
- * Only used for Python plugins */
-extern void* python_plugin_mpi_world_ptr;
 
 /*! \brief Unedited command-line options for currently running plugin */
 extern char* plugin_unedited_options;
@@ -265,9 +260,10 @@ int new_code();
 code* get_code(int code_id);
 int delete_code(int code_id);
 
-int new_method(int method_id);
-method* get_method(int method_id);
-int delete_method(int method_id);
+int new_method(int code_id, int method_id);
+method* get_method(int code_id, int method_id);
+int delete_method(int code_id, int method_id);
+int free_methods_vector(vector* v);
 
 /*! \brief Check whether a file exists */
 int file_exists(const char* file_name);

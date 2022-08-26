@@ -11,7 +11,53 @@
 
 typedef int (*MDI_Plugin_init_t)();
 
+typedef struct plugin_shared_state_struct {
+  /*! \brief Name of the next command to be executed on this code.
+  This is only used by engines. */
+  char command[MDI_COMMAND_LENGTH_];
+  /*! \brief Buffer used for communication of data */
+  void* buf;
+  /*! \brief Function pointer to the driver node's callback function */
+  MDI_Driver_node_callback_t driver_node_callback;
+  /*! \brief Argument vector for plugin command-line options */
+  char** plugin_argv;
+  /*! \brief Pointer to the intra-communicator for the plugin */
+  void* mpi_comm_ptr;
+  /*! \brief Pointer to the class object that is used for the driver_node_callback function */
+  void* driver_callback_obj;
+  /*! \brief Function pointer to the library execute command function */
+  int (*lib_execute_command)(MDI_Comm);
+  /*! \brief Function pointer to the generic execute command function */
+  int (*execute_command)(const char*, MDI_Comm_Type, void*);
+  /*! \brief Function pointer to the engine's function to delete everything */
+  int (*delete_engine)(int);
+  /*! \brief Pointer to the class object that is passed to any call to execute_command */
+  void* execute_command_obj;
+  /*! \brief Driver-side MDI communicator */
+  MDI_Comm driver_mdi_comm;
+  /*! \brief Engine-side MDI communicator */
+  MDI_Comm engine_mdi_comm;
+  /*! \brief Flag whether buf is allocated */
+  int buf_allocated;
+  /*! \brief Argument count for plugin command-line options */
+  int plugin_argc;
+  /*! \brief Flag whether plugin_argv is allocted for this code */
+  int plugin_argv_allocated;
+  /*! \brief MPI rank of this process within the plugin  */
+  int intra_rank;
+  /////////////////////////////////////////////////////////////
+  /*! \brief Engine-side ID of the engine code */
+  int engine_code_id;
+  /*! \brief Driver-side ID of the driver code */
+  int driver_code_id;
+  /*! \brief Flag whether the engine is a Python code */
+  int engine_language;
+  //////////////////////////////////////////////////////////////
+} plugin_shared_state;
+
 typedef struct library_data_struct {
+  /*! \brief State shared between the driver and the plugin */
+  plugin_shared_state* shared_state;
   /*! \brief Command-line options for currently running plugin */
   char* plugin_options;
   /*! \brief Unedited command-line options for currently running plugin */
@@ -20,11 +66,6 @@ typedef struct library_data_struct {
   int plugin_options_allocated;
   /*! \brief Handle of the code to which this communicator connects */
   int connected_code;
-  /*! \brief Name of the next command to be executed on this code.
-  This is only used by engines. */
-  char command[MDI_COMMAND_LENGTH_];
-  /*! \brief Flag whether buf is allocated */
-  int buf_allocated;
   /*! \brief Flag whether the next MDI_Send call should trigger execution of the engine's command */
   int execute_on_send;
   /*! \brief MPI intra-communicator for the engine */
@@ -33,8 +74,6 @@ typedef struct library_data_struct {
   void* driver_callback_obj;
   /*! \brief Function pointer to the driver node's callback function */
   MDI_Driver_node_callback_t driver_node_callback;
-  /*! \brief Buffer used for communication of data */
-  void* buf;
 #ifdef _WIN32
   /*! \brief Windows handle for the plugin library */
   HINSTANCE plugin_handle;
@@ -46,15 +85,12 @@ typedef struct library_data_struct {
   MDI_Plugin_init_t plugin_init;
   /*! \brief Flag whether this communicator connects to a Python library */
   int is_python;
-  /*! \brief Argument count for plugin command-line options */
-  int plugin_argc;
-  /*! \brief Argument vector for plugin command-line options */
-  char** plugin_argv;
-  /*! \brief Flag whether plugin_argv is allocted for this code */
-  int plugin_argv_allocated;
 } library_data;
 
-int enable_plug_support();
+/*! \brief Shared state received from the driver */
+extern plugin_shared_state* shared_state_from_driver;
+
+int enable_plug_support(int code_id);
 int plug_on_selection();
 int plug_on_accept_communicator();
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);
@@ -81,6 +117,9 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
 int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 
+int library_set_state(void* state);
+
 int communicator_delete_lib(void* comm);
+int library_delete_engine(int code_id);
 
 #endif

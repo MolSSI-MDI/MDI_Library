@@ -158,14 +158,12 @@ def get_command_line(valgrind=False, manager="None", nproc1=None, command1=None,
 # Plugin Tests           #
 ##########################
 
-def test_cxx_cxx_plug(valgrind, manager):
+def test_cxx_cxx_plug(valgrind, manager, driver_dir, engine_dir):
 
     # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
 
     # run the calculation
     driver_command = get_command_line(
@@ -175,7 +173,7 @@ def test_cxx_cxx_plug(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "1",
                   "-plugin_name", "engine_cxx",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
                   ],
     )
 
@@ -197,13 +195,12 @@ def test_cxx_cxx_plug(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_cxx_plug_mpi(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_cxx_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
+
 
     # run the calculation
     driver_command = get_command_line(
@@ -214,7 +211,7 @@ def test_cxx_cxx_plug_mpi(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "2",
                   "-plugin_name", "engine_cxx",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
                   ],
     )
     driver_proc = subprocess.Popen(driver_command,
@@ -234,13 +231,12 @@ def test_cxx_cxx_plug_mpi(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_cxx_plug_mpi2(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_cxx_plug_mpi2(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
+
 
     # run the calculation
     driver_command = get_command_line(
@@ -251,7 +247,7 @@ def test_cxx_cxx_plug_mpi2(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "1",
                   "-plugin_name", "engine_cxx",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
                   ],
     )
     driver_proc = subprocess.Popen(driver_command,
@@ -271,13 +267,11 @@ def test_cxx_cxx_plug_mpi2(valgrind, manager):
     #assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_f90_plug(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_f90_plug(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
 
     # get the command to launch the driver
     driver_command = get_command_line(
@@ -287,7 +281,7 @@ def test_cxx_f90_plug(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "1",
                   "-plugin_name", "engine_f90",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
         ],
     )
 
@@ -309,13 +303,12 @@ def test_cxx_f90_plug(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_f90_plug_mpi(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_f90_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
+
 
     # get the command to launch the driver
     driver_command = get_command_line(
@@ -326,7 +319,7 @@ def test_cxx_f90_plug_mpi(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "2",
                   "-plugin_name", "engine_f90",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
                   ],
     )
 
@@ -348,13 +341,12 @@ def test_cxx_f90_plug_mpi(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_py_plug(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_py_plug(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
+
 
     # get the command to launch the driver
     driver_command = get_command_line(
@@ -364,7 +356,7 @@ def test_cxx_py_plug(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "1",
                   "-plugin_name", "engine_py",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
                   ],
     )
 
@@ -372,7 +364,7 @@ def test_cxx_py_plug(valgrind, manager):
     driver_proc = subprocess.Popen(driver_command,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
-                                   cwd=build_path)
+                                   cwd=engine_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
@@ -387,13 +379,11 @@ def test_cxx_py_plug(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_cxx_py_plug_mpi(valgrind, manager):
-    # get the name of the driver code, which includes a .exe extension on Windows
-    driver_name = glob.glob("../build/driver_plug_cxx*")[0]
+def test_cxx_py_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
-    # get the directory of the plugins
-    repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
-    build_path = os.path.join( repo_path, "build" )
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
 
     # get the command to launch the driver
     driver_command = get_command_line(
@@ -404,7 +394,7 @@ def test_cxx_py_plug_mpi(valgrind, manager):
                   "-driver_nranks", "0",
                   "-plugin_nranks", "2",
                   "-plugin_name", "engine_py",
-                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(build_path),
+                  "-mdi", "-role DRIVER -name driver -method LINK -plugin_path " + str(engine_dir),
         ],
     )
 
@@ -412,7 +402,7 @@ def test_cxx_py_plug_mpi(valgrind, manager):
     driver_proc = subprocess.Popen(driver_command,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
-                                   cwd=build_path)
+                                   cwd=engine_dir)
     driver_tup = driver_proc.communicate()
 
     # convert the driver's output into a string
@@ -432,7 +422,7 @@ def test_cxx_py_plug_mpi(valgrind, manager):
 # MPI Method             #
 ##########################
 
-def test_cxx_cxx_mpi(valgrind, manager):
+def test_cxx_cxx_mpi(valgrind, manager, driver_dir, engine_dir):
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -466,7 +456,7 @@ def test_cxx_cxx_mpi(valgrind, manager):
     assert driver_err == ""
     assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi21(valgrind, manager):
+def test_cxx_cxx_mpi21(valgrind, manager, driver_dir, engine_dir):
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -500,7 +490,7 @@ def test_cxx_cxx_mpi21(valgrind, manager):
     assert driver_out == " Engine name: MM\n"
     assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi12(valgrind, manager):
+def test_cxx_cxx_mpi12(valgrind, manager, driver_dir, engine_dir):
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -534,7 +524,7 @@ def test_cxx_cxx_mpi12(valgrind, manager):
     assert driver_out == " Engine name: MM\n"
     assert driver_proc.returncode == 0
 
-def test_cxx_cxx_mpi_serial(valgrind, manager):
+def test_cxx_cxx_mpi_serial(valgrind, manager, driver_dir, engine_dir):
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_serial_cxx*")[0]
     engine_name = glob.glob("../build/engine_cxx*")[0]
@@ -568,7 +558,7 @@ def test_cxx_cxx_mpi_serial(valgrind, manager):
     assert driver_err == ""
     assert driver_proc.returncode == 0
 
-def test_cxx_f90_mpi(valgrind, manager):
+def test_cxx_f90_mpi(valgrind, manager, driver_dir, engine_dir):
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
     engine_name = glob.glob("../build/engine_f90*")[0]
@@ -602,7 +592,7 @@ def test_cxx_f90_mpi(valgrind, manager):
     assert driver_out == " Engine name: MM\n"
     assert driver_proc.returncode == 0
 
-def test_cxx_py_mpi(valgrind, manager):
+def test_cxx_py_mpi(valgrind, manager, driver_dir, engine_dir):
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
 
@@ -635,7 +625,7 @@ def test_cxx_py_mpi(valgrind, manager):
     assert driver_out == " Engine name: MM\n"
     assert driver_proc.returncode == 0
 
-def test_f90_cxx_mpi(valgrind, manager):
+def test_f90_cxx_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -671,7 +661,7 @@ def test_f90_cxx_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_f90
     assert driver_proc.returncode == 0
 
-def test_f90_f90_mpi(valgrind, manager):
+def test_f90_f90_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -706,7 +696,7 @@ def test_f90_f90_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_f90
     assert driver_proc.returncode == 0
 
-def test_f90_py_mpi(valgrind, manager):
+def test_f90_py_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the name of the driver code, which includes a .exe extension on Windows
@@ -740,7 +730,7 @@ def test_f90_py_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_f90
     assert driver_proc.returncode == 0
 
-def test_py_cxx_mpi(valgrind, manager):
+def test_py_cxx_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     # get the name of the engine code, which includes a .exe extension on Windows
@@ -774,7 +764,7 @@ def test_py_cxx_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_py
     assert driver_proc.returncode == 0
 
-def test_py_cxx_plug(valgrind, manager):
+def test_py_cxx_plug(valgrind, manager, driver_dir, engine_dir):
 
     # get the directory of the plugins
     repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
@@ -812,7 +802,7 @@ def test_py_cxx_plug(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_py_cxx_plug_mpi(valgrind, manager):
+def test_py_cxx_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
     # get the directory of the plugins
     repo_path = os.path.dirname( os.path.dirname(os.path.realpath(__file__)) )
@@ -849,7 +839,7 @@ def test_py_cxx_plug_mpi(valgrind, manager):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
-def test_py_f90_mpi(valgrind, manager):
+def test_py_f90_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     # get the name of the engine code, which includes a .exe extension on Windows
@@ -883,7 +873,7 @@ def test_py_f90_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_py
     assert driver_proc.returncode == 0
 
-def test_py_py_mpi(valgrind, manager):
+def test_py_py_mpi(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     driver_command = get_command_line(
@@ -914,7 +904,7 @@ def test_py_py_mpi(valgrind, manager):
     assert driver_out == driver_out_expected_py
     assert driver_proc.returncode == 0
 
-def test_py_py_mpi_serial(valgrind, manager):
+def test_py_py_mpi_serial(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     driver_command = get_command_line(
@@ -953,7 +943,7 @@ def test_py_py_mpi_serial(valgrind, manager):
 # TCP Method             #
 ##########################
 
-def test_cxx_cxx_tcp(valgrind, manager):
+def test_cxx_cxx_tcp(valgrind, manager, driver_dir, engine_dir):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -993,7 +983,7 @@ def test_cxx_cxx_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_cxx_cxx_tcp_repeat(valgrind, manager):
+def test_cxx_cxx_tcp_repeat(valgrind, manager, driver_dir, engine_dir):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_repeat_cxx*")[0]
@@ -1049,7 +1039,7 @@ def test_cxx_cxx_tcp_repeat(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_cxx_cxx_tcp_mpi12(valgrind, manager):
+def test_cxx_cxx_tcp_mpi12(valgrind, manager, driver_dir, engine_dir):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -1089,7 +1079,7 @@ def test_cxx_cxx_tcp_mpi12(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_cxx_cxx_tcp_mpi21(valgrind, manager):
+def test_cxx_cxx_tcp_mpi21(valgrind, manager, driver_dir, engine_dir):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -1129,7 +1119,7 @@ def test_cxx_cxx_tcp_mpi21(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_cxx_f90_tcp(valgrind, manager):
+def test_cxx_f90_tcp(valgrind, manager, driver_dir, engine_dir):
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -1167,7 +1157,7 @@ def test_cxx_f90_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_cxx_py_tcp(valgrind, manager):
+def test_cxx_py_tcp(valgrind, manager, driver_dir, engine_dir):
 
     # get the name of the driver code, which includes a .exe extension on Windows
     driver_name = glob.glob("../build/driver_cxx*")[0]
@@ -1205,7 +1195,7 @@ def test_cxx_py_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_f90_cxx_tcp(valgrind, manager):
+def test_f90_cxx_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -1244,7 +1234,7 @@ def test_f90_cxx_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp(valgrind, manager):
+def test_f90_f90_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -1283,7 +1273,7 @@ def test_f90_f90_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp_mpi12(valgrind, manager):
+def test_f90_f90_tcp_mpi12(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -1323,7 +1313,7 @@ def test_f90_f90_tcp_mpi12(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_f90_f90_tcp_mpi21(valgrind, manager):
+def test_f90_f90_tcp_mpi21(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the names of the driver and engine codes, which include a .exe extension on Windows
@@ -1363,7 +1353,7 @@ def test_f90_f90_tcp_mpi21(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_f90_py_tcp(valgrind, manager):
+def test_f90_py_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_f90
 
     # get the name of the driver code, which includes a .exe extension on Windows
@@ -1402,7 +1392,7 @@ def test_f90_py_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_py_cxx_tcp(valgrind, manager):
+def test_py_cxx_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     # get the name of the engine code, which includes a .exe extension on Windows
@@ -1441,7 +1431,7 @@ def test_py_cxx_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_py_f90_tcp(valgrind, manager):
+def test_py_f90_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     # get the name of the engine code, which includes a .exe extension on Windows
@@ -1480,7 +1470,7 @@ def test_py_f90_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_py_py_tcp(valgrind, manager):
+def test_py_py_tcp(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     driver_command = get_command_line(
@@ -1522,7 +1512,7 @@ def test_py_py_tcp(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_py_py_tcp_mpi12(valgrind, manager):
+def test_py_py_tcp_mpi12(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     driver_command = get_command_line(
@@ -1565,7 +1555,7 @@ def test_py_py_tcp_mpi12(valgrind, manager):
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
 
-def test_py_py_tcp_mpi21(valgrind, manager):
+def test_py_py_tcp_mpi21(valgrind, manager, driver_dir, engine_dir):
     global driver_out_expected_py
 
     driver_command = get_command_line(

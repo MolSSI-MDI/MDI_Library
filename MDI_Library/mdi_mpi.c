@@ -36,9 +36,9 @@ int set_world_rank(int world_rank_in) {
 
 
 /*! \brief Enable support for the TCP method */
-int enable_mpi_support() {
-  new_method(MDI_MPI);
-  method* this_method = get_method(MDI_MPI);
+int enable_mpi_support(int code_id) {
+  new_method(code_id, MDI_MPI);
+  method* this_method = get_method(code_id, MDI_MPI);
   this_method->on_selection = mpi_on_selection;
   this_method->on_accept_communicator = mpi_on_accept_communicator;
   this_method->on_send_command = mpi_on_send_command;

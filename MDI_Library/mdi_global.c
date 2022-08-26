@@ -44,10 +44,6 @@ int plugin_mode = 0;
 /*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
 MPI_Comm mdi_mpi_comm_world;
 
-/*! \brief Pointer to the MPI_Comm over which a Python plugin should run.
- * Only used for Python plugins */
-void* python_plugin_mpi_world_ptr = NULL;
-
 /*! \brief Unedited command-line options for currently running plugin */
 char* plugin_unedited_options = NULL;
 
@@ -294,6 +290,15 @@ int new_code() {
     new_code.plugin_path[ichar] = '\0';
   }
 
+  new_code.is_library = 0;
+  new_code.id = (int)codes.size;
+  new_code.called_set_execute_command_func = 0;
+  new_code.intra_rank = 0;
+  if (world_rank != -1) {
+    // The Python wrapper has called MDI_Set_World_Rank to set this value
+    new_code.intra_rank = world_rank;
+  }
+
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
   vector_init(node_vec, sizeof(node));
@@ -304,14 +309,10 @@ int new_code() {
   vector_init(comms_vec, sizeof(communicator));
   new_code.comms = comms_vec;
 
-  new_code.is_library = 0;
-  new_code.id = (int)codes.size;
-  new_code.called_set_execute_command_func = 0;
-  new_code.intra_rank = 0;
-  if (world_rank != -1) {
-    // The Python wrapper has called MDI_Set_World_Rank to set this value
-    new_code.intra_rank = world_rank;
-  }
+  // initialize the methods vector
+  vector* methods_vec = malloc(sizeof(vector));
+  vector_init(methods_vec, sizeof(method));
+  new_code.methods = methods_vec;
 
   // Set the MPI callbacks
   //new_code.mdi_mpi_recv = MPI_Recv;
@@ -319,6 +320,24 @@ int new_code() {
 
   // add the new code to the global vector of codes
   vector_push_back( &codes, &new_code );
+
+  // Create method objects for each supported method
+  /*
+  if ( enable_tcp_support( new_code.id ) ) {
+    mdi_error("Unable to enable TCP support");
+  }
+  if ( enable_mpi_support( new_code.id ) ) {
+    mdi_error("Unable to enable MPI support");
+  }
+#if _MDI_PLUGIN_SUPPORT == 1
+  if ( enable_plug_support( new_code.id ) ) {
+    mdi_error("Unable to enable plugin support");
+  }
+#endif
+  if ( enable_test_support( new_code.id ) ) {
+    mdi_error("Unable to enable TEST support");
+  }
+  */
 
   // return the index of the new code
   return (int)codes.size - 1;
@@ -381,6 +400,9 @@ int delete_code(int code_id) {
   // delete the node vector
   free_node_vector(this_code->nodes);
 
+  // delete the methods vector
+  free_methods_vector(this_code->methods);
+
   // delete the comms vector
   int icomm;
   size_t ncomms = this_code->comms->size;
@@ -400,12 +422,13 @@ int delete_code(int code_id) {
 /*! \brief Create a new method structure and add it to the vector of methods
  * Returns the handle of the new method
  */
-int new_method(int method_id) {
+int new_method(int code_id, int method_id) {
+  code* this_code = get_code(code_id);
   method new_method;
   new_method.id = (int)methods.size;
   new_method.method_id = method_id;
 
-  vector_push_back( &methods, &new_method );
+  vector_push_back( this_code->methods, &new_method );
 
   return new_method.id;
 }
@@ -414,11 +437,13 @@ int new_method(int method_id) {
 /*! \brief Get a method from a method handle
  * Returns a pointer to the method
  */
-method* get_method(int method_id) {
+method* get_method(int code_id, int method_id) {
+  code* this_code = get_code(code_id);
+
   // Search through all of the codes for the one that matches code_id
   int imethod;
-  for (imethod = 0; imethod < methods.size; imethod++ ) {
-    method* this_method = vector_get(&methods, imethod);
+  for (imethod = 0; imethod < this_code->methods->size; imethod++ ) {
+    method* this_method = vector_get(this_code->methods, imethod);
     if ( this_method->method_id == method_id ) {
       return this_method;
     }
@@ -431,8 +456,9 @@ method* get_method(int method_id) {
 /*! \brief Delete a method
  * Returns 0 on success
  */
-int delete_method(int method_id) {
-  method* this_method = get_method(method_id);
+int delete_method(int code_id, int method_id) {
+  code* this_code = get_code(code_id);
+  method* this_method = get_method(code_id, method_id);
 
   // Search through all of the methods for the one that matches method
   int imethod;
@@ -455,6 +481,29 @@ int delete_method(int method_id) {
 
   // delete the data for this method from the global vector of methods
   vector_delete(&methods, method_index);
+
+  return 0;
+}
+
+
+
+/*! \brief Free the memory associated with a methods vector
+ */
+int free_methods_vector(vector* v) {
+  /*
+  int imethod = 0;
+  size_t nmethods = v->size;
+  for ( imethod = 0; imethod < nmethods; imethod++ ) {
+    method* this_method = vector_get(v, imethod);
+
+    // free the "commands" and "callbacks" vectors for this node
+    vector_free(this_node->commands);
+    vector_free(this_node->callbacks);
+  }
+  */
+
+  // free this node vector
+  vector_free(v);
 
   return 0;
 }
