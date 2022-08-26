@@ -25,6 +25,10 @@ typedef struct plugin_shared_state_struct {
   void* mpi_comm_ptr;
   /*! \brief Pointer to the class object that is used for the driver_node_callback function */
   void* driver_callback_obj;
+  /*! \brief Function pointer to the driver's library_activate_code function */
+  int (*driver_activate_code)(int);
+  /*! \brief Function pointer to the engine's library_activate_code function */
+  int (*engine_activate_code)(int);
   /*! \brief Function pointer to the library execute command function */
   int (*lib_execute_command)(MDI_Comm);
   /*! \brief Function pointer to the generic execute command function */
@@ -109,7 +113,6 @@ int library_close_plugin(MDI_Comm mdi_comm);
 int library_initialize();
 int library_accept_communicator();
 int library_set_driver_current();
-int library_get_matching_handle(MDI_Comm comm);
 int library_set_command(const char* command, MDI_Comm comm);
 int library_execute_command(MDI_Comm comm);
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);
@@ -118,6 +121,7 @@ int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm
 int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 
 int library_set_state(void* state);
+int library_activate_code(int code_id);
 
 int communicator_delete_lib(void* comm);
 int library_delete_engine(int code_id);
