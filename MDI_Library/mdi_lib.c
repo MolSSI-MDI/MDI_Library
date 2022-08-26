@@ -116,12 +116,18 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   if ( command_bcast[0] == '<' ) {
     // execute the command, so that the data from the engine can be received later by the driver
     //ret = library_execute_command(comm);
+
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
       free( command_bcast );
       return ret;
     }
+
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+
     *skip_flag = 1;
   }
   else if ( command_bcast[0] == '>' ) {
@@ -137,12 +143,18 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   else {
     // this is a command that neither sends nor receives data, so execute it now
     //ret = library_execute_command(comm);
+
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
       free( command_bcast );
       return ret;
     }
+
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+
     *skip_flag = 1;
   }
 
@@ -398,9 +410,6 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   int ret;
   code* this_code = get_code(current_code);
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
-
-
-
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
@@ -702,28 +711,6 @@ int library_set_driver_current(MDI_Comm comm) {
   //current_code = libd->shared_state->driver_code_id;
   libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
 
-  /*
-  // check if the current code is an ENGINE that is linked as a LIBRARY
-  if ( strcmp(this_code->role, "ENGINE") == 0 ) {
-    if ( this_code->is_library == 1 || this_code->is_library == 2 ) {
-      // the calling code must actually be the driver, so update current_code
-      int icode;
-      int found_driver = 0;
-      for ( icode = 0; icode < codes.size; icode++ ) {
-        code* other_code = vector_get(&codes, icode);
-        if ( strcmp(other_code->role, "DRIVER") == 0 ) {
-//          current_code = icode;
-          found_driver = 1;
-        }
-      }
-      // confirm that the driver was found
-      if ( found_driver == 0 ) {
-        mdi_error("MDI_Accept_Communicator could not locate the driver; was MDI_Init called by the driver?");
-        return 1;
-      }
-    }
-  }
-  */
   return 0;
 }
 
@@ -980,7 +967,12 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   if ( msg_flag == 2 && libd->execute_on_send ) {
     // have the recipient code execute its command
     //library_execute_command(comm);
+
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
+
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
 
     // turn off the execute_on_send flag
     libd->execute_on_send = 0;
