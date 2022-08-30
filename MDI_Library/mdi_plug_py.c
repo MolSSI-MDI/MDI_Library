@@ -2,16 +2,10 @@
 #include <string.h>
 #include "mdi.h"
 #include "mdi_global.h"
+#include "mdi_lib.h"
 #include "mdi_plug_py.h"
 #include <Python.h>
 #include <stdint.h>
-
-/*! \brief Flag whether the Python interpreter has been initialized */
-int python_interpreter_initialized = 0;
-
-/*! \brief Pointer to the original Python interpreter's dictionary.
- * Only used for Python plugins */
-void* python_interpreter_dict;
 
 int print_traceback()
 {
@@ -70,9 +64,11 @@ int print_traceback()
 }
 
 int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr, void* shared_state ) {
+  plugin_shared_state* my_state = (plugin_shared_state*) shared_state;
+
   // Initialize the Python interpreter
   // Because Python has problems with reinitialization, only initialize Python once
-  if ( ! python_interpreter_initialized ) {
+  if ( ! my_state->python_interpreter_initialized ) {
     Py_Initialize();
     if ( ! Py_IsInitialized() ) {
       mdi_error("Unable to initialize Python interpreter");
@@ -80,10 +76,10 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
     }
     PyObject* main_module = PyImport_AddModule("__main__");
     PyObject* original_dict = PyModule_GetDict(main_module);
-    python_interpreter_dict = PyDict_Copy(original_dict);
-    python_interpreter_initialized = 1;
+    my_state->python_interpreter_dict = PyDict_Copy(original_dict);
+    my_state->python_interpreter_initialized = 1;
   }
-  PyObject* main_dict = PyDict_Copy(python_interpreter_dict);
+  PyObject* main_dict = PyDict_Copy(my_state->python_interpreter_dict);
 
   // Open the Python script for the Engine
   FILE* engine_script = fopen(engine_path, "r");

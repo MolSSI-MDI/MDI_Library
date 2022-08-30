@@ -28,10 +28,13 @@ int enable_test_support(int code_id) {
 
 /*! \brief Callback when the end-user selects TCP as the method */
 int test_on_selection() {
-  if ( is_initialized == 1 ) {
+  code* this_code = get_current_code();
+
+  if ( this_code->test_initialized == 1 ) {
     mdi_error("MDI_Init called after MDI was already initialized");
     return 1;
   }
+  this_code->test_initialized = 1;
 
   test_initialize();
 
@@ -42,12 +45,12 @@ int test_on_selection() {
 
 /*! \brief Callback when the TEST method must accept a communicator */
 int test_on_accept_communicator() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
+    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -69,7 +72,7 @@ int test_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
 int test_after_send_command(const char* command, MDI_Comm comm) {
   // if the command was "EXIT", delete this communicator
   if ( strcmp( command, "EXIT" ) == 0 ) {
-    delete_communicator(current_code, comm);
+    delete_communicator(codes.current_key, comm);
   }
   
   return 0;
@@ -88,7 +91,7 @@ int test_on_recv_command(MDI_Comm comm) {
  *
  */
 int test_initialize() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   MDI_Comm comm_id = new_communicator(this_code->id, MDI_TEST);
   communicator* new_comm = get_communicator(this_code->id, comm_id);

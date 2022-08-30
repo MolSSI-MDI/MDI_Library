@@ -114,6 +114,31 @@ const int MDI_ENGINE    = MDI_ENGINE_;
  */
 int MDI_Init(int* argc, char*** argv)
 {
+  int ret;
+  ret = MDI_Init_code();
+  if ( ret != 0 ) {
+    return ret;
+  }
+  ret = MDI_Init_with_argv(argc, argv);
+  if ( ret != 0 ) {
+    return ret;
+  }
+  return 0;
+}
+
+
+/*! \brief Initialize communication through the MDI library
+ *
+ * If using the "-method MPI" option, this function must be called by all ranks.
+ * The function returns \p 0 on a success.
+ *
+ * \param [in, out]  argc
+ *                   Pointer to the number of arguments.
+ * \param [in, out]  argv
+ *                   Pointer to the argument vector.
+ */
+int MDI_Init_with_argv(int* argc, char*** argv)
+{
   int argc_in = *argc;
   char** argv_in = *argv;
 
@@ -136,10 +161,8 @@ int MDI_Init(int* argc, char*** argv)
   if ( mdi_iarg >= 0 ) {
     // Initialize MDI
     int ret = general_init(argv_in[mdi_iarg + 1]);
-    if ( ret == 0 ) {
-      is_initialized = 1;
-    }
-    else {
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init during call to general_init");
       return ret;
     }
 
@@ -152,6 +175,22 @@ int MDI_Init(int* argc, char*** argv)
   else {
     // The -mdi argument was not provided, so don't initialize
     return 0;
+  }
+  return 0;
+}
+
+
+/*! \brief Initialize a code structure for the MDI library
+ *
+ * The function returns \p 0 on a success.
+ *
+ */
+int MDI_Init_code()
+{
+  int ret = general_init_code();
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init_code");
+    return ret;
   }
   return 0;
 }
@@ -171,11 +210,13 @@ int MDI_Init(int* argc, char*** argv)
  */
 int MDI_Init_with_options(const char* options)
 {
-  int ret = general_init(options);
-  if ( ret == 0 ) {
-    is_initialized = 1;
+  int ret;
+  ret = general_init(options);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init_with_options");
+    return ret;
   }
-  return ret;
+  return 0;
 }
 
 
@@ -186,7 +227,7 @@ int MDI_Init_with_options(const char* options)
  */
 int MDI_Initialized(int* flag)
 {
-  *flag = is_initialized;
+  *flag = codes.initialized;
   return 0;
 }
 
@@ -210,7 +251,7 @@ MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
  */
 MDI_Comm MDI_Accept_communicator(MDI_Comm* comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
     return 1;
   }
@@ -235,7 +276,7 @@ MDI_Comm MDI_Accept_communicator(MDI_Comm* comm)
  */
 int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
     return 1;
   }
@@ -259,7 +300,7 @@ int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");
     return 1;
   }
@@ -295,7 +336,7 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Send_command(const char* buf, MDI_Comm comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
     return 1;
   }
@@ -331,7 +372,7 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  */
 int MDI_Recv_command(char* buf, MDI_Comm comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
     return 1;
   }
@@ -828,11 +869,11 @@ int MDI_Get_Role(int* role)
  */
 int MDI_Get_role(int* role)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_Role called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if (strcmp(this_code->role, "DRIVER") == 0) {
     *role = MDI_DRIVER;
   }
@@ -859,7 +900,7 @@ int MDI_Get_role(int* role)
  */
 int MDI_Get_method(int* method, MDI_Comm comm)
 {
-  communicator* comm_obj = get_communicator(current_code, comm);
+  communicator* comm_obj = get_communicator(codes.current_key, comm);
   *method = comm_obj->method_id;
   return 0;
 }
@@ -879,7 +920,7 @@ int MDI_Get_method(int* method, MDI_Comm comm)
  */
 int MDI_Get_communicator(MDI_Comm* comm, int index)
 {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( index >= this_code->comms->size || index < 0 ) {
     *comm = MDI_COMM_NULL;
   }
@@ -926,11 +967,11 @@ void MDI_Set_World_Rank(int world_rank_in)
  */
 int MDI_Get_intra_rank(int intra_rank_out)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_intra_rank called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   return this_code->intra_rank;
 }
 
@@ -957,11 +998,11 @@ int MDI_Register_Node(const char* node_name)
  */
 int MDI_Register_node(const char* node_name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Register_Node called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   return register_node(this_code->nodes, node_name);
 }
 
@@ -998,13 +1039,13 @@ int MDI_Check_Node_Exists(const char* node_name, MDI_Comm comm, int* flag)
  */
 int MDI_Check_node_exists(const char* node_name, MDI_Comm comm, int* flag)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Check_Node_Exists called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1056,13 +1097,13 @@ int MDI_Get_NNodes(MDI_Comm comm, int* nnodes)
  */
 int MDI_Get_nnodes(MDI_Comm comm, int* nnodes)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_NNodes called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1106,13 +1147,13 @@ int MDI_Get_Node(int index, MDI_Comm comm, char* name)
  */
 int MDI_Get_node(int index, MDI_Comm comm, char* name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_Node called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1159,11 +1200,11 @@ int MDI_Register_Command(const char* node_name, const char* command_name)
  */
 int MDI_Register_command(const char* node_name, const char* command_name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Register_Command called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   return register_command(this_code->nodes, node_name, command_name);
 }
 
@@ -1204,13 +1245,13 @@ int MDI_Check_Command_Exists(const char* node_name, const char* command_name, MD
  */
 int MDI_Check_command_exists(const char* node_name, const char* command_name, MDI_Comm comm, int* flag)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Check_Command_Exists called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1283,13 +1324,13 @@ int MDI_Get_NCommands(const char* node_name, MDI_Comm comm, int* ncommands)
  */
 int MDI_Get_ncommands(const char* node_name, MDI_Comm comm, int* ncommands)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_NCommands called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1351,13 +1392,13 @@ int MDI_Get_Command(const char* node_name, int index, MDI_Comm comm, char* name)
  */
 int MDI_Get_command(const char* node_name, int index, MDI_Comm comm, char* name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_Command called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1409,11 +1450,11 @@ int MDI_Register_Callback(const char* node_name, const char* callback_name)
  */
 int MDI_Register_callback(const char* node_name, const char* callback_name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Register_Callback called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   return register_callback(this_code->nodes, node_name, callback_name);
 }
 
@@ -1454,13 +1495,13 @@ int MDI_Check_Callback_Exists(const char* node_name, const char* callback_name, 
  */
 int MDI_Check_callback_exists(const char* node_name, const char* callback_name, MDI_Comm comm, int* flag)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Check_Callback_Exists called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1533,13 +1574,13 @@ int MDI_Get_NCallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
  */
 int MDI_Get_ncallbacks(const char* node_name, MDI_Comm comm, int* ncallbacks)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_NCallbacks called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1601,13 +1642,13 @@ int MDI_Get_Callback(const char* node_name, int index, MDI_Comm comm, char* name
  */
 int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, char* name)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_Get_Callback called but MDI has not been initialized");
     return 1;
   }
 
   // Only rank 0 should respond to this call
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -1642,11 +1683,11 @@ int MDI_Get_callback(const char* node_name, int index, MDI_Comm comm, char* name
  */
 int MDI_MPI_get_world_comm(void* world_comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_MPI_get_world_comm called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
     mdi_error("MDI_MPI_get_world_comm was called by a Python code");
@@ -1678,11 +1719,11 @@ int MDI_MPI_get_world_comm(void* world_comm)
  */
 int MDI_MPI_set_world_comm(void* world_comm)
 {
-  if ( is_initialized == 0 ) {
+  if ( codes.initialized == 0 ) {
     mdi_error("MDI_MPI_set_world_comm called but MDI has not been initialized");
     return 1;
   }
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
     mdi_error("MDI_MPI_set_world_comm was called by a Python code");
@@ -1803,8 +1844,8 @@ int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, v
  *                   Function pointer to the generic execute_command function
  */
 int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object) {
-  code* this_code = get_code(current_code);
-  this_code->execute_command = generic_command;
+  code* this_code = get_current_code();
+  this_code->execute_command_wrapper = generic_command;
   this_code->execute_command_obj = class_object;
   this_code->called_set_execute_command_func = 1;
   return 0;
@@ -1822,7 +1863,7 @@ int MDI_Set_plugin_state(void* state) {
  *
  */
 int MDI_Set_on_destroy_code(int (*func)(int)) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   this_code->language_on_destroy = func;
   return 0;
 }
@@ -1832,16 +1873,7 @@ int MDI_Set_on_destroy_code(int (*func)(int)) {
  *
  */
 int MDI_Get_Current_Code() {
-  return current_code;
-}
-
-
-/*! \brief Get whether plugin mode is active
- *
- */
-int MDI_Get_plugin_mode(int* plugin_mode_ptr) {
-  *plugin_mode_ptr = plugin_mode;
-  return 0;
+  return codes.current_key;
 }
 
 
@@ -1849,11 +1881,12 @@ int MDI_Get_plugin_mode(int* plugin_mode_ptr) {
  *
  */
 int MDI_Plugin_get_argc(int* argc_ptr) {
-  if ( ! plugin_mode ) {
+  code* this_code = get_current_code();
+  if ( this_code->plugin_argc == -1 ) {
     mdi_error("MDI_Plugin_get_argc called, but plugin mode is not active.");
     return 1;
   }
-  *argc_ptr = plugin_argc;
+  *argc_ptr = this_code->plugin_argc;
   return 0;
 }
 
@@ -1862,11 +1895,12 @@ int MDI_Plugin_get_argc(int* argc_ptr) {
  *
  */
 int MDI_Plugin_get_argv(char*** argv_ptr) {
-  if ( ! plugin_mode ) {
+  code* this_code = get_current_code();
+  if ( this_code->plugin_argc == -1 ) {
     mdi_error("MDI_Plugin_get_argv called, but plugin mode is not active.");
     return 1;
   }
-  *argv_ptr = plugin_argv;
+  *argv_ptr = this_code->plugin_argv;
   return 0;
 }
 
@@ -1875,11 +1909,12 @@ int MDI_Plugin_get_argv(char*** argv_ptr) {
  *
  */
 int MDI_Plugin_get_args(char** args_ptr) {
-  if ( ! plugin_mode ) {
+  code* this_code = get_current_code();
+  if ( this_code->plugin_argc == -1 ) {
     mdi_error("MDI_Plugin_get_args called, but plugin mode is not active.");
     return 1;
   }
-  *args_ptr = plugin_unedited_options;
+  *args_ptr = this_code->plugin_unedited_options;
   return 0;
 }
 
@@ -1888,7 +1923,8 @@ int MDI_Plugin_get_args(char** args_ptr) {
  *
  */
 int MDI_Plugin_get_arg(int index, char** arg_ptr) {
-  if ( ! plugin_mode ) {
+  code* this_code = get_current_code();
+  if ( this_code->plugin_argc == -1 ) {
     mdi_error("MDI_Plugin_get_arg called, but plugin mode is not active.");
     return 1;
   }
@@ -1896,11 +1932,11 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
     mdi_error("MDI_Plugin_get_arg called with invalid value (<0) for index.");
     return 1;
   }
-  if ( index > plugin_argc ) {
+  if ( index > this_code->plugin_argc ) {
     mdi_error("MDI_Plugin_get_arg called with invalid value (>argc) for index.");
     return 1;
   }
-  *arg_ptr = plugin_argv[index];
+  *arg_ptr = this_code->plugin_argv[index];
   return 0;
 }
 
@@ -1908,8 +1944,9 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
 /*! \brief Get the Python plugin MPI communicator
  *
  */
-int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr) {
-  *python_plugin_mpi_world_ptr_ptr = shared_state_from_driver->mpi_comm_ptr;
+int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr, void* state_in) {
+  plugin_shared_state* this_state = (plugin_shared_state*) state_in;
+  *python_plugin_mpi_world_ptr_ptr = this_state->mpi_comm_ptr;
   return 0;
 }
 
@@ -2029,3 +2066,35 @@ int MDI_Set_plugin_language(int language, void* plugin_state) {
   this_state->engine_language = language;
   return 0;
 }
+
+
+/*! \brief Set the language execute_command function needed by a language wrapper
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       execute_command
+ *                   Execute command callback
+ */
+int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, void*)) {
+  code* this_code = get_current_code();
+  this_code->execute_command = execute_command;
+  return 0;
+}
+
+
+/*! \brief Get the language execute_command function needed by a language wrapper
+ *
+ * The function returns a function pointer to the execute_command function.
+ *
+ * \param [out]      execute_command
+ *                   Execute command callback
+ * \param [in]       comm
+ *                   MDI communicator
+ */
+int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*) {
+  communicator* this_comm = get_communicator(codes.current_key, comm);
+  library_data* libd = (library_data*) this_comm->method_data;
+  return libd->shared_state->execute_command;
+}
+
+

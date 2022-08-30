@@ -81,14 +81,16 @@ CONTAINS
     CALL MDI_Accept_communicator(comm, ierr)
 
     ! Set the generic execute_command function
-    CALL MDI_Set_execute_command_func(generic_command, class_obj, ierr)
+    CALL MDI_Set_execute_command_func(c_funloc(generic_command), class_obj, ierr)
 
   END SUBROUTINE initialize_mdi
 
 
   SUBROUTINE respond_to_commands()
     CHARACTER(len=:), ALLOCATABLE :: command
-    INTEGER :: ierr
+    INTEGER                       :: ierr
+
+    TYPE(C_PTR)                   :: class_obj
 
     ALLOCATE( character(MDI_COMMAND_LENGTH) :: command )
 
@@ -99,7 +101,7 @@ CONTAINS
        CALL MDI_Recv_command(command, comm, ierr)
        CALL MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm, ierr)
 
-       CALL execute_command(command, comm, ierr)
+       ierr = execute_command(command, comm, class_obj)
 
        IF ( terminate_flag ) EXIT
 
@@ -110,18 +112,24 @@ CONTAINS
   END SUBROUTINE respond_to_commands
 
 
-  SUBROUTINE execute_command(command, comm, ierr)
+  FUNCTION execute_command(command, comm, class_obj)
     IMPLICIT NONE
 
+    !CHARACTER(LEN=1), INTENT(IN)  :: command_in(MDI_COMMAND_LENGTH)
     CHARACTER(LEN=*), INTENT(IN)  :: command
     INTEGER, INTENT(IN)           :: comm
-    INTEGER, INTENT(OUT)          :: ierr
+    TYPE(C_PTR), VALUE            :: class_obj
+    INTEGER(KIND=C_INT)           :: execute_command
 
-    INTEGER                       :: icoord
+    INTEGER                       :: icoord, ierr
     INTEGER                       :: natoms, count
     DOUBLE PRECISION, ALLOCATABLE :: coords(:), forces(:)
-	
-	INTEGER func_comm, func_method
+
+    INTEGER func_comm, func_method
+
+    !CHARACTER(LEN=MDI_COMMAND_LENGTH) :: command
+    
+    !command = transfer( command_in, command )
 
     ! Confirm that MDI_Get_communicator works
 	CALL MDI_Get_communicator(func_comm, 0, ierr)
@@ -163,7 +171,7 @@ CONTAINS
 
     DEALLOCATE( coords, forces )
 
-    ierr = 0
-  END SUBROUTINE execute_command
+    execute_command = 0
+  END FUNCTION execute_command
 
 END MODULE MDI_IMPLEMENTATION

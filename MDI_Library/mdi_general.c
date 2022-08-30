@@ -14,6 +14,27 @@
 #include "mdi_lib.h"
 #include "mdi_test.h"
 
+
+/*! \brief Initialize a new code
+ *
+ * The function returns \p 0 on a success.
+ *
+ */
+int general_init_code() {
+
+  // If this is the first time MDI has initialized, initialize the code vector
+  if ( ! codes.initialized ) {
+    vector_init(&codes, sizeof(code));
+  }
+
+  // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
+  // Note that unless using the LINK communication method, general_init should only be called once
+  codes.current_key = new_code();
+  
+  return 0;
+}
+
+
 /*! \brief Initialize communication through the MDI library
  *
  * If using the "-method MPI" option, this function must be called by all ranks.
@@ -24,42 +45,27 @@
  */
 int general_init(const char* options) {
 
-  // If this is the first time MDI has initialized, initialize the code vector
-  if ( ! is_initialized ) {
-    vector_init(&codes, sizeof(code));
-  }
-
-  // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
-  // Note that unless using the LINK communication method, general_init should only be called once
-  current_code = new_code();
-  code* this_code = get_code(current_code);
-
-  // If this is the first time MDI has initialized, initialize the method vector
-  //if ( ! is_initialized ) {
-
-    //vector_init(&methods, sizeof(method));
+  code* this_code = get_current_code();
 
   // Create method objects for each supported method
-  if ( enable_tcp_support(current_code) ) {
+  if ( enable_tcp_support(codes.current_key) ) {
     mdi_error("Unable to enable TCP support");
     return 1;
   }
-  if ( enable_mpi_support(current_code) ) {
+  if ( enable_mpi_support(codes.current_key) ) {
     mdi_error("Unable to enable MPI support");
     return 1;
   }
 #if _MDI_PLUGIN_SUPPORT == 1
-  if ( enable_plug_support(current_code) ) {
+  if ( enable_plug_support(codes.current_key) ) {
     mdi_error("Unable to enable plugin support");
     return 1;
   }
 #endif
-  if ( enable_test_support(current_code) ) {
+  if ( enable_test_support(codes.current_key) ) {
     mdi_error("Unable to enable TEST support");
     return 1;
   }
-
-  //}
 
   char* strtol_ptr;
   int i, ret;
@@ -157,7 +163,7 @@ int general_init(const char* options) {
     }
     //-ipi
     else if (strcmp(argv[iarg],"-ipi") == 0) {
-      ipi_compatibility = 1;
+      this_code->ipi_compatibility = 1;
       iarg += 1;
     }
     //-out
@@ -235,22 +241,22 @@ int general_init(const char* options) {
 
   // determine the method id of the method selected by the user
   if ( strcmp(method_str, "TCP") == 0 ) {
-    selected_method_id = MDI_TCP;
+    this_code->selected_method_id = MDI_TCP;
   }
   else if ( strcmp(method_str, "MPI") == 0 ) {
-    selected_method_id = MDI_MPI;
+    this_code->selected_method_id = MDI_MPI;
   }
   else if ( strcmp(method_str, "LINK") == 0 || strcmp(method_str, "PLUG") == 0 ) {
-    selected_method_id = MDI_LINK;
+    this_code->selected_method_id = MDI_LINK;
   }
   else if ( strcmp(method_str, "TEST") == 0 ) {
-    selected_method_id = MDI_TEST;
+    this_code->selected_method_id = MDI_TEST;
   }
   else {
     mdi_error("Error in MDI_Init: Method not recognized");
     return 1;
   }
-  method* selected_method = get_method(current_code, selected_method_id);
+  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
 
   // ensure that a valid role has been provided
   if ( strcmp(this_code->role, "DRIVER") != 0 &&
@@ -266,7 +272,7 @@ int general_init(const char* options) {
 
   // ensure that the name of this code is not the same as the name of any of the other codes
   for (i = 0; i < codes.size; i++) {
-    if ( i != current_code ) {
+    if ( i != codes.current_key ) {
       code* other_code = vector_get(&codes, i);
       if (strcmp(this_code->name, other_code->name) == 0) {
 	mdi_error("MDI_Init found multiple codes with the same name");
@@ -278,7 +284,7 @@ int general_init(const char* options) {
   // ensure that at most one driver has been initialized
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     for (i = 0; i < codes.size; i++) {
-      if ( i != current_code ) {
+      if ( i != codes.current_key ) {
 	code* other_code = vector_get(&codes, i);
 	if (strcmp(this_code->role, other_code->role) == 0) {
 	  mdi_error("MDI_Init found multiple drivers");
@@ -296,9 +302,9 @@ int general_init(const char* options) {
     return 1;
   }
   if ( mpi_init_flag == 1 && this_code->language != MDI_LANGUAGE_PYTHON ) {
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    this_code->intra_rank = world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &this_code->world_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &this_code->world_size);
+    this_code->intra_rank = this_code->world_rank;
   }
 
   // Execute the on_selection() function for the user-selected method
@@ -321,7 +327,8 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  method* selected_method = get_method(current_code, selected_method_id);
+  code* this_code = get_current_code();
+  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
   return selected_method->on_accept_communicator();
 }
 
@@ -343,13 +350,14 @@ int general_accept_communicator() {
 int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   int ret = 0;
 
-  communicator* this = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // send message header information
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] > 1 ||
          ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
-       && ipi_compatibility != 1 ) {
+       && this_code->ipi_compatibility != 1 ) {
 
     // prepare the header information
     size_t nheader = 4;
@@ -396,13 +404,14 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   int send_datatype = datatype;
   size_t send_datasize;
 
-  communicator* this = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] > 1 ||
          ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
-       && ipi_compatibility != 1 ) {
+       && this_code->ipi_compatibility != 1 ) {
 
     // prepare buffer to hold header information
     size_t nheader = 4;
@@ -494,9 +503,9 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
-  code* this_code = get_code(current_code);
-  method* selected_method = get_method(current_code, selected_method_id);
-  communicator* this = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // For the count, use the smaller of MDI_COMMAND_LENGTH between the two codes
   int count = MDI_COMMAND_LENGTH_;
@@ -547,20 +556,23 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 /*! \brief Respond to a general built-in command
  *
  * If running with MPI, this function must be called only by rank \p 0.
- * The function returns \p 1 if the command is a built-in command and \p 0 otherwise.
+ * The function returns \p 0 on success.
  *
  * \param [in]       buf
  *                   Pointer to the buffer for the command name.
  * \param [in]       comm
  *                   MDI communicator associated with the connection to the sending code.
+ * \param [in]       flag
+ *                   Returns \p 1 if the command is a built-in command and \p 0 otherwise.
  */
-int general_builtin_command(const char* buf, MDI_Comm comm) {
+int general_builtin_command(const char* buf, MDI_Comm comm, int* flag) {
   int ret = 0;
+  *flag = 0;
+  code* this_code = get_current_code();
 
   // check if this command corresponds to one of MDI's standard built-in commands
   if ( strcmp( buf, "<NAME" ) == 0 ) {
-    code* this_code = get_code(current_code);
-    communicator* this_comm = get_communicator(current_code, comm);
+    communicator* this_comm = get_communicator(codes.current_key, comm);
 
     // For the count, use the smaller of MDI_NAME_LENGTH between the two codes
     int count = MDI_NAME_LENGTH_;
@@ -569,7 +581,7 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
     }
 
     MDI_Send(this_code->name, count, MDI_CHAR, comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<VERSION" ) == 0 ) {
     int version[3];
@@ -577,39 +589,39 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
     version[1] = MDI_MINOR_VERSION;
     version[2] = MDI_PATCH_VERSION;
     MDI_Send(&version[0], 3, MDI_INT, comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<COMMANDS" ) == 0 ) {
     send_command_list(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<CALLBACKS" ) == 0 ) {
     send_callback_list(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<NODES" ) == 0 ) {
     send_node_list(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<NCOMMANDS" ) == 0 ) {
     send_ncommands(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<NCALLBACKS" ) == 0 ) {
     send_ncallbacks(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "<NNODES" ) == 0 ) {
     send_nnodes(comm);
-    ret = 1;
+    *flag = 1;
   }
   else if ( strcmp( buf, "EXIT" ) == 0 ) {
     // if the MDI Library called MPI_Init, call MPI_Finalize now
-    if ( initialized_mpi == 1 ) {
+    if ( this_code->initialized_mpi == 1 ) {
       MPI_Finalize();
     }
   }
-  return ret;
+  return 0;
 }
 
 
@@ -625,9 +637,9 @@ int general_builtin_command(const char* buf, MDI_Comm comm) {
  */
 int general_recv_command(char* buf, MDI_Comm comm) {
   int ret;
-  code* this_code = get_code(current_code);
-  communicator* this = get_communicator(current_code, comm);
-  method* selected_method = get_method(current_code, selected_method_id);
+  code* this_code = get_current_code();
+  communicator* this = get_communicator(codes.current_key, comm);
+  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
 
   ret = selected_method->on_recv_command(comm);
   if ( ret != 0 ) {
@@ -655,7 +667,12 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   }
 
   // check if this command corresponds to one of MDI's standard built-in commands
-  int builtin_flag = general_builtin_command(buf, comm);
+  int builtin_flag;
+  ret = general_builtin_command(buf, comm, &builtin_flag);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Recv_Command: Built-in command failed");
+    return ret;
+  }
   if ( builtin_flag == 1 ) {
     return general_recv_command(buf, comm);
   }
@@ -680,7 +697,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
 int register_node(vector* node_vec, const char* node_name)
 {
   // only register on rank 0
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -729,7 +746,7 @@ int register_node(vector* node_vec, const char* node_name)
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
   // only register on rank 0
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -788,7 +805,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
   // only register on rank 0
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -842,8 +859,8 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_command_list(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
-  communicator* this_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this_comm = get_communicator(codes.current_key, comm);
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
@@ -923,8 +940,8 @@ int send_command_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_callback_list(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
-  communicator* this_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this_comm = get_communicator(codes.current_key, comm);
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
@@ -1008,8 +1025,8 @@ int send_callback_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_node_list(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
-  communicator* this_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this_comm = get_communicator(codes.current_key, comm);
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send node information from the incorrect rank");
@@ -1062,7 +1079,7 @@ int send_node_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_ncommands(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
     return 1;
@@ -1091,7 +1108,7 @@ int send_ncommands(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_ncallbacks(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
     return 1;
@@ -1120,7 +1137,7 @@ int send_ncallbacks(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_nnodes(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
     return 1;
@@ -1140,7 +1157,7 @@ int send_nnodes(MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int get_node_info(MDI_Comm comm) {
-  communicator* this = get_communicator(current_code, comm);
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
@@ -1348,18 +1365,15 @@ int get_node_info(MDI_Comm comm) {
 vector* get_node_vector(MDI_Comm comm) {
   // get the vector of nodes associated with the communicator
   vector* node_vec;
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( comm == MDI_COMM_NULL ) {
     node_vec = this_code->nodes;
   }
   else {
-    communicator* this = get_communicator(current_code, comm);
+    communicator* this = get_communicator(codes.current_key, comm);
     if ( this->method_id == MDI_LINK ) {
-      // get the engine code to which this communicator connects
       library_data* libd = (library_data*) this->method_data;
-      int iengine = libd->connected_code;
-      code* engine_code = get_code(iengine);
-      node_vec = engine_code->nodes;
+      node_vec = (vector*)libd->shared_state->engine_nodes;
     }
     else {
       if ( this->nodes->size == 0 ) {

@@ -39,7 +39,7 @@ int enable_plug_support( int code_id ) {
 
 /*! \brief Callback when the end-user selects PLUG as the method */
 int plug_on_selection() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   // Check if this is an engine being used as a library
   if (strcmp(this_code->role, "ENGINE") == 0) {
@@ -54,15 +54,15 @@ int plug_on_selection() {
 
 /*! \brief Callback when the PLUG method must accept a communicator */
 int plug_on_accept_communicator() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   // Give the library method an opportunity to update the current code
-  library_accept_communicator();
+  //library_accept_communicator();
 
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
+    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -75,11 +75,9 @@ int plug_on_accept_communicator() {
 
 /*! \brief Callback when the PLUG method must send a command */
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
-  code* this_code = get_code(current_code);
-  communicator* this_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this_comm = get_communicator(codes.current_key, comm);
   library_data* libd = (library_data*) this_comm->method_data;
-  //int iengine = libd->connected_code;
-  //code* engine_code = get_code(iengine);
   int ret = 0;
 
   // Check whether MPI has been initialized
@@ -117,7 +115,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     // execute the command, so that the data from the engine can be received later by the driver
     //ret = library_execute_command(comm);
 
-    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
 
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
@@ -126,25 +124,25 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
       return ret;
     }
 
-    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
     *skip_flag = 1;
   }
   else if ( command_bcast[0] == '>' ) {
     // flag the command to be executed after the next call to MDI_Send
-    communicator* this = get_communicator(current_code, comm);
+    communicator* this = get_communicator(codes.current_key, comm);
     library_data* libd = (library_data*) this->method_data;
     libd->execute_on_send = 1;
     *skip_flag = 1;
   }
-  else if ( plugin_mode && ( strcmp( command_bcast, "EXIT" ) == 0 || command_bcast[0] == '@' ) ) {
+  else if ( strcmp( command_bcast, "EXIT" ) == 0 || command_bcast[0] == '@' ) {
     // this command should be received by MDI_Recv_command, rather than through the execute_command callback
   }
   else {
     // this is a command that neither sends nor receives data, so execute it now
     //ret = library_execute_command(comm);
 
-    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
 
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
@@ -153,7 +151,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
       return ret;
     }
 
-    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
     *skip_flag = 1;
   }
@@ -174,9 +172,8 @@ int plug_after_send_command(const char* command, MDI_Comm comm) {
 /*! \brief Callback when the PLUG method must receive a command */
 int plug_on_recv_command(MDI_Comm comm) {
   int ret = 0;
-  int iengine = current_code;
-  code* this_code = get_code(current_code);
-  communicator* engine_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* engine_comm = get_communicator(codes.current_key, comm);
 
   // get the driver code to which this communicator connects
   library_data* libd = (library_data*) engine_comm->method_data;
@@ -187,13 +184,13 @@ int plug_on_recv_command(MDI_Comm comm) {
   //library_data* driver_lib = (library_data*) driver_comm->method_data;
 
   // Copy the execute_command function to a shared location
+  libd->shared_state->execute_command_wrapper = this_code->execute_command_wrapper;
   libd->shared_state->execute_command = this_code->execute_command;
   libd->shared_state->execute_command_obj = this_code->execute_command_obj;
 
   // set the current code to the driver
-//  current_code = idriver;
-//  current_code = libd->shared_state->driver_code_id;
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, 
+                                            libd->shared_state->driver_code_id );
 
   //void* class_obj = driver_lib->driver_callback_obj;
   ret = libd->shared_state->driver_node_callback(libd->shared_state->mpi_comm_ptr, libd->shared_state->driver_mdi_comm, libd->shared_state->driver_callback_obj);
@@ -203,9 +200,8 @@ int plug_on_recv_command(MDI_Comm comm) {
   }
 
   // set the current code to the engine
-//  current_code = iengine;
-//  current_code = libd->shared_state->engine_code_id;
-  libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+  libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr,
+                                            libd->shared_state->engine_code_id );
 
   return 0;
 }
@@ -218,8 +214,7 @@ int plug_on_recv_command(MDI_Comm comm) {
 int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
                       library_data* libd, int mode) {
   int ret;
-  int driver_code_id = current_code;
-  code* this_code = get_code(driver_code_id);
+  code* this_code = get_current_code();
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   //
@@ -328,20 +323,26 @@ int library_parse_options(const char* options, library_data* libd) {
 
   // copy the input options array
   int options_len = strlen(options) + 1;
-  libd->plugin_options = malloc( options_len * sizeof(char) );
-  snprintf(libd->plugin_options, options_len, "%s", options);
-  libd->plugin_unedited_options = malloc( options_len * sizeof(char) );
-  snprintf(libd->plugin_unedited_options, options_len, "%s", options);
-  libd->plugin_options_allocated = 1;
+  libd->shared_state->plugin_options = malloc( options_len * sizeof(char) );
+  libd->shared_state->plugin_unedited_options = malloc( options_len * sizeof(char) );
+
+  // zero both of the new arrays
+  int ichar;
+  for (ichar=0; ichar < options_len; ichar++) {
+    libd->shared_state->plugin_options[ichar] = '\0';
+    libd->shared_state->plugin_unedited_options[ichar] = '\0';
+  }
+
+  snprintf(libd->shared_state->plugin_options, options_len, "%s", options);
+  snprintf(libd->shared_state->plugin_unedited_options, options_len, "%s", options);
 
   // determine the number of arguments
   libd->shared_state->plugin_argc = 0;
-  int ichar;
   int in_argument = 0; // was the previous character part of an argument, or just whitespace?
   int in_single_quotes = 0; // was the previous character part of a single quote?
   int in_double_quotes = 0; // was the previous character part of a double quote?
   for (ichar=0; ichar < options_len; ichar++) {
-    if ( libd->plugin_options[ichar] == '\0' ) {
+    if ( libd->shared_state->plugin_options[ichar] == '\0' ) {
       if ( in_double_quotes ) {
         mdi_error("Unterminated double quotes received in MDI_Launch_plugin \"options\" argument.");
       }
@@ -350,30 +351,30 @@ int library_parse_options(const char* options, library_data* libd) {
       }
       in_argument = 0;
     }
-    else if (libd->plugin_options[ichar] == ' ') {
+    else if (libd->shared_state->plugin_options[ichar] == ' ') {
       if ( ! in_double_quotes && ! in_single_quotes ) {
         if ( in_argument ) {
           libd->shared_state->plugin_argc++;
         }
         in_argument = 0;
-        libd->plugin_options[ichar] = '\0';
+        libd->shared_state->plugin_options[ichar] = '\0';
       }
     }
-    else if (libd->plugin_options[ichar] == '\"') {
+    else if (libd->shared_state->plugin_options[ichar] == '\"') {
       if ( in_single_quotes ) {
         mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
       }
       in_argument = 1;
       in_double_quotes = (in_double_quotes + 1) % 2;
-      libd->plugin_options[ichar] = '\0';
+      libd->shared_state->plugin_options[ichar] = '\0';
     }
-    else if (libd->plugin_options[ichar] == '\'') { 
+    else if (libd->shared_state->plugin_options[ichar] == '\'') { 
       if ( in_double_quotes ) {
         mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
       }
       in_argument = 1;
       in_single_quotes = (in_single_quotes + 1) % 2;
-      libd->plugin_options[ichar] = '\0';
+      libd->shared_state->plugin_options[ichar] = '\0';
     }
     else {
       in_argument = 1;
@@ -385,9 +386,9 @@ int library_parse_options(const char* options, library_data* libd) {
   libd->shared_state->plugin_argv_allocated = 1;
   int iarg = 0;
   for (ichar=0; ichar < options_len; ichar++) {
-    if ( libd->plugin_options[ichar] != '\0' ) {
-      if ( ichar == 0 || libd->plugin_options[ichar-1] == '\0' ) {
-        libd->shared_state->plugin_argv[iarg] = &libd->plugin_options[ichar];
+    if ( libd->shared_state->plugin_options[ichar] != '\0' ) {
+      if ( ichar == 0 || libd->shared_state->plugin_options[ichar-1] == '\0' ) {
+        libd->shared_state->plugin_argv[iarg] = &libd->shared_state->plugin_options[ichar];
         iarg++;
       }
     }
@@ -408,12 +409,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
                           MDI_Driver_node_callback_t driver_node_callback,
                           void* driver_callback_object) {
   int ret;
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
-  communicator* driver_comm = get_communicator(current_code, icomm);
+  communicator* driver_comm = get_communicator(codes.current_key, icomm);
   library_data* libd = (library_data*) driver_comm->method_data;
   libd->connected_code = (int)codes.size;
 
@@ -422,8 +423,10 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   libd->shared_state->plugin_argc = 0;
   libd->shared_state->plugin_argv_allocated = 0;
   libd->shared_state->buf_allocated = 0;
-  libd->shared_state->driver_code_id = current_code;
+  libd->shared_state->driver_code_id = codes.current_key;
   libd->shared_state->engine_language = MDI_LANGUAGE_C;
+  libd->shared_state->python_interpreter_initialized = 0;
+  libd->shared_state->driver_codes_ptr = &codes;
 
   MDI_Comm comm;
   ret = MDI_Accept_Communicator(&comm);
@@ -443,8 +446,8 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   library_parse_options(options, libd);
 
   // Assign the global command-line options variables to the values for this plugin  
-  plugin_argc = libd->shared_state->plugin_argc;
-  plugin_argv = libd->shared_state->plugin_argv;
+  //plugin_argc = libd->shared_state->plugin_argc;
+  //plugin_argv = libd->shared_state->plugin_argv;
 
 
   libd->shared_state->mpi_comm_ptr = &libd->mpi_comm;
@@ -469,7 +472,6 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   /*************************************************/
   /*************** BEGIN PLUGIN MODE ***************/
   /*************************************************/
-  plugin_mode = 1;
 
   ret = library_load_init(plugin_name, mpi_comm_ptr, libd, 0);
   if ( ret != 0 ) {
@@ -486,10 +488,9 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   void* plugin_handle = libd->plugin_handle;
 #endif
 
-  plugin_mode = 0;
 //  current_code = libd->shared_state->driver_code_id;
 //  current_code = libd->shared_state->driver_code_id;
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
@@ -524,13 +525,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 int library_open_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                           MDI_Comm* mdi_comm_ptr) {
   int ret;
-  int driver_code_id = current_code;
-  code* this_code = get_code(driver_code_id);
+  code* this_code = get_current_code();
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
-  communicator* driver_comm = get_communicator(current_code, icomm);
+  communicator* driver_comm = get_communicator(codes.current_key, icomm);
   library_data* libd = (library_data*) driver_comm->method_data;
   libd->connected_code = (int)codes.size;
 
@@ -548,9 +548,9 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   library_parse_options(options, libd);
 
   // Assign the global command-line options variables to the values for this plugin  
-  plugin_argc = libd->shared_state->plugin_argc;
-  plugin_argv = libd->shared_state->plugin_argv;
-  plugin_unedited_options = libd->plugin_unedited_options;
+  //plugin_argc = libd->shared_state->plugin_argc;
+  //plugin_argv = libd->shared_state->plugin_argv;
+  //plugin_unedited_options = libd->plugin_unedited_options;
 
   //
   // Get the path to the plugin
@@ -565,7 +565,6 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   /*************************************************/
   /*************** BEGIN PLUGIN MODE ***************/
   /*************************************************/
-  plugin_mode = 1;
 
   library_load_init(plugin_name, mpi_comm_ptr, libd, 1);
   if ( ret != 0 ) {
@@ -577,10 +576,10 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   /*************************************************/
   /**************** END PLUGIN MODE ****************/
   /*************************************************/
-  plugin_mode = 0;
-//  current_code = driver_code_id;
-//  current_code = libd->shared_state->driver_code_id;
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+
+  // Set the driver as the active code
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr,
+                                            libd->shared_state->driver_code_id );
 
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
@@ -595,7 +594,7 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
 }
 
 int library_close_plugin(MDI_Comm mdi_comm) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   communicator* this_comm = get_communicator(this_code->id, mdi_comm);
   library_data* libd = (library_data*) this_comm->method_data;
 
@@ -610,7 +609,7 @@ int library_close_plugin(MDI_Comm mdi_comm) {
 
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
-  delete_communicator(current_code, mdi_comm);
+  delete_communicator(codes.current_key, mdi_comm);
   
   return 0;
 }
@@ -620,7 +619,7 @@ int library_close_plugin(MDI_Comm mdi_comm) {
  *
  */
 int library_initialize() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   MDI_Comm comm_id = new_communicator(this_code->id, MDI_LINK);
   communicator* new_comm = get_communicator(this_code->id, comm_id);
@@ -637,62 +636,47 @@ int library_initialize() {
 
   // allocate the method data
   library_data* libd = malloc(sizeof(library_data));
-  //libd->connected_code = -1;
-  //libd->buf_allocated = 0;
   libd->execute_on_send = 0;
   libd->mpi_comm = MPI_COMM_NULL;
-  libd->plugin_options_allocated = 0;
-  libd->plugin_options = NULL;
-  libd->plugin_unedited_options = NULL;
 
   new_comm->method_data = libd;
 
   // if this is an engine, go ahead and set the driver as the connected code
   if ( strcmp(this_code->role, "ENGINE") == 0 ) {
-    //int engine_code = current_code;
-    //library_set_driver_current();
-    //int driver_code_id = current_code;
-    //libd->connected_code = driver_code_id;
-    //current_code = engine_code;
+
     libd->shared_state = shared_state_from_driver;
     libd->shared_state->engine_mdi_comm = new_comm->id;
     libd->shared_state->delete_engine = library_delete_engine;
     libd->shared_state->engine_activate_code = library_activate_code;
     libd->shared_state->lib_execute_command = library_execute_command;
-    libd->shared_state->engine_code_id = current_code;
-//    current_code = libd->shared_state->engine_code_id;
+    libd->shared_state->engine_code_id = codes.current_key;
+    libd->shared_state->engine_codes_ptr = &codes;
+    libd->shared_state->execute_builtin = general_builtin_command;
+    libd->shared_state->engine_nodes = (void*)this_code->nodes;
+    this_code->plugin_argc = libd->shared_state->plugin_argc;
+    this_code->plugin_argv = libd->shared_state->plugin_argv;
+    this_code->plugin_unedited_options = libd->shared_state->plugin_unedited_options;
 
     // set the engine's mpi communicator
-    //if ( plugin_mode ) {
-      // get the driver's library data
-      //code* driver_code = get_code(driver_code_id);
-      //MDI_Comm matching_handle = library_get_matching_handle(comm_id);
-      //communicator* driver_comm = get_communicator(driver_code->id, matching_handle);
-      //library_data* driver_libd = (library_data*) driver_comm->method_data;
+    libd->mpi_comm = *(MPI_Comm*)libd->shared_state->mpi_comm_ptr;
+    this_code->intra_MPI_comm = libd->mpi_comm;
 
+    // check whether MPI has been initialized
+    int mpi_init_flag;
+    if ( MPI_Initialized(&mpi_init_flag) ) {
+      mdi_error("Error in MDI_Init: MPI_Initialized failed");
+      return 1;
+    }
 
-
-      //libd->mpi_comm = driver_libd->mpi_comm;
-      libd->mpi_comm = *(MPI_Comm*)libd->shared_state->mpi_comm_ptr;
-      this_code->intra_MPI_comm = libd->mpi_comm;
-
-      // check whether MPI has been initialized
-      int mpi_init_flag;
-      if ( MPI_Initialized(&mpi_init_flag) ) {
-        mdi_error("Error in MDI_Init: MPI_Initialized failed");
-        return 1;
-      }
-
-      // Set the engine's MPI rank
-      if ( mpi_init_flag == 1 ) {
-        MPI_Comm_rank( this_code->intra_MPI_comm, &this_code->intra_rank );
-      }
-      else {
-        this_code->intra_rank = 0;
-      }
+    // Set the engine's MPI rank
+    if ( mpi_init_flag == 1 ) {
+      MPI_Comm_rank( this_code->intra_MPI_comm, &this_code->intra_rank );
+    }
+    else {
+      this_code->intra_rank = 0;
+    }
       
-      libd->shared_state->intra_rank = this_code->intra_rank;
-    //}
+    libd->shared_state->intra_rank = this_code->intra_rank;
 
   }
 
@@ -704,64 +688,13 @@ int library_initialize() {
  *
  */
 int library_set_driver_current(MDI_Comm comm) {
-  code* this_code = get_code(current_code);
-  communicator* this_comm = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this_comm = get_communicator(codes.current_key, comm);
   library_data* libd = (library_data*) this_comm->method_data;
 
-  //current_code = libd->shared_state->driver_code_id;
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
-
-  return 0;
-}
-
-
-/*! \brief Perform LIBRARY method operations upon a call to MDI_Accept_Communicator
- *
- */
-int library_accept_communicator() {
-  code* this_code = get_code(current_code);
-  /*
-  if ( this_code->called_set_execute_command_func && (! plugin_mode) ) {
-    // library codes are not permitted to call MDI_Accept_communicator after calling
-    // MDI_Set_execute_command_func, so assume that this call is being made by the driver
-    library_set_driver_current();
-  }
-  */
-  this_code = get_code(current_code);
-
-  // if this is a DRIVER, check if there are any ENGINES that are linked to it
-  if ( strcmp(this_code->role, "DRIVER") == 0 ) {
-
-    int icode;
-    int found_engine = 0;
-    int iengine = 0;
-    for ( icode = 0; icode < codes.size; icode++ ) {
-      code* other_code = vector_get(&codes, icode);
-      if ( strcmp(other_code->role, "ENGINE") == 0 ) {
-	if ( other_code->is_library == 1 ) {
-	  // flag that this library has connected to the driver
-	  other_code->is_library = 2;
-
-	  //iengine = icode;
-	  iengine = other_code->id;
-	  found_engine = 1;
-	  break;
-	}
-      }
-    }
-
-    // create a new communicator for this engine
-    if ( found_engine == 1 ) {
-      int icomm = library_initialize();
-
-      // set the connected code for the driver
-      code* engine_code = get_code(iengine);
-      communicator* this_comm = get_communicator(current_code, icomm);
-      library_data* libd = (library_data*) this_comm->method_data;
-      libd->connected_code = engine_code->id;
-    }
-
-  }
+  // set the driver as the active code
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr,
+                                            libd->shared_state->driver_code_id );
 
   return 0;
 }
@@ -779,7 +712,7 @@ int library_accept_communicator() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int library_set_command(const char* command, MDI_Comm comm) {
-  communicator* this = get_communicator(current_code, comm);
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // get the engine code to which this communicator connects
   library_data* libd = (library_data*) this->method_data;
@@ -810,14 +743,11 @@ int library_set_command(const char* command, MDI_Comm comm) {
  */
 int library_execute_command(MDI_Comm comm) {
   int ret = 0;
-
-  int idriver = current_code;
-  communicator* this = get_communicator(current_code, comm);
+  communicator* this = get_communicator(codes.current_key, comm);
 
   // get the engine code to which this communicator connects
   library_data* libd = (library_data*) this->method_data;
   //int iengine = libd->connected_code;
-  //code* engine_code = get_code(iengine);
 
   //MDI_Comm engine_comm_handle = library_get_matching_handle(comm);
   MDI_Comm engine_comm_handle = libd->shared_state->engine_mdi_comm;
@@ -825,13 +755,16 @@ int library_execute_command(MDI_Comm comm) {
   //library_data* engine_lib = (library_data*) engine_comm->method_data;
 
   // set the current code to the engine
-//  current_code = iengine;
-//  current_code = libd->shared_state->engine_code_id;
-  libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+  libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr,
+                                            libd->shared_state->engine_code_id );
 
   // check if this command corresponds to one of MDI's standard built-in commands
   //int builtin_flag = general_builtin_command(engine_lib->command, engine_comm_handle);
-  int builtin_flag = general_builtin_command(libd->shared_state->command, engine_comm_handle);
+  int builtin_flag;
+  //ret = general_builtin_command(libd->shared_state->command, engine_comm_handle, &builtin_flag);
+  ret = libd->shared_state->execute_builtin(libd->shared_state->command,
+                                            engine_comm_handle,
+                                            &builtin_flag);
   //int builtin_flag = 0;
 
   if ( builtin_flag == 0 ) {
@@ -839,13 +772,12 @@ int library_execute_command(MDI_Comm comm) {
     //void* class_obj = engine_code->execute_command_obj;
     void* class_obj = libd->shared_state->execute_command_obj;
     //ret = engine_code->execute_command(engine_lib->command,engine_comm_handle,class_obj);
-    ret = libd->shared_state->execute_command(libd->shared_state->command, engine_comm_handle, class_obj);
+    ret = libd->shared_state->execute_command_wrapper(libd->shared_state->command, engine_comm_handle, class_obj);
   }
 
   // set the current code to the driver
-//  current_code = idriver;
-//  current_code = libd->shared_state->driver_code_id;
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr,
+                                            libd->shared_state->driver_code_id );
 
   return ret;
 }
@@ -871,11 +803,9 @@ int library_execute_command(MDI_Comm comm) {
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  code* this_code = get_code(current_code);
-  communicator* this = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this = get_communicator(codes.current_key, comm);
   library_data* libd = (library_data*) this->method_data;
-
-  //code* other_code = get_code(libd->connected_code);
 
   // get the rank of this process on the engine
   /*
@@ -968,11 +898,11 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
     // have the recipient code execute its command
     //library_execute_command(comm);
 
-    libd->shared_state->engine_activate_code( libd->shared_state->engine_code_id );
+    libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
 
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
 
-    libd->shared_state->driver_activate_code( libd->shared_state->driver_code_id );
+    libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
     // turn off the execute_on_send flag
     libd->execute_on_send = 0;
@@ -1002,11 +932,10 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  code* this_code = get_code(current_code);
-  communicator* this = get_communicator(current_code, comm);
+  code* this_code = get_current_code();
+  communicator* this = get_communicator(codes.current_key, comm);
   library_data* libd = (library_data*) this->method_data;
 
-  //code* other_code = get_code(libd->connected_code);
   //MDI_Comm other_comm_handle = library_get_matching_handle(comm);
   //communicator* other_comm = get_communicator(libd->connected_code, other_comm_handle);
   //library_data* other_lib = (library_data*) other_comm->method_data;
@@ -1045,7 +974,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] > 1 ||
 	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
-       && ipi_compatibility != 1 ) {
+       && this_code->ipi_compatibility != 1 ) {
 
     if ( msg_flag == 1 ) { // message header
 
@@ -1091,6 +1020,8 @@ int communicator_delete_lib(void* comm) {
 
     if ( libd->shared_state->plugin_argv_allocated ) {
       free( libd->shared_state->plugin_argv );
+      free( libd->shared_state->plugin_options );
+      free( libd->shared_state->plugin_unedited_options );
     }
 
     // delete the method-specific information
@@ -1101,11 +1032,6 @@ int communicator_delete_lib(void* comm) {
     // delete the shared state, but only on the driver side
     free( libd->shared_state );
 
-  }
-
-  if ( libd->plugin_options_allocated ) {
-    free( libd->plugin_options );
-    free( libd->plugin_unedited_options );
   }
 
   free( libd );
@@ -1121,24 +1047,25 @@ int library_delete_engine(int code_id) {
   if ( codes.size == 0 ) {
     free(codes.data);
   }
-  //free(methods.data);
   return 0;
 }
-
 
 
 /*! \brief Function to set the plugin's state
  */
 int library_set_state(void* state) {
+  int ret;
+
   shared_state_from_driver = (plugin_shared_state*) state;
 
-  // activate plugin mode
-  plugin_mode = 1;
-  //is_initialized = 1;
-
-  
-
-  MDI_Init(&shared_state_from_driver->plugin_argc, &shared_state_from_driver->plugin_argv);
+  ret = MDI_Init_code();
+  if ( ret != 0 ) {
+    return ret;
+  }
+  ret = MDI_Init_with_argv(&shared_state_from_driver->plugin_argc, &shared_state_from_driver->plugin_argv);
+  if ( ret != 0 ) {
+    return ret;
+  }
 
   return 0;
 }
@@ -1146,8 +1073,10 @@ int library_set_state(void* state) {
 
 /*! \brief Function to set the active code
  */
-int library_activate_code(int code_id) {
-  current_code = code_id;
+int library_activate_code(void* codes_in, int code_id) {
+
+  vector* codes_vec = (vector*) codes_in;
+  codes_vec->current_key = code_id;
 
   return 0;
 }

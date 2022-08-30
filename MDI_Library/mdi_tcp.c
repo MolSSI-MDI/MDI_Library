@@ -62,12 +62,13 @@ int enable_tcp_support(int code_id) {
 
 /*! \brief Callback when the end-user selects TCP as the method */
 int tcp_on_selection() {
-  if ( is_initialized == 1 ) {
-    mdi_error("MDI_Init called after MDI was already initialized");
+  code* this_code = get_current_code();
+
+  if ( this_code->tcp_initialized == 1 ) {
+    mdi_error("MDI_Init called after TCP was already initialized");
     return 1;
   }
-
-  code* this_code = get_code(current_code);
+  this_code->tcp_initialized == 1;
 
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     if ( port == -1 ) {
@@ -113,12 +114,12 @@ int tcp_on_selection() {
 
 /*! \brief Callback when the TCP method must accept a communicator */
 int tcp_on_accept_communicator() {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
+    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -134,7 +135,7 @@ int tcp_on_accept_communicator() {
     // if MDI hasn't returned some connections, do that now
     if ( size_before < size_after ) {
       this_code->returned_comms++;
-      communicator* comm_obj = get_communicator(current_code, this_code->returned_comms);
+      communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
       comm_obj->is_accepted = 1;
       return (MDI_Comm)this_code->returned_comms;
     }
@@ -156,8 +157,8 @@ int tcp_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
 /*! \brief Callback after the TCP method has received a command */
 int tcp_after_send_command(const char* command, MDI_Comm comm) {
   // if the command was "EXIT", delete this communicator
-  if ( ! plugin_mode && strcmp( command, "EXIT" ) == 0 ) {
-    delete_communicator(current_code, comm);
+  if ( strcmp( command, "EXIT" ) == 0 ) {
+    delete_communicator(codes.current_key, comm);
   }
 
   return 0;
@@ -178,7 +179,7 @@ int tcp_on_recv_command(MDI_Comm comm) {
  *                   Port to listen over
  */
 int tcp_listen(int port_in) {
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   int ret;
   struct sockaddr_in serv_addr;
@@ -254,7 +255,7 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
   ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
 #endif
 
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
@@ -334,7 +335,7 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
 
   // communicate the version number between codes
   // only do this if not in i-PI compatibility mode
-  if ( ipi_compatibility != 1 ) {
+  if ( this_code->ipi_compatibility != 1 ) {
     int version[3];
     int length_send[2];
     int length_recv[2];
@@ -362,7 +363,7 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
  */
 int tcp_accept_connection() {
   sock_t connection;
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
 
   if ( this_code->intra_rank == 0 ) { // Running on rank 0
 
@@ -380,7 +381,7 @@ int tcp_accept_connection() {
 
     // communicate the version number between codes
     // only do this if not in i-PI compatibility mode
-    if ( ipi_compatibility != 1 ) {
+    if ( this_code->ipi_compatibility != 1 ) {
       int version[3];
       int length_send[2];
       int length_recv[2];
@@ -435,14 +436,14 @@ int tcp_accept_connection() {
  */
 int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
-  
+
   // only send from rank 0
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
 
-  communicator* this = get_communicator(current_code, comm);
+  communicator* this = get_communicator(codes.current_key, comm);
   size_t count_t = count;
 #ifdef _WIN32
   int n = 0;
@@ -496,7 +497,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
   int ret;
   
   // only recv from rank 0
-  code* this_code = get_code(current_code);
+  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -506,7 +507,7 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
 #else
   ssize_t n, nr;
 #endif
-  communicator* this = get_communicator(current_code, comm);
+  communicator* this = get_communicator(codes.current_key, comm);
   size_t count_t = count;
 
   // determine the byte size of the data type being sent

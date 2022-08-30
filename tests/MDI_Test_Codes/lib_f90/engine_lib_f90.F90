@@ -4,7 +4,7 @@ MODULE ENGINE_LIB_F90
   USE ISO_C_binding
   USE mdi,              ONLY : MDI_Init, MDI_Send, MDI_INT, MDI_CHAR, MDI_NAME_LENGTH, &
        MDI_Accept_communicator, MDI_Recv_command, MDI_Recv, MDI_Conversion_factor, &
-       MDI_Set_execute_command_func, MDI_MPI_set_world_comm
+       MDI_Set_execute_command_func, MDI_MPI_set_world_comm, MDI_COMMAND_LENGTH
 
   IMPLICIT NONE
 
@@ -44,18 +44,24 @@ CONTAINS
     CALL MPI_Comm_rank( world_comm, world_rank, ierr )
 
     ! Set the generic execute_command function
-    CALL MDI_Set_execute_command_func(general_command, class_obj, ierr)
+    CALL MDI_Set_execute_command_func(c_funloc(general_command), class_obj, ierr)
 
   END SUBROUTINE engine_lib_f90_create
 
-  SUBROUTINE execute_command(command, comm, ierr)
+  FUNCTION execute_command(command, comm, class_obj)
     IMPLICIT NONE
 
-    CHARACTER(LEN=*), INTENT(IN) :: command
-    INTEGER, INTENT(IN)          :: comm
-    INTEGER, INTENT(OUT)         :: ierr
+    CHARACTER(LEN=*), INTENT(IN)  :: command
+!    CHARACTER(LEN=1), INTENT(IN)  :: command_in(MDI_COMMAND_LENGTH)
+    INTEGER, INTENT(IN)           :: comm
+    TYPE(C_PTR), VALUE            :: class_obj
+    INTEGER                       :: execute_command
 
-    INTEGER :: natoms
+    INTEGER :: natoms, ierr
+
+!    CHARACTER(LEN=MDI_COMMAND_LENGTH) :: command
+
+!    command = transfer( command_in, command )
 
     SELECT CASE( TRIM(command) )
     CASE( "EXIT" )
@@ -68,7 +74,7 @@ CONTAINS
        WRITE(6,*)'Error: command not recognized'
     END SELECT
 
-    ierr = 0
-  END SUBROUTINE execute_command
+    execute_command = 0
+  END FUNCTION execute_command
 
 END MODULE ENGINE_LIB_F90

@@ -14,21 +14,39 @@ MODULE MDI_INTERNAL
 
   IMPLICIT NONE
 
-  ! The execute_command callbacks are implemented in a pseudo-dictionary
-  ! Each key corresponds to the handle of one of the codes that has called MDI_Init
-  ! The values are the actual procedure pointers
-  TYPE command_func_ptr
-     INTEGER                                     :: key
-     PROCEDURE(execute_command), POINTER, NOPASS :: value => null()
-  END TYPE command_func_ptr
-  TYPE(command_func_ptr), ALLOCATABLE :: execute_commands(:)
-
   ABSTRACT INTERFACE
     SUBROUTINE execute_command(buf, comm, ierr)
       CHARACTER(LEN=*), INTENT(IN) :: buf
       INTEGER, INTENT(IN)          :: comm
       INTEGER, INTENT(OUT)         :: ierr
     END SUBROUTINE execute_command
+  END INTERFACE
+
+  ABSTRACT INTERFACE
+    FUNCTION execute_command_correct(buf, comm, class_obj)
+      USE ISO_C_BINDING
+      USE MDI_GLOBAL
+!      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
+!      INTEGER(KIND=C_INT), VALUE               :: comm
+      CHARACTER(LEN=*), INTENT(IN) :: buf
+!      CHARACTER(LEN=1), INTENT(IN) :: buf(COMMAND_LENGTH)
+      INTEGER, INTENT(IN)          :: comm
+      TYPE(C_PTR), VALUE                       :: class_obj
+      INTEGER(KIND=C_INT)       :: execute_command_correct
+    END FUNCTION execute_command_correct
+  END INTERFACE
+
+  ABSTRACT INTERFACE
+    FUNCTION execute_command_write(buf, comm, class_obj)
+      USE ISO_C_BINDING
+      USE MDI_GLOBAL
+!      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
+!      CHARACTER(LEN=*), INTENT(IN) :: buf
+      CHARACTER(LEN=1), INTENT(IN) :: buf(COMMAND_LENGTH)
+      INTEGER, INTENT(IN)          :: comm
+      TYPE(C_PTR), VALUE                       :: class_obj
+      INTEGER(KIND=C_INT)       :: execute_command_write
+    END FUNCTION execute_command_write
   END INTERFACE
 
   INTERFACE
@@ -55,6 +73,21 @@ MODULE MDI_INTERNAL
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT)                      :: MDI_Get_intra_rank_
      END FUNCTION MDI_Get_intra_rank_
+
+     FUNCTION MDI_Set_language_execute_command_(func_ptr) bind(c, name="MDI_Set_language_execute_command")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_FUNPTR), VALUE                    :: func_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Set_language_execute_command_
+     END FUNCTION MDI_Set_language_execute_command_
+
+     FUNCTION MDI_Get_language_execute_command_(comm) bind(c, name="MDI_Get_language_execute_command")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       !TYPE(C_FUNPTR), VALUE                       :: execute_command_ptr
+       !INTEGER(KIND=C_INT)                      :: MDI_Get_language_execute_command_
+       TYPE(C_FUNPTR)                           :: MDI_Get_language_execute_command_
+     END FUNCTION MDI_Get_language_execute_command_
+
 
   END INTERFACE
 
@@ -106,133 +139,6 @@ CONTAINS
     str_f_to_c = cbuf
   END FUNCTION str_f_to_c
 
-  ! Return the index in execute_commands that corresponds to the key argument
-  FUNCTION find_execute_command(key)
-    INTEGER, INTENT(IN)                      :: key
-    INTEGER                                  :: find_execute_command
-    INTEGER                                  :: index
-
-    ! Check if the execute_commands dictionary has been allocated
-    IF ( .not. ALLOCATED(execute_commands) ) THEN
-      find_execute_command = -1
-      RETURN
-    END IF
-
-    index = 1
-    DO WHILE( (index .le. SIZE(execute_commands)) .and. (execute_commands(index)%key .ne. key) )
-      index = index + 1
-    END DO
-
-    IF ( index .gt. SIZE(execute_commands) ) THEN
-      find_execute_command = -1
-      RETURN
-    END IF
-
-    find_execute_command = index
-  END FUNCTION find_execute_command
-
-  ! Add a value to the execute_command dictionary
-  SUBROUTINE add_execute_command(key, value)
-    INTEGER, INTENT(IN)                      :: key
-    PROCEDURE(execute_command), POINTER      :: value
-    INTEGER                                  :: index
-    TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
-
-    IF ( .not. ALLOCATED( execute_commands ) ) THEN
-       ! Just allocate the key-value arrays with a size of one
-       ALLOCATE( execute_commands(1) )
-    ELSE
-      ! Confirm that this key does not already exist
-      index = find_execute_command( key )
-      IF ( index .ne. -1 ) THEN
-        WRITE(6,*)'MDI ERROR: Value already exists in execute_command dictionary'
-      END IF
-
-      ! Store the execute_commands data in a temporary array
-      ALLOCATE( temp_dict( SIZE(execute_commands) ) )
-      temp_dict = execute_commands
-      
-      ! Reallocate execute_commands to the correct size
-      DEALLOCATE( execute_commands )
-      ALLOCATE( execute_commands( SIZE(temp_dict) + 1 ) )
-      execute_commands(1:SIZE(temp_dict)) = temp_dict
-      DEALLOCATE( temp_dict )
-    END IF
-
-    ! Add the key-value pair
-    execute_commands( SIZE(execute_commands) )%key = key
-    execute_commands( SIZE(execute_commands) )%value => value
-
-  END SUBROUTINE add_execute_command
-
-  ! Remove a value from the execute_command dictionary
-  SUBROUTINE remove_execute_command(key, ierr)
-    INTEGER, INTENT(IN)                      :: key
-    INTEGER, INTENT(OUT)                     :: ierr
-    INTEGER                                  :: index
-    TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
-
-    index = find_execute_command( key )
-
-    ! Ensure that this key was actually found in the execute_command dictionary
-    IF ( index .eq. -1 ) THEN
-      ierr = 1
-      RETURN
-    END IF
-
-    ! Store the execute_commands data in a temporary array
-    ALLOCATE( temp_dict( SIZE(execute_commands) ) )
-    temp_dict = execute_commands
-
-    ! Replace the deleted element with the last element
-    temp_dict(index) = temp_dict( SIZE(temp_dict) )
-
-    ! Reallocate execute_commands to the correct size
-    DEALLOCATE( execute_commands )
-    IF ( size(temp_dict) .gt. 1 ) THEN
-      ALLOCATE( execute_commands( SIZE(temp_dict) - 1 ) )
-      execute_commands(1:SIZE(execute_commands)) = temp_dict
-    END IF
-    DEALLOCATE( temp_dict )
-    
-    ierr = 0
-
-  END SUBROUTINE remove_execute_command
-
-  FUNCTION MDI_Execute_Command_f(buf, comm) bind(c)
-    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
-    INTEGER(KIND=C_INT), VALUE               :: comm
-    INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_f
-
-    CHARACTER(LEN=COMMAND_LENGTH)        :: fbuf
-    INTEGER                                  :: commf
-    INTEGER                                  :: ierr
-
-    INTEGER                                  :: i, current_code
-    LOGICAL                                  :: end_string
-
-    commf = comm
-
-    ! convert from C string to Fortran string
-    fbuf = str_c_to_f(buf, COMMAND_LENGTH)
-
-    ! Get the correct execute_command callback
-    current_code = MDI_Get_Current_Code_()
-    i = find_execute_command( current_code )
-    IF ( i .eq. -1 ) THEN
-      WRITE(6,*)'MDI Error: Could not locate correct execute_command callback'
-    END IF
-    call execute_commands(i)%value(fbuf, commf, ierr)
-
-    ! If this is the EXIT command, delete all Fortran state associated with the code
-    !IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
-    !  CALL remove_execute_command( current_code )
-    !END IF
-
-    MDI_Execute_Command_f = ierr
-
-  END FUNCTION MDI_Execute_Command_f
-
   FUNCTION MDI_On_destroy_code_f(code_id) bind(c)
     INTEGER(KIND=C_INT)                      :: MDI_On_destroy_code_f
     INTEGER                                  :: ierr
@@ -244,11 +150,51 @@ CONTAINS
     !current_code = MDI_Get_Current_Code_()
 
     ! Perform memory cleanup for this code's language-specific data
-    CALL remove_execute_command( code_id, ierr )
+    !CALL remove_execute_command( code_id, ierr )
+    ierr = 0
 
     MDI_On_destroy_code_f = ierr
 
   END FUNCTION MDI_On_destroy_code_f
+
+  FUNCTION MDI_Execute_Command_f(buf, comm, class_obj) bind(c)
+
+    CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
+    INTEGER(KIND=C_INT), VALUE               :: comm
+    INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_f
+    TYPE(C_PTR), VALUE                       :: class_obj
+
+    CHARACTER(LEN=COMMAND_LENGTH)        :: fbuf
+    INTEGER                                  :: commf
+    INTEGER                                  :: ierr
+
+    INTEGER                                  :: i, current_code
+    LOGICAL                                  :: end_string
+
+    !PROCEDURE(execute_command), POINTER :: this_func => null()
+    PROCEDURE(execute_command_correct), POINTER :: this_func => null()
+    !TYPE(C_FUNPTR), TARGET                      :: this_func_ptr
+    TYPE(C_FUNPTR)                      :: this_func_ptr
+
+    commf = comm
+
+    ! convert from C string to Fortran string
+    fbuf = str_c_to_f(buf, COMMAND_LENGTH)
+
+    ! Get the correct execute_command callback
+    current_code = MDI_Get_Current_Code_()
+
+    !ierr = MDI_Get_language_execute_command_(c_loc(this_func_ptr), comm)
+    this_func_ptr = MDI_Get_language_execute_command_(comm)
+
+    CALL c_f_procpointer(this_func_ptr, this_func)
+
+    ierr = this_func(fbuf, commf, class_obj)
+
+    MDI_Execute_Command_f = ierr
+
+  END FUNCTION MDI_Execute_Command_f
+
 
 END MODULE
 
@@ -313,6 +259,11 @@ MODULE MDI
   END INTERFACE 
 
   INTERFACE
+
+     FUNCTION MDI_Init_code_() bind(c, name="MDI_Init_code")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT)                      :: MDI_Init_code_
+     END FUNCTION MDI_Init_code_
 
      FUNCTION MDI_Init_with_options_(options) bind(c, name="MDI_Init_with_options")
        USE, INTRINSIC :: iso_c_binding
@@ -500,12 +451,6 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_MPI_set_world_comm_
      END FUNCTION MDI_MPI_set_world_comm_
 
-     FUNCTION MDI_Get_plugin_mode_(plugin_mode_ptr) bind(c, name="MDI_Get_plugin_mode")
-       USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: plugin_mode_ptr
-       INTEGER(KIND=C_INT)                      :: MDI_Get_plugin_mode_
-     END FUNCTION MDI_Get_plugin_mode_
-
      FUNCTION MDI_Plugin_get_argc_(argc_ptr) bind(c, name="MDI_Plugin_get_argc")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: argc_ptr
@@ -540,8 +485,6 @@ MODULE MDI
 
   END INTERFACE
 
-
-
 CONTAINS
 
     SUBROUTINE MDI_Init(foptions, ierr)
@@ -554,21 +497,11 @@ CONTAINS
       CHARACTER(LEN=*), INTENT(IN) :: foptions
       INTEGER, INTENT(OUT) :: ierr
 
+      ierr = MDI_Init_code_()
+      IF ( ierr .ne. 0 ) THEN
+        RETURN
+      END IF
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
-
-      ! determine if plugin mode is active
-      ! if this rank has previously run a Fortran plugin, need to remove its state now
-      ! NOTE: Should consider whether the C code can call these at end of MDI_Launch_plugin
-      !ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
-      !plugin_mode = cplugin_mode
-      !IF ( plugin_mode .eq. 1 ) THEN
-      !   current_code = MDI_Get_Current_Code_()
-      !   index = find_execute_command( current_code )
-      !   IF ( index .ne. -1 ) THEN
-      !      CALL remove_execute_command( current_code )
-      !   END IF
-      !ENDIF
-
 
     END SUBROUTINE MDI_Init
 
@@ -774,7 +707,7 @@ CONTAINS
 
     SUBROUTINE MDI_Recv_Command(fbuf, comm, ierr)
       USE ISO_C_BINDING
-      USE MDI_INTERNAL, ONLY : MDI_Get_Current_Code_, remove_execute_command, str_c_to_f, MDI_Get_intra_rank
+      USE MDI_INTERNAL, ONLY : MDI_Get_Current_Code_, str_c_to_f, MDI_Get_intra_rank
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Recv_Command
@@ -783,31 +716,15 @@ CONTAINS
       INTEGER, INTENT(IN)                      :: comm
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: i, current_code
-      LOGICAL                                  :: end_string
       CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: cbuf(MDI_COMMAND_LENGTH)
 
-      INTEGER                                  :: plugin_mode, ierr2
-      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
-
       ierr = MDI_Recv_Command_(c_loc(cbuf(1)), comm)
-
-      ! get whether this is code is running in plugin mode
-      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
-      plugin_mode = cplugin_mode
 
       ! convert from C string to Fortran string
       IF ( MDI_Get_intra_rank() .eq. 0 ) THEN
          fbuf = str_c_to_f(cbuf, MDI_COMMAND_LENGTH)
       END IF
 
-      ! If this is the EXIT command, delete all Fortran state associated with the code
-      !IF ( plugin_mode .eq. 1 ) THEN
-      !  IF ( TRIM(fbuf) .eq. "EXIT" ) THEN
-      !    current_code = MDI_Get_Current_Code_()
-      !    CALL remove_execute_command( current_code )
-      !  END IF
-      !END IF
     END SUBROUTINE MDI_Recv_Command
 
     SUBROUTINE MDI_Conversion_Factor(fin_unit, fout_unit, factor, ierr)
@@ -1282,21 +1199,22 @@ CONTAINS
 
     END SUBROUTINE MDI_Plugin_get_arg
 
-    SUBROUTINE MDI_Set_Execute_Command_Func(command_func, class_obj, ierr)
+    SUBROUTINE MDI_Set_Execute_Command_Func(funptr, class_obj, ierr)
       USE MDI_INTERNAL
 
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
 #endif
-      PROCEDURE(execute_command), POINTER        :: command_func
-      TYPE(C_PTR), VALUE                         :: class_obj
-      INTEGER, INTENT(OUT)                       :: ierr
-      INTEGER                                    :: current_code
+      TYPE(C_FUNPTR), VALUE                       :: funptr
+      TYPE(C_PTR), VALUE                          :: class_obj
+      INTEGER, INTENT(OUT)                        :: ierr
+      INTEGER                                     :: current_code
+
 
       current_code = MDI_Get_Current_Code_()
 
-      CALL add_execute_command(current_code, command_func)
+      ierr = MDI_Set_language_execute_command_( funptr )
       ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
     END SUBROUTINE MDI_Set_Execute_Command_Func
@@ -1311,10 +1229,7 @@ CONTAINS
       TYPE(C_PTR), VALUE                       :: state_ptr
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: plugin_mode
-      INTEGER(KIND=C_INT), TARGET              :: cplugin_mode
       INTEGER                                  :: ierr2
-
       INTEGER(KIND=C_INT)                      :: language
 
       language = MDI_LANGUAGE_FORTRAN
@@ -1322,11 +1237,7 @@ CONTAINS
 
       ierr = MDI_Set_plugin_state_(state_ptr)
 
-      ierr2 = MDI_Get_plugin_mode_( c_loc(cplugin_mode) )
-      plugin_mode = cplugin_mode
-      IF ( plugin_mode .eq. 1 ) THEN
-        ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
-      END IF
+      ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
 
     END SUBROUTINE MDI_Set_plugin_state
 

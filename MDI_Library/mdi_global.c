@@ -18,40 +18,7 @@
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
  * Typically, this will only include a single code, unless the communication method is LIBRARY */
-vector codes;
-
-/*! \brief Vector containing all supported methods */
-vector methods;
-
-/*! \brief ID of the method being used for inter-code communication */
-int selected_method_id = 0;
-
-/*! \brief Index of the active code */
-int current_code = 0;
-
-/*! \brief Flag for whether MDI is running in i-PI compatibility mode */
-int ipi_compatibility = 0;
-
-/*! \brief Flag for whether MDI has been previously initialized */
-int is_initialized = 0;
-
-/*! \brief Flag for whether MDI called MPI_Init */
-int initialized_mpi = 0;
-
-/*! \brief Flag for whether MDI is currently operating in plugin mode */
-int plugin_mode = 0;
-
-/*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
-MPI_Comm mdi_mpi_comm_world;
-
-/*! \brief Unedited command-line options for currently running plugin */
-char* plugin_unedited_options = NULL;
-
-/*! \brief Argument count for plugin command-line options */
-int plugin_argc = 0;
-
-/*! \brief Argument vector for plugin command-line options */
-char** plugin_argv = NULL;
+vector codes = { .initialized = 0 };
 
 /*! \brief Python callback pointer for MPI_Recv */
 int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
@@ -77,11 +44,11 @@ int (*mpi4py_size_callback)(int);
 /*! \brief Python callback pointer for MPI_Comm_barrier */
 int (*mpi4py_barrier_callback)(int);
 
-/*! \brief Size of MPI_COMM_WORLD */
-int world_size = -1;
+/*! \brief Size of MPI_COMM_WORLD, received from the Python wrapper */
+int world_size_from_python = -1;
 
-/*! \brief Rank of this process within MPI_COMM_WORLD */
-int world_rank = -1;
+/*! \brief Rank of this process within MPI_COMM_WORLD, received from the Python wrapper */
+int world_rank_from_python = -1;
 
 /*! \brief Initialize memory allocation for a vector structure
  *
@@ -101,6 +68,8 @@ int vector_init(vector* v, size_t stride) {
   v->size = 0;
   v->capacity = 0;
   v->stride = stride;
+  v->current_key = -1;
+  v->initialized = 1;
 
   return 0;
 }
@@ -276,6 +245,14 @@ int new_code() {
   new_code.intra_MPI_comm = MPI_COMM_WORLD;
   new_code.language = MDI_LANGUAGE_C;
   new_code.language_on_destroy = NULL;
+  new_code.selected_method_id = 0;
+  new_code.initialized_mpi = 0;
+  new_code.ipi_compatibility = 0;
+  new_code.plugin_argc = -1;
+  new_code.plugin_argv = NULL;
+  new_code.tcp_initialized = 0;
+  new_code.mpi_initialized = 0;
+  new_code.test_initialized = 0;
 
   // initialize the name and role strings
   int ichar;
@@ -294,9 +271,16 @@ int new_code() {
   new_code.id = (int)codes.size;
   new_code.called_set_execute_command_func = 0;
   new_code.intra_rank = 0;
-  if (world_rank != -1) {
+  new_code.world_rank = -1;
+  new_code.world_size = -1;
+  if (world_rank_from_python != -1) {
     // The Python wrapper has called MDI_Set_World_Rank to set this value
-    new_code.intra_rank = world_rank;
+    new_code.world_rank = world_rank_from_python;
+    new_code.intra_rank = world_rank_from_python;
+  }
+  if (world_rank_from_python != -1) {
+    // The Python wrapper has called MDI_Set_World_Size to set this value
+    new_code.world_size = world_size_from_python;
   }
 
   // initialize the node vector
@@ -358,6 +342,14 @@ code* get_code(int code_id) {
   }
   mdi_error("Code not found");
   return NULL;
+}
+
+
+/*! \brief Get the currently active code
+ * Returns a pointer to the code
+ */
+code* get_current_code() {
+  return get_code(codes.current_key);
 }
 
 
@@ -425,7 +417,7 @@ int delete_code(int code_id) {
 int new_method(int code_id, int method_id) {
   code* this_code = get_code(code_id);
   method new_method;
-  new_method.id = (int)methods.size;
+  new_method.id = (int)this_code->methods->size;
   new_method.method_id = method_id;
 
   vector_push_back( this_code->methods, &new_method );
@@ -464,14 +456,14 @@ int delete_method(int code_id, int method_id) {
   int imethod;
   int method_index;
   int method_found = 0;
-  for (imethod = 0; imethod < methods.size; imethod++ ) {
-    method* method = vector_get(&methods, imethod);
+  for (imethod = 0; imethod < this_code->methods->size; imethod++ ) {
+    method* method = vector_get(this_code->methods, imethod);
     if ( method->method_id == method_id ) {
       method_found = 1;
       method_index = imethod;
 
       // stop searching
-      imethod = (int)methods.size;
+      imethod = (int)this_code->methods->size;
     }
   }
   if ( method_found != 1 ) {
@@ -480,7 +472,7 @@ int delete_method(int code_id, int method_id) {
   }
 
   // delete the data for this method from the global vector of methods
-  vector_delete(&methods, method_index);
+  vector_delete(this_code->methods, method_index);
 
   return 0;
 }
