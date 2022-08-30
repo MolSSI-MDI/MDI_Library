@@ -134,7 +134,7 @@ CONTAINS
   ! Add a value to the execute_command dictionary
   SUBROUTINE add_execute_command(key, value)
     INTEGER, INTENT(IN)                      :: key
-    PROCEDURE(execute_command)               :: value
+    PROCEDURE(execute_command), POINTER      :: value
     INTEGER                                  :: index
     TYPE(command_func_ptr), ALLOCATABLE      :: temp_dict(:)
 
@@ -1289,10 +1289,10 @@ CONTAINS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
       !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Set_Execute_Command_Func
 #endif
-      PROCEDURE(execute_command)               :: command_func
-      TYPE(C_PTR), VALUE                       :: class_obj
-      INTEGER, INTENT(OUT)                     :: ierr
-      INTEGER                                  :: current_code
+      PROCEDURE(execute_command), POINTER        :: command_func
+      TYPE(C_PTR), VALUE                         :: class_obj
+      INTEGER, INTENT(OUT)                       :: ierr
+      INTEGER                                    :: current_code
 
       current_code = MDI_Get_Current_Code_()
 
