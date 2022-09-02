@@ -1853,6 +1853,21 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
 
 
 int MDI_Set_plugin_state(void* state) {
+  int ret = MDI_Init_code();
+  if ( ret != 0 ) {
+    return ret;
+  }
+
+  return library_set_state(state);
+}
+
+
+/*! \brief Set the language-based callback for when a code is destroyed
+ *
+ * This is only intended to be used internally by the MDI Library
+ *
+ */
+int MDI_Set_plugin_state_internal(void* state) {
   return library_set_state(state);
 }
 
@@ -1959,7 +1974,8 @@ int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr, 
  *                   Function pointer to the mpi4py_recv callback
  */
 int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Comm)) {
-  mpi4py_recv_callback = mpi4py_recv;
+  code* this_code = get_current_code();
+  this_code->mpi4py_recv_callback = mpi4py_recv;
   return 0;
 }
 
@@ -1972,7 +1988,8 @@ int MDI_Set_Mpi4py_Recv_Callback(int (*mpi4py_recv)(void*, int, int, int, MDI_Co
  *                   Function pointer to the mpi4py_send callback
  */
 int MDI_Set_Mpi4py_Send_Callback(int (*mpi4py_send)(void*, int, int, int, MDI_Comm)) {
-  mpi4py_send_callback = mpi4py_send;
+  code* this_code = get_current_code();
+  this_code->mpi4py_send_callback = mpi4py_send;
   return 0;
 }
 
@@ -1985,7 +2002,8 @@ int MDI_Set_Mpi4py_Send_Callback(int (*mpi4py_send)(void*, int, int, int, MDI_Co
  *                   Function pointer to the mpi4py_allgather callback
  */
 int MDI_Set_Mpi4py_Allgather_Callback(int (*mpi4py_allgather)(void*, void*)) {
-  mpi4py_allgather_callback = mpi4py_allgather;
+  code* this_code = get_current_code();
+  this_code->mpi4py_allgather_callback = mpi4py_allgather;
   return 0;
 }
 
@@ -1998,7 +2016,8 @@ int MDI_Set_Mpi4py_Allgather_Callback(int (*mpi4py_allgather)(void*, void*)) {
  *                   Function pointer to the mpi4py_gather_names callback
  */
 int MDI_Set_Mpi4py_Gather_Names_Callback(int (*mpi4py_gather_names)(void*, void*, int*, int*)) {
-  mpi4py_gather_names_callback = mpi4py_gather_names;
+  code* this_code = get_current_code();
+  this_code->mpi4py_gather_names_callback = mpi4py_gather_names;
   return 0;
 }
 
@@ -2011,7 +2030,8 @@ int MDI_Set_Mpi4py_Gather_Names_Callback(int (*mpi4py_gather_names)(void*, void*
  *                   Function pointer to the mpi4py_split callback
  */
 int MDI_Set_Mpi4py_Split_Callback(int (*mpi4py_split)(int, int, MDI_Comm, int)) {
-  mpi4py_split_callback = mpi4py_split;
+  code* this_code = get_current_code();
+  this_code->mpi4py_split_callback = mpi4py_split;
   return 0;
 }
 
@@ -2024,7 +2044,8 @@ int MDI_Set_Mpi4py_Split_Callback(int (*mpi4py_split)(int, int, MDI_Comm, int)) 
  *                   Function pointer to the mpi4py_rank callback
  */
 int MDI_Set_Mpi4py_Rank_Callback(int (*mpi4py_rank)(int)) {
-  mpi4py_rank_callback = mpi4py_rank;
+  code* this_code = get_current_code();
+  this_code->mpi4py_rank_callback = mpi4py_rank;
   return 0;
 }
 
@@ -2036,7 +2057,8 @@ int MDI_Set_Mpi4py_Rank_Callback(int (*mpi4py_rank)(int)) {
  *                   Function pointer to the mpi4py_size callback
  */
 int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int)) {
-  mpi4py_size_callback = mpi4py_size;
+  code* this_code = get_current_code();
+  this_code->mpi4py_size_callback = mpi4py_size;
   return 0;
 }
 
@@ -2049,7 +2071,8 @@ int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int)) {
  *                   Function pointer to the mpi4py_barrier callback
  */
 int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int)) {
-  mpi4py_barrier_callback = mpi4py_barrier;
+  code* this_code = get_current_code();
+  this_code->mpi4py_barrier_callback = mpi4py_barrier;
   return 0;
 }
 

@@ -102,9 +102,6 @@ typedef struct library_data_struct {
   int is_python;
 } library_data;
 
-/*! \brief Shared state received from the driver */
-extern plugin_shared_state* shared_state_from_driver;
-
 int enable_plug_support(int code_id);
 int plug_on_selection();
 int plug_on_accept_communicator();

@@ -149,7 +149,7 @@ int general_init(const char* options) {
         mdi_error("Error in MDI_Init: Argument missing from -hostname option");
         return 1;
       }
-      hostname = argv[iarg+1];
+      this_code->hostname = argv[iarg+1];
       iarg += 2;
     }
     //-port
@@ -158,7 +158,7 @@ int general_init(const char* options) {
         mdi_error("Error in MDI_Init: Argument missing from -port option");
         return 1;
       }
-      port = strtol( argv[iarg+1], &strtol_ptr, 10 );
+      this_code->port = strtol( argv[iarg+1], &strtol_ptr, 10 );
       iarg += 2;
     }
     //-ipi
@@ -235,7 +235,8 @@ int general_init(const char* options) {
   // if this is a plugin, get the langauge from the shared value
   if ( strcmp(method_str, "LINK") == 0 || strcmp(method_str, "PLUG") == 0 ) {
     if ( strcmp(this_code->role, "ENGINE") == 0 ) {
-      this_code->language = shared_state_from_driver->engine_language;
+      plugin_shared_state* shared_state = (plugin_shared_state*) this_code->shared_state_from_driver;
+      this_code->language = shared_state->engine_language;
     }
   }
 

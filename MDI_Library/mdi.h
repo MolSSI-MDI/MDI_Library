@@ -139,6 +139,7 @@ DllExport int MDI_Close_plugin(MDI_Comm mdi_comm);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_plugin_state(void* state);
+DllExport int MDI_Set_plugin_state_internal(void* state);
 DllExport int MDI_Plugin_get_argc(int* argc_ptr);
 DllExport int MDI_Plugin_get_argv(char*** argv_ptr);
 DllExport int MDI_Plugin_get_args(char** args_ptr);

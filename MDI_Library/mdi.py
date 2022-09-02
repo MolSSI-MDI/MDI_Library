@@ -1174,12 +1174,18 @@ def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driv
 
 
 # MDI_Set_plugin_state
-mdi.MDI_Set_plugin_state.argtypes = [ctypes.c_void_p]
-mdi.MDI_Set_plugin_state.restye = ctypes.c_int
+mdi.MDI_Set_plugin_state_internal.argtypes = [ctypes.c_void_p]
+mdi.MDI_Set_plugin_state_internal.restye = ctypes.c_int
 def MDI_Set_plugin_state(plugin_state):
-    ret = mdi.MDI_Set_plugin_state( plugin_state )
+
+    # Initialize a new MDI code
+    ret = mdi.MDI_Init_code()
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Set_plugin_state failed during call to MDI_Init_code")
 
     MDI_MPI_initialization( plugin_state=plugin_state )
+
+    ret = mdi.MDI_Set_plugin_state_internal( plugin_state )
 
     if ret != 0:
         raise Exception("MDI Error: MDI_Set_plugin_state failed")

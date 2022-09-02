@@ -22,11 +22,7 @@
 
 static sock_t sigint_sockfd;
 
-/*! \brief Hostname of the driver */
-char* hostname = NULL;
 
-/*! \brief Port over which the driver will listen */
-int port = -1;
 
 /*! \brief SIGINT handler to ensure the socket is closed on termination
  *
@@ -40,9 +36,6 @@ void sigint_handler(int dummy) {
   close(sigint_sockfd);
 #endif
 }
-
-/*! \brief Socket over which a driver will listen for incoming connections */
-sock_t tcp_socket = -1;
 
 
 
@@ -71,34 +64,34 @@ int tcp_on_selection() {
   this_code->tcp_initialized == 1;
 
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
-    if ( port == -1 ) {
+    if ( this_code->port == -1 ) {
       mdi_error("Error in MDI_Init: -port option not provided");
       return 1;
     }
     if ( this_code->intra_rank == 0 ) {
-      tcp_listen(port);
+      tcp_listen(this_code->port);
     }
     else {
       // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
-      tcp_socket = 1;
+      this_code->tcp_socket = 1;
     }
   }
   else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
-    if ( hostname == NULL ) {
+    if ( this_code->hostname == NULL ) {
       mdi_error("Error in MDI_Init: -hostname option not provided");
       return 1;
     }
-    if ( port == -1 ) {
+    if ( this_code->port == -1 ) {
       mdi_error("Error in MDI_Init: -port option not provided");
       return 1;
     }
     if ( this_code->intra_rank == 0 ) {
-      tcp_request_connection(port, hostname);
+      tcp_request_connection(this_code->port, this_code->hostname);
     }
     else {
       // If this isn't rank 0, just set tcp_socket to > 0 so that accept_communicator knows we are using TCP
       if ( this_code->intra_rank != 0 ) {
-	tcp_socket = 1;
+        this_code->tcp_socket = 1;
       }
     }
   }
@@ -125,7 +118,7 @@ int tcp_on_accept_communicator() {
   }
 
   // Check for any production codes connecting via TCP
-  if ( tcp_socket > 0 ) {
+  if ( this_code->tcp_socket > 0 ) {
     // Accept a connection via TCP
     // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
     int size_before = this_code->comms->size;
@@ -232,7 +225,7 @@ int tcp_listen(int port_in) {
   }
 
   //return sockfd;
-  tcp_socket = sockfd;
+  this_code->tcp_socket = sockfd;
 
   return 0;
 }
@@ -367,7 +360,7 @@ int tcp_accept_connection() {
 
   if ( this_code->intra_rank == 0 ) { // Running on rank 0
 
-    connection = accept(tcp_socket, NULL, NULL);
+    connection = accept(this_code->tcp_socket, NULL, NULL);
     if (connection < 0) {
       mdi_error("Could not accept connection");
       return 1;

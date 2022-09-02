@@ -20,35 +20,6 @@
  * Typically, this will only include a single code, unless the communication method is LIBRARY */
 vector codes = { .initialized = 0 };
 
-/*! \brief Python callback pointer for MPI_Recv */
-int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for MPI_Send */
-int (*mpi4py_send_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for initial MPI allgather */
-int (*mpi4py_allgather_callback)(void*, void*);
-
-/*! \brief Python callback pointer for gathering names */
-int (*mpi4py_gather_names_callback)(void*, void*, int*, int*);
-
-/*! \brief Python callback pointer for MPI_Comm_split */
-int (*mpi4py_split_callback)(int, int, MDI_Comm_Type, int);
-
-/*! \brief Python callback pointer for MPI_Comm_rank */
-int (*mpi4py_rank_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_size */
-int (*mpi4py_size_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_barrier */
-int (*mpi4py_barrier_callback)(int);
-
-/*! \brief Size of MPI_COMM_WORLD, received from the Python wrapper */
-int world_size_from_python = -1;
-
-/*! \brief Rank of this process within MPI_COMM_WORLD, received from the Python wrapper */
-int world_rank_from_python = -1;
 
 /*! \brief Initialize memory allocation for a vector structure
  *
@@ -253,6 +224,10 @@ int new_code() {
   new_code.tcp_initialized = 0;
   new_code.mpi_initialized = 0;
   new_code.test_initialized = 0;
+  new_code.shared_state_from_driver = NULL;
+  new_code.tcp_socket = -1;
+  new_code.port = -1;
+  new_code.hostname = NULL;
 
   // initialize the name and role strings
   int ichar;
@@ -273,15 +248,6 @@ int new_code() {
   new_code.intra_rank = 0;
   new_code.world_rank = -1;
   new_code.world_size = -1;
-  if (world_rank_from_python != -1) {
-    // The Python wrapper has called MDI_Set_World_Rank to set this value
-    new_code.world_rank = world_rank_from_python;
-    new_code.intra_rank = world_rank_from_python;
-  }
-  if (world_rank_from_python != -1) {
-    // The Python wrapper has called MDI_Set_World_Size to set this value
-    new_code.world_size = world_size_from_python;
-  }
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));

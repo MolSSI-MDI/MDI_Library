@@ -477,11 +477,11 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Set_plugin_language_
      END FUNCTION MDI_Set_plugin_language_
 
-     FUNCTION MDI_Set_plugin_state_(state_ptr) bind(c, name="MDI_Set_plugin_state")
+     FUNCTION MDI_Set_plugin_state_internal_(state_ptr) bind(c, name="MDI_Set_plugin_state_internal")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: state_ptr
-       INTEGER(KIND=C_INT)                      :: MDI_Set_plugin_state_
-     END FUNCTION MDI_Set_plugin_state_
+       INTEGER(KIND=C_INT)                      :: MDI_Set_plugin_state_internal_
+     END FUNCTION MDI_Set_plugin_state_internal_
 
   END INTERFACE
 
@@ -498,9 +498,8 @@ CONTAINS
       INTEGER, INTENT(OUT) :: ierr
 
       ierr = MDI_Init_code_()
-      IF ( ierr .ne. 0 ) THEN
-        RETURN
-      END IF
+      IF ( ierr .ne. 0 ) RETURN
+
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
 
     END SUBROUTINE MDI_Init
@@ -1229,15 +1228,20 @@ CONTAINS
       TYPE(C_PTR), VALUE                       :: state_ptr
       INTEGER, INTENT(OUT)                     :: ierr
 
-      INTEGER                                  :: ierr2
       INTEGER(KIND=C_INT)                      :: language
 
       language = MDI_LANGUAGE_FORTRAN
-      ierr2 = MDI_Set_plugin_language_(language, state_ptr)
+      ierr = MDI_Set_plugin_language_(language, state_ptr)
+      IF ( ierr .ne. 0 ) RETURN
 
-      ierr = MDI_Set_plugin_state_(state_ptr)
+      ierr = MDI_Init_code_()
+      IF ( ierr .ne. 0 ) RETURN
+
+      ierr = MDI_Set_plugin_state_internal_(state_ptr)
+      IF ( ierr .ne. 0 ) RETURN
 
       ierr = MDI_Set_on_destroy_code_c( c_funloc(MDI_On_destroy_code_f) )
+      IF ( ierr .ne. 0 ) RETURN
 
     END SUBROUTINE MDI_Set_plugin_state
 

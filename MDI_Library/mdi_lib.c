@@ -20,8 +20,6 @@
 #include <dlfcn.h>
 #endif
 
-/*! \brief Shared state received from the driver */
-plugin_shared_state* shared_state_from_driver = NULL;
 
 /*! \brief Enable support for the PLUG method */
 int enable_plug_support( int code_id ) {
@@ -644,7 +642,7 @@ int library_initialize() {
   // if this is an engine, go ahead and set the driver as the connected code
   if ( strcmp(this_code->role, "ENGINE") == 0 ) {
 
-    libd->shared_state = shared_state_from_driver;
+    libd->shared_state = (plugin_shared_state*) this_code->shared_state_from_driver;
     libd->shared_state->engine_mdi_comm = new_comm->id;
     libd->shared_state->delete_engine = library_delete_engine;
     libd->shared_state->engine_activate_code = library_activate_code;
@@ -1056,13 +1054,13 @@ int library_delete_engine(int code_id) {
 int library_set_state(void* state) {
   int ret;
 
-  shared_state_from_driver = (plugin_shared_state*) state;
+  code* this_code = get_current_code();
+  this_code->shared_state_from_driver = state;
 
-  ret = MDI_Init_code();
-  if ( ret != 0 ) {
-    return ret;
-  }
-  ret = MDI_Init_with_argv(&shared_state_from_driver->plugin_argc, &shared_state_from_driver->plugin_argv);
+  plugin_shared_state* shared_state = (plugin_shared_state*) state;
+
+  ret = MDI_Init_with_argv(&shared_state->plugin_argc, 
+                           &shared_state->plugin_argv);
   if ( ret != 0 ) {
     return ret;
   }

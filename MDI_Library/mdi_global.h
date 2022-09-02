@@ -161,14 +161,36 @@ typedef struct code_struct {
   char** plugin_argv;
   /*! \brief Unedited command-line options for currently running plugin */
   char* plugin_unedited_options;
+  /*! \brief Shared plugin state, received from the driver during plugin calculations */
+  void* shared_state_from_driver;
+  /*! \brief Hostname of the driver */
+  char* hostname;
   /*! \brief Function pointer to the language-specific wrapper for the execute_command function */
   int (*execute_command_wrapper)(const char*, MDI_Comm_Type, void*);
   /*! \brief Function pointer to the generic execute_command_function */
   MDI_execute_command_type execute_command;
   /*! \brief Function pointer to the language-specific destructor function */
   int (*language_on_destroy)(int);
+  /*! \brief Python callback pointer for MPI_Recv */
+  int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
+  /*! \brief Python callback pointer for MPI_Send */
+  int (*mpi4py_send_callback)(void*, int, int, int, MDI_Comm_Type);
+  /*! \brief Python callback pointer for the initial MPI allgather */
+  int (*mpi4py_allgather_callback)(void*, void*);
+  /*! \brief Python callback pointer for gathering names */
+  int (*mpi4py_gather_names_callback)(void*, void*, int*, int*);
+  /*! \brief Python callback pointer for MPI_Comm_split */
+  int (*mpi4py_split_callback)(int, int, MDI_Comm_Type, int);
+  /*! \brief Python callback pointer for MPI_Comm_rank */
+  int (*mpi4py_rank_callback)(int);
+  /*! \brief Python callback pointer for MPI_Comm_size */
+  int (*mpi4py_size_callback)(int);
+  /*! \brief Python callback pointer for MPI_Comm_barrier */
+  int (*mpi4py_barrier_callback)(int);
   /*! \brief MPI intra-communicator that spans all ranks associated with this code */
   MPI_Comm intra_MPI_comm;
+  /*! \brief Socket for TCP connections */
+  sock_t tcp_socket;
   /*! \brief Flag whether this code is being used as a library
   0: Not a library
   1: Is an ENGINE library, but has not connected to the driver
@@ -204,46 +226,18 @@ typedef struct code_struct {
   int mpi_initialized;
   /*! \brief Flag whether this code has previously initialized TEST */
   int test_initialized;
+  /*! \brief Port over which the driver will listen */
+  int port;
 } code;
 
+
+
 /*! \brief Vector containing all codes that have been initiailized on this rank. Typically, 
-this will only include a single code, unless the communication method is LINK */
+this will only include a single code, unless the communication method is LINK.
+ALL global MDI data is stored within this vector */
 extern vector codes;
 
 
-
-
-
-
-/*! \brief Python callback pointer for MPI_Recv */
-extern int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for MPI_Send */
-extern int (*mpi4py_send_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for the initial MPI allgather */
-extern int (*mpi4py_allgather_callback)(void*, void*);
-
-/*! \brief Python callback pointer for gathering names */
-extern int (*mpi4py_gather_names_callback)(void*, void*, int*, int*);
-
-/*! \brief Python callback pointer for MPI_Comm_split */
-extern int (*mpi4py_split_callback)(int, int, MDI_Comm_Type, int);
-
-/*! \brief Python callback pointer for MPI_Comm_rank */
-extern int (*mpi4py_rank_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_size */
-extern int (*mpi4py_size_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_barrier */
-extern int (*mpi4py_barrier_callback)(int);
-
-/*! \brief Size of MPI_COMM_WORLD, received from the Python wrapper */
-extern int world_size_from_python;
-
-/*! \brief Rank of this process within MPI_COMM_WORLD, received from the Python wrapper */
-extern int world_rank_from_python;
 
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);

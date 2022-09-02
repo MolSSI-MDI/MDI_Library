@@ -19,7 +19,8 @@
  *                   Size of MPI_COMM_WORLD
  */
 int set_world_size(int world_size_in) {
-  world_size_from_python = world_size_in;
+  code* this_code = get_current_code();
+  this_code->world_size = world_size_in;
   return 0;
 }
 
@@ -30,7 +31,9 @@ int set_world_size(int world_size_in) {
  *                   Rank of this process within MPI_COMM_WORLD
  */
 int set_world_rank(int world_rank_in) {
-  world_rank_from_python = world_rank_in;
+  code* this_code = get_current_code();
+  this_code->world_rank = world_rank_in;
+  this_code->intra_rank = world_rank_in;
   return 0;
 }
 
@@ -222,7 +225,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   }
   else {
     int comm_flag = 0;
-    this_code->world_size = mpi4py_size_callback(comm_flag);
+    this_code->world_size = this_code->mpi4py_size_callback(comm_flag);
   }
 
   // get the rank of this process
@@ -231,7 +234,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   }
   else {
     int comm_flag = 0;
-    this_code->world_rank = mpi4py_rank_callback(comm_flag);
+    this_code->world_rank = this_code->mpi4py_rank_callback(comm_flag);
   }
 
   // determine the MDI version of each code
@@ -247,7 +250,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
         MPI_INT, world_comm);
   }
   else {
-    ret = mpi4py_allgather_callback(my_version, all_versions);
+    ret = this_code->mpi4py_allgather_callback(my_version, all_versions);
     if ( ret != 0 ) {
       mdi_error("Error in mpi4py_allgather_callback");
       return ret;
@@ -296,7 +299,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
         MPI_CHAR, world_comm);
   }
   else {
-    ret = mpi4py_gather_names_callback(buffer, names, name_lengths, name_displs);
+    ret = this_code->mpi4py_gather_names_callback(buffer, names, name_lengths, name_displs);
     if ( ret != 0 ) {
       mdi_error("Error in mpi4py_gather_names_callback");
       return ret;
@@ -375,7 +378,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       }
       else {
         int comm_flag = 0; // indicates that this is for creating the inter-code communicator
-        mpi4py_split_callback(color, key, comm_id, comm_flag);
+        this_code->mpi4py_split_callback(color, key, comm_id, comm_flag);
       }
 
       // create an MDI communicator for communication between the driver and engine
@@ -402,7 +405,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     MPI_Comm_split(world_comm, mpi_code_rank, this_code->world_rank, &this_code->intra_MPI_comm);
   }
   else {
-    mpi4py_split_callback(mpi_code_rank, this_code->world_rank, 0, 1);
+    this_code->mpi4py_split_callback(mpi_code_rank, this_code->world_rank, 0, 1);
   }
 
   // get the intra-code rank
@@ -410,7 +413,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     MPI_Comm_rank(this_code->intra_MPI_comm, &this_code->intra_rank);
   }
   else {
-    this_code->intra_rank = mpi4py_rank_callback(1);
+    this_code->intra_rank = this_code->mpi4py_rank_callback(1);
   }
 
   // Barrier
@@ -418,7 +421,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     MPI_Barrier(world_comm);
   }
   else {
-    mpi4py_barrier_callback(0);
+    this_code->mpi4py_barrier_callback(0);
   }
 
   free( buffer );
@@ -488,7 +491,7 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
     MPI_Send((void*)buf, count, mpi_type, (method_data->mpi_rank+1)%2, 0, method_data->mpi_comm);
   }
   else {
-    mpi4py_send_callback( (void*)buf, count, datatype, (method_data->mpi_rank+1)%2, this->id );
+    this_code->mpi4py_send_callback( (void*)buf, count, datatype, (method_data->mpi_rank+1)%2, this->id );
   }
 
   return 0;
@@ -533,7 +536,7 @@ int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
     MPI_Recv(buf, count, mpi_type, (method_data->mpi_rank+1)%2, 0, method_data->mpi_comm, MPI_STATUS_IGNORE);
   }
   else {
-    mpi4py_recv_callback( buf, count, datatype, (method_data->mpi_rank+1)%2, this->id );
+    this_code->mpi4py_recv_callback( buf, count, datatype, (method_data->mpi_rank+1)%2, this->id );
   }
 
   return 0;
