@@ -19,7 +19,15 @@
  *                   Size of MPI_COMM_WORLD
  */
 int set_world_size(int world_size_in) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in set_world_size: get_current_code failed");
+    return 1;
+  }
+
   this_code->world_size = world_size_in;
   return 0;
 }
@@ -31,7 +39,15 @@ int set_world_size(int world_size_in) {
  *                   Rank of this process within MPI_COMM_WORLD
  */
 int set_world_rank(int world_rank_in) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in set_world_rank: get_current_code failed");
+    return 1;
+  }
+
   this_code->world_rank = world_rank_in;
   this_code->intra_rank = world_rank_in;
   return 0;
@@ -40,8 +56,19 @@ int set_world_rank(int world_rank_in) {
 
 /*! \brief Enable support for the TCP method */
 int enable_mpi_support(int code_id) {
-  new_method(code_id, MDI_MPI);
-  method* this_method = get_method(code_id, MDI_MPI);
+  int ret;
+  int method_id;
+  ret = new_method(code_id, MDI_MPI, &method_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_mpi_support: new_method failed");
+    return ret;
+  }
+  method* this_method;
+  ret = get_method(code_id, MDI_MPI, &this_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_mpi_support: get_method failed");
+    return ret;
+  }
   this_method->on_selection = mpi_on_selection;
   this_method->on_accept_communicator = mpi_on_accept_communicator;
   this_method->on_send_command = mpi_on_send_command;
@@ -54,7 +81,14 @@ int enable_mpi_support(int code_id) {
 /*! \brief Callback when the end-user selects MPI as the method */
 int mpi_on_selection() {
   int ret;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_on_selection: get_current_code failed");
+    return 1;
+  }
+
   int mpi_initialized = 0;
 
   if ( this_code->mpi_initialized == 1 ) {
@@ -132,7 +166,6 @@ int mpi_on_selection() {
     mpi_initialized = 1;
   }
   else if ( strcmp(this_code->role,"ENGINE") == 0 ) {
-    code* this_code = get_current_code();
     mpi_identify_codes(this_code->name, use_mpi4py, mpi_communicator);
     mpi_initialized = 1;
   }
@@ -148,12 +181,24 @@ int mpi_on_selection() {
 
 /*! \brief Callback when the MPI method must accept a communicator */
 int mpi_on_accept_communicator() {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_on_accept_communicator: get_current_code failed");
+    return 1;
+  }
 
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
+    communicator* comm_obj;
+    ret = get_communicator(codes.current_key, this_code->returned_comms, &comm_obj);
+    if ( ret != 0 ) {
+      mdi_error("Error in mpi_on_accept_communicator: get_communicator failed");
+      return ret;
+    }
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -173,7 +218,14 @@ int mpi_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
 
 /*! \brief Callback after the MPI method has received a command */
 int mpi_after_send_command(const char* command, MDI_Comm comm) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_after_send_command: get_current_code failed");
+    return 1;
+  }
 
   // if the command was "EXIT", delete this communicator
   if ( strcmp( command, "EXIT" ) == 0 ) {
@@ -217,7 +269,13 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   int i, j, ret;
   int driver_rank;
   int nunique_names = 0;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_identify_codes: get_current_code failed");
+    return 1;
+  }
 
   // get the number of processes
   if ( use_mpi4py == 0 ) {
@@ -350,8 +408,17 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       // if this rank is a member of either the driver or the engine, create a new communicator
       MDI_Comm comm_id = MDI_COMM_NULL;
       if ( strcmp(my_name, "") == 0 || strcmp(my_name, name) == 0 ) {
-        comm_id = new_communicator(this_code->id, MDI_MPI);
-        communicator* new_comm = get_communicator(this_code->id, comm_id);
+        ret = new_communicator(this_code->id, MDI_MPI, &comm_id);
+        if ( ret != 0 ) {
+          mdi_error("Error in mpi_identify_codes: new_communicator failed");
+          return 1;
+        }
+        communicator* new_comm;
+        ret = get_communicator(this_code->id, comm_id, &new_comm);
+        if ( ret != 0 ) {
+          mdi_error("Error in mpi_identify_codes: get_communicator failed");
+          return ret;
+        }
 
         // set the communicator's version numbers
 
@@ -384,7 +451,12 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
       // create an MDI communicator for communication between the driver and engine
       // only done if this is a rank on either the driver or the engine
       if ( strcmp(my_name, "") == 0 || strcmp(my_name, name) == 0 ) {
-        communicator* new_comm = get_communicator(this_code->id, comm_id);
+        communicator* new_comm;
+        ret = get_communicator(this_code->id, comm_id, &new_comm);
+        if ( ret != 0 ) {
+          mdi_error("Error in mpi_identify_codes: second get_communicator failed");
+          return ret;
+        }
         new_comm->delete = communicator_delete_mpi;
         new_comm->send = mpi_send;
         new_comm->recv = mpi_recv;
@@ -446,7 +518,15 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
  *                   On output, the MPI communicator that spans the single code corresponding to the calling rank.
  */
 int mpi_update_world_comm(void* world_comm) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_update_world_comm: get_current_code failed");
+    return 1;
+  }
+
   MPI_Comm* world_comm_ptr = (MPI_Comm*) world_comm;
   *world_comm_ptr = this_code->intra_MPI_comm;
   return 0;
@@ -472,13 +552,24 @@ int mpi_update_world_comm(void* world_comm) {
 int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_send: get_current_code failed");
+    return 1;
+  }
+
   // only send from rank 0
-  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
 
-  communicator* this = get_communicator(codes.current_key, comm);
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_send: get_communicator failed");
+    return ret;
+  }
   mpi_method_data* method_data = (mpi_method_data*) this->method_data;
 
   // determine the byte size of the data type being sent
@@ -517,13 +608,24 @@ int mpi_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
 int mpi_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_recv: get_current_code failed");
+    return 1;
+  }
+
   // only recv from rank 0
-  code* this_code = get_current_code();
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
 
-  communicator* this = get_communicator(codes.current_key, comm);
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_recv: get_communicator failed");
+    return ret;
+  }
   mpi_method_data* method_data = (mpi_method_data*) this->method_data;
 
   // determine the byte size of the data type being sent

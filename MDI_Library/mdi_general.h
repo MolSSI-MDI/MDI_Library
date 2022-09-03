@@ -29,6 +29,6 @@ int send_ncommands(MDI_Comm comm);
 int send_ncallbacks(MDI_Comm comm);
 int send_nnodes(MDI_Comm comm);
 int get_node_info(MDI_Comm comm);
-vector* get_node_vector(MDI_Comm comm);
+int get_node_vector(MDI_Comm comm, vector** vector_ptr);
 
 #endif

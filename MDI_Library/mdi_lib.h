@@ -49,7 +49,11 @@ typedef struct plugin_shared_state_struct {
   /*! \brief Function pointer to the engine's function for responding to built-in commands */
   int (*execute_builtin)(const char*, MDI_Comm_Type, int*);
   /*! \brief Function pointer to the engine's function to delete everything */
-  int (*delete_engine)(int);
+  int (*delete_engine)(size_t);
+  /*! \brief Engine-side ID of the engine code */
+  size_t engine_code_id;
+  /*! \brief Driver-side ID of the driver code */
+  size_t driver_code_id;
   /*! \brief Pointer to engine's execute_command function */
   MDI_execute_command_type execute_command;
   /*! \brief Function pointer to the driver node's callback function */
@@ -66,10 +70,6 @@ typedef struct plugin_shared_state_struct {
   int plugin_argv_allocated;
   /*! \brief MPI rank of this process within the plugin  */
   int intra_rank;
-  /*! \brief Engine-side ID of the engine code */
-  int engine_code_id;
-  /*! \brief Driver-side ID of the driver code */
-  int driver_code_id;
   /*! \brief Flag whether the engine is a Python code */
   int engine_language;
   /*! \brief Flag whether the Python interpreter has been initialized */
@@ -133,6 +133,6 @@ int library_activate_driver(library_data* libd);
 int library_activate_engine(library_data* libd);
 
 int communicator_delete_lib(void* comm);
-int library_delete_engine(int code_id);
+int library_delete_engine(size_t code_id);
 
 #endif

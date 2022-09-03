@@ -117,6 +117,8 @@ typedef struct communicator_struct {
   int (*recv)(void*, int, MDI_Datatype_Type, MDI_Comm_Type, int);
   /*! \brief Function pointer for method-specific deletion operations */
   int (*delete)(void*);
+  /*! \brief Handle for the id of the associated code */
+  size_t code_id;
   /*! \brief For communicators using the TCP communicatiom method, the socket descriptor (WINDOWS) */
   sock_t sockfd;
   /*! \brief Communication method used by this communicator */
@@ -125,8 +127,6 @@ typedef struct communicator_struct {
   MDI_Comm_Type id;
   /*! \brief Indicate whether this communicator has been accepted yet */
   int is_accepted;
-  /*! \brief Handle for the id of the associated code */
-  int code_id;
   /*! \brief The value of MDI_NAME_LENGTH for the connected code */
   int name_length;
   /*! \brief The value of MDI_COMMAND_LENGTH for the connected code */
@@ -201,7 +201,7 @@ typedef struct code_struct {
   /*! \brief Rank of this process within MPI_COMM_WORLD */
   int world_rank;
   /*! \brief Handle for this code */
-  int id;
+  size_t id;
   /*! \brief The number of communicator handles that have been returned by MDI_Accept_Connection() */
   int returned_comms;
   /*! \brief The handle of the next communicator */
@@ -241,31 +241,31 @@ extern vector codes;
 
 int vector_init(vector* v, size_t stride);
 int vector_push_back(vector* v, void* element);
-void* vector_get(vector* v, int index);
+int vector_get(vector* v, int index, void** element);
 int vector_delete(vector* v, int index);
 int vector_free(vector* v);
 
-int get_node_index(vector* v, const char* node_name);
-int get_command_index(node* n, const char* command_name);
-int get_callback_index(node* n, const char* callback_name);
+int get_node_index(vector* v, const char* node_name, int* node_index);
+int get_command_index(node* n, const char* command_name, int* command_index);
+int get_callback_index(node* n, const char* callback_name, int* callback_index);
 int free_node_vector(vector* v);
 
-int new_communicator(int code_id, int method);
-communicator* get_communicator(int code_id, MDI_Comm_Type comm_id);
-int delete_communicator(int code_id, MDI_Comm_Type comm_id);
+int new_communicator(size_t code_id, int method, MDI_Comm_Type* comm_id_ptr);
+int get_communicator(size_t code_id, MDI_Comm_Type comm_id, communicator** comm_ptr);
+int delete_communicator(size_t code_id, MDI_Comm_Type comm_id);
 
-int new_code();
-code* get_code(int code_id);
-int delete_code(int code_id);
-code* get_current_code();
+int new_code(size_t* code_id);
+int get_code(size_t code_id, code** ret_code);
+int delete_code(size_t code_id);
+int get_current_code(code** this_code_ptr);
 
-int new_method(int code_id, int method_id);
-method* get_method(int code_id, int method_id);
-int delete_method(int code_id, int method_id);
+int new_method(size_t code_id, int method_id, int* id_ptr);
+int get_method(size_t code_id, int method_id, method** method_ptr);
+int delete_method(size_t code_id, int method_id);
 int free_methods_vector(vector* v);
 
 /*! \brief Check whether a file exists */
-int file_exists(const char* file_name);
+int file_exists(const char* file_name, int* flag);
 
 /*! \brief Dummy function for method-specific deletion operations for communicator deletion */
 int communicator_delete(void* comm);

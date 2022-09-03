@@ -23,8 +23,19 @@
 
 /*! \brief Enable support for the PLUG method */
 int enable_plug_support( int code_id ) {
-  new_method(code_id, MDI_LINK);
-  method* this_method = get_method(code_id, MDI_LINK);
+  int ret;
+  int method_id;
+  ret = new_method(code_id, MDI_LINK, &method_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_plug_support: new_method failed");
+    return ret;
+  }
+  method* this_method;
+  ret = get_method(code_id, MDI_LINK, &this_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_plug_support: get_method failed");
+    return ret;
+  }
   this_method->on_selection = plug_on_selection;
   this_method->on_accept_communicator = plug_on_accept_communicator;
   this_method->on_send_command = plug_on_send_command;
@@ -37,7 +48,14 @@ int enable_plug_support( int code_id ) {
 
 /*! \brief Callback when the end-user selects PLUG as the method */
 int plug_on_selection() {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_selection: get_current_code failed");
+    return ret;
+  }
 
   // Check if this is an engine being used as a library
   if (strcmp(this_code->role, "ENGINE") == 0) {
@@ -52,7 +70,14 @@ int plug_on_selection() {
 
 /*! \brief Callback when the PLUG method must accept a communicator */
 int plug_on_accept_communicator() {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_accept_communicator: get_current_code failed");
+    return 1;
+  }
 
   // Give the library method an opportunity to update the current code
   //library_accept_communicator();
@@ -60,7 +85,12 @@ int plug_on_accept_communicator() {
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
+    communicator* comm_obj;
+    ret = get_communicator(codes.current_key, this_code->returned_comms, &comm_obj);
+    if ( ret != 0 ) {
+      mdi_error("Error in plug_on_accept_communicator: get_communicator failed");
+      return ret;
+    }
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -73,10 +103,21 @@ int plug_on_accept_communicator() {
 
 /*! \brief Callback when the PLUG method must send a command */
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_send_command: get_current_code failed");
+    return 1;
+  }
+  communicator* this_comm;
+  ret = get_communicator(codes.current_key, comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_send_command: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this_comm->method_data;
-  int ret = 0;
 
   // Check whether MPI has been initialized
   int mpi_init_flag;
@@ -128,7 +169,12 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   }
   else if ( command_bcast[0] == '>' ) {
     // flag the command to be executed after the next call to MDI_Send
-    communicator* this = get_communicator(codes.current_key, comm);
+    communicator* this;
+    ret = get_communicator(codes.current_key, comm, &this);
+    if ( ret != 0 ) {
+      mdi_error("Error in plug_on_send_command: second get_communicator failed");
+      return ret;
+    }
     library_data* libd = (library_data*) this->method_data;
     libd->execute_on_send = 1;
     *skip_flag = 1;
@@ -169,9 +215,20 @@ int plug_after_send_command(const char* command, MDI_Comm comm) {
 
 /*! \brief Callback when the PLUG method must receive a command */
 int plug_on_recv_command(MDI_Comm comm) {
-  int ret = 0;
-  code* this_code = get_current_code();
-  communicator* engine_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_recv_command: get_current_code failed");
+    return 1;
+  }
+  communicator* engine_comm;
+  ret = get_communicator(codes.current_key, comm, &engine_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_recv_command: get_communicator failed");
+    return ret;
+  }
 
   // get the driver code to which this communicator connects
   library_data* libd = (library_data*) engine_comm->method_data;
@@ -212,7 +269,13 @@ int plug_on_recv_command(MDI_Comm comm) {
 int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
                       library_data* libd, int mode) {
   int ret;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_load_init: get_current_code failed");
+    return ret;
+  }
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   //
@@ -232,7 +295,13 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
 
   // Attempt to load a python script
   snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/%s.py", this_code->plugin_path, plugin_name);
-  if ( file_exists(plugin_path) ) {
+  int exists_flag;
+  ret = file_exists( plugin_path, &exists_flag );
+  if ( ret != 0 ) {
+    mdi_error("Error in library_load_init: file_exists failed");
+    return ret;
+  }
+  if ( exists_flag ) {
     libd->is_python = 1;
     libd->shared_state->engine_language = MDI_LANGUAGE_PYTHON;
     ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state );
@@ -407,12 +476,23 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
                           MDI_Driver_node_callback_t driver_node_callback,
                           void* driver_callback_object) {
   int ret;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: get_current_code failed");
+    return 1;
+  }
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
-  communicator* driver_comm = get_communicator(codes.current_key, icomm);
+  communicator* driver_comm;
+  ret = get_communicator(codes.current_key, icomm, &driver_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) driver_comm->method_data;
   libd->connected_code = (int)codes.size;
 
@@ -523,12 +603,23 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 int library_open_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                           MDI_Comm* mdi_comm_ptr) {
   int ret;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_open_plugin: get_current_code failed");
+    return 1;
+  }
   MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
-  communicator* driver_comm = get_communicator(codes.current_key, icomm);
+  communicator* driver_comm;
+  ret = get_communicator(codes.current_key, icomm, &driver_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_open_plugin: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) driver_comm->method_data;
   libd->connected_code = (int)codes.size;
 
@@ -576,8 +667,9 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   /*************************************************/
 
   // Set the driver as the active code
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr,
-                                            libd->shared_state->driver_code_id );
+  libd->shared_state->driver_activate_code(
+                  libd->shared_state->driver_codes_ptr,
+                  libd->shared_state->driver_code_id );
 
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
@@ -592,8 +684,20 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
 }
 
 int library_close_plugin(MDI_Comm mdi_comm) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(this_code->id, mdi_comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_close_plugin: get_current_code failed");
+    return 1;
+  }
+  communicator* this_comm;
+  ret = get_communicator(this_code->id, mdi_comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_close_plugin: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this_comm->method_data;
 
   if (libd->is_python == 0 ) {
@@ -617,10 +721,27 @@ int library_close_plugin(MDI_Comm mdi_comm) {
  *
  */
 int library_initialize() {
-  code* this_code = get_current_code();
+  int ret;
 
-  MDI_Comm comm_id = new_communicator(this_code->id, MDI_LINK);
-  communicator* new_comm = get_communicator(this_code->id, comm_id);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_initialize: get_current_code failed");
+    return 1;
+  }
+
+  MDI_Comm comm_id;
+  ret = new_communicator(this_code->id, MDI_LINK, &comm_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_initialize: new_communicator failed");
+    return 1;
+  }
+  communicator* new_comm;
+  ret = get_communicator(this_code->id, comm_id, &new_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_initialize: get_communicator failed");
+    return ret;
+  }
   new_comm->delete = communicator_delete_lib;
   new_comm->send = library_send;
   new_comm->recv = library_recv;
@@ -686,8 +807,20 @@ int library_initialize() {
  *
  */
 int library_set_driver_current(MDI_Comm comm) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_driver_current: get_current_code failed");
+    return 1;
+  }
+  communicator* this_comm;
+  ret = get_communicator(codes.current_key, comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_driver_current: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this_comm->method_data;
 
   // set the driver as the active code
@@ -710,7 +843,14 @@ int library_set_driver_current(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int library_set_command(const char* command, MDI_Comm comm) {
-  communicator* this = get_communicator(codes.current_key, comm);
+  int ret;
+
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_command: get_communicator failed");
+    return ret;
+  }
 
   // get the engine code to which this communicator connects
   library_data* libd = (library_data*) this->method_data;
@@ -741,7 +881,12 @@ int library_set_command(const char* command, MDI_Comm comm) {
  */
 int library_execute_command(MDI_Comm comm) {
   int ret = 0;
-  communicator* this = get_communicator(codes.current_key, comm);
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_execute_command: get_communicator failed");
+    return ret;
+  }
 
   // get the engine code to which this communicator connects
   library_data* libd = (library_data*) this->method_data;
@@ -801,8 +946,18 @@ int library_execute_command(MDI_Comm comm) {
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  code* this_code = get_current_code();
-  communicator* this = get_communicator(codes.current_key, comm);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_send: get_current_code failed");
+    return 1;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_send: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this->method_data;
 
   // get the rank of this process on the engine
@@ -930,8 +1085,18 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
 int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
 
-  code* this_code = get_current_code();
-  communicator* this = get_communicator(codes.current_key, comm);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_recv: get_current_code failed");
+    return 1;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_recv: get_communicator failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this->method_data;
 
   //MDI_Comm other_comm_handle = library_get_matching_handle(comm);
@@ -1007,14 +1172,44 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
 /*! \brief Function for LIBRARY-specific deletion operations for communicator deletion
  */
 int communicator_delete_lib(void* comm) {
+  int ret;
   communicator* this_comm = (communicator*) comm;
-  code* this_code = get_code(this_comm->code_id);
+  code* this_code;
+  ret = get_code(this_comm->code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in communicator_delete_lib: get_code failed");
+    return ret;
+  }
   library_data* libd = (library_data*) this_comm->method_data;
 
-  // if this is the driver, delete the engine code
+  // if this is the driver, delete the engine code and shared state
   if ( this_code->is_library == 0 ) {
-    //delete_code(libd->connected_code);
-    libd->shared_state->delete_engine( libd->shared_state->engine_code_id );
+
+    // set the engine as the active code
+    ret = libd->shared_state->engine_activate_code(
+                    libd->shared_state->engine_codes_ptr,
+                    libd->shared_state->engine_code_id );
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: engine_activate_code failed");
+      return ret;
+    }
+
+    // delete the engine code
+    ret = libd->shared_state->delete_engine(
+                    libd->shared_state->engine_code_id );
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: delete_engine failed");
+      return ret;
+    }
+
+    // set the driver as the active code
+    ret = libd->shared_state->driver_activate_code(
+                    libd->shared_state->driver_codes_ptr,
+                    libd->shared_state->driver_code_id );
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: driver_activate_code failed");
+      return ret;
+    }
 
     if ( libd->shared_state->plugin_argv_allocated ) {
       free( libd->shared_state->plugin_argv );
@@ -1040,7 +1235,7 @@ int communicator_delete_lib(void* comm) {
 
 /*! \brief Function to delete all of the engine's state
  */
-int library_delete_engine(int code_id) {
+int library_delete_engine(size_t code_id) {
   delete_code(code_id);
   if ( codes.size == 0 ) {
     free(codes.data);
@@ -1054,7 +1249,12 @@ int library_delete_engine(int code_id) {
 int library_set_state(void* state) {
   int ret;
 
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_state: get_current_code failed");
+    return 1;
+  }
   this_code->shared_state_from_driver = state;
 
   plugin_shared_state* shared_state = (plugin_shared_state*) state;

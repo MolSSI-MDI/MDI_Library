@@ -41,8 +41,19 @@ void sigint_handler(int dummy) {
 
 /*! \brief Enable support for the TCP method */
 int enable_tcp_support(int code_id) {
-  new_method(code_id, MDI_TCP);
-  method* this_method = get_method(code_id, MDI_TCP);
+  int ret;
+  int method_id;
+  ret = new_method(code_id, MDI_TCP, &method_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_tcp_support: new_method failed");
+    return ret;
+  }
+  method* this_method;
+  ret = get_method(code_id, MDI_TCP, &this_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_tcp_support: get_method failed");
+    return ret;
+  }
   this_method->on_selection = tcp_on_selection;
   this_method->on_accept_communicator = tcp_on_accept_communicator;
   this_method->on_send_command = tcp_on_send_command;
@@ -55,7 +66,14 @@ int enable_tcp_support(int code_id) {
 
 /*! \brief Callback when the end-user selects TCP as the method */
 int tcp_on_selection() {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_on_selection: get_current_code failed");
+    return 1;
+  }
 
   if ( this_code->tcp_initialized == 1 ) {
     mdi_error("MDI_Init called after TCP was already initialized");
@@ -107,12 +125,24 @@ int tcp_on_selection() {
 
 /*! \brief Callback when the TCP method must accept a communicator */
 int tcp_on_accept_communicator() {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_on_accept_communicator: get_current_code failed");
+    return 1;
+  }
 
   // If MDI hasn't returned some connections, do that now
   if ( this_code->returned_comms < this_code->next_comm - 1 ) {
     this_code->returned_comms++;
-    communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
+    communicator* comm_obj;
+    ret = get_communicator(codes.current_key, this_code->returned_comms, &comm_obj);
+    if ( ret != 0 ) {
+      mdi_error("Error in tcp_on_accept_communicator: get_communicator failed");
+      return ret;
+    }
     comm_obj->is_accepted = 1;
     return this_code->returned_comms;
   }
@@ -128,7 +158,12 @@ int tcp_on_accept_communicator() {
     // if MDI hasn't returned some connections, do that now
     if ( size_before < size_after ) {
       this_code->returned_comms++;
-      communicator* comm_obj = get_communicator(codes.current_key, this_code->returned_comms);
+      communicator* comm_obj;
+      ret = get_communicator(codes.current_key, this_code->returned_comms, &comm_obj);
+      if ( ret != 0 ) {
+        mdi_error("Error in tcp_on_accept_communicator: second get_communicator failed");
+        return ret;
+      }
       comm_obj->is_accepted = 1;
       return (MDI_Comm)this_code->returned_comms;
     }
@@ -172,9 +207,15 @@ int tcp_on_recv_command(MDI_Comm comm) {
  *                   Port to listen over
  */
 int tcp_listen(int port_in) {
-  code* this_code = get_current_code();
-
   int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_listen: get_current_code failed");
+    return 1;
+  }
+
   struct sockaddr_in serv_addr;
   int reuse_value = 1;
   sock_t sockfd;
@@ -248,7 +289,12 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
   ret = WSAStartup(MAKEWORD(2,2), &wsa_data);
 #endif
 
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_request_connection: get_current_code failed");
+    return 1;
+  }
 
   struct sockaddr_in driver_address;
   struct hostent* host_ptr;
@@ -289,28 +335,28 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
 #ifdef _WIN32
       int sock_error = WSAGetLastError();
       if ( sock_error == WSAECONNREFUSED ) {
-	// close the socket, so that a new one can be created
-	ret = closesocket(sockfd);
+        // close the socket, so that a new one can be created
+        ret = closesocket(sockfd);
 
-	// wait a short period before attempting to connect again
-	Sleep(1000);
+        // wait a short period before attempting to connect again
+        Sleep(1000);
 #else
       if ( errno == ECONNREFUSED ) {
-	// close the socket, so that a new one can be created
-	ret = close(sockfd);
+        // close the socket, so that a new one can be created
+        ret = close(sockfd);
 
-	// wait a short period before attempting to connect again
-	sleep(1);
+        // wait a short period before attempting to connect again
+        sleep(1);
 #endif
-	if (ret != 0) {
-	  mdi_error("Could not close socket");
-	  return 1;
-	}
+        if (ret != 0) {
+          mdi_error("Could not close socket");
+          return 1;
+        }
 
       }
       else { // only error out for errors other than "connection refused"
-	mdi_error("Could not connect to the driver");
-	return 1;
+        mdi_error("Could not connect to the driver");
+        return 1;
       }
 
     }
@@ -319,8 +365,18 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
     }
   }
 
-  MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
-  communicator* new_comm = get_communicator(this_code->id, comm_id);
+  MDI_Comm comm_id;
+  ret = new_communicator(this_code->id, MDI_TCP, &comm_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_request_connection: new_communicator failed");
+    return 1;
+  }
+  communicator* new_comm;
+  ret = get_communicator(this_code->id, comm_id, &new_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_request_connection: get_communicator failed");
+    return ret;
+  }
   new_comm->sockfd = sockfd;
   new_comm->send = tcp_send;
   new_comm->recv = tcp_recv;
@@ -356,7 +412,14 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
  */
 int tcp_accept_connection() {
   sock_t connection;
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_accept_connection: get_current_code failed");
+    return 1;
+  }
 
   if ( this_code->intra_rank == 0 ) { // Running on rank 0
 
@@ -366,8 +429,18 @@ int tcp_accept_connection() {
       return 1;
     }
 
-    MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
-    communicator* new_comm = get_communicator(this_code->id, comm_id);
+    MDI_Comm comm_id;
+    ret = new_communicator(this_code->id, MDI_TCP, &comm_id);
+    if ( ret != 0 ) {
+      mdi_error("Error in tcp_accept_connection: new_communicator failed");
+      return 1;
+    }
+    communicator* new_comm;
+    ret = get_communicator(this_code->id, comm_id, &new_comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in tcp_accept_connection: get_communicator failed");
+      return ret;
+    }
     new_comm->sockfd = connection;
     new_comm->send = tcp_send;
     new_comm->recv = tcp_recv;
@@ -398,8 +471,18 @@ int tcp_accept_connection() {
   else { // Not running on rank 0
 
     // Simply create a dummy communicator
-    MDI_Comm comm_id = new_communicator(this_code->id, MDI_TCP);
-    communicator* new_comm = get_communicator(this_code->id, comm_id);
+    MDI_Comm comm_id;
+    ret = new_communicator(this_code->id, MDI_TCP, &comm_id);
+    if ( ret != 0 ) {
+      mdi_error("Error in dummy tcp_accept_connection: new_communicator failed");
+      return 1;
+    }
+    communicator* new_comm;
+    ret = get_communicator(this_code->id, comm_id, &new_comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in tcp_accept_connection: second get_communicator failed");
+      return ret;
+    }
     new_comm->sockfd = connection;
     new_comm->send = tcp_send;
     new_comm->recv = tcp_recv;
@@ -431,12 +514,22 @@ int tcp_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, i
   int ret;
 
   // only send from rank 0
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_send: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
 
-  communicator* this = get_communicator(codes.current_key, comm);
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_send: get_communicator failed");
+    return ret;
+  }
   size_t count_t = count;
 #ifdef _WIN32
   int n = 0;
@@ -490,7 +583,12 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
   int ret;
   
   // only recv from rank 0
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_recv: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -500,7 +598,12 @@ int tcp_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg
 #else
   ssize_t n, nr;
 #endif
-  communicator* this = get_communicator(codes.current_key, comm);
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_recv: get_communicator failed");
+    return ret;
+  }
   size_t count_t = count;
 
   // determine the byte size of the data type being sent

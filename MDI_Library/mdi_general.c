@@ -21,6 +21,7 @@
  *
  */
 int general_init_code() {
+  int ret;
 
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! codes.initialized ) {
@@ -29,8 +30,12 @@ int general_init_code() {
 
   // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
   // Note that unless using the LINK communication method, general_init should only be called once
-  codes.current_key = new_code();
-  
+  ret = new_code(&codes.current_key);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_init_code: new_code failed");
+    return ret;
+  }
+
   return 0;
 }
 
@@ -44,8 +49,14 @@ int general_init_code() {
  *                   Options describing the communication method used to connect to codes.
  */
 int general_init(const char* options) {
+  int ret;
 
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_init: get_current_code failed");
+    return 1;
+  }
 
   // Create method objects for each supported method
   if ( enable_tcp_support(codes.current_key) ) {
@@ -68,7 +79,7 @@ int general_init(const char* options) {
   }
 
   char* strtol_ptr;
-  int i, ret;
+  int i;
 
   // values acquired from the input options
   char* role;
@@ -257,7 +268,12 @@ int general_init(const char* options) {
     mdi_error("Error in MDI_Init: Method not recognized");
     return 1;
   }
-  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
+  method* selected_method;
+  ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_init: get_method failed");
+    return ret;
+  }
 
   // ensure that a valid role has been provided
   if ( strcmp(this_code->role, "DRIVER") != 0 &&
@@ -274,10 +290,11 @@ int general_init(const char* options) {
   // ensure that the name of this code is not the same as the name of any of the other codes
   for (i = 0; i < codes.size; i++) {
     if ( i != codes.current_key ) {
-      code* other_code = vector_get(&codes, i);
+      code* other_code;
+      ret = vector_get(&codes, i, (void**)&other_code);
       if (strcmp(this_code->name, other_code->name) == 0) {
-	mdi_error("MDI_Init found multiple codes with the same name");
-	return 1;
+        mdi_error("MDI_Init found multiple codes with the same name");
+        return 1;
       }
     }
   }
@@ -286,11 +303,12 @@ int general_init(const char* options) {
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     for (i = 0; i < codes.size; i++) {
       if ( i != codes.current_key ) {
-	code* other_code = vector_get(&codes, i);
-	if (strcmp(this_code->role, other_code->role) == 0) {
-	  mdi_error("MDI_Init found multiple drivers");
-	  return 1;
-	}
+        code* other_code;
+        ret = vector_get(&codes, i, (void**)&other_code);
+        if (strcmp(this_code->role, other_code->role) == 0) {
+          mdi_error("MDI_Init found multiple drivers");
+          return 1;
+        }
       }
     }
   }
@@ -328,8 +346,20 @@ int general_init(const char* options) {
  *
  */
 int general_accept_communicator() {
-  code* this_code = get_current_code();
-  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_accept_communicator: get_current_code failed");
+    return 1;
+  }
+  method* selected_method;
+  ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_accept_communicator: get_method failed");
+    return ret;
+  }
   return selected_method->on_accept_communicator();
 }
 
@@ -349,10 +379,20 @@ int general_accept_communicator() {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
-  int ret = 0;
+  int ret;
 
-  code* this_code = get_current_code();
-  communicator* this = get_communicator(codes.current_key, comm);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_send: get_current_code failed");
+    return 1;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_send: get_communicator failed");
+    return ret;
+  }
 
   // send message header information
   // only do this if communicating with MDI version 1.1 or higher
@@ -405,8 +445,18 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   int send_datatype = datatype;
   size_t send_datasize;
 
-  code* this_code = get_current_code();
-  communicator* this = get_communicator(codes.current_key, comm);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv: get_current_code failed");
+    return 1;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv: get_communicator failed");
+    return ret;
+  }
 
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
@@ -504,9 +554,26 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int general_send_command(const char* buf, MDI_Comm comm) {
-  code* this_code = get_current_code();
-  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
-  communicator* this = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_send_command: get_current_code failed");
+    return 1;
+  }
+  method* selected_method;
+  ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_send_command: get_method failed");
+    return ret;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_send_command: get_communicator failed");
+    return ret;
+  }
 
   // For the count, use the smaller of MDI_COMMAND_LENGTH between the two codes
   int count = MDI_COMMAND_LENGTH_;
@@ -514,8 +581,6 @@ int general_send_command(const char* buf, MDI_Comm comm) {
     count = this->command_length;
   }
 
-  //const char* command = buf;
-  int ret = 0;
   int skip_flag = 0;
 
   // Copy the command
@@ -569,11 +634,22 @@ int general_send_command(const char* buf, MDI_Comm comm) {
 int general_builtin_command(const char* buf, MDI_Comm comm, int* flag) {
   int ret = 0;
   *flag = 0;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_builtin_command: get_current_code failed");
+    return 1;
+  }
 
   // check if this command corresponds to one of MDI's standard built-in commands
   if ( strcmp( buf, "<NAME" ) == 0 ) {
-    communicator* this_comm = get_communicator(codes.current_key, comm);
+    communicator* this_comm;
+    ret = get_communicator(codes.current_key, comm, &this_comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in general_builtin_command: get_communicator failed");
+      return ret;
+    }
 
     // For the count, use the smaller of MDI_NAME_LENGTH between the two codes
     int count = MDI_NAME_LENGTH_;
@@ -638,9 +714,25 @@ int general_builtin_command(const char* buf, MDI_Comm comm, int* flag) {
  */
 int general_recv_command(char* buf, MDI_Comm comm) {
   int ret;
-  code* this_code = get_current_code();
-  communicator* this = get_communicator(codes.current_key, comm);
-  method* selected_method = get_method(codes.current_key, this_code->selected_method_id);
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv_command: get_current_code failed");
+    return 1;
+  }
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv_command: get_communicator failed");
+    return ret;
+  }
+  method* selected_method;
+  ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv_command: get_method failed");
+    return ret;
+  }
 
   ret = selected_method->on_recv_command(comm);
   if ( ret != 0 ) {
@@ -697,8 +789,15 @@ int general_recv_command(char* buf, MDI_Comm comm) {
  */
 int register_node(vector* node_vec, const char* node_name)
 {
+  int ret;
+
   // only register on rank 0
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_node: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -710,7 +809,12 @@ int register_node(vector* node_vec, const char* node_name)
   }
 
   // confirm that this node is not already registered
-  int node_index = get_node_index(node_vec, node_name);
+  int node_index;
+  ret = get_node_index(node_vec, node_name, &node_index);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_node: get_node_index failed"); 
+    return 1;
+  }
   if ( node_index != -1 ) {
     mdi_error("This node is already registered"); 
     return 1;
@@ -746,8 +850,15 @@ int register_node(vector* node_vec, const char* node_name)
  */
 int register_command(vector* node_vec, const char* node_name, const char* command_name)
 {
+  int ret;
+
   // only register on rank 0
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_command: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -765,15 +876,26 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   }
 
   // find the node
-  int node_index = get_node_index(node_vec, node_name);
+  int node_index;
+  ret = get_node_index(node_vec, node_name, &node_index);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_command: get_node_index failed"); 
+    return 1;
+  }
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a command on an unregistered node");
     return 1;
   }
-  node* target_node = vector_get(node_vec, node_index);
+  node* target_node;
+  ret = vector_get(node_vec, node_index, (void**)&target_node);
 
   // confirm that this command is not already registered
-  int command_index = get_command_index(target_node, command_name);
+  int command_index;
+  ret = get_command_index(target_node, command_name, &command_index);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_command: get_command_index failed"); 
+    return 1;
+  }
   if ( command_index != -1 ) {
     mdi_error("This command is already registered for this node");
     return 1;
@@ -805,8 +927,15 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
  */
 int register_callback(vector* node_vec, const char* node_name, const char* callback_name)
 {
+  int ret;
+
   // only register on rank 0
-  code* this_code = get_current_code();
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_callback: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     return 0;
   }
@@ -824,15 +953,26 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   }
 
   // find the node
-  int node_index = get_node_index(node_vec, node_name);
+  int node_index;
+  ret = get_node_index(node_vec, node_name, &node_index);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_callback: get_node_index failed"); 
+    return 1;
+  }
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a callback on an unregistered node");
     return 1;
   }
-  node* target_node = vector_get(node_vec, node_index);
+  node* target_node;
+  ret = vector_get(node_vec, node_index, (void**)&target_node);
 
   // confirm that this callback is not already registered
-  int callback_index = get_callback_index(target_node, callback_name);
+  int callback_index;
+  ret = get_callback_index(target_node, callback_name, &callback_index);
+  if ( ret != 0 ) {
+    mdi_error("Error in register_callback: get_callback_index failed"); 
+    return 1;
+  }
   if ( callback_index != -1 ) {
     mdi_error("This callback is already registered for this node");
     return 1;
@@ -860,8 +1000,20 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_command_list(MDI_Comm comm) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_command_list: get_current_code failed");
+    return 1;
+  }
+  communicator* this_comm;
+  ret = get_communicator(codes.current_key, comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_command_list: get_communicator failed");
+    return ret;
+  }
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
@@ -881,7 +1033,8 @@ int send_command_list(MDI_Comm comm) {
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     ncommands += (int)this_node->commands->size;
   }
 
@@ -893,7 +1046,8 @@ int send_command_list(MDI_Comm comm) {
   int islot = 0;
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     snprintf(&commands[ islot * stride ], clength, "%s", this_node->name);
     int ichar;
@@ -910,7 +1064,8 @@ int send_command_list(MDI_Comm comm) {
 
     // add the commands for this node
     for (icommand = 0; icommand < this_node->commands->size; icommand++) {
-      char* command = vector_get(this_node->commands, icommand);
+      char* command;
+      ret = vector_get(this_node->commands, icommand, (void**)&command);
       length = (int)strlen(command);
       snprintf(&commands[ islot * stride ], clength, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
@@ -926,7 +1081,7 @@ int send_command_list(MDI_Comm comm) {
     }
   }
 
-  int ret = general_send( commands, count, MDI_CHAR, comm );
+  ret = general_send( commands, count, MDI_CHAR, comm );
   free( commands );
   return ret;
 }
@@ -941,8 +1096,20 @@ int send_command_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_callback_list(MDI_Comm comm) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_callback_list: get_current_code failed");
+    return ret;
+  }
+  communicator* this_comm;
+  ret = get_communicator(codes.current_key, comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_callback_list: get_communicator failed");
+    return ret;
+  }
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
@@ -962,7 +1129,8 @@ int send_callback_list(MDI_Comm comm) {
 
   // determine the number of callbakcs
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     ncallbacks += (int)this_node->callbacks->size;
   }
 
@@ -978,7 +1146,8 @@ int send_callback_list(MDI_Comm comm) {
   int islot = 0;
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     snprintf(&callbacks[ islot * stride ], clength, "%s", this_node->name);
     int ichar;
@@ -995,7 +1164,8 @@ int send_callback_list(MDI_Comm comm) {
 
     // add the callbacks for this node
     for (icallback = 0; icallback < this_node->callbacks->size; icallback++) {
-      char* callback = vector_get(this_node->callbacks, icallback);
+      char* callback;
+      ret = vector_get(this_node->callbacks, icallback, (void**)&callback);
       length = (int)strlen(callback);
       snprintf(&callbacks[ islot * stride ], clength, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
@@ -1011,7 +1181,7 @@ int send_callback_list(MDI_Comm comm) {
     }
   }
 
-  int ret = general_send( callbacks, count, MDI_CHAR, comm );
+  ret = general_send( callbacks, count, MDI_CHAR, comm );
   free( callbacks );
   return ret;
 }
@@ -1026,8 +1196,20 @@ int send_callback_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_node_list(MDI_Comm comm) {
-  code* this_code = get_current_code();
-  communicator* this_comm = get_communicator(codes.current_key, comm);
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_node_list: get_current_code failed");
+    return 1;
+  }
+  communicator* this_comm;
+  ret = get_communicator(codes.current_key, comm, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_node_list: get_communicator failed");
+    return ret;
+  }
 
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send node information from the incorrect rank");
@@ -1051,7 +1233,8 @@ int send_node_list(MDI_Comm comm) {
   // form the list of nodes
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     if ( strlen(this_node->name) >= MDI_COMMAND_LENGTH_ ) {
       mdi_error("Error in send_node_list: Node name is larger than MDI_COMMAND_LENGTH");
@@ -1065,7 +1248,7 @@ int send_node_list(MDI_Comm comm) {
     node_list[ inode * stride + stride - 1 ] = ',';
   }
 
-  int ret = general_send( node_list, count, MDI_CHAR, comm );
+  ret = general_send( node_list, count, MDI_CHAR, comm );
   free( node_list );
   return ret;
 }
@@ -1080,7 +1263,14 @@ int send_node_list(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_ncommands(MDI_Comm comm) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_ncommands: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
     return 1;
@@ -1091,11 +1281,12 @@ int send_ncommands(MDI_Comm comm) {
 
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     ncommands += (int)this_node->commands->size;
   }
 
-  int ret = general_send( &ncommands, 1, MDI_INT, comm );
+  ret = general_send( &ncommands, 1, MDI_INT, comm );
   return ret;
 }
 
@@ -1109,7 +1300,14 @@ int send_ncommands(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_ncallbacks(MDI_Comm comm) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_ncallbacks: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
     return 1;
@@ -1120,11 +1318,12 @@ int send_ncallbacks(MDI_Comm comm) {
 
   // determine the number of callbacks
   for (inode = 0; inode < nnodes; inode++) {
-    node* this_node = vector_get(this_code->nodes, inode);
+    node* this_node;
+    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     ncallbacks += (int)this_node->callbacks->size;
   }
 
-  int ret = general_send( &ncallbacks, 1, MDI_INT, comm );
+  ret = general_send( &ncallbacks, 1, MDI_INT, comm );
   return ret;
 }
 
@@ -1138,13 +1337,20 @@ int send_ncallbacks(MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int send_nnodes(MDI_Comm comm) {
-  code* this_code = get_current_code();
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in send_nnodes: get_current_code failed");
+    return 1;
+  }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
     return 1;
   }
   int nnodes = (int)this_code->nodes->size;
-  int ret = general_send( &nnodes, 1, MDI_INT, comm );
+  ret = general_send( &nnodes, 1, MDI_INT, comm );
   return ret;
 }
 
@@ -1158,7 +1364,14 @@ int send_nnodes(MDI_Comm comm) {
  *                   MDI communicator associated with the connection to the sending code.
  */
 int get_node_info(MDI_Comm comm) {
-  communicator* this = get_communicator(codes.current_key, comm);
+  int ret;
+
+  communicator* this;
+  ret = get_communicator(codes.current_key, comm, &this);
+  if ( ret != 0 ) {
+    mdi_error("Error in get_node_info: get_communicator failed");
+    return ret;
+  }
 
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
@@ -1363,15 +1576,28 @@ int get_node_info(MDI_Comm comm) {
  *                   MDI communicator of the engine.  If comm is set to 
  *                   MDI_COMM_NULL, the function will return the node vector for the calling engine.
  */
-vector* get_node_vector(MDI_Comm comm) {
+int get_node_vector(MDI_Comm comm, vector** vector_ptr) {
+  int ret;
+
   // get the vector of nodes associated with the communicator
   vector* node_vec;
-  code* this_code = get_current_code();
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in get_node_vector: get_current_code failed");
+    return ret;
+  }
   if ( comm == MDI_COMM_NULL ) {
     node_vec = this_code->nodes;
   }
   else {
-    communicator* this = get_communicator(codes.current_key, comm);
+    communicator* this;
+    ret = get_communicator(codes.current_key, comm, &this);
+    if ( ret != 0 ) {
+      mdi_error("Error in get_node_vector: get_communicator failed");
+      return ret;
+    }
     if ( this->method_id == MDI_LINK ) {
       library_data* libd = (library_data*) this->method_data;
       node_vec = (vector*)libd->shared_state->engine_nodes;
@@ -1384,5 +1610,6 @@ vector* get_node_vector(MDI_Comm comm) {
       node_vec = this->nodes;
     }
   }
-  return node_vec;
+  *vector_ptr = node_vec;
+  return 0;
 }

@@ -86,7 +86,7 @@ def test_test_method():
     expected_err = """Cannot register node name with length greater than MDI_COMMAND_LENGTH
 Node name is greater than MDI_COMMAND_LENGTH
 Vector accessed out-of-bounds
-MDI_Get_Node unable to find node
+Error in MDI_Get_node: vector_get failed
 Node name is greater than MDI_COMMAND_LENGTH
 Cannot chcek command name with length greater than MDI_COMMAND_LENGTH
 Could not find the node
