@@ -79,7 +79,7 @@ int tcp_on_selection() {
     mdi_error("MDI_Init called after TCP was already initialized");
     return 1;
   }
-  this_code->tcp_initialized == 1;
+  this_code->tcp_initialized = 1;
 
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     if ( this_code->port == -1 ) {

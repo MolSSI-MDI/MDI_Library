@@ -95,7 +95,7 @@ int mpi_on_selection() {
     mdi_error("MDI_Init called after MPI was already initialized");
     return 1;
   }
-  this_code->mpi_initialized == 1;
+  this_code->mpi_initialized = 1;
 
   // ensure MPI has been initialized
   int mpi_init_flag = 0;
