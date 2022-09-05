@@ -256,3 +256,21 @@
    fun:PMPI_Bcast
    ...
 }
+
+
+{
+   Python conditional jump error
+   Memcheck:Cond
+   ...
+   fun:P_get
+   fun:Simple_get_value
+   fun:getset_get
+   fun:_PyObject_GenericGetAttrWithDict
+   fun:PyObject_GenericGetAttr
+   fun:PyObject_GetAttr
+   fun:_PyEval_EvalFrameDefault
+   fun:_PyEval_EvalFrame
+   fun:_PyEval_EvalCode
+   fun:_PyFunction_Vectorcall
+   ...
+}

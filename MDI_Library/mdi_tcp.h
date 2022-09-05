@@ -9,14 +9,6 @@
 #include "mdi.h"
 #include "mdi_global.h"
 
-extern sock_t tcp_socket;
-
-/*! \brief Hostname of the driver */
-extern char* hostname;
-
-/*! \brief Port over which the driver will listen */
-extern int port;
-
 void sigint_handler(int dummy);
 
 int enable_tcp_support(int code_id);

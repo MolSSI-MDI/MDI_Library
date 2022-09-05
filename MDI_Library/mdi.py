@@ -496,29 +496,18 @@ def set_mpi4py_split_callback():
     mdi.MDI_Set_Mpi4py_Split_Callback( mpi4py_split_callback_c )
 
 
-# MDI_Get_plugin_mode
-mdi.MDI_Get_plugin_mode.argtypes = [ctypes.POINTER(ctypes.c_int)]
-mdi.MDI_Get_plugin_mode.restype = ctypes.c_int
-def MDI_Get_plugin_mode():
-    plugin_mode = ctypes.c_int()
-    ret = mdi.MDI_Get_plugin_mode(ctypes.byref(plugin_mode))
-    if ret != 0:
-        raise Exception("MDI Error: MDI_Get_plugin_mode failed")
-    return plugin_mode.value
-
-
-# MDI_Get_plugin_mode
-mdi.MDI_Get_python_plugin_mpi_world_ptr.argtypes = [ctypes.POINTER(ctypes.c_void_p)]
+# MDI_Get_python_plugin_mpi_world_ptr
+mdi.MDI_Get_python_plugin_mpi_world_ptr.argtypes = [ctypes.POINTER(ctypes.c_void_p), ctypes.c_void_p]
 mdi.MDI_Get_python_plugin_mpi_world_ptr.restype = ctypes.c_int
-def MDI_Get_python_plugin_mpi_world_ptr():
+def MDI_Get_python_plugin_mpi_world_ptr( plugin_state ):
     python_plugin_mpi_world_ptr = ctypes.c_void_p()
-    ret = mdi.MDI_Get_python_plugin_mpi_world_ptr(ctypes.byref(python_plugin_mpi_world_ptr))
+    ret = mdi.MDI_Get_python_plugin_mpi_world_ptr(ctypes.byref(python_plugin_mpi_world_ptr), plugin_state)
     if ret != 0:
         raise Exception("MDI Error: MDI_Get_python_plugin_mpi_world_ptr failed")
     return python_plugin_mpi_world_ptr.value
 
 
-def MDI_MPI_initialization():
+def MDI_MPI_initialization(plugin_state = None):
     global world_comm
     global intra_code_comm
     global use_mpi4py
@@ -540,10 +529,9 @@ def MDI_MPI_initialization():
         comm = MPI.COMM_WORLD
 
     # if this is a plugin code, get the plugin's MPI communicator
-    plugin_mode = MDI_Get_plugin_mode()
-    if ( plugin_mode == 1  and use_mpi4py ):
+    if ( plugin_state is not None and use_mpi4py ):
         # Get a pointer to the C MPI communicator
-        python_plugin_mpi_world_ptr = MDI_Get_python_plugin_mpi_world_ptr()
+        python_plugin_mpi_world_ptr = MDI_Get_python_plugin_mpi_world_ptr(plugin_state)
 
         # Convert the C MPI communicator to an MPI4Py communicator
         c_mpi_communicator = ctypes.cast(python_plugin_mpi_world_ptr, ctypes.POINTER(ctypes.c_void_p)).contents.value
@@ -580,6 +568,8 @@ def MDI_MPI_initialization():
 
 
 # MDI_Init
+mdi.MDI_Init_code.argtypes = []
+mdi.MDI_Init_code.restype = ctypes.c_int
 mdi.MDI_Init_with_options.argtypes = [ctypes.POINTER(ctypes.c_char)]
 mdi.MDI_Init_with_options.restype = ctypes.c_int
 def MDI_Init(arg1, arg2 = None):
@@ -605,11 +595,16 @@ def MDI_Init(arg1, arg2 = None):
             if not found_numpy:
                 raise Exception("MDI Error: When using the MPI communication method, numpy must be available")
 
+    # Initialize the MDI codes vector
+    ret = mdi.MDI_Init_code()
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Init during call to MDI_Init_code failed")
+
     MDI_MPI_initialization()
 
     # call MDI_Init
     command = arg1.encode('utf-8')
-    ret = mdi.MDI_Init_with_options(ctypes.c_char_p(command) )
+    ret = mdi.MDI_Init_with_options( ctypes.c_char_p(command) )
     if ret != 0:
         raise Exception("MDI Error: MDI_Init failed")
 
@@ -1179,12 +1174,18 @@ def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driv
 
 
 # MDI_Set_plugin_state
-mdi.MDI_Set_plugin_state.argtypes = [ctypes.c_void_p]
-mdi.MDI_Set_plugin_state.restye = ctypes.c_int
+mdi.MDI_Set_plugin_state_internal.argtypes = [ctypes.c_void_p]
+mdi.MDI_Set_plugin_state_internal.restye = ctypes.c_int
 def MDI_Set_plugin_state(plugin_state):
-    ret = mdi.MDI_Set_plugin_state( plugin_state )
 
-    MDI_MPI_initialization()
+    # Initialize a new MDI code
+    ret = mdi.MDI_Init_code()
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Set_plugin_state failed during call to MDI_Init_code")
+
+    MDI_MPI_initialization( plugin_state=plugin_state )
+
+    ret = mdi.MDI_Set_plugin_state_internal( plugin_state )
 
     if ret != 0:
         raise Exception("MDI Error: MDI_Set_plugin_state failed")

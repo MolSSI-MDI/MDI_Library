@@ -18,72 +18,12 @@
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
  * Typically, this will only include a single code, unless the communication method is LIBRARY */
-vector codes;
+vector codes = { .initialized = 0 };
 
-/*! \brief Vector containing all supported methods */
-vector methods;
-
-/*! \brief ID of the method being used for inter-code communication */
-int selected_method_id = 0;
-
-/*! \brief Index of the active code */
-int current_code = 0;
-
-/*! \brief Flag for whether MDI is running in i-PI compatibility mode */
-int ipi_compatibility = 0;
-
-/*! \brief Flag for whether MDI has been previously initialized */
-int is_initialized = 0;
-
-/*! \brief Flag for whether MDI called MPI_Init */
-int initialized_mpi = 0;
-
-/*! \brief Flag for whether MDI is currently operating in plugin mode */
-int plugin_mode = 0;
-
-/*! \brief Internal copy of MPI_COMM_WORLD, used when MDI initializes MPI */
-MPI_Comm mdi_mpi_comm_world;
-
-/*! \brief Unedited command-line options for currently running plugin */
-char* plugin_unedited_options = NULL;
-
-/*! \brief Argument count for plugin command-line options */
-int plugin_argc = 0;
-
-/*! \brief Argument vector for plugin command-line options */
-char** plugin_argv = NULL;
-
-/*! \brief Python callback pointer for MPI_Recv */
-int (*mpi4py_recv_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for MPI_Send */
-int (*mpi4py_send_callback)(void*, int, int, int, MDI_Comm_Type);
-
-/*! \brief Python callback pointer for initial MPI allgather */
-int (*mpi4py_allgather_callback)(void*, void*);
-
-/*! \brief Python callback pointer for gathering names */
-int (*mpi4py_gather_names_callback)(void*, void*, int*, int*);
-
-/*! \brief Python callback pointer for MPI_Comm_split */
-int (*mpi4py_split_callback)(int, int, MDI_Comm_Type, int);
-
-/*! \brief Python callback pointer for MPI_Comm_rank */
-int (*mpi4py_rank_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_size */
-int (*mpi4py_size_callback)(int);
-
-/*! \brief Python callback pointer for MPI_Comm_barrier */
-int (*mpi4py_barrier_callback)(int);
-
-/*! \brief Size of MPI_COMM_WORLD */
-int world_size = -1;
-
-/*! \brief Rank of this process within MPI_COMM_WORLD */
-int world_rank = -1;
 
 /*! \brief Initialize memory allocation for a vector structure
+ *
+ * The function returns \p 0 on a success.
  *
  * \param [in]       v
  *                   Pointer to the vector structure for which the memory will be allocated
@@ -94,18 +34,22 @@ int vector_init(vector* v, size_t stride) {
   //initialize the vector with the given stride
   v->data = malloc(0);
   if (!v->data) {
-    perror("Could not initialize vector");
-    exit(-1);
+    mdi_error("Could not initialize vector");
+    return 1;
   }
 
   v->size = 0;
   v->capacity = 0;
   v->stride = stride;
+  v->current_key = -1;
+  v->initialized = 1;
 
   return 0;
 }
 
 /*! \brief Append a new element to the end of the vector
+ *
+ * The function returns \p 0 on a success.
  *
  * \param [in]       v
  *                   Pointer to the vector to which the element will be appended
@@ -138,6 +82,8 @@ int vector_push_back(vector* v, void* element) {
 
 /*! \brief Remove an element from a vector
  *
+ * The function returns \p 0 on a success.
+ *
  * \param [in]       v
  *                   Pointer to the vector from which the element will be removed
  * \param [in]       index
@@ -166,6 +112,8 @@ int vector_delete(vector* v, int index) {
 
 /*! \brief Free all data associated with a vector
  *
+ * The function returns \p 0 on a success.
+ *
  * \param [in]       v
  *                   Pointer to the vector that will be freed
  */
@@ -177,17 +125,20 @@ int vector_free(vector* v) {
 
 /*! \brief Return a pointer to an element of a vector
  *
+ * The function returns \p 0 on a success.
+ *
  * \param [in]       v
  *                   Pointer to the vector
  * \param [in]       index
  *                   Index of the element within the vector
  */
-void* vector_get(vector* v, int index) {
+int vector_get(vector* v, int index, void** element) {
   if (index < 0 || index >= v->size) {
     mdi_error("Vector accessed out-of-bounds");
-    return NULL;
+    return 1;
   }
-  return ( void* )( v->data + (index * v->stride) );
+  *element = ( void* )( v->data + (index * v->stride) );
+  return 0;
 }
 
 /*! \brief Determine the index of a node within a vector of nodes
@@ -197,16 +148,23 @@ void* vector_get(vector* v, int index) {
  * \param [in]       node_name
  *                   Name of the node
  */
-int get_node_index(vector* v, const char* node_name) {
+int get_node_index(vector* v, const char* node_name, int* node_index) {
+  int ret;
   int inode;
-  int node_index = -1;
+  int correct_node = -1;
   for ( inode = 0; inode < v->size; inode++ ) {
-    node* this_node = vector_get(v, inode);
+    node* this_node;
+    ret = vector_get(v, inode, (void**)&this_node);
+    if ( ret != 0 ) {
+      mdi_error("Error in get_node_index: vector_get failed");
+      return 1;
+    }
     if ( strcmp( node_name, this_node->name ) == 0 ) {
-      node_index = inode;
+      correct_node = inode;
     }
   }
-  return node_index;
+  *node_index = correct_node;
+  return 0;
 }
 
 /*! \brief Determine the index of a command within a node
@@ -216,15 +174,24 @@ int get_node_index(vector* v, const char* node_name) {
  * \param [in]       command_name
  *                   Name of the command
  */
-int get_command_index(node* n, const char* command_name) {
+int get_command_index(node* n, const char* command_name, int* command_index) {
+  int ret;
   int icommand;
-  int command_index = -1;
+  int correct_command = -1;
+  char* this_command;
+
   for ( icommand = 0; icommand < n->commands->size; icommand++ ) {
-    if ( strcmp( command_name, vector_get( n->commands, icommand ) ) == 0 ) {
-      command_index = icommand;
+    ret = vector_get( n->commands, icommand, (void**)&this_command );
+    if ( ret != 0 ) {
+      mdi_error("Error in get_node_index: vector_get failed");
+      return 1;
+    }
+    if ( strcmp( command_name, this_command ) == 0 ) {
+      correct_command = icommand;
     }
   }
-  return command_index;
+  *command_index = correct_command;
+  return 0;
 }
 
 /*! \brief Determine the index of a callback within a node
@@ -234,25 +201,41 @@ int get_command_index(node* n, const char* command_name) {
  * \param [in]       callback_name
  *                   Name of the callback
  */
-int get_callback_index(node* n, const char* callback_name) {
+int get_callback_index(node* n, const char* callback_name, int* callback_index) {
+  int ret;
   int icallback;
-  int callback_index = -1;
+  int correct_callback = -1;
+  char* this_callback;
+
   for ( icallback = 0; icallback < n->callbacks->size; icallback++ ) {
-    if ( strcmp( callback_name, vector_get( n->callbacks, icallback ) ) == 0 ) {
-      callback_index = icallback;
+    ret = vector_get( n->callbacks, icallback, (void**)&this_callback );
+    if ( ret != 0 ) {
+      mdi_error("Error in get_node_index: vector_get failed");
+      return 1;
+    }
+    if ( strcmp( callback_name, this_callback ) == 0 ) {
+      correct_callback = icallback;
     }
   }
-  return callback_index;
+  *callback_index = correct_callback;
+  return 0;
 }
 
 
 /*! \brief Determine the index of a callback within a node
  */
 int free_node_vector(vector* v) {
+  int ret;
   int inode = 0;
   size_t nnodes = v->size;
+
   for ( inode = 0; inode < nnodes; inode++ ) {
-    node* this_node = vector_get(v, inode);
+    node* this_node;
+    ret = vector_get(v, inode, (void**)&this_node );
+    if ( ret != 0 ) {
+      mdi_error("Error in free_node_vector: vector_get failed");
+      return ret;
+    }
 
     // free the "commands" and "callbacks" vectors for this node
     vector_free(this_node->commands);
@@ -269,13 +252,27 @@ int free_node_vector(vector* v) {
 /*! \brief Create a new code structure and add it to the list of codes
  * Returns the index of the new code
  */
-int new_code() {
+int new_code(size_t* code_id) {
+  int ret;
+
   code new_code;
   new_code.returned_comms = 0;
   new_code.next_comm = 1;
   new_code.intra_MPI_comm = MPI_COMM_WORLD;
   new_code.language = MDI_LANGUAGE_C;
   new_code.language_on_destroy = NULL;
+  new_code.selected_method_id = 0;
+  new_code.initialized_mpi = 0;
+  new_code.ipi_compatibility = 0;
+  new_code.plugin_argc = -1;
+  new_code.plugin_argv = NULL;
+  new_code.tcp_initialized = 0;
+  new_code.mpi_initialized = 0;
+  new_code.test_initialized = 0;
+  new_code.shared_state_from_driver = NULL;
+  new_code.tcp_socket = -1;
+  new_code.port = -1;
+  new_code.hostname = NULL;
 
   // initialize the name and role strings
   int ichar;
@@ -294,78 +291,103 @@ int new_code() {
   new_code.id = (int)codes.size;
   new_code.called_set_execute_command_func = 0;
   new_code.intra_rank = 0;
-  if (world_rank != -1) {
-    // The Python wrapper has called MDI_Set_World_Rank to set this value
-    new_code.intra_rank = world_rank;
-  }
+  new_code.world_rank = -1;
+  new_code.world_size = -1;
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
-  vector_init(node_vec, sizeof(node));
+  ret = vector_init(node_vec, sizeof(node));
+  if ( ret != 0 ) {
+    mdi_error("Error in new_code: could not initialize node vector");
+    return ret;
+  }
   new_code.nodes = node_vec;
 
   // initialize the comms vector
   vector* comms_vec = malloc(sizeof(vector));
   vector_init(comms_vec, sizeof(communicator));
+  if ( ret != 0 ) {
+    mdi_error("Error in new_code: could not initialize comms vector");
+    return ret;
+  }
   new_code.comms = comms_vec;
 
   // initialize the methods vector
   vector* methods_vec = malloc(sizeof(vector));
   vector_init(methods_vec, sizeof(method));
+  if ( ret != 0 ) {
+    mdi_error("Error in new_code: could not initialize methods vector");
+    return ret;
+  }
   new_code.methods = methods_vec;
 
-  // Set the MPI callbacks
-  //new_code.mdi_mpi_recv = MPI_Recv;
-  //int (*mpi4py_recv_callback)(void*, int, int, MDI_Comm_Type);
-
   // add the new code to the global vector of codes
-  vector_push_back( &codes, &new_code );
-
-  // Create method objects for each supported method
-  /*
-  if ( enable_tcp_support( new_code.id ) ) {
-    mdi_error("Unable to enable TCP support");
+  ret = vector_push_back( &codes, &new_code );
+  if ( ret != 0 ) {
+    mdi_error("Error in new_code: could not add code to global codes vector");
+    return ret;
   }
-  if ( enable_mpi_support( new_code.id ) ) {
-    mdi_error("Unable to enable MPI support");
-  }
-#if _MDI_PLUGIN_SUPPORT == 1
-  if ( enable_plug_support( new_code.id ) ) {
-    mdi_error("Unable to enable plugin support");
-  }
-#endif
-  if ( enable_test_support( new_code.id ) ) {
-    mdi_error("Unable to enable TEST support");
-  }
-  */
 
   // return the index of the new code
-  return (int)codes.size - 1;
+  *code_id = codes.size - 1;
+  
+  return 0;
 }
 
 
 /*! \brief Get a code from a code handle
  * Returns a pointer to the code
  */
-code* get_code(int code_id) {
+int get_code(size_t code_id, code** ret_code) {
+  int ret;
+
   // Search through all of the codes for the one that matches code_id
   int icode;
   for (icode = 0; icode < codes.size; icode++ ) {
-    code* this_code = vector_get(&codes, icode);
-    if ( this_code->id == code_id ) {
-      return this_code;
+
+    code* this_code;
+
+    ret = vector_get( &codes, icode, (void**)&this_code );
+    if ( ret != 0 ) {
+      mdi_error("Error in get_code: vector_get failed");
+      return ret;
     }
+    if ( this_code->id == code_id ) {
+      *ret_code = this_code;
+      return 0;
+    }
+
   }
   mdi_error("Code not found");
-  return NULL;
+  return 1;
+}
+
+
+/*! \brief Get the currently active code
+ * Returns a pointer to the code
+ */
+int get_current_code(code** this_code_ptr) {
+  int ret;
+  ret = get_code(codes.current_key, this_code_ptr);
+  if ( ret != 0 ) {
+    mdi_error("Error in get_current_code: get_code failed");
+    return ret;
+  }
+  return 0;
 }
 
 
 /*! \brief Delete a code
  * Returns 0 on success
  */
-int delete_code(int code_id) {
-  code* this_code = get_code(code_id);
+int delete_code(size_t code_id) {
+  int ret;
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
 
   // Call the langauge-specific destructor
   if ( this_code->language_on_destroy != NULL ) {
@@ -380,8 +402,14 @@ int delete_code(int code_id) {
   int code_index;
   int code_found = 0;
   for (icode = 0; icode < codes.size; icode++ ) {
-    code* code = vector_get(&codes, icode);
-    if ( code->id == code_id ) {
+    code* check_code;
+      
+    ret = vector_get( &codes, icode, (void**)&check_code );
+    if ( ret != 0 ) {
+      mdi_error("Error in delete_code: vector_get failed");
+      return ret;
+    }
+    if ( check_code->id == code_id ) {
       code_found = 1;
       code_index = icode;
 
@@ -407,7 +435,12 @@ int delete_code(int code_id) {
   int icomm;
   size_t ncomms = this_code->comms->size;
   for (icomm = 0; icomm < ncomms; icomm++) {
-    communicator* this_comm = vector_get( this_code->comms, (int)this_code->comms->size - 1 );
+    communicator* this_comm;
+    ret = vector_get( this_code->comms, (int)this_code->comms->size - 1, (void**)&this_comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in delete_code: vector_get for comms vector failed");
+      return ret;
+    }
     delete_communicator(code_id, this_comm->id);
   }
   vector_free( this_code->comms );
@@ -422,56 +455,99 @@ int delete_code(int code_id) {
 /*! \brief Create a new method structure and add it to the vector of methods
  * Returns the handle of the new method
  */
-int new_method(int code_id, int method_id) {
-  code* this_code = get_code(code_id);
+int new_method(size_t code_id, int method_id, int* id_ptr) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
+
   method new_method;
-  new_method.id = (int)methods.size;
+  new_method.id = (int)this_code->methods->size;
   new_method.method_id = method_id;
 
   vector_push_back( this_code->methods, &new_method );
 
-  return new_method.id;
+  *id_ptr = new_method.id;
+  return 0;
 }
 
 
 /*! \brief Get a method from a method handle
  * Returns a pointer to the method
  */
-method* get_method(int code_id, int method_id) {
-  code* this_code = get_code(code_id);
+int get_method(size_t code_id, int method_id, method** method_ptr) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
 
   // Search through all of the codes for the one that matches code_id
   int imethod;
   for (imethod = 0; imethod < this_code->methods->size; imethod++ ) {
-    method* this_method = vector_get(this_code->methods, imethod);
+    method* this_method;
+    ret = vector_get( this_code->methods, imethod, (void**)&this_method );
+    if ( ret != 0 ) {
+      mdi_error("Error in get_method: vector_get failed");
+      return ret;
+    }
     if ( this_method->method_id == method_id ) {
-      return this_method;
+      *method_ptr = this_method;
+      return 0;
     }
   }
   mdi_error("Method not supported for this build of the MDI Library");
-  return NULL;
+  return 1;
 }
 
 
 /*! \brief Delete a method
  * Returns 0 on success
  */
-int delete_method(int code_id, int method_id) {
-  code* this_code = get_code(code_id);
-  method* this_method = get_method(code_id, method_id);
+int delete_method(size_t code_id, int method_id) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
+
+  method* this_method;
+  ret = get_method(code_id, method_id, &this_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in enable_plug_support: delete_method failed");
+    return ret;
+  }
 
   // Search through all of the methods for the one that matches method
   int imethod;
   int method_index;
   int method_found = 0;
-  for (imethod = 0; imethod < methods.size; imethod++ ) {
-    method* method = vector_get(&methods, imethod);
-    if ( method->method_id == method_id ) {
+  for (imethod = 0; imethod < this_code->methods->size; imethod++ ) {
+    method* check_method;
+    ret = vector_get(this_code->methods, imethod, (void**)&check_method );
+    if ( ret != 0 ) {
+      mdi_error("Error in delete_method: vector_get failed");
+      return ret;
+    }
+    if ( check_method->method_id == method_id ) {
       method_found = 1;
       method_index = imethod;
 
       // stop searching
-      imethod = (int)methods.size;
+      imethod = (int)this_code->methods->size;
     }
   }
   if ( method_found != 1 ) {
@@ -480,7 +556,7 @@ int delete_method(int code_id, int method_id) {
   }
 
   // delete the data for this method from the global vector of methods
-  vector_delete(&methods, method_index);
+  vector_delete(this_code->methods, method_index);
 
   return 0;
 }
@@ -513,8 +589,16 @@ int free_methods_vector(vector* v) {
 /*! \brief Create a new communicator structure and add it to the list of communicators
  * Returns the handle of the new communicator
  */
-int new_communicator(int code_id, int method) {
-  code* this_code = get_code(code_id);
+int new_communicator(size_t code_id, int method, MDI_Comm_Type* comm_id_ptr) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
 
   communicator new_comm;
   new_comm.method_id = method;
@@ -538,42 +622,77 @@ int new_communicator(int code_id, int method) {
 
   vector_push_back( this_code->comms, &new_comm );
 
-  return new_comm.id;
+  *comm_id_ptr = new_comm.id;
+  return 0;
 }
 
 
 /*! \brief Get a communicator from a communicator handle
  * Returns a pointer to the communicator
  */
-communicator* get_communicator(int code_id, MDI_Comm_Type comm_id) {
-  code* this_code = get_code(code_id);
+int get_communicator(size_t code_id, MDI_Comm_Type comm_id, communicator** comm_ptr) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
 
   // Search through all of the communicators for the one that matches comm_id
   int icomm;
   for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
-    communicator* comm = vector_get(this_code->comms, icomm);
+    communicator* comm;
+    ret = vector_get( this_code->comms, icomm, (void**)&comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in get_communicator: vector_get failed");
+      return ret;
+    }
     if ( comm->id == comm_id ) {
-      return comm;
+      *comm_ptr = comm;
+      return 0;
     }
   }
   mdi_error("Communicator not found");
-  return NULL;
+  return 1;
 }
 
 
 /*! \brief Delete a communicator
- * Returns 0 on success
+ *
+ * The function returns \p 0 on a success.
  */
-int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
-  code* this_code = get_code(code_id);
-  communicator* this_comm = get_communicator(code_id, comm_id);
+int delete_communicator(size_t code_id, MDI_Comm_Type comm_id) {
+  int ret;
+
+  // get the code
+  code* this_code;
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code failed");
+    return ret;
+  }
+
+  communicator* this_comm;
+  ret = get_communicator(code_id, comm_id, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_communicator failed");
+    return ret;
+  }
 
   // Search through all of the communicators for the one that matches comm_id
   size_t icomm;
   size_t comm_index;
   int comm_found = 0;
   for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
-    communicator* comm = vector_get(this_code->comms, (int)icomm);
+    communicator* comm;
+    ret = vector_get( this_code->comms, (int)icomm, (void**)&comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in delete_communicator: vector_get failed");
+      return ret;
+    }
     if ( comm->id == comm_id ) {
       comm_found = 1;
       comm_index = icomm;
@@ -591,8 +710,16 @@ int delete_communicator(int code_id, MDI_Comm_Type comm_id) {
   this_comm->delete(this_comm);
 
   // in case this communicator's delete function modified the code / comms vectors, update the pointers
-  this_code = get_code(code_id);
-  this_comm = get_communicator(code_id, comm_id);
+  ret = get_code(code_id, &this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: get_code after delete failed");
+    return ret;
+  }
+  ret = get_communicator(code_id, comm_id, &this_comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in delete_code: second get_communicator failed");
+    return ret;
+  }
 
   // delete the node vector
   free_node_vector(this_comm->nodes);
@@ -616,23 +743,24 @@ int communicator_delete(void* comm) {
  * \param [in]       message
  *                   Message printed before exiting.
  */
-int file_exists(const char* file_name) {
+int file_exists(const char* file_name, int* flag) {
 #ifdef _WIN32
   DWORD dwAttrib = GetFileAttributes(file_name);
   if ( dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY) ) {
-    return 1;
+    *flag = 1;
   }
   else {
-    return 0;
+    *flag = 0;
   }
 #else
   if ( access( file_name, F_OK ) == 0 ) {
-    return 1;
+    *flag = 1;
   }
   else {
-    return 0;
+    *flag = 0;
   }
 #endif
+  return 0;
 }
 
 

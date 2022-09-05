@@ -17,26 +17,47 @@ typedef struct plugin_shared_state_struct {
   char command[MDI_COMMAND_LENGTH_];
   /*! \brief Buffer used for communication of data */
   void* buf;
-  /*! \brief Function pointer to the driver node's callback function */
-  MDI_Driver_node_callback_t driver_node_callback;
   /*! \brief Argument vector for plugin command-line options */
   char** plugin_argv;
+  /*! \brief Command-line options for currently running plugin */
+  char* plugin_options;
+  /*! \brief Unedited command-line options for currently running plugin */
+  char* plugin_unedited_options;
   /*! \brief Pointer to the intra-communicator for the plugin */
   void* mpi_comm_ptr;
   /*! \brief Pointer to the class object that is used for the driver_node_callback function */
   void* driver_callback_obj;
-  /*! \brief Function pointer to the driver's library_activate_code function */
-  int (*driver_activate_code)(int);
-  /*! \brief Function pointer to the engine's library_activate_code function */
-  int (*engine_activate_code)(int);
-  /*! \brief Function pointer to the library execute command function */
-  int (*lib_execute_command)(MDI_Comm);
-  /*! \brief Function pointer to the generic execute command function */
-  int (*execute_command)(const char*, MDI_Comm_Type, void*);
-  /*! \brief Function pointer to the engine's function to delete everything */
-  int (*delete_engine)(int);
   /*! \brief Pointer to the class object that is passed to any call to execute_command */
   void* execute_command_obj;
+  /*! \brief Pointer to the original Python interpreter's dictionary.
+   * Only used for Python plugins */
+  void* python_interpreter_dict;
+  /*! \brief Pointer to the driver's codes vector */
+  void* driver_codes_ptr;
+  /*! \brief Pointer to the engine's codes vector */
+  void* engine_codes_ptr;
+  /*! \brief Pointer to the engine's nodes vector */
+  void* engine_nodes;
+  /*! \brief Function pointer to the driver's library_activate_code function */
+  int (*driver_activate_code)(void*, int);
+  /*! \brief Function pointer to the engine's library_activate_code function */
+  int (*engine_activate_code)(void*, int);
+  /*! \brief Function pointer to the library execute command function */
+  int (*lib_execute_command)(MDI_Comm);
+  /*! \brief Function pointer to a wrapper for the language-specific execute command function */
+  int (*execute_command_wrapper)(const char*, MDI_Comm_Type, void*);
+  /*! \brief Function pointer to the engine's function for responding to built-in commands */
+  int (*execute_builtin)(const char*, MDI_Comm_Type, int*);
+  /*! \brief Function pointer to the engine's function to delete everything */
+  int (*delete_engine)(size_t);
+  /*! \brief Engine-side ID of the engine code */
+  size_t engine_code_id;
+  /*! \brief Driver-side ID of the driver code */
+  size_t driver_code_id;
+  /*! \brief Pointer to engine's execute_command function */
+  MDI_execute_command_type execute_command;
+  /*! \brief Function pointer to the driver node's callback function */
+  MDI_Driver_node_callback_t driver_node_callback;
   /*! \brief Driver-side MDI communicator */
   MDI_Comm driver_mdi_comm;
   /*! \brief Engine-side MDI communicator */
@@ -49,25 +70,15 @@ typedef struct plugin_shared_state_struct {
   int plugin_argv_allocated;
   /*! \brief MPI rank of this process within the plugin  */
   int intra_rank;
-  /////////////////////////////////////////////////////////////
-  /*! \brief Engine-side ID of the engine code */
-  int engine_code_id;
-  /*! \brief Driver-side ID of the driver code */
-  int driver_code_id;
   /*! \brief Flag whether the engine is a Python code */
   int engine_language;
-  //////////////////////////////////////////////////////////////
+  /*! \brief Flag whether the Python interpreter has been initialized */
+  int python_interpreter_initialized;
 } plugin_shared_state;
 
 typedef struct library_data_struct {
   /*! \brief State shared between the driver and the plugin */
   plugin_shared_state* shared_state;
-  /*! \brief Command-line options for currently running plugin */
-  char* plugin_options;
-  /*! \brief Unedited command-line options for currently running plugin */
-  char* plugin_unedited_options;
-  /*! \brief Flag whether plugin_options is allocted for this code */
-  int plugin_options_allocated;
   /*! \brief Handle of the code to which this communicator connects */
   int connected_code;
   /*! \brief Flag whether the next MDI_Send call should trigger execution of the engine's command */
@@ -91,9 +102,6 @@ typedef struct library_data_struct {
   int is_python;
 } library_data;
 
-/*! \brief Shared state received from the driver */
-extern plugin_shared_state* shared_state_from_driver;
-
 int enable_plug_support(int code_id);
 int plug_on_selection();
 int plug_on_accept_communicator();
@@ -111,7 +119,6 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
                           MDI_Comm* mdi_comm_ptr);
 int library_close_plugin(MDI_Comm mdi_comm);
 int library_initialize();
-int library_accept_communicator();
 int library_set_driver_current();
 int library_set_command(const char* command, MDI_Comm comm);
 int library_execute_command(MDI_Comm comm);
@@ -121,9 +128,11 @@ int library_send_msg(const void* buf, int count, MDI_Datatype datatype, MDI_Comm
 int library_recv_msg(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm);
 
 int library_set_state(void* state);
-int library_activate_code(int code_id);
+int library_activate_code(void* codes_in, int code_id);
+int library_activate_driver(library_data* libd);
+int library_activate_engine(library_data* libd);
 
 int communicator_delete_lib(void* comm);
-int library_delete_engine(int code_id);
+int library_delete_engine(size_t code_id);
 
 #endif

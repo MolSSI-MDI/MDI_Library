@@ -83,7 +83,6 @@ DllExport extern const int MDI_ENGINE;
 
 // functions for handling MDI communication
 DllExport int MDI_Init(int* argc, char ***argv);
-DllExport int MDI_Init_with_options(const char *options);
 DllExport int MDI_Initialized(int* flag);
 DllExport int MDI_Accept_Communicator(MDI_Comm* comm);
 DllExport int MDI_Accept_communicator(MDI_Comm* comm);
@@ -140,7 +139,7 @@ DllExport int MDI_Close_plugin(MDI_Comm mdi_comm);
 DllExport int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object);
 DllExport int MDI_Set_plugin_state(void* state);
-DllExport int MDI_Get_plugin_mode(int* plugin_mode);
+DllExport int MDI_Set_plugin_state_internal(void* state);
 DllExport int MDI_Plugin_get_argc(int* argc_ptr);
 DllExport int MDI_Plugin_get_argv(char*** argv_ptr);
 DllExport int MDI_Plugin_get_args(char** args_ptr);
@@ -157,14 +156,19 @@ DllExport int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int));
 DllExport int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int));
 
 // only used internally by MDI
+DllExport int MDI_Init_code();
+DllExport int MDI_Init_with_argv(int* argc, char ***argv);
+DllExport int MDI_Init_with_options(const char *options);
 DllExport void mdi_error(const char* message);
 DllExport void MDI_Set_World_Size(int world_size_in);
 DllExport void MDI_Set_World_Rank(int world_rank_in);
 DllExport int MDI_Get_intra_rank(int intra_rank_out);
 DllExport int MDI_Get_Current_Code();
-DllExport int MDI_Get_python_plugin_mpi_world_ptr(void** plugin_mode);
+DllExport int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr, void* state_in);
 DllExport int MDI_Set_on_destroy_code(int (*func)(int));
 DllExport int MDI_Set_plugin_language(int language, void* plugin_state);
+DllExport int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, void*));
+DllExport int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*);
 
 #ifdef __cplusplus
 }
