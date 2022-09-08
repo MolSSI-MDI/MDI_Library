@@ -14,6 +14,7 @@
   #include <unistd.h>
 #endif
 #include <stdint.h>
+#include <stdarg.h>
 #include "mdi_global.h"
 
 /*! \brief Vector containing all codes that have been initiailized on this rank
@@ -90,6 +91,12 @@ int vector_push_back(vector* v, void* element) {
  *                   Index of the element that will be removed from the vector
  */
 int vector_delete(vector* v, int index) {
+  int ret;
+
+  ret = mdi_debug("[MDI:vector_delete] Vector, index: %p %d\n", v, index);
+  if ( ret != 0 ) { return ret; }
+
+
   // copy the data from the last element to the element that is being deleted
   // don't do this if the element being deleted is the last element
   if ( index + 1 != v->size ) {
@@ -118,6 +125,11 @@ int vector_delete(vector* v, int index) {
  *                   Pointer to the vector that will be freed
  */
 int vector_free(vector* v) {
+  int ret;
+
+  ret = mdi_debug("[MDI:vector_free] Vector: %p\n", v);
+  if ( ret != 0 ) { return ret; }
+
   free(v->data);
   free(v);
   return 0;
@@ -264,8 +276,9 @@ int new_code(size_t* code_id) {
   new_code.selected_method_id = 0;
   new_code.initialized_mpi = 0;
   new_code.ipi_compatibility = 0;
-  new_code.plugin_argc = -1;
-  new_code.plugin_argv = NULL;
+  new_code.plugin_argc_ptr = NULL;
+  new_code.plugin_argv_ptr = NULL;
+  new_code.plugin_unedited_options_ptr = NULL;
   new_code.tcp_initialized = 0;
   new_code.mpi_initialized = 0;
   new_code.test_initialized = 0;
@@ -273,6 +286,7 @@ int new_code(size_t* code_id) {
   new_code.tcp_socket = -1;
   new_code.port = -1;
   new_code.hostname = NULL;
+  new_code.debug_mode = 0;
 
   // initialize the name and role strings
   int ichar;
@@ -389,6 +403,9 @@ int delete_code(size_t code_id) {
     return ret;
   }
 
+  ret = mdi_debug("[MDI:delete_code] Code ID: %d\n", code_id);
+  if ( ret != 0 ) { return ret; }
+
   // Call the langauge-specific destructor
   if ( this_code->language_on_destroy != NULL ) {
     if ( this_code->language_on_destroy(code_id) != 0 ) {
@@ -487,7 +504,7 @@ int get_method(size_t code_id, int method_id, method** method_ptr) {
   code* this_code;
   ret = get_code(code_id, &this_code);
   if ( ret != 0 ) {
-    mdi_error("Error in delete_code: get_code failed");
+    mdi_error("Error in get_method: get_code failed");
     return ret;
   }
 
@@ -515,6 +532,9 @@ int get_method(size_t code_id, int method_id, method** method_ptr) {
  */
 int delete_method(size_t code_id, int method_id) {
   int ret;
+
+  ret = mdi_debug("[MDI:delete_method] Code ID, Method ID: %d %d\n", code_id, method_id);
+  if ( ret != 0 ) { return ret; }
 
   // get the code
   code* this_code;
@@ -771,6 +791,7 @@ int file_exists(const char* file_name, int* flag) {
  */
 void mdi_error(const char* message) {
   fprintf( stderr, "%s\n", message );
+  fflush(stdout);
 }
 
 
@@ -781,6 +802,38 @@ void mdi_error(const char* message) {
  */
 void mdi_warning(const char* message) {
   fprintf( stderr, "MDI warning: %s\n", message );
+}
+
+
+/*! \brief Print a debug message
+ *
+ * \param [in]       message
+ *                   Message printed before exiting.
+ */
+int mdi_debug(const char *message, ...)
+{
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mdi_debug: get_current_code failed");
+    return 1;
+  }
+
+  if ( this_code->debug_mode ) {
+
+    va_list args;
+    va_start(args, message);
+
+    vprintf(message, args);
+
+    va_end(args);
+
+    fflush(stdout);
+  }
+
+  return 0;
 }
 
 
