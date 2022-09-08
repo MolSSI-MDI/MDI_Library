@@ -772,9 +772,9 @@ int library_initialize() {
     libd->shared_state->engine_codes_ptr = &codes;
     libd->shared_state->execute_builtin = general_builtin_command;
     libd->shared_state->engine_nodes = (void*)this_code->nodes;
-    this_code->plugin_argc = libd->shared_state->plugin_argc;
-    this_code->plugin_argv = libd->shared_state->plugin_argv;
-    this_code->plugin_unedited_options = libd->shared_state->plugin_unedited_options;
+    this_code->plugin_argc_ptr = &libd->shared_state->plugin_argc;
+    this_code->plugin_argv_ptr = &libd->shared_state->plugin_argv;
+    this_code->plugin_unedited_options_ptr = &libd->shared_state->plugin_unedited_options;
 
     // set the engine's mpi communicator
     libd->mpi_comm = *(MPI_Comm*)libd->shared_state->mpi_comm_ptr;
