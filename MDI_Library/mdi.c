@@ -2166,11 +2166,11 @@ int MDI_Plugin_get_argc(int* argc_ptr) {
     mdi_error("Error in MDI_Plugin_get_argc: get_current_code failed");
     return 1;
   }
-  if ( this_code->plugin_argc == -1 ) {
+  if ( *this_code->plugin_argc_ptr == -1 ) {
     mdi_error("MDI_Plugin_get_argc called, but plugin mode is not active.");
     return 1;
   }
-  *argc_ptr = this_code->plugin_argc;
+  *argc_ptr = *this_code->plugin_argc_ptr;
   return 0;
 }
 
@@ -2187,11 +2187,11 @@ int MDI_Plugin_get_argv(char*** argv_ptr) {
     mdi_error("Error in MDI_Plugin_get_argv: get_current_code failed");
     return 1;
   }
-  if ( this_code->plugin_argc == -1 ) {
+  if ( *this_code->plugin_argc_ptr == -1 ) {
     mdi_error("MDI_Plugin_get_argv called, but plugin mode is not active.");
     return 1;
   }
-  *argv_ptr = this_code->plugin_argv;
+  *argv_ptr = *this_code->plugin_argv_ptr;
   return 0;
 }
 
@@ -2208,11 +2208,11 @@ int MDI_Plugin_get_args(char** args_ptr) {
     mdi_error("Error in MDI_Plugin_get_args: get_current_code failed");
     return 1;
   }
-  if ( this_code->plugin_argc == -1 ) {
+  if ( *this_code->plugin_argc_ptr == -1 ) {
     mdi_error("MDI_Plugin_get_args called, but plugin mode is not active.");
     return 1;
   }
-  *args_ptr = this_code->plugin_unedited_options;
+  *args_ptr = *this_code->plugin_unedited_options_ptr;
   return 0;
 }
 
@@ -2229,7 +2229,7 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
     mdi_error("Error in MDI_Plugin_get_arg: get_current_code failed");
     return 1;
   }
-  if ( this_code->plugin_argc == -1 ) {
+  if ( *this_code->plugin_argc_ptr == -1 ) {
     mdi_error("MDI_Plugin_get_arg called, but plugin mode is not active.");
     return 1;
   }
@@ -2237,11 +2237,11 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
     mdi_error("MDI_Plugin_get_arg called with invalid value (<0) for index.");
     return 1;
   }
-  if ( index > this_code->plugin_argc ) {
+  if ( index > *this_code->plugin_argc_ptr ) {
     mdi_error("MDI_Plugin_get_arg called with invalid value (>argc) for index.");
     return 1;
   }
-  *arg_ptr = this_code->plugin_argv[index];
+  *arg_ptr = (*this_code->plugin_argv_ptr)[index];
   return 0;
 }
 

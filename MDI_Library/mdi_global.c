@@ -264,8 +264,9 @@ int new_code(size_t* code_id) {
   new_code.selected_method_id = 0;
   new_code.initialized_mpi = 0;
   new_code.ipi_compatibility = 0;
-  new_code.plugin_argc = -1;
-  new_code.plugin_argv = NULL;
+  new_code.plugin_argc_ptr = NULL;
+  new_code.plugin_argv_ptr = NULL;
+  new_code.plugin_unedited_options_ptr = NULL;
   new_code.tcp_initialized = 0;
   new_code.mpi_initialized = 0;
   new_code.test_initialized = 0;

@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 9
+#define MDI_PATCH_VERSION_ 10
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -157,10 +157,12 @@ typedef struct code_struct {
   vector* methods;
   /*! \brief Path to the plugins available to this code */
   char* plugin_path;
+  /*! \brief Argument count for plugin command-line options */
+  int* plugin_argc_ptr;
   /*! \brief Argument vector for plugin command-line options */
-  char** plugin_argv;
+  char*** plugin_argv_ptr;
   /*! \brief Unedited command-line options for currently running plugin */
-  char* plugin_unedited_options;
+  char** plugin_unedited_options_ptr;
   /*! \brief Shared plugin state, received from the driver during plugin calculations */
   void* shared_state_from_driver;
   /*! \brief Hostname of the driver */
@@ -218,8 +220,6 @@ typedef struct code_struct {
   int ipi_compatibility;
   /*! \brief Flag for whether MDI called MPI_Init */
   int initialized_mpi;
-  /*! \brief Argument count for plugin command-line options */
-  int plugin_argc;
   /*! \brief Flag whether this code has previously initialized TCP */
   int tcp_initialized;
   /*! \brief Flag whether this code has previously initialized MPI */
