@@ -403,7 +403,7 @@ int delete_code(size_t code_id) {
     return ret;
   }
 
-  ret = mdi_debug("[MDI:delete_code] Code ID: %ul\n", code_id);
+  ret = mdi_debug("[MDI:delete_code] Code ID: %lu\n", code_id);
   if ( ret != 0 ) { return ret; }
 
   // Call the langauge-specific destructor
@@ -533,7 +533,7 @@ int get_method(size_t code_id, int method_id, method** method_ptr) {
 int delete_method(size_t code_id, int method_id) {
   int ret;
 
-  ret = mdi_debug("[MDI:delete_method] Code ID, Method ID: %ul %d\n", code_id, method_id);
+  ret = mdi_debug("[MDI:delete_method] Code ID, Method ID: %lu %d\n", code_id, method_id);
   if ( ret != 0 ) { return ret; }
 
   // get the code

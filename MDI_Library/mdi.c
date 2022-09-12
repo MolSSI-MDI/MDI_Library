@@ -195,7 +195,7 @@ int MDI_Init_code()
     return ret;
   }
 
-  ret = mdi_debug("[MDI:MDI_Init_code] New code ID: %ul\n", codes.current_key);
+  ret = mdi_debug("[MDI:MDI_Init_code] New code ID: %lu\n", codes.current_key);
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Init_code: mdi_debug failed");
     return ret;

@@ -1292,7 +1292,7 @@ int communicator_delete_lib(void* comm) {
 int library_delete_engine(size_t code_id) {
   int ret;
 
-  ret = mdi_debug("[MDI:library_delete_engine] Code ID: %ul\n", code_id);
+  ret = mdi_debug("[MDI:library_delete_engine] Code ID: %lu\n", code_id);
   if ( ret != 0 ) {
     mdi_error("Error in library_delete_engine: mdi_debug failed");
     return ret;

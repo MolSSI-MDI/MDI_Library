@@ -36,7 +36,7 @@ int general_init_code() {
     return ret;
   }
 
-  ret = mdi_debug("[MDI:general_init_code] New code ID: %d\n", codes.current_key);
+  ret = mdi_debug("[MDI:general_init_code] New code ID: %lu\n", codes.current_key);
   if ( ret != 0 ) {
     mdi_error("Error in general_init_code: mdi_debug failed");
     return ret;
