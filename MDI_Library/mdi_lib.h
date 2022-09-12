@@ -15,6 +15,12 @@ typedef struct plugin_shared_state_struct {
   /*! \brief Name of the next command to be executed on this code.
   This is only used by engines. */
   char command[MDI_COMMAND_LENGTH_];
+  /*! \brief For future-proofing, this is a pointer to any extensions to this structure */
+  void** ext;
+  /*! \brief Version number of the driver */
+  int driver_version[3];
+  /*! \brief Version number of the engine */
+  int engine_version[3];
   /*! \brief Buffer used for communication of data */
   void* buf;
   /*! \brief Argument vector for plugin command-line options */

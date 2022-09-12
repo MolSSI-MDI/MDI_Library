@@ -517,6 +517,9 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   libd->shared_state->engine_language = MDI_LANGUAGE_C;
   libd->shared_state->python_interpreter_initialized = 0;
   libd->shared_state->driver_codes_ptr = &codes;
+  libd->shared_state->driver_version[0] = MDI_MAJOR_VERSION;
+  libd->shared_state->driver_version[1] = MDI_MINOR_VERSION;
+  libd->shared_state->driver_version[2] = MDI_PATCH_VERSION;
 
   MDI_Comm comm;
   ret = MDI_Accept_Communicator(&comm);
@@ -789,6 +792,9 @@ int library_initialize() {
     libd->shared_state->engine_codes_ptr = &codes;
     libd->shared_state->execute_builtin = general_builtin_command;
     libd->shared_state->engine_nodes = (void*)this_code->nodes;
+    libd->shared_state->engine_version[0] = MDI_MAJOR_VERSION;
+    libd->shared_state->engine_version[1] = MDI_MINOR_VERSION;
+    libd->shared_state->engine_version[2] = MDI_PATCH_VERSION;
     this_code->plugin_argc_ptr = &libd->shared_state->plugin_argc;
     this_code->plugin_argv_ptr = &libd->shared_state->plugin_argv;
     this_code->plugin_unedited_options_ptr = &libd->shared_state->plugin_unedited_options;
@@ -1286,7 +1292,7 @@ int communicator_delete_lib(void* comm) {
 int library_delete_engine(size_t code_id) {
   int ret;
 
-  ret = mdi_debug("[MDI:library_delete_engine] Code ID: %d\n", code_id);
+  ret = mdi_debug("[MDI:library_delete_engine] Code ID: %ul\n", code_id);
   if ( ret != 0 ) {
     mdi_error("Error in library_delete_engine: mdi_debug failed");
     return ret;
