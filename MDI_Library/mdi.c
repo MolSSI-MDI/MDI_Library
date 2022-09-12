@@ -117,10 +117,12 @@ int MDI_Init(int* argc, char*** argv)
   int ret;
   ret = MDI_Init_code();
   if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init_code: MDI_Init_with_argv failed");
     return ret;
   }
   ret = MDI_Init_with_argv(argc, argv);
   if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init: MDI_Init_with_argv failed");
     return ret;
   }
   return 0;
@@ -192,6 +194,13 @@ int MDI_Init_code()
     mdi_error("Error in MDI_Init_code");
     return ret;
   }
+
+  ret = mdi_debug("[MDI:MDI_Init_code] New code ID: %lu\n", codes.current_key);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init_code: mdi_debug failed");
+    return ret;
+  }
+
   return 0;
 }
 
@@ -211,6 +220,13 @@ int MDI_Init_code()
 int MDI_Init_with_options(const char* options)
 {
   int ret;
+
+  ret = mdi_debug("[MDI:MDI_Init_with_options] Options: %s\n", options);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Init_with_options: mdi_debug failed");
+    return ret;
+  }
+
   ret = general_init(options);
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Init_with_options");
@@ -227,7 +243,10 @@ int MDI_Init_with_options(const char* options)
  */
 int MDI_Initialized(int* flag)
 {
+  int ret;
+
   *flag = codes.initialized;
+
   return 0;
 }
 
@@ -237,7 +256,7 @@ int MDI_Initialized(int* flag)
  * If no new communicators are available, the function returns \p MDI_COMM_NULL.
  *
  */
-MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
+int MDI_Accept_Communicator(MDI_Comm* comm)
 {
   return MDI_Accept_communicator(comm);
 }
@@ -249,13 +268,22 @@ MDI_Comm MDI_Accept_Communicator(MDI_Comm* comm)
  * If no new communicators are available, the function returns \p MDI_COMM_NULL.
  *
  */
-MDI_Comm MDI_Accept_communicator(MDI_Comm* comm)
+int MDI_Accept_communicator(MDI_Comm* comm)
 {
+  int ret;
+
   if ( codes.initialized == 0 ) {
     mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
     return 1;
   }
   *comm = general_accept_communicator();
+
+  ret = mdi_debug("[MDI:MDI_Accept_communicator] Comm: %d\n", *comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Accept_Communicator: mdi_debug failed");
+    return ret;
+  }
+
   return 0;
 }
 
@@ -276,10 +304,19 @@ MDI_Comm MDI_Accept_communicator(MDI_Comm* comm)
  */
 int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
+  int ret;
+
   if ( codes.initialized == 0 ) {
     mdi_error("MDI_Send called but MDI has not been initialized");
     return 1;
   }
+
+  ret = mdi_debug("[MDI:MDI_Send] count, datatype, comm: %d %d %d\n", count, datatype, comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Send: mdi_debug failed");
+    return ret;
+  }
+
   return general_send(buf, count, datatype, comm);
 }
 
@@ -300,10 +337,19 @@ int MDI_Send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
  */
 int MDI_Recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm)
 {
+  int ret;
+
   if ( codes.initialized == 0 ) {
     mdi_error("MDI_Recv called but MDI has not been initialized");
     return 1;
   }
+
+  ret = mdi_debug("[MDI:MDI_Recv] count, datatype, comm: %d %d %d\n", count, datatype, comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Recv: mdi_debug failed");
+    return ret;
+  }
+
   return general_recv(buf, count, datatype, comm);
 }
 
@@ -336,10 +382,19 @@ int MDI_Send_Command(const char* buf, MDI_Comm comm)
  */
 int MDI_Send_command(const char* buf, MDI_Comm comm)
 {
+  int ret;
+
   if ( codes.initialized == 0 ) {
     mdi_error("MDI_Send_Command called but MDI has not been initialized");
     return 1;
   }
+
+  ret = mdi_debug("[MDI:MDI_Send_command] Command, comm: %s, %d\n", buf, comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Send_command: mdi_debug failed");
+    return ret;
+  }
+
   return general_send_command(buf, comm);
 }
 
@@ -372,11 +427,25 @@ int MDI_Recv_Command(char* buf, MDI_Comm comm)
  */
 int MDI_Recv_command(char* buf, MDI_Comm comm)
 {
+  int ret;
+
   if ( codes.initialized == 0 ) {
     mdi_error("MDI_Recv_Command called but MDI has not been initialized");
     return 1;
   }
-  return general_recv_command(buf, comm);
+  ret = general_recv_command(buf, comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Recv_command: general_recv_command failed");
+    return ret;
+  }
+
+  ret = mdi_debug("[MDI:MDI_Recv_command] Command, comm: %s, %d\n", buf, comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Recv_command: mdi_debug failed");
+    return ret;
+  }
+
+  return 0;
 }
 
 
@@ -2012,9 +2081,28 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
                       MDI_Driver_node_callback_t driver_node_callback,
                       void* driver_callback_object) {
 #if _MDI_PLUGIN_SUPPORT == 1
-  int ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
-                                  driver_node_callback, driver_callback_object);
-  return ret;
+  int ret;
+
+  ret = mdi_debug("[MDI:MDI_Launch_plugin] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Launch_plugin: mdi_debug failed");
+    return ret;
+  }
+
+  ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
+                                driver_node_callback, driver_callback_object);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Launch_plugin: second mdi_debug failed");
+    return ret;
+  }
+
+  ret = mdi_debug("[MDI:MDI_Launch_plugin] Finished\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Launch_plugin: third mdi_debug failed");
+    return ret;
+  }
+
+  return 0;
 #else
   mdi_error("MDI_Launch_plugin was called, but this build of the MDI Library was built without plugin support.");
   return 1;

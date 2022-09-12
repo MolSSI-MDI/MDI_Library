@@ -337,12 +337,13 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
 #else
   // Attempt to open a library with a .so extension
   snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.so", this_code->plugin_path, plugin_name);
-  libd->plugin_handle = dlopen(plugin_path, RTLD_NOW);
+  int dlopen_flag = RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE;
+  libd->plugin_handle = dlopen(plugin_path, dlopen_flag);
   if ( ! libd->plugin_handle ) {
 
     // Attempt to open a library with a .dylib extension
     snprintf(plugin_path, PLUGIN_PATH_LENGTH, "%s/lib%s.dylib", this_code->plugin_path, plugin_name);
-    libd->plugin_handle = dlopen(plugin_path, RTLD_NOW);
+    libd->plugin_handle = dlopen(plugin_path, dlopen_flag);
     if ( ! libd->plugin_handle ) {
       // Unable to find the plugin library
       free( plugin_path );
@@ -477,6 +478,17 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
                           void* driver_callback_object) {
   int ret;
 
+  ret = mdi_debug("[MDI:library_launch_plugin] Name: %s\n", plugin_name);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: mdi_debug failed");
+    return ret;
+  }
+  ret = mdi_debug("[MDI:library_launch_plugin] Options: %s\n", options);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: second mdi_debug failed");
+    return ret;
+  }
+
   code* this_code;
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
@@ -505,6 +517,9 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   libd->shared_state->engine_language = MDI_LANGUAGE_C;
   libd->shared_state->python_interpreter_initialized = 0;
   libd->shared_state->driver_codes_ptr = &codes;
+  libd->shared_state->driver_version[0] = MDI_MAJOR_VERSION;
+  libd->shared_state->driver_version[1] = MDI_MINOR_VERSION;
+  libd->shared_state->driver_version[2] = MDI_PATCH_VERSION;
 
   MDI_Comm comm;
   ret = MDI_Accept_Communicator(&comm);
@@ -523,27 +538,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // Parse plugin command-line options
   library_parse_options(options, libd);
 
-  // Assign the global command-line options variables to the values for this plugin  
-  //plugin_argc = libd->shared_state->plugin_argc;
-  //plugin_argv = libd->shared_state->plugin_argv;
-
-
   libd->shared_state->mpi_comm_ptr = &libd->mpi_comm;
   libd->shared_state->driver_node_callback = libd->driver_node_callback;
   libd->shared_state->driver_mdi_comm = driver_comm->id;
   libd->shared_state->driver_activate_code = library_activate_code;
   libd->shared_state->driver_callback_obj = libd->driver_callback_obj;
-
-  //
-  // Get the path to the plugin
-  // Note: Eventually, should probably replace this code with libltdl
-  //
-  char* plugin_path = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
-
-  // Get the name of the plugin's init function
-  char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
-  snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "MDI_Plugin_init_%s", plugin_name);
-
 
 
 
@@ -553,8 +552,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 
   ret = library_load_init(plugin_name, mpi_comm_ptr, libd, 0);
   if ( ret != 0 ) {
-    free( plugin_path );
-    free( plugin_init_name );
+    return ret;
+  }
+
+  ret = mdi_debug("[MDI:library_launch_plugin] Finished call to library_load_init\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: third mdi_debug failed");
     return ret;
   }
 
@@ -566,21 +569,35 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   void* plugin_handle = libd->plugin_handle;
 #endif
 
-//  current_code = libd->shared_state->driver_code_id;
-//  current_code = libd->shared_state->driver_code_id;
   libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
   delete_communicator(libd->shared_state->driver_code_id, comm);
 
+  ret = mdi_debug("[MDI:library_launch_plugin] Finished call to delete_communicator\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: fourth mdi_debug failed");
+    return ret;
+  }
+
   if (is_python == 0 ) {
   // Close the plugin library
 #ifdef _WIN32
     FreeLibrary( plugin_handle );
 #else
-    dlclose( plugin_handle );
+    ret = dlclose( plugin_handle );
+    if ( ret != 0 ) {
+      mdi_error("Plugin dlclose failed");
+      return 1;
+    }
 #endif
+  }
+
+  ret = mdi_debug("[MDI:library_launch_plugin] Finished closing the plugin\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: fifth mdi_debug failed");
+    return ret;
   }
 
   /*************************************************/
@@ -588,9 +605,12 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   /*************************************************/
 
 
-  // free memory from loading the plugin's initialization function
-  free( plugin_path );
-  free( plugin_init_name );
+
+  ret = mdi_debug("[MDI:library_launch_plugin] Finished\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: sixth mdi_debug failed");
+    return ret;
+  }
 
   return 0;
 }
@@ -772,6 +792,9 @@ int library_initialize() {
     libd->shared_state->engine_codes_ptr = &codes;
     libd->shared_state->execute_builtin = general_builtin_command;
     libd->shared_state->engine_nodes = (void*)this_code->nodes;
+    libd->shared_state->engine_version[0] = MDI_MAJOR_VERSION;
+    libd->shared_state->engine_version[1] = MDI_MINOR_VERSION;
+    libd->shared_state->engine_version[2] = MDI_PATCH_VERSION;
     this_code->plugin_argc_ptr = &libd->shared_state->plugin_argc;
     this_code->plugin_argv_ptr = &libd->shared_state->plugin_argv;
     this_code->plugin_unedited_options_ptr = &libd->shared_state->plugin_unedited_options;
@@ -1173,6 +1196,13 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
  */
 int communicator_delete_lib(void* comm) {
   int ret;
+
+  ret = mdi_debug("[MDI:communicator_delete_lib] Communicator: %p\n", comm);
+  if ( ret != 0 ) {
+    mdi_error("Error in communicator_delete_lib: mdi_debug failed");
+    return ret;
+  }
+
   communicator* this_comm = (communicator*) comm;
   code* this_code;
   ret = get_code(this_comm->code_id, &this_code);
@@ -1185,12 +1215,24 @@ int communicator_delete_lib(void* comm) {
   // if this is the driver, delete the engine code and shared state
   if ( this_code->is_library == 0 ) {
 
+    ret = mdi_debug("[MDI:communicator_delete_lib] This is a driver.\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: second mdi_debug failed");
+      return ret;
+    }
+
     // set the engine as the active code
     ret = libd->shared_state->engine_activate_code(
                     libd->shared_state->engine_codes_ptr,
                     libd->shared_state->engine_code_id );
     if ( ret != 0 ) {
       mdi_error("Error in communicator_delete_lib: engine_activate_code failed");
+      return ret;
+    }
+
+    ret = mdi_debug("[MDI:communicator_delete_lib] The driver is deleting the engine code\n", comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: third mdi_debug failed");
       return ret;
     }
 
@@ -1208,6 +1250,12 @@ int communicator_delete_lib(void* comm) {
                     libd->shared_state->driver_code_id );
     if ( ret != 0 ) {
       mdi_error("Error in communicator_delete_lib: driver_activate_code failed");
+      return ret;
+    }
+
+    ret = mdi_debug("[MDI:communicator_delete_lib] The driver has finished deleting the engine code\n", comm);
+    if ( ret != 0 ) {
+      mdi_error("Error in communicator_delete_lib: fourth mdi_debug failed");
       return ret;
     }
 
@@ -1229,6 +1277,12 @@ int communicator_delete_lib(void* comm) {
 
   free( libd );
 
+  ret = mdi_debug("[MDI:communicator_delete_lib] Finished\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in communicator_delete_lib: fifth mdi_debug failed");
+    return ret;
+  }
+
   return 0;
 }
 
@@ -1236,9 +1290,19 @@ int communicator_delete_lib(void* comm) {
 /*! \brief Function to delete all of the engine's state
  */
 int library_delete_engine(size_t code_id) {
+  int ret;
+
+  ret = mdi_debug("[MDI:library_delete_engine] Code ID: %lu\n", code_id);
+  if ( ret != 0 ) {
+    mdi_error("Error in library_delete_engine: mdi_debug failed");
+    return ret;
+  }
+
   delete_code(code_id);
   if ( codes.size == 0 ) {
     free(codes.data);
+    codes.initialized = 0;
+    codes.current_key = 0;
   }
   return 0;
 }

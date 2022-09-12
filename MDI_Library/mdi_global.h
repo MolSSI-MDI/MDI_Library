@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 10
+#define MDI_PATCH_VERSION_ 11
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -228,6 +228,8 @@ typedef struct code_struct {
   int test_initialized;
   /*! \brief Port over which the driver will listen */
   int port;
+  /*! \brief Flag for whether this code is running in debug mode */
+  int debug_mode;
 } code;
 
 
@@ -272,6 +274,7 @@ int communicator_delete(void* comm);
 
 void mdi_error(const char* message);
 void mdi_warning(const char* message);
+int mdi_debug(const char* message, ...);
 
 /*! \brief Get information about an MDI_Datatype */
 int datatype_info(MDI_Datatype_Type datatype, size_t* size, MDI_Datatype_Type* base);
