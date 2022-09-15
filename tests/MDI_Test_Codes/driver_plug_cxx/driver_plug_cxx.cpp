@@ -83,6 +83,17 @@ int main(int argc, char **argv) {
     throw std::runtime_error("The MDI library was not initialized correctly.");
   }
 
+  // Check for an "-earlyreturn" option
+  bool earlyreturn = false;
+  for ( int iarg=1; iarg < argc; iarg++ ) {
+    if ( strcmp(argv[iarg],"-earlyreturn") == 0 ) {
+      earlyreturn = true;
+    }
+  }
+  
+  // If the earlyreturn flag was set, return now
+  if ( earlyreturn ) { return 0; }
+
   // Confirm that MDI was initialized successfully
   int initialized_mdi;
   ret = MDI_Initialized(&initialized_mdi);
@@ -120,7 +131,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -driver_nranks option was provided
       if ( argc-iarg < 2 ) {
-	mpi_error("The -driver_nranks argument was not provided.");
+        mpi_error("The -driver_nranks argument was not provided.");
       }
 
       // Set driver_nranks
@@ -133,7 +144,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -plugin_nranks option was provided
       if ( argc-iarg < 2 ) {
-	mpi_error("The -plugin_nranks argument was not provided.");
+        mpi_error("The -plugin_nranks argument was not provided.");
       }
 
       // Set driver_nranks
@@ -146,7 +157,7 @@ int main(int argc, char **argv) {
 
       // Ensure that the argument to the -plugin_name option was provided
       if ( argc-iarg < 2 ) {
-	mpi_error("The -plugin_name argument was not provided.");
+        mpi_error("The -plugin_name argument was not provided.");
       }
 
       // Set driver_nranks
