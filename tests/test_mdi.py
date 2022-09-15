@@ -195,6 +195,39 @@ def test_cxx_cxx_plug(valgrind, manager, driver_dir, engine_dir):
     assert driver_out == expected
     assert driver_proc.returncode == 0
 
+def test_cxx_cxx_noplug(valgrind, manager, driver_dir, engine_dir):
+
+    # get the name of the driver code, which includes a .exe extension on Windows
+    build_path = os.path.join( driver_dir, "driver_plug_cxx" )
+    driver_name = glob.glob(build_path + "*")[0]
+
+
+    # run the calculation
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-driver_nranks", "0",
+                  "-plugin_nranks", "1",
+                  "-plugin_name", "engine_cxx",
+                  "-earlyreturn",
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    driver_tup = driver_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == ""
+    assert driver_proc.returncode == 0
+
 def test_cxx_cxx_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
     # get the name of the driver code, which includes a .exe extension on Windows

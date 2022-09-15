@@ -115,16 +115,37 @@ const int MDI_ENGINE    = MDI_ENGINE_;
 int MDI_Init(int* argc, char*** argv)
 {
   int ret;
-  ret = MDI_Init_code();
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init_code: MDI_Init_with_argv failed");
-    return ret;
+
+  // Check whether the --mdi option was provided
+  int argc_in = *argc;
+  char** argv_in = *argv;
+  int iarg;
+  int found_mdi = 0;
+  for (iarg=0; iarg < argc_in; iarg++) {
+    if (strcmp(argv_in[iarg],"-mdi") == 0) {
+      found_mdi = 1;
+    }
+    else if (strcmp(argv_in[iarg],"--mdi") == 0) {
+      found_mdi = 1;
+    }
   }
-  ret = MDI_Init_with_argv(argc, argv);
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init: MDI_Init_with_argv failed");
-    return ret;
+
+  // The --mdi option was provided, so initialize MDI
+  if ( found_mdi == 1 ) {
+
+    ret = MDI_Init_code();
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init_code: MDI_Init_with_argv failed");
+      return ret;
+    }
+    ret = MDI_Init_with_argv(argc, argv);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init: MDI_Init_with_argv failed");
+      return ret;
+    }
+
   }
+
   return 0;
 }
 
@@ -2089,8 +2110,25 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
     return ret;
   }
 
-  ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
-                                driver_node_callback, driver_callback_object);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Launch_plugin: get_current_code failed");
+    return 1;
+  }
+
+  // If this is a Fortran code, convert the MPI communicator
+  void* mpi_comm_ptr_use = mpi_comm_ptr;
+  if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Fint* f_comm_ptr = (MPI_Fint*) mpi_comm_ptr;
+    MPI_Comm c_comm = MPI_Comm_f2c( *f_comm_ptr );
+    mpi_comm_ptr_use = (void*)(&c_comm);
+  }
+
+  ret = library_launch_plugin(plugin_name, options,
+                                mpi_comm_ptr_use,
+                                driver_node_callback,
+                                driver_callback_object);
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Launch_plugin: second mdi_debug failed");
     return ret;
