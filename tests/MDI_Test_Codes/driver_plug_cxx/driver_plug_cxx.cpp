@@ -92,7 +92,10 @@ int main(int argc, char **argv) {
   }
   
   // If the earlyreturn flag was set, return now
-  if ( earlyreturn ) { return 0; }
+  if ( earlyreturn ) {
+    MPI_Finalize();
+    return 0;
+  }
 
   // Confirm that MDI was initialized successfully
   int initialized_mdi;
