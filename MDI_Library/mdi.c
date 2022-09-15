@@ -115,16 +115,37 @@ const int MDI_ENGINE    = MDI_ENGINE_;
 int MDI_Init(int* argc, char*** argv)
 {
   int ret;
-  ret = MDI_Init_code();
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init_code: MDI_Init_with_argv failed");
-    return ret;
+
+  // Check whether the --mdi option was provided
+  int argc_in = *argc;
+  char** argv_in = *argv;
+  int iarg;
+  int found_mdi = 0;
+  for (iarg=0; iarg < argc_in; iarg++) {
+    if (strcmp(argv_in[iarg],"-mdi") == 0) {
+      found_mdi = 1;
+    }
+    else if (strcmp(argv_in[iarg],"--mdi") == 0) {
+      found_mdi = 1;
+    }
   }
-  ret = MDI_Init_with_argv(argc, argv);
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Init: MDI_Init_with_argv failed");
-    return ret;
+
+  // The --mdi option was provided, so initialize MDI
+  if ( found_mdi == 1 ) {
+
+    ret = MDI_Init_code();
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init_code: MDI_Init_with_argv failed");
+      return ret;
+    }
+    ret = MDI_Init_with_argv(argc, argv);
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Init: MDI_Init_with_argv failed");
+      return ret;
+    }
+
   }
+
   return 0;
 }
 
