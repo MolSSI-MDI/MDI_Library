@@ -2110,8 +2110,25 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
     return ret;
   }
 
-  ret = library_launch_plugin(plugin_name, options, mpi_comm_ptr,
-                                driver_node_callback, driver_callback_object);
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Launch_plugin: get_current_code failed");
+    return 1;
+  }
+
+  // If this is a Fortran code, convert the MPI communicator
+  void* mpi_comm_ptr_use = mpi_comm_ptr;
+  if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Fint* f_comm_ptr = (MPI_Fint*) mpi_comm_ptr;
+    MPI_Comm c_comm = MPI_Comm_f2c( *f_comm_ptr );
+    mpi_comm_ptr_use = (void*)(&c_comm);
+  }
+
+  ret = library_launch_plugin(plugin_name, options,
+                                mpi_comm_ptr_use,
+                                driver_node_callback,
+                                driver_callback_object);
   if ( ret != 0 ) {
     mdi_error("Error in MDI_Launch_plugin: second mdi_debug failed");
     return ret;
