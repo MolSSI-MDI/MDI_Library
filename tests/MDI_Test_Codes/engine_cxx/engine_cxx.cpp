@@ -119,19 +119,8 @@ int MDI_Plugin_init_engine_cxx(void* plugin_state) {
 }
 
 
-int MDI_Plugin_open_engine_cxx() {
-  // Get the command-line arguments for this plugin instance
-  int mdi_argc;
-  if ( MDI_Plugin_get_argc(&mdi_argc) ) {
-    throw std::runtime_error("MDI_Plugin_get_argc failed.");
-  }
-  char** mdi_argv;
-  if ( MDI_Plugin_get_argv(&mdi_argv) ) {
-    throw std::runtime_error("MDI_Plugin_get_argv failed.");
-  }
-
-  // Call MDI_Init
-  MDI_Init(&mdi_argc, &mdi_argv);
+int MDI_Plugin_open_engine_cxx(void* plugin_state) {
+  MDI_Set_plugin_state(plugin_state);
 
   // Get the MPI intra-communicator for this code
   MPI_Comm mpi_world_comm = MPI_COMM_WORLD;

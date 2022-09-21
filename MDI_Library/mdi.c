@@ -2168,7 +2168,7 @@ int MDI_Open_plugin(const char* plugin_name, const char* options, void* mpi_comm
                                    mdi_comm_ptr);
   return ret;
 #else
-  mdi_error("MDI_Ilaunch_plugin was called, but this build of the MDI Library was built without plugin support.");
+  mdi_error("MDI_Open_plugin was called, but this build of the MDI Library was built without plugin support.");
   return 1;
 #endif
 }
@@ -2584,6 +2584,7 @@ int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, voi
 }
 
 
+
 /*! \brief Get the language execute_command function needed by a language wrapper
  *
  * The function returns a function pointer to the execute_command function.
@@ -2605,3 +2606,44 @@ int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*) {
 }
 
 
+/*! \brief Get the language driver callback needed by a language wrapper
+ *
+ * The function returns a function pointer to the driver callback function.
+ *
+ * \param [out]      callback
+ *                   Driver callback
+ * \param [in]       comm
+ *                   MDI communicator
+ */
+MDI_Driver_node_callback_t MDI_Get_language_driver_callback() {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Get_language_driver_callback: get_current_code failed");
+    //return ret;
+  }
+  return this_code->driver_callback_actual;
+}
+
+
+/*! \brief Set the language-specific driver_callback function needed by a language wrapper
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       callback
+ *                   Driver callback
+ */
+int MDI_Set_language_driver_callback(MDI_Driver_node_callback_t callback) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Set_language_driver_callback: get_current_code failed");
+    return ret;
+  }
+  this_code->driver_callback_actual = callback;
+  return 0;
+}
