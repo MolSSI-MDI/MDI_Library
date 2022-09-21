@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 12
+#define MDI_PATCH_VERSION_ 13
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -167,6 +167,8 @@ typedef struct code_struct {
   void* shared_state_from_driver;
   /*! \brief Hostname of the driver */
   char* hostname;
+  /*! \brief Function pointer to the actual callback for the driver */
+  int (*driver_callback_actual)(void*, int, void*);
   /*! \brief Function pointer to the language-specific wrapper for the execute_command function */
   int (*execute_command_wrapper)(const char*, MDI_Comm_Type, void*);
   /*! \brief Function pointer to the generic execute_command_function */

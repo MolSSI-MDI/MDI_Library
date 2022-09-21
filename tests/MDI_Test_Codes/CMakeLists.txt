@@ -96,6 +96,7 @@ if ( use_Fortran )
 
    if ( test_drivers )
       add_subdirectory(driver_f90)
+      add_subdirectory(driver_plug_f90)
    endif()
 
    if ( test_engines )
