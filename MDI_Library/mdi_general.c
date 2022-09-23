@@ -746,6 +746,14 @@ int general_recv_command(char* buf, MDI_Comm comm) {
     return ret;
   }
 
+  // for nested plugins, it is important to update the current code now
+  // if a new code was allocated and the codes vector was changed, "this_code" could be outdated
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_recv_command: second get_current_code failed");
+    return 1;
+  }
+
   // only receive on rank 0
   if ( this_code->intra_rank != 0 ) {
     return 0;

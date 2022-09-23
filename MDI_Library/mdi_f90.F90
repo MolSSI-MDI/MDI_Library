@@ -5,6 +5,7 @@ MODULE MDI_GLOBAL
    INTEGER(KIND=C_INT), PARAMETER :: COMMAND_LENGTH = 256
    INTEGER(KIND=C_INT), PARAMETER :: NAME_LENGTH    = 256
    INTEGER(KIND=C_INT), PARAMETER :: LABEL_LENGTH   = 64
+   INTEGER(KIND=C_INT), PARAMETER :: PLUGIN_PATH_LENGTH = 2048
 
 END MODULE
 
@@ -26,30 +27,31 @@ MODULE MDI_INTERNAL
     FUNCTION execute_command_correct(buf, comm, class_obj)
       USE ISO_C_BINDING
       USE MDI_GLOBAL
-!      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
-!      INTEGER(KIND=C_INT), VALUE               :: comm
       CHARACTER(LEN=*), INTENT(IN) :: buf
-!      CHARACTER(LEN=1), INTENT(IN) :: buf(COMMAND_LENGTH)
       INTEGER, INTENT(IN)          :: comm
-      TYPE(C_PTR), VALUE                       :: class_obj
-      INTEGER(KIND=C_INT)       :: execute_command_correct
+      TYPE(C_PTR), VALUE           :: class_obj
+      INTEGER(KIND=C_INT)          :: execute_command_correct
     END FUNCTION execute_command_correct
   END INTERFACE
 
   ABSTRACT INTERFACE
-    FUNCTION execute_command_write(buf, comm, class_obj)
+    FUNCTION driver_plugin_callback(mpi_comm, mdi_comm, class_obj)
       USE ISO_C_BINDING
       USE MDI_GLOBAL
-!      CHARACTER(LEN=1, KIND=C_CHAR), TARGET    :: buf(COMMAND_LENGTH)
-!      CHARACTER(LEN=*), INTENT(IN) :: buf
-      CHARACTER(LEN=1), INTENT(IN) :: buf(COMMAND_LENGTH)
-      INTEGER, INTENT(IN)          :: comm
-      TYPE(C_PTR), VALUE                       :: class_obj
-      INTEGER(KIND=C_INT)       :: execute_command_write
-    END FUNCTION execute_command_write
+      INTEGER, VALUE                  :: mpi_comm
+      INTEGER, VALUE                  :: mdi_comm
+      TYPE(C_PTR), VALUE, INTENT(IN)  :: class_obj
+      INTEGER(KIND=C_INT)             :: driver_plugin_callback
+    END FUNCTION driver_plugin_callback
   END INTERFACE
 
   INTERFACE
+
+     FUNCTION MDI_MPI_get_world_comm_(world_comm) bind(c, name="MDI_MPI_get_world_comm")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: world_comm
+       INTEGER(KIND=C_INT)                      :: MDI_MPI_get_world_comm_
+     END FUNCTION MDI_MPI_get_world_comm_
 
      FUNCTION MDI_Set_Execute_Command_Func_c(command_func, class_obj) bind(c, name="MDI_Set_Execute_Command_Func")
        USE ISO_C_BINDING
@@ -57,6 +59,33 @@ MODULE MDI_INTERNAL
        TYPE(C_PTR), VALUE                       :: class_obj
        INTEGER(KIND=C_INT)                      :: MDI_Set_Execute_Command_Func_c
      END FUNCTION MDI_Set_Execute_Command_Func_c
+
+     FUNCTION MDI_Launch_plugin_c(plugin_name, options, mpi_comm_ptr, &
+         driver_callback_func, class_obj) bind(c, name="MDI_Launch_plugin")
+       USE ISO_C_BINDING
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: plugin_name
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: options
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: mpi_comm_ptr
+       TYPE(C_FUNPTR), VALUE, INTENT(IN)        :: driver_callback_func
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: class_obj
+       INTEGER(KIND=C_INT)                      :: MDI_Launch_plugin_c
+     END FUNCTION MDI_Launch_plugin_c
+
+     FUNCTION MDI_Open_plugin_c(plugin_name, options, mpi_comm_ptr, &
+         mdi_comm_ptr) bind(c, name="MDI_Open_plugin")
+       USE ISO_C_BINDING
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: plugin_name
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: options
+       TYPE(C_PTR), VALUE, INTENT(IN)           :: mpi_comm_ptr
+       TYPE(C_PTR), VALUE                       :: mdi_comm_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Open_plugin_c
+     END FUNCTION MDI_Open_plugin_c
+
+     FUNCTION MDI_Close_plugin_c(mdi_comm) bind(c, name="MDI_Close_plugin")
+       USE ISO_C_BINDING
+       INTEGER(KIND=C_INT), VALUE               :: mdi_comm
+       INTEGER(KIND=C_INT)                      :: MDI_Close_plugin_c
+     END FUNCTION MDI_Close_plugin_c
 
      FUNCTION MDI_Set_on_destroy_code_c(on_destroy_func) bind(c, name="MDI_Set_on_destroy_code")
        USE ISO_C_BINDING
@@ -83,15 +112,26 @@ MODULE MDI_INTERNAL
      FUNCTION MDI_Get_language_execute_command_(comm) bind(c, name="MDI_Get_language_execute_command")
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT), VALUE               :: comm
-       !TYPE(C_FUNPTR), VALUE                       :: execute_command_ptr
-       !INTEGER(KIND=C_INT)                      :: MDI_Get_language_execute_command_
        TYPE(C_FUNPTR)                           :: MDI_Get_language_execute_command_
      END FUNCTION MDI_Get_language_execute_command_
 
+     FUNCTION MDI_Set_language_driver_callback_(func_ptr) bind(c, name="MDI_Set_language_driver_callback")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_FUNPTR), VALUE                    :: func_ptr
+       INTEGER(KIND=C_INT)                      :: MDI_Set_language_driver_callback_
+     END FUNCTION MDI_Set_language_driver_callback_
+
+     FUNCTION MDI_Get_language_driver_callback_(comm) bind(c, name="MDI_Get_language_driver_callback")
+       USE, INTRINSIC :: iso_c_binding
+       INTEGER(KIND=C_INT), VALUE               :: comm
+       TYPE(C_FUNPTR)                           :: MDI_Get_language_driver_callback_
+     END FUNCTION MDI_Get_language_driver_callback_
 
   END INTERFACE
 
+
 CONTAINS
+
 
   FUNCTION MDI_Get_intra_rank()
     INTEGER                                  :: MDI_Get_intra_rank
@@ -164,16 +204,14 @@ CONTAINS
     INTEGER(KIND=C_INT)                      :: MDI_Execute_Command_f
     TYPE(C_PTR), VALUE                       :: class_obj
 
-    CHARACTER(LEN=COMMAND_LENGTH)        :: fbuf
+    CHARACTER(LEN=COMMAND_LENGTH)            :: fbuf
     INTEGER                                  :: commf
     INTEGER                                  :: ierr
 
-    INTEGER                                  :: i, current_code
     LOGICAL                                  :: end_string
 
     !PROCEDURE(execute_command), POINTER :: this_func => null()
     PROCEDURE(execute_command_correct), POINTER :: this_func => null()
-    !TYPE(C_FUNPTR), TARGET                      :: this_func_ptr
     TYPE(C_FUNPTR)                      :: this_func_ptr
 
     commf = comm
@@ -181,10 +219,6 @@ CONTAINS
     ! convert from C string to Fortran string
     fbuf = str_c_to_f(buf, COMMAND_LENGTH)
 
-    ! Get the correct execute_command callback
-    current_code = MDI_Get_Current_Code_()
-
-    !ierr = MDI_Get_language_execute_command_(c_loc(this_func_ptr), comm)
     this_func_ptr = MDI_Get_language_execute_command_(comm)
 
     CALL c_f_procpointer(this_func_ptr, this_func)
@@ -195,6 +229,40 @@ CONTAINS
 
   END FUNCTION MDI_Execute_Command_f
 
+
+  FUNCTION MDI_Driver_callback_f(mpi_comm_ptr, mdi_comm_c, class_obj) bind (c)
+    TYPE(C_PTR), VALUE, INTENT(IN)  :: mpi_comm_ptr
+    INTEGER(KIND=C_INT), VALUE      :: mdi_comm_c
+    TYPE(C_PTR), VALUE, INTENT(IN)  :: class_obj
+    INTEGER(KIND=C_INT)             :: MDI_Driver_callback_f
+
+    INTEGER :: ierr, mdi_comm, mpi_comm
+
+    PROCEDURE(driver_plugin_callback), POINTER :: this_func => null()
+    TYPE(C_FUNPTR)                      :: this_func_ptr
+
+    INTEGER, POINTER                :: mpi_comm_ptr_f
+
+    INTEGER(KIND=C_INT), TARGET :: cworld_comm
+
+    ! The actual MPI communicator we want is the intra_MPI_comm for the engine, which is converted into the Fortran format
+    ierr = MDI_MPI_get_world_comm_( c_loc(cworld_comm) )
+    mpi_comm = cworld_comm
+
+    !CALL c_f_pointer(mpi_comm_ptr, mpi_comm_ptr_f)
+    !mpi_comm = mpi_comm_ptr_f
+
+    mdi_comm = mdi_comm_c
+
+    this_func_ptr = MDI_Get_language_driver_callback_(mdi_comm)
+
+    CALL c_f_procpointer(this_func_ptr, this_func)
+
+    ierr = this_func(mpi_comm, mdi_comm, class_obj)
+
+    MDI_Driver_callback_f = ierr
+
+  END FUNCTION MDI_Driver_callback_f
 
 END MODULE
 
@@ -438,12 +506,6 @@ MODULE MDI
        TYPE(C_PTR), VALUE                       :: callback
        INTEGER(KIND=C_INT)                      :: MDI_Get_Callback_
      END FUNCTION MDI_Get_Callback_
-
-     FUNCTION MDI_MPI_get_world_comm_(world_comm) bind(c, name="MDI_MPI_get_world_comm")
-       USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE                       :: world_comm
-       INTEGER(KIND=C_INT)                      :: MDI_MPI_get_world_comm_
-     END FUNCTION MDI_MPI_get_world_comm_
 
      FUNCTION MDI_MPI_set_world_comm_(world_comm) bind(c, name="MDI_MPI_set_world_comm")
        USE, INTRINSIC :: iso_c_binding
@@ -1098,6 +1160,8 @@ CONTAINS
     END SUBROUTINE MDI_Get_Callback
 
     SUBROUTINE MDI_MPI_get_world_comm(fworld_comm, ierr)
+      USE MDI_INTERNAL, ONLY : MDI_MPI_get_world_comm_
+
       IMPLICIT NONE
 #if MDI_WINDOWS
       !GCC$ ATTRIBUTES DLLEXPORT :: MDI_MPI_get_world_comm
@@ -1217,6 +1281,85 @@ CONTAINS
       ierr = MDI_Set_Execute_Command_Func_c( c_funloc(MDI_Execute_Command_f), class_obj )
 
     END SUBROUTINE MDI_Set_Execute_Command_Func
+
+
+
+    SUBROUTINE MDI_Launch_plugin(plugin_name, options, mpi_comm, &
+        driver_callback_func, class_obj, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Launch_plugin_c, &
+            MDI_Driver_callback_f, MDI_Set_language_driver_callback_
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Launch_plugin
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Launch_plugin
+#endif
+      CHARACTER(LEN=*), INTENT(IN)            :: plugin_name
+      CHARACTER(LEN=*), INTENT(IN)            :: options
+      INTEGER, INTENT(IN), TARGET             :: mpi_comm
+      TYPE(C_FUNPTR), VALUE, INTENT(IN)       :: driver_callback_func
+      TYPE(C_PTR), VALUE                      :: class_obj
+      INTEGER, INTENT(OUT)                    :: ierr
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET   :: plugin_name_c(PLUGIN_PATH_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET   :: options_c(PLUGIN_PATH_LENGTH)
+
+      plugin_name_c = str_f_to_c(plugin_name, PLUGIN_PATH_LENGTH)
+      options_c = str_f_to_c(options, PLUGIN_PATH_LENGTH)
+
+      ierr = MDI_Set_language_driver_callback_( driver_callback_func )
+
+      ierr = MDI_Launch_plugin_c( c_loc(plugin_name_c), &
+        c_loc(options_c), c_loc(mpi_comm), &
+        c_funloc(MDI_Driver_callback_f), class_obj)
+    END SUBROUTINE MDI_Launch_plugin
+
+
+
+    SUBROUTINE MDI_Open_plugin(plugin_name, options, mpi_comm, &
+        mdi_comm, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_f_to_c, MDI_Open_plugin_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Open_plugin
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Open_plugin
+#endif
+      CHARACTER(LEN=*), INTENT(IN)            :: plugin_name
+      CHARACTER(LEN=*), INTENT(IN)            :: options
+      INTEGER, INTENT(IN), TARGET             :: mpi_comm
+      INTEGER, INTENT(OUT)                    :: mdi_comm
+      INTEGER, INTENT(OUT)                    :: ierr
+
+      INTEGER(KIND=C_INT), TARGET             :: mdi_comm_c
+
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET   :: plugin_name_c(PLUGIN_PATH_LENGTH)
+      CHARACTER(LEN=1, KIND=C_CHAR), TARGET   :: options_c(PLUGIN_PATH_LENGTH)
+
+      plugin_name_c = str_f_to_c(plugin_name, PLUGIN_PATH_LENGTH)
+      options_c = str_f_to_c(options, PLUGIN_PATH_LENGTH)
+
+      ierr = MDI_Open_plugin_c( c_loc(plugin_name_c), &
+        c_loc(options_c), c_loc(mpi_comm), &
+        c_loc(mdi_comm_c))
+      mdi_comm = mdi_comm_c
+    END SUBROUTINE MDI_Open_plugin
+
+
+
+    SUBROUTINE MDI_Close_plugin(comm, ierr)
+      USE ISO_C_BINDING
+      USE MDI_INTERNAL, ONLY : str_c_to_f, MDI_Close_plugin_c
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Close_plugin
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Close_plugin
+#endif
+      INTEGER, INTENT(IN)                      :: comm
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      ierr = MDI_Close_plugin_c( comm )
+
+    END SUBROUTINE MDI_Close_plugin
+
+
 
     SUBROUTINE MDI_Set_plugin_state(state_ptr, ierr)
       USE MDI_INTERNAL, ONLY : MDI_On_destroy_code_f, MDI_Set_on_destroy_code_c

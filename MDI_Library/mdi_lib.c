@@ -152,10 +152,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
 
   if ( command_bcast[0] == '<' ) {
     // execute the command, so that the data from the engine can be received later by the driver
-    //ret = library_execute_command(comm);
-
     libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
-
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
@@ -184,10 +181,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   }
   else {
     // this is a command that neither sends nor receives data, so execute it now
-    //ret = library_execute_command(comm);
-
     libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
-
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute command through library");
@@ -247,8 +241,23 @@ int plug_on_recv_command(MDI_Comm comm) {
   libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, 
                                             libd->shared_state->driver_code_id );
 
-  //void* class_obj = driver_lib->driver_callback_obj;
-  ret = libd->shared_state->driver_node_callback(libd->shared_state->mpi_comm_ptr, libd->shared_state->driver_mdi_comm, libd->shared_state->driver_callback_obj);
+  // update "this_code"
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_recv_command: second get_current_code failed");
+    return 1;
+  }
+
+  void* mpi_ptr = libd->shared_state->mpi_comm_ptr;
+  /*
+  if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Comm* mpi_comm_ptr_cast = (MPI_Comm*)mpi_ptr;
+    MPI_Fint f_comm = MPI_Comm_c2f( *mpi_comm_ptr_cast );
+    mpi_ptr = (void*)(&f_comm);
+  }
+  */
+
+  ret = libd->shared_state->driver_node_callback(mpi_ptr, libd->shared_state->driver_mdi_comm, libd->shared_state->driver_callback_obj);
   if ( ret != 0 ) {
     mdi_error("PLUG error in on_recv_command: driver_node_callback failed");
     return ret;
@@ -630,7 +639,16 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
     mdi_error("Error in library_open_plugin: get_current_code failed");
     return 1;
   }
-  MPI_Comm mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
+
+  // if necessary, convert the mpi_comm_ptr to C format
+  MPI_Comm mpi_comm;
+  if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
+    MPI_Fint* f_comm_ptr = (MPI_Fint*) mpi_comm_ptr;
+    mpi_comm = MPI_Comm_f2c( *f_comm_ptr );
+  }
+  else {
+    mpi_comm = *(MPI_Comm*) mpi_comm_ptr;
+  }
 
   // initialize a communicator for the driver
   int icomm = library_initialize();
@@ -650,11 +668,34 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
     return -1;
   }
 
+  // Set the driver callback function to be used by this plugin instance
+  libd->driver_callback_obj = NULL;
+  libd->driver_node_callback = NULL;
+
   // Set the mpi communicator associated with this plugin instance
   libd->mpi_comm = mpi_comm;
 
+  // allocate data that is shared between the driver and the plugin
+  libd->shared_state = malloc(sizeof(plugin_shared_state));
+  libd->shared_state->plugin_argc = 0;
+  libd->shared_state->plugin_argv_allocated = 0;
+  libd->shared_state->buf_allocated = 0;
+  libd->shared_state->driver_code_id = codes.current_key;
+  libd->shared_state->engine_language = MDI_LANGUAGE_C;
+  libd->shared_state->python_interpreter_initialized = 0;
+  libd->shared_state->driver_codes_ptr = &codes;
+  libd->shared_state->driver_version[0] = MDI_MAJOR_VERSION;
+  libd->shared_state->driver_version[1] = MDI_MINOR_VERSION;
+  libd->shared_state->driver_version[2] = MDI_PATCH_VERSION;
+
   // Parse plugin command-line options
   library_parse_options(options, libd);
+
+  libd->shared_state->mpi_comm_ptr = &libd->mpi_comm;
+  libd->shared_state->driver_node_callback = libd->driver_node_callback;
+  libd->shared_state->driver_mdi_comm = driver_comm->id;
+  libd->shared_state->driver_activate_code = library_activate_code;
+  libd->shared_state->driver_callback_obj = libd->driver_callback_obj;
 
   // Assign the global command-line options variables to the values for this plugin  
   //plugin_argc = libd->shared_state->plugin_argc;
@@ -675,7 +716,7 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   /*************** BEGIN PLUGIN MODE ***************/
   /*************************************************/
 
-  library_load_init(plugin_name, mpi_comm_ptr, libd, 1);
+  library_load_init(plugin_name, &mpi_comm, libd, 1);
   if ( ret != 0 ) {
     free( plugin_path );
     free( plugin_init_name );
@@ -937,7 +978,6 @@ int library_execute_command(MDI_Comm comm) {
     // call execute_command now
     //void* class_obj = engine_code->execute_command_obj;
     void* class_obj = libd->shared_state->execute_command_obj;
-    //ret = engine_code->execute_command(engine_lib->command,engine_comm_handle,class_obj);
     ret = libd->shared_state->execute_command_wrapper(libd->shared_state->command, engine_comm_handle, class_obj);
   }
 
@@ -1072,12 +1112,8 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   // check whether the recipient code should now execute its command
   if ( msg_flag == 2 && libd->execute_on_send ) {
     // have the recipient code execute its command
-    //library_execute_command(comm);
-
     libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
-
     libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
-
     libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, libd->shared_state->driver_code_id );
 
     // turn off the execute_on_send flag
