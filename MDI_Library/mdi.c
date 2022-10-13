@@ -2229,6 +2229,26 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
   this_code->execute_command_wrapper = generic_command;
   this_code->execute_command_obj = class_object;
   this_code->called_set_execute_command_func = 1;
+
+  // loop over all library communicators, and set their value of execute_command
+  // depending on the order the plugin calls MDI functions, this might instead happen
+  //    when the library-side communicator is initialized
+  int icomm;
+  for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
+    communicator* comm;
+    ret = vector_get( this_code->comms, icomm, (void**)&comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Set_language_execute_command: vector_get failed");
+      return ret;
+    }
+
+    if ( comm->method_id == MDI_LINK ) {
+      library_data* libd = (library_data*) comm->method_data;
+      libd->shared_state->execute_command_wrapper = this_code->execute_command_wrapper;
+      libd->shared_state->execute_command_obj = this_code->execute_command_obj;
+    }
+  }
+
   return 0;
 }
 
@@ -2580,6 +2600,25 @@ int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, voi
     return ret;
   }
   this_code->execute_command = execute_command;
+
+  // loop over all library communicators, and set their value of execute_command
+  // depending on the order the plugin calls MDI functions, this might instead happen
+  //    when the library-side communicator is initialized
+  int icomm;
+  for (icomm = 0; icomm < this_code->comms->size; icomm++ ) {
+    communicator* comm;
+    ret = vector_get( this_code->comms, icomm, (void**)&comm );
+    if ( ret != 0 ) {
+      mdi_error("Error in MDI_Set_language_execute_command: vector_get failed");
+      return ret;
+    }
+
+    if ( comm->method_id == MDI_LINK ) {
+      library_data* libd = (library_data*) comm->method_data;
+      libd->shared_state->execute_command = this_code->execute_command;
+    }
+  }
+
   return 0;
 }
 

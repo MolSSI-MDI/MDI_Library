@@ -868,6 +868,8 @@ def test_py_cxx_plug(valgrind, manager, driver_dir, engine_dir):
     expected = '''I am engine instance: 1
  Engine name: MM
  natoms: 10
+ Opened engine name: MM
+ natoms: 10
 '''
 
     assert driver_err == ""
@@ -904,6 +906,8 @@ def test_py_cxx_plug_mpi(valgrind, manager, driver_dir, engine_dir):
 
     expected = '''I am engine instance: 1
  Engine name: MM
+ natoms: 10
+ Opened engine name: MM
  natoms: 10
 '''
 
