@@ -153,7 +153,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   if ( command_bcast[0] == '<' ) {
     // execute the command, so that the data from the engine can be received later by the driver
     libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr, libd->shared_state->engine_code_id );
-    libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
+    ret = libd->shared_state->lib_execute_command(libd->shared_state->engine_mdi_comm);
     if ( ret != 0 ) {
       mdi_error("Error in MDI_Send_Command: Unable to execute receive command through library");
       free( command_bcast );
@@ -840,6 +840,14 @@ int library_initialize() {
     this_code->plugin_argv_ptr = &libd->shared_state->plugin_argv;
     this_code->plugin_unedited_options_ptr = &libd->shared_state->plugin_unedited_options;
 
+    // if the plugin has already called MDI_Set_execute_command_func, set these values for the library
+    // otherwise, these values will be set when MDI_Set_execute_command_func is called
+    if ( this_code->called_set_execute_command_func ) {
+      libd->shared_state->execute_command_wrapper = this_code->execute_command_wrapper;
+      libd->shared_state->execute_command = this_code->execute_command;
+      libd->shared_state->execute_command_obj = this_code->execute_command_obj;
+    }
+
     // set the engine's mpi communicator
     libd->mpi_comm = *(MPI_Comm*)libd->shared_state->mpi_comm_ptr;
     this_code->intra_MPI_comm = libd->mpi_comm;
@@ -954,29 +962,21 @@ int library_execute_command(MDI_Comm comm) {
 
   // get the engine code to which this communicator connects
   library_data* libd = (library_data*) this->method_data;
-  //int iengine = libd->connected_code;
 
-  //MDI_Comm engine_comm_handle = library_get_matching_handle(comm);
   MDI_Comm engine_comm_handle = libd->shared_state->engine_mdi_comm;
-  //communicator* engine_comm = get_communicator(iengine, engine_comm_handle);
-  //library_data* engine_lib = (library_data*) engine_comm->method_data;
 
   // set the current code to the engine
   libd->shared_state->engine_activate_code( libd->shared_state->engine_codes_ptr,
                                             libd->shared_state->engine_code_id );
 
   // check if this command corresponds to one of MDI's standard built-in commands
-  //int builtin_flag = general_builtin_command(engine_lib->command, engine_comm_handle);
   int builtin_flag;
-  //ret = general_builtin_command(libd->shared_state->command, engine_comm_handle, &builtin_flag);
   ret = libd->shared_state->execute_builtin(libd->shared_state->command,
                                             engine_comm_handle,
                                             &builtin_flag);
-  //int builtin_flag = 0;
 
   if ( builtin_flag == 0 ) {
     // call execute_command now
-    //void* class_obj = engine_code->execute_command_obj;
     void* class_obj = libd->shared_state->execute_command_obj;
     ret = libd->shared_state->execute_command_wrapper(libd->shared_state->command, engine_comm_handle, class_obj);
   }

@@ -287,6 +287,7 @@ int new_code(size_t* code_id) {
   new_code.port = -1;
   new_code.hostname = NULL;
   new_code.debug_mode = 0;
+  new_code.execute_command = NULL;
 
   // initialize the name and role strings
   int ichar;

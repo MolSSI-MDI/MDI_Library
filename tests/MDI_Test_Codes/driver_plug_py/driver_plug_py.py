@@ -124,3 +124,23 @@ if __name__ == "__main__":
                               mpi_world,
                               code_for_plugin_instance,
                               None)
+
+
+    # Open an instance of the engine library
+    mdi_comm = mdi.MDI_Open_plugin(plugin_name,
+                          "-mdi \"-name MM -role ENGINE -method LINK\"",
+                          mpi_world)
+
+    # Determine the name of the code
+    mdi.MDI_Send_Command("<NAME", mdi_comm)
+    name = mdi.MDI_Recv(mdi.MDI_NAME_LENGTH, mdi.MDI_CHAR, mdi_comm)
+    if world_rank == 0:
+        print(" Opened engine name: " + str(name))
+
+    # Determine the number of atoms
+    mdi.MDI_Send_Command("<NATOMS", mdi_comm)
+    natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_comm)
+    if world_rank == 0:
+        print(" natoms: " + str(natoms))
+
+    mdi.MDI_Close_plugin(mdi_comm)

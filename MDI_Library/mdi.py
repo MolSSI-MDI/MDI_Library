@@ -1156,7 +1156,7 @@ def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driv
 
     # if this is a plugin code, get the plugin's MPI communicator
     c_mpi_communicator_ptr = ctypes.c_void_p()
-    if ( use_mpi4py ):
+    if ( use_mpi4py and mpi_comm is not None ):
 
         #handle_t = ctypes.c_void_p
         handle_t = ctypes.c_void_p
@@ -1171,6 +1171,52 @@ def MDI_Launch_plugin(plugin_name, options, mpi_comm, driver_callback_func, driv
         raise Exception("MDI Error: MDI_Launch_plugin failed")
 
     return ret
+
+
+# MDI_Open_plugin
+mdi.MDI_Open_plugin.argtypes = [ctypes.POINTER(ctypes.c_char),
+                                  ctypes.POINTER(ctypes.c_char),
+                                  ctypes.POINTER(ctypes.c_void_p),
+                                  ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Open_plugin.restype = ctypes.c_int
+def MDI_Open_plugin(plugin_name, options, mpi_comm):
+
+    plugin_name_c = plugin_name.encode('utf-8')
+    options_c = options.encode('utf-8')
+
+    arg_size = ctypes.sizeof(ctypes.c_int)
+    mdi_comm_ptr_c = (ctypes.c_int*arg_size)()
+
+    # if this is a plugin code, get the plugin's MPI communicator
+    c_mpi_communicator_ptr = ctypes.c_void_p()
+    if ( use_mpi4py and mpi_comm is not None ):
+
+        handle_t = ctypes.c_void_p
+        c_mpi_communicator_ptr = handle_t.from_address(MPI._addressof(mpi_comm))
+
+    ret = mdi.MDI_Open_plugin( ctypes.c_char_p(plugin_name_c),
+                                 ctypes.c_char_p(options_c),
+                                 c_mpi_communicator_ptr,
+                                 mdi_comm_ptr_c )
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Open_plugin failed")
+
+    mdi_comm_py = ctypes.cast(mdi_comm_ptr_c,
+                              ctypes.POINTER(ctypes.c_int)).contents
+
+    return mdi_comm_py
+
+
+
+# MDI_Close_plugin
+mdi.MDI_Close_plugin.argtypes = [ctypes.c_int]
+mdi.MDI_Close_plugin.restype = ctypes.c_int
+def MDI_Close_plugin(mdi_comm):
+    ret = mdi.MDI_Close_plugin(mdi_comm)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Close_plugin failed")
+    return ret
+
 
 
 # MDI_Set_plugin_state
