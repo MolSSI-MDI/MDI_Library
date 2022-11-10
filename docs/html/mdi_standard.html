@@ -344,6 +344,18 @@ EXIT</h2>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> &lt;NATOMS </code> <br  />
  <b> Format: </b> Sequentially ascending order of atomic index</dd></dl>
+<h2><a class="anchor" id="send_Monkhorst_Pack"></a>
+&gt;MONKHORST-PACK_NPOINTS</h2>
+<p>This command is typically expected for use with plane wave DFT engines. The driver sends the engine the number of k-points to generate on a Monkhorst-Pack grid. The engine then uses the k-points generated on this Monkhorst-Pack grid for all further simulations.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
+ <b> Quantity: </b> <code> 3 </code> <br  />
+ <b> Format: </b> The number of k-points to generate along each vector of the Brillouin zone, in ascending order of vector.</dd></dl>
+<h2><a class="anchor" id="send_Monkhorst_Pack"></a>
+&gt;MONKHORST-PACK_NPOINTS</h2>
+<p>This command is typically expected for use with plane wave DFT engines. The driver sends the engine a set of values that indicate the extent to which a set of k-points on a Monkhorst-Pack grid should be displaced relative to the original (non-displaced) Monkhorst-Pack grid. The engine then uses the shifted k-points for all further simulations.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> <code> 3 </code> <br  />
+ <b> Format: </b> The fraction of a grid step by which the k-points should be displaced, in ascending order of vector. A value of 0.0 indicates no displacement along the corresponding vector, while a value of 0.5 indicates a displacement of half a grid step in along the corresponding vector. Note that some engines can only support values of 0.0 or 0.5.</dd></dl>
 <h2><a class="anchor" id="send_name"></a>
 &lt;NAME</h2>
 <p>The engine sends the driver a string that corresponds to the argument of <code>-name</code> in the MDI initialization options. This argument allows a driver to identify the purpose of connected engine codes within the simulation. For example, a particular QM/MM driver might require a connection with a single MM code and a single QM code, with the expected name of the MM code being "MM" and the expected name of the QM code being "QM". After initializing MDI and accepting communicators to the engines, the driver can use this command to identify which of the engines is the MM code and which is the QM code.</p>
@@ -398,6 +410,18 @@ EXIT</h2>
 <h2><a class="anchor" id="pre-forces_node"></a>
 @PRE-FORCES</h2>
 <p>The engine proceeds to the next <code> @PRE-FORCES </code> node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@DEFAULT</code>  node.</p>
+<h2><a class="anchor" id="send_spin_polarization"></a>
+&lt;SPIN_POLARIZATION</h2>
+<p>The engine sends a value that indicates the manner in which it is currently simulating spin polarization. This command is typically intended for use with plane wave DFT engines.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
+ <b> Quantity: </b> 1 <br  />
+ <b> Format: </b> A value of 0 indicates that simulations will be performed in a non-spin-polarized manner. A value of 1 indicates that simulations will be performed in a spin-polarized manner, within the local spin density approximation (LSDA). A value of 2 indicates that simulations will be performed in a spin-polarized, noncollinear manner.</dd></dl>
+<h2><a class="anchor" id="recv_spin_polarization"></a>
+&gt;SPIN_POLARIZATION</h2>
+<p>The driver sends a value that indicates the manner in which spin polarization should be simulated by the engine. This command is typically intended for use with plane wave DFT engines.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_INT</code> <br  />
+ <b> Quantity: </b> 1 <br  />
+ <b> Format: </b> A value of 0 indicates that simulations should be performed in a non-spin-polarized manner. A value of 1 indicates that simulations should be performed in a spin-polarized manner, within the local spin density approximation (LSDA). A value of 2 indicates that simulations should be performed in a spin-polarized, noncollinear manner.</dd></dl>
 <h2><a class="anchor" id="send_stress"></a>
 &lt;STRESS</h2>
 <p>The engine sends its virial stress tensor to the driver.</p>
