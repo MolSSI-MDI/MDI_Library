@@ -524,7 +524,7 @@ The engine then uses the k-points generated on this Monkhorst-Pack grid for all 
 
 
 
-\subsection send_Monkhorst_Pack >MONKHORST-PACK_SHIFT
+\subsection send_Monkhorst_Pack_shift >MONKHORST-PACK_SHIFT
 
 This command is typically expected for use with plane wave DFT engines.
 The driver sends the engine a set of values that indicate the extent to which a set of k-points on a Monkhorst-Pack grid should be displaced relative to the original (non-displaced) Monkhorst-Pack grid.
