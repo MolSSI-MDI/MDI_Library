@@ -1,5 +1,5 @@
-\hypertarget{mdi__general_8h}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+general.h File Reference}
-\label{mdi__general_8h}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_general.h@{/repo/build/MDI\_Library/MDI\_Library/mdi\_general.h}}
+\hypertarget{mdi__general_8h}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+general.h File Reference}
+\label{mdi__general_8h}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_general.h@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_general.h}}
 
 
 Generic M\+DI function calls.  
@@ -10,6 +10,8 @@ Generic M\+DI function calls.
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+int \mbox{\hyperlink{mdi__general_8h_a4fc4e4b320cb76653202e9e5572c4b43}{general\+\_\+init\+\_\+code}} ()
+\begin{DoxyCompactList}\small\item\em Initialize a new code. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}{general\+\_\+init}} (const char $\ast$options)
 \begin{DoxyCompactList}\small\item\em Initialize communication through the M\+DI library. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a29ba5cd8b9eb5fc5e1fcbe3576333dec}{general\+\_\+accept\+\_\+communicator}} ()
@@ -22,7 +24,7 @@ int \mbox{\hyperlink{mdi__general_8h_ac26eef55a46e5a5da1f7a32be5d7bd0f}{general\
 \begin{DoxyCompactList}\small\item\em Send a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_aeeda32ecb1993508a73a5ad56a0df791}{general\+\_\+recv\+\_\+command}} (char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Receive a command of length {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH} through the M\+DI connection. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__general_8h_ab2aa020b5f84bf7d5ee4250850a45219}{general\+\_\+builtin\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__general_8h_a8366351383f206736131a3d3b1e395e5}{general\+\_\+builtin\+\_\+command}} (const char $\ast$buf, M\+D\+I\+\_\+\+Comm comm, int $\ast$flag)
 \begin{DoxyCompactList}\small\item\em Respond to a general built-\/in command. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a13565a7590af2e05f10a55bb7cf5cbff}{register\+\_\+node}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$node\+\_\+vec, const char $\ast$node\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Register a node. \end{DoxyCompactList}\item 
@@ -44,14 +46,8 @@ int \mbox{\hyperlink{mdi__general_8h_a2f215c38bbe96f46eeb41677b76a40a5}{send\+\_
 \begin{DoxyCompactList}\small\item\em Send the number of supported nodes. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__general_8h_a63440a569e9873f6c300b443e98e85dc}{get\+\_\+node\+\_\+info}} (M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Get information about the nodes of a particular code. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{mdi__general_8h_a1b1489b20de3fb01aca285b92543c3b5}{get\+\_\+node\+\_\+vector}} (M\+D\+I\+\_\+\+Comm comm)
+int \mbox{\hyperlink{mdi__general_8h_a26364a55fce8761ecf4339ba4bccdafa}{get\+\_\+node\+\_\+vector}} (M\+D\+I\+\_\+\+Comm comm, \mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$$\ast$vector\+\_\+ptr)
 \begin{DoxyCompactList}\small\item\em Get the node vector associated with a particular communicator. \end{DoxyCompactList}\end{DoxyCompactItemize}
-\doxysubsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-\mbox{\Hypertarget{mdi__general_8h_a8d9b664d1a8a97ed1354b1fff3ea94eb}\label{mdi__general_8h_a8d9b664d1a8a97ed1354b1fff3ea94eb}} 
-int($\ast$ \mbox{\hyperlink{mdi__general_8h_a8d9b664d1a8a97ed1354b1fff3ea94eb}{execute\+\_\+command}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm)
-\begin{DoxyCompactList}\small\item\em Function pointer to the generic execute\+\_\+command function. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -70,23 +66,25 @@ Generic M\+DI function calls.
 
 Accept a new M\+DI communicator. 
 
-The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}. \mbox{\Hypertarget{mdi__general_8h_ab2aa020b5f84bf7d5ee4250850a45219}\label{mdi__general_8h_ab2aa020b5f84bf7d5ee4250850a45219}} 
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}. \mbox{\Hypertarget{mdi__general_8h_a8366351383f206736131a3d3b1e395e5}\label{mdi__general_8h_a8366351383f206736131a3d3b1e395e5}} 
 \index{mdi\_general.h@{mdi\_general.h}!general\_builtin\_command@{general\_builtin\_command}}
 \index{general\_builtin\_command@{general\_builtin\_command}!mdi\_general.h@{mdi\_general.h}}
 \doxysubsubsection{\texorpdfstring{general\_builtin\_command()}{general\_builtin\_command()}}
-{\footnotesize\ttfamily int general\+\_\+builtin\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int general\+\_\+builtin\+\_\+command (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buf,  }\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{int $\ast$}]{flag }\end{DoxyParamCaption})}
 
 
 
 Respond to a general built-\/in command. 
 
-If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 1} if the command is a built-\/in command and {\ttfamily 0} otherwise.
+If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on success.
 
 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em buf} & Pointer to the buffer for the command name. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
+\hline
+\mbox{\texttt{ in}}  & {\em flag} & Returns {\ttfamily 1} if the command is a built-\/in command and {\ttfamily 0} otherwise. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}\label{mdi__general_8h_a12009556a91d0d280ff6190a6856f5df}} 
@@ -106,7 +104,17 @@ If using the \char`\"{}-\/method M\+P\+I\char`\"{} option, this function must be
 \mbox{\texttt{ in}}  & {\em options} & Options describing the communication method used to connect to codes. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}\label{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}} 
+\mbox{\Hypertarget{mdi__general_8h_a4fc4e4b320cb76653202e9e5572c4b43}\label{mdi__general_8h_a4fc4e4b320cb76653202e9e5572c4b43}} 
+\index{mdi\_general.h@{mdi\_general.h}!general\_init\_code@{general\_init\_code}}
+\index{general\_init\_code@{general\_init\_code}!mdi\_general.h@{mdi\_general.h}}
+\doxysubsubsection{\texorpdfstring{general\_init\_code()}{general\_init\_code()}}
+{\footnotesize\ttfamily int general\+\_\+init\+\_\+code (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Initialize a new code. 
+
+The function returns {\ttfamily 0} on a success. \mbox{\Hypertarget{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}\label{mdi__general_8h_a4eef11edcab5763b906eb5ee84c7ed0c}} 
 \index{mdi\_general.h@{mdi\_general.h}!general\_recv@{general\_recv}}
 \index{general\_recv@{general\_recv}!mdi\_general.h@{mdi\_general.h}}
 \doxysubsubsection{\texorpdfstring{general\_recv()}{general\_recv()}}
@@ -207,11 +215,11 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the connection to the sending code. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__general_8h_a1b1489b20de3fb01aca285b92543c3b5}\label{mdi__general_8h_a1b1489b20de3fb01aca285b92543c3b5}} 
+\mbox{\Hypertarget{mdi__general_8h_a26364a55fce8761ecf4339ba4bccdafa}\label{mdi__general_8h_a26364a55fce8761ecf4339ba4bccdafa}} 
 \index{mdi\_general.h@{mdi\_general.h}!get\_node\_vector@{get\_node\_vector}}
 \index{get\_node\_vector@{get\_node\_vector}!mdi\_general.h@{mdi\_general.h}}
 \doxysubsubsection{\texorpdfstring{get\_node\_vector()}{get\_node\_vector()}}
-{\footnotesize\ttfamily \mbox{\hyperlink{structdynamic__array__struct}{vector}}$\ast$ get\+\_\+node\+\_\+vector (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int get\+\_\+node\+\_\+vector (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm,  }\item[{\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$$\ast$}]{vector\+\_\+ptr }\end{DoxyParamCaption})}
 
 
 

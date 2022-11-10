@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi_plug_py.h Source File</title>
+<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi_plug_py.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,17 +87,11 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef MDI_PLUG_PY</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define MDI_PLUG_PY</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44">python_interpreter_initialized</a>;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keywordtype">int</span> print_traceback();</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">int</span> python_plugin_init( <span class="keyword">const</span> <span class="keywordtype">char</span>* engine_name, <span class="keyword">const</span> <span class="keywordtype">char</span>* engine_path, <span class="keywordtype">void</span>* engine_comm_ptr, <span class="keywordtype">void</span>* shared_state );</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span>* <a class="code" href="mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645">python_interpreter_dict</a>;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">int</span> print_traceback();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keywordtype">int</span> python_plugin_init( <span class="keyword">const</span> <span class="keywordtype">char</span>* engine_name, <span class="keyword">const</span> <span class="keywordtype">char</span>* engine_path, <span class="keywordtype">void</span>* engine_comm_ptr );</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="amdi__plug__py_8h_html_aefcfa5ce4e0c1567f119976f36406d44"><div class="ttname"><a href="mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44">python_interpreter_initialized</a></div><div class="ttdeci">int python_interpreter_initialized</div><div class="ttdoc">Flag whether the Python interpreter has been initialized.</div><div class="ttdef"><b>Definition:</b> mdi_plug_py.c:9</div></div>
-<div class="ttc" id="amdi__plug__py_8h_html_a3097c8a62136724cee1eb5786ace0645"><div class="ttname"><a href="mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645">python_interpreter_dict</a></div><div class="ttdeci">void * python_interpreter_dict</div><div class="ttdoc">Pointer to the original Python interpreter's dictionary. Only used for Python plugins.</div><div class="ttdef"><b>Definition:</b> mdi_plug_py.c:13</div></div>
 <!-- HTML footer for doxygen 1.8.16-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

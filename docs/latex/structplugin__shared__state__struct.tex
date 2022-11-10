@@ -1,0 +1,110 @@
+\hypertarget{structplugin__shared__state__struct}{}\doxysection{plugin\+\_\+shared\+\_\+state\+\_\+struct Struct Reference}
+\label{structplugin__shared__state__struct}\index{plugin\_shared\_state\_struct@{plugin\_shared\_state\_struct}}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a7d4a8759b2faaf50ca74aad581bc263b}\label{structplugin__shared__state__struct_a7d4a8759b2faaf50ca74aad581bc263b}} 
+char \mbox{\hyperlink{structplugin__shared__state__struct_a7d4a8759b2faaf50ca74aad581bc263b}{command}} \mbox{[}M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+T\+H\+\_\+\mbox{]}
+\begin{DoxyCompactList}\small\item\em Name of the next command to be executed on this code. This is only used by engines. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a5af02d4d58d0d64c8409c21b71b38b54}\label{structplugin__shared__state__struct_a5af02d4d58d0d64c8409c21b71b38b54}} 
+void $\ast$$\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a5af02d4d58d0d64c8409c21b71b38b54}{ext}}
+\begin{DoxyCompactList}\small\item\em For future-\/proofing, this is a pointer to any extensions to this structure. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a3f1025721b49e87870aa0940e8bd6949}\label{structplugin__shared__state__struct_a3f1025721b49e87870aa0940e8bd6949}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a3f1025721b49e87870aa0940e8bd6949}{driver\+\_\+version}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Version number of the driver. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a15665fa8755b30ba15fae0656dabbd8e}\label{structplugin__shared__state__struct_a15665fa8755b30ba15fae0656dabbd8e}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a15665fa8755b30ba15fae0656dabbd8e}{engine\+\_\+version}} \mbox{[}3\mbox{]}
+\begin{DoxyCompactList}\small\item\em Version number of the engine. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_abd56c68d54f5ec9bb446a422a06d9c49}\label{structplugin__shared__state__struct_abd56c68d54f5ec9bb446a422a06d9c49}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_abd56c68d54f5ec9bb446a422a06d9c49}{buf}}
+\begin{DoxyCompactList}\small\item\em Buffer used for communication of data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_aaf00ebade76ac8c85d86cc48f9a68b1e}\label{structplugin__shared__state__struct_aaf00ebade76ac8c85d86cc48f9a68b1e}} 
+char $\ast$$\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_aaf00ebade76ac8c85d86cc48f9a68b1e}{plugin\+\_\+argv}}
+\begin{DoxyCompactList}\small\item\em Argument vector for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a6b20b564f03098cb618892500dc58721}\label{structplugin__shared__state__struct_a6b20b564f03098cb618892500dc58721}} 
+char $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a6b20b564f03098cb618892500dc58721}{plugin\+\_\+options}}
+\begin{DoxyCompactList}\small\item\em Command-\/line options for currently running plugin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_acf740d4e3525480aa9b1316c168dd1b6}\label{structplugin__shared__state__struct_acf740d4e3525480aa9b1316c168dd1b6}} 
+char $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_acf740d4e3525480aa9b1316c168dd1b6}{plugin\+\_\+unedited\+\_\+options}}
+\begin{DoxyCompactList}\small\item\em Unedited command-\/line options for currently running plugin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a85e89abf8a930f3127466f5c8010c20f}\label{structplugin__shared__state__struct_a85e89abf8a930f3127466f5c8010c20f}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a85e89abf8a930f3127466f5c8010c20f}{mpi\+\_\+comm\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Pointer to the intra-\/communicator for the plugin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a1b2b82cfd61b7307103141f8111665cc}\label{structplugin__shared__state__struct_a1b2b82cfd61b7307103141f8111665cc}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a1b2b82cfd61b7307103141f8111665cc}{driver\+\_\+callback\+\_\+obj}}
+\begin{DoxyCompactList}\small\item\em Pointer to the class object that is used for the driver\+\_\+node\+\_\+callback function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_aa59f512cd8a034bb677379a2c57eb2f4}\label{structplugin__shared__state__struct_aa59f512cd8a034bb677379a2c57eb2f4}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_aa59f512cd8a034bb677379a2c57eb2f4}{execute\+\_\+command\+\_\+obj}}
+\begin{DoxyCompactList}\small\item\em Pointer to the class object that is passed to any call to execute\+\_\+command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a523691ac1fb6e365c6fe39f8b4954c3c}\label{structplugin__shared__state__struct_a523691ac1fb6e365c6fe39f8b4954c3c}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a523691ac1fb6e365c6fe39f8b4954c3c}{python\+\_\+interpreter\+\_\+dict}}
+\begin{DoxyCompactList}\small\item\em Pointer to the original Python interpreter\textquotesingle{}s dictionary. Only used for Python plugins. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a50ee60391ea95e083da956303a56b38b}\label{structplugin__shared__state__struct_a50ee60391ea95e083da956303a56b38b}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a50ee60391ea95e083da956303a56b38b}{driver\+\_\+codes\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Pointer to the driver\textquotesingle{}s codes vector. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_ad6924420f930140d4eec103b2e798966}\label{structplugin__shared__state__struct_ad6924420f930140d4eec103b2e798966}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_ad6924420f930140d4eec103b2e798966}{engine\+\_\+codes\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Pointer to the engine\textquotesingle{}s codes vector. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a3ae993d83a852fa28f154220f3b125ba}\label{structplugin__shared__state__struct_a3ae993d83a852fa28f154220f3b125ba}} 
+void $\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a3ae993d83a852fa28f154220f3b125ba}{engine\+\_\+nodes}}
+\begin{DoxyCompactList}\small\item\em Pointer to the engine\textquotesingle{}s nodes vector. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_ad25c1768dc7c76ff8d8778a7b3a194ed}\label{structplugin__shared__state__struct_ad25c1768dc7c76ff8d8778a7b3a194ed}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_ad25c1768dc7c76ff8d8778a7b3a194ed}{driver\+\_\+activate\+\_\+code}} )(void $\ast$, int)
+\begin{DoxyCompactList}\small\item\em Function pointer to the driver\textquotesingle{}s library\+\_\+activate\+\_\+code function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_ad6dffffc76f483dc4d842a6ca47db12e}\label{structplugin__shared__state__struct_ad6dffffc76f483dc4d842a6ca47db12e}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_ad6dffffc76f483dc4d842a6ca47db12e}{engine\+\_\+activate\+\_\+code}} )(void $\ast$, int)
+\begin{DoxyCompactList}\small\item\em Function pointer to the engine\textquotesingle{}s library\+\_\+activate\+\_\+code function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_aa469ac46783c59f19cb29ed9789850bd}\label{structplugin__shared__state__struct_aa469ac46783c59f19cb29ed9789850bd}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_aa469ac46783c59f19cb29ed9789850bd}{lib\+\_\+execute\+\_\+command}} )(M\+D\+I\+\_\+\+Comm)
+\begin{DoxyCompactList}\small\item\em Function pointer to the library execute command function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_abb3242013cc90d363b976dfd833f71da}\label{structplugin__shared__state__struct_abb3242013cc90d363b976dfd833f71da}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_abb3242013cc90d363b976dfd833f71da}{execute\+\_\+command\+\_\+wrapper}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer to a wrapper for the language-\/specific execute command function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a15ad657ed0b60a29282dc6bb5f640d81}\label{structplugin__shared__state__struct_a15ad657ed0b60a29282dc6bb5f640d81}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a15ad657ed0b60a29282dc6bb5f640d81}{execute\+\_\+builtin}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, int $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer to the engine\textquotesingle{}s function for responding to built-\/in commands. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a16e6a3e5bcac94633b2cf666439e3698}\label{structplugin__shared__state__struct_a16e6a3e5bcac94633b2cf666439e3698}} 
+int($\ast$ \mbox{\hyperlink{structplugin__shared__state__struct_a16e6a3e5bcac94633b2cf666439e3698}{delete\+\_\+engine}} )(size\+\_\+t)
+\begin{DoxyCompactList}\small\item\em Function pointer to the engine\textquotesingle{}s function to delete everything. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a9166ae6b77ed7f8b15e784dae88b9d5d}\label{structplugin__shared__state__struct_a9166ae6b77ed7f8b15e784dae88b9d5d}} 
+size\+\_\+t \mbox{\hyperlink{structplugin__shared__state__struct_a9166ae6b77ed7f8b15e784dae88b9d5d}{engine\+\_\+code\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em Engine-\/side ID of the engine code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a380e017e2898d1d181050c46a8f737b5}\label{structplugin__shared__state__struct_a380e017e2898d1d181050c46a8f737b5}} 
+size\+\_\+t \mbox{\hyperlink{structplugin__shared__state__struct_a380e017e2898d1d181050c46a8f737b5}{driver\+\_\+code\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em Driver-\/side ID of the driver code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a9c6473b07dd2b6497d90fdf96b618c5e}\label{structplugin__shared__state__struct_a9c6473b07dd2b6497d90fdf96b618c5e}} 
+M\+D\+I\+\_\+execute\+\_\+command\+\_\+type \mbox{\hyperlink{structplugin__shared__state__struct_a9c6473b07dd2b6497d90fdf96b618c5e}{execute\+\_\+command}}
+\begin{DoxyCompactList}\small\item\em Pointer to engine\textquotesingle{}s execute\+\_\+command function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a8bd6335184bc9d89f9c23dc128885128}\label{structplugin__shared__state__struct_a8bd6335184bc9d89f9c23dc128885128}} 
+M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t \mbox{\hyperlink{structplugin__shared__state__struct_a8bd6335184bc9d89f9c23dc128885128}{driver\+\_\+node\+\_\+callback}}
+\begin{DoxyCompactList}\small\item\em Function pointer to the driver node\textquotesingle{}s callback function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_ab70ac865fd13045bb122a639774fcabb}\label{structplugin__shared__state__struct_ab70ac865fd13045bb122a639774fcabb}} 
+M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{structplugin__shared__state__struct_ab70ac865fd13045bb122a639774fcabb}{driver\+\_\+mdi\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em Driver-\/side M\+DI communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a1b09d520eaad49656b5e76aff99eedd8}\label{structplugin__shared__state__struct_a1b09d520eaad49656b5e76aff99eedd8}} 
+M\+D\+I\+\_\+\+Comm \mbox{\hyperlink{structplugin__shared__state__struct_a1b09d520eaad49656b5e76aff99eedd8}{engine\+\_\+mdi\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em Engine-\/side M\+DI communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_abc85e33b3ea2cd4e4829d0837444a05b}\label{structplugin__shared__state__struct_abc85e33b3ea2cd4e4829d0837444a05b}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_abc85e33b3ea2cd4e4829d0837444a05b}{buf\+\_\+allocated}}
+\begin{DoxyCompactList}\small\item\em Flag whether buf is allocated. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a3f6368de1a278cfb4f7a46aa4c7d3384}\label{structplugin__shared__state__struct_a3f6368de1a278cfb4f7a46aa4c7d3384}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a3f6368de1a278cfb4f7a46aa4c7d3384}{plugin\+\_\+argc}}
+\begin{DoxyCompactList}\small\item\em Argument count for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a2566c68d4287cab3459b7e04b8d9d0f9}\label{structplugin__shared__state__struct_a2566c68d4287cab3459b7e04b8d9d0f9}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a2566c68d4287cab3459b7e04b8d9d0f9}{plugin\+\_\+argv\+\_\+allocated}}
+\begin{DoxyCompactList}\small\item\em Flag whether plugin\+\_\+argv is allocted for this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_aff1bd500f94b316491923424411dad9b}\label{structplugin__shared__state__struct_aff1bd500f94b316491923424411dad9b}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_aff1bd500f94b316491923424411dad9b}{intra\+\_\+rank}}
+\begin{DoxyCompactList}\small\item\em M\+PI rank of this process within the plugin ~\newline
+ \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a8fb02e4aafacb09ea53e2d84fdcb9964}\label{structplugin__shared__state__struct_a8fb02e4aafacb09ea53e2d84fdcb9964}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a8fb02e4aafacb09ea53e2d84fdcb9964}{engine\+\_\+language}}
+\begin{DoxyCompactList}\small\item\em Flag whether the engine is a Python code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structplugin__shared__state__struct_a74a66655bf09338793908bbf49f74afa}\label{structplugin__shared__state__struct_a74a66655bf09338793908bbf49f74afa}} 
+int \mbox{\hyperlink{structplugin__shared__state__struct_a74a66655bf09338793908bbf49f74afa}{python\+\_\+interpreter\+\_\+initialized}}
+\begin{DoxyCompactList}\small\item\em Flag whether the Python interpreter has been initialized. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__lib_8h}{mdi\+\_\+lib.\+h}}\end{DoxyCompactItemize}

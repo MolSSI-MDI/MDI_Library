@@ -1,16 +1,17 @@
 var searchData=
 [
-  ['plugin_5fargc_538',['plugin_argc',['../structlibrary__data__struct.html#a18176e4d1f8a830005d16016e9646be6',1,'library_data_struct::plugin_argc()'],['../mdi__global_8c.html#aa56537b3bb1c33766d2c001e9c417fa8',1,'plugin_argc():&#160;mdi_global.c'],['../mdi__global_8h.html#aa56537b3bb1c33766d2c001e9c417fa8',1,'plugin_argc():&#160;mdi_global.c']]],
-  ['plugin_5fargv_539',['plugin_argv',['../structlibrary__data__struct.html#a97d57ba6dd773c48344871d3d4c6f9b9',1,'library_data_struct::plugin_argv()'],['../mdi__global_8c.html#ae2c956cb23ba46561ddd45ebe86fe017',1,'plugin_argv():&#160;mdi_global.c'],['../mdi__global_8h.html#ae2c956cb23ba46561ddd45ebe86fe017',1,'plugin_argv():&#160;mdi_global.c']]],
-  ['plugin_5fargv_5fallocated_540',['plugin_argv_allocated',['../structlibrary__data__struct.html#aad7a705a750f4ea8d8ae03cbf6313b89',1,'library_data_struct']]],
-  ['plugin_5fhandle_541',['plugin_handle',['../structlibrary__data__struct.html#a11ce13912407d0f389705bc4249bef42',1,'library_data_struct']]],
-  ['plugin_5finit_542',['plugin_init',['../structlibrary__data__struct.html#ab6048ef1b522e466ac1a6bd8d63e096b',1,'library_data_struct']]],
-  ['plugin_5fmode_543',['plugin_mode',['../mdi__global_8c.html#a986dc95b20aa73f843b59a335480d995',1,'plugin_mode():&#160;mdi_global.c'],['../mdi__global_8h.html#a986dc95b20aa73f843b59a335480d995',1,'plugin_mode():&#160;mdi_global.c']]],
-  ['plugin_5foptions_544',['plugin_options',['../mdi__global_8c.html#ad54b921aece5d4b50db9b18b28ea14f1',1,'plugin_options():&#160;mdi_global.c'],['../mdi__global_8h.html#ad54b921aece5d4b50db9b18b28ea14f1',1,'plugin_options():&#160;mdi_global.c']]],
-  ['plugin_5fpath_545',['plugin_path',['../structcode__struct.html#ab9121b32657cf3175782b87ef50e677d',1,'code_struct']]],
-  ['plugin_5funedited_5foptions_546',['plugin_unedited_options',['../mdi__global_8c.html#a8205f3c7213163e84a9071830f7e7b43',1,'plugin_unedited_options():&#160;mdi_global.c'],['../mdi__global_8h.html#a8205f3c7213163e84a9071830f7e7b43',1,'plugin_unedited_options():&#160;mdi_global.c']]],
-  ['port_547',['port',['../mdi__tcp_8c.html#a63c89c04d1feae07ca35558055155ffb',1,'port():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#a63c89c04d1feae07ca35558055155ffb',1,'port():&#160;mdi_tcp.c']]],
-  ['python_5finterpreter_5fdict_548',['python_interpreter_dict',['../mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645',1,'mdi_plug_py.c']]],
-  ['python_5finterpreter_5finitialized_549',['python_interpreter_initialized',['../mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44',1,'mdi_plug_py.c']]],
-  ['python_5fplugin_5fmpi_5fworld_5fptr_550',['python_plugin_mpi_world_ptr',['../mdi__global_8c.html#a996b501922da600d9da916888e4fd023',1,'python_plugin_mpi_world_ptr():&#160;mdi_global.c'],['../mdi__global_8h.html#a996b501922da600d9da916888e4fd023',1,'python_plugin_mpi_world_ptr():&#160;mdi_global.c']]]
+  ['plugin_5fargc_613',['plugin_argc',['../structplugin__shared__state__struct.html#a3f6368de1a278cfb4f7a46aa4c7d3384',1,'plugin_shared_state_struct']]],
+  ['plugin_5fargc_5fptr_614',['plugin_argc_ptr',['../structcode__struct.html#a280e0b5408ad4e489e2d7b39adf220de',1,'code_struct']]],
+  ['plugin_5fargv_615',['plugin_argv',['../structplugin__shared__state__struct.html#aaf00ebade76ac8c85d86cc48f9a68b1e',1,'plugin_shared_state_struct']]],
+  ['plugin_5fargv_5fallocated_616',['plugin_argv_allocated',['../structplugin__shared__state__struct.html#a2566c68d4287cab3459b7e04b8d9d0f9',1,'plugin_shared_state_struct']]],
+  ['plugin_5fargv_5fptr_617',['plugin_argv_ptr',['../structcode__struct.html#a5c759617d8e1eeb69c75883d44f10275',1,'code_struct']]],
+  ['plugin_5fhandle_618',['plugin_handle',['../structlibrary__data__struct.html#a11ce13912407d0f389705bc4249bef42',1,'library_data_struct']]],
+  ['plugin_5finit_619',['plugin_init',['../structlibrary__data__struct.html#ab6048ef1b522e466ac1a6bd8d63e096b',1,'library_data_struct']]],
+  ['plugin_5foptions_620',['plugin_options',['../structplugin__shared__state__struct.html#a6b20b564f03098cb618892500dc58721',1,'plugin_shared_state_struct']]],
+  ['plugin_5fpath_621',['plugin_path',['../structcode__struct.html#ab9121b32657cf3175782b87ef50e677d',1,'code_struct']]],
+  ['plugin_5funedited_5foptions_622',['plugin_unedited_options',['../structplugin__shared__state__struct.html#acf740d4e3525480aa9b1316c168dd1b6',1,'plugin_shared_state_struct']]],
+  ['plugin_5funedited_5foptions_5fptr_623',['plugin_unedited_options_ptr',['../structcode__struct.html#aaf9542a804ffab8d77c53a24db318a79',1,'code_struct']]],
+  ['port_624',['port',['../structcode__struct.html#ab72425e4ac4c2d24be4cb49b2c014077',1,'code_struct']]],
+  ['python_5finterpreter_5fdict_625',['python_interpreter_dict',['../structplugin__shared__state__struct.html#a523691ac1fb6e365c6fe39f8b4954c3c',1,'plugin_shared_state_struct']]],
+  ['python_5finterpreter_5finitialized_626',['python_interpreter_initialized',['../structplugin__shared__state__struct.html#a74a66655bf09338793908bbf49f74afa',1,'plugin_shared_state_struct']]]
 ];

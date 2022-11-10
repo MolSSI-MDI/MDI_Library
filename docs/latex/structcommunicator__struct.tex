@@ -3,27 +3,6 @@
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}\label{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}} 
-int \mbox{\hyperlink{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}{method\+\_\+id}}
-\begin{DoxyCompactList}\small\item\em Communication method used by this communicator. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}\label{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}} 
-M\+D\+I\+\_\+\+Comm\+\_\+\+Type \mbox{\hyperlink{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}{id}}
-\begin{DoxyCompactList}\small\item\em M\+D\+I\+\_\+\+Comm handle that corresponds to this communicator. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}\label{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}} 
-int \mbox{\hyperlink{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}{is\+\_\+accepted}}
-\begin{DoxyCompactList}\small\item\em Indicate whether this communicator has been accepted yet. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}\label{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}} 
-int \mbox{\hyperlink{structcommunicator__struct_a5b2ae9003dc9eec823cf4342b3ae899d}{code\+\_\+id}}
-\begin{DoxyCompactList}\small\item\em Handle for the id of the associated code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}\label{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}} 
-sock\+\_\+t \mbox{\hyperlink{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}{sockfd}}
-\begin{DoxyCompactList}\small\item\em For communicators using the T\+CP communicatiom method, the socket descriptor (W\+I\+N\+D\+O\+WS) \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}\label{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}} 
-int \mbox{\hyperlink{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}{name\+\_\+length}}
-\begin{DoxyCompactList}\small\item\em The value of M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH for the connected code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}\label{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}} 
-int \mbox{\hyperlink{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}{command\+\_\+length}}
-\begin{DoxyCompactList}\small\item\em The value of M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH for the connected code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}\label{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}} 
 int \mbox{\hyperlink{structcommunicator__struct_aa8c98472974c670d06dfad888995395a}{mdi\+\_\+version}} \mbox{[}3\mbox{]}
 \begin{DoxyCompactList}\small\item\em The M\+DI version of the connected code. \end{DoxyCompactList}\item 
@@ -41,9 +20,30 @@ int($\ast$ \mbox{\hyperlink{structcommunicator__struct_a5ab265eb6817d2c0edb0cd51
 \begin{DoxyCompactList}\small\item\em Function pointer for method-\/specific receive operations. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}\label{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}} 
 int($\ast$ \mbox{\hyperlink{structcommunicator__struct_a68472a8704d3d0d93fbb8e1ccb682a0c}{delete}} )(void $\ast$)
-\begin{DoxyCompactList}\small\item\em Function pointer for method-\/specific deletion operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Function pointer for method-\/specific deletion operations. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a594151d83e185813149915fae8cd189c}\label{structcommunicator__struct_a594151d83e185813149915fae8cd189c}} 
+size\+\_\+t \mbox{\hyperlink{structcommunicator__struct_a594151d83e185813149915fae8cd189c}{code\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em Handle for the id of the associated code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}\label{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}} 
+sock\+\_\+t \mbox{\hyperlink{structcommunicator__struct_a9e665309c637c211c55f9cb2900a0511}{sockfd}}
+\begin{DoxyCompactList}\small\item\em For communicators using the T\+CP communicatiom method, the socket descriptor (W\+I\+N\+D\+O\+WS) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}\label{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}} 
+int \mbox{\hyperlink{structcommunicator__struct_a813adb62f523d39dbc8ccf310a28e494}{method\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em Communication method used by this communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}\label{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}} 
+M\+D\+I\+\_\+\+Comm\+\_\+\+Type \mbox{\hyperlink{structcommunicator__struct_a0f8e3e5700265aad987a0cf96fc15d8f}{id}}
+\begin{DoxyCompactList}\small\item\em M\+D\+I\+\_\+\+Comm handle that corresponds to this communicator. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}\label{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}} 
+int \mbox{\hyperlink{structcommunicator__struct_a86b5055b27fa7f1156c96ad15fdcddc4}{is\+\_\+accepted}}
+\begin{DoxyCompactList}\small\item\em Indicate whether this communicator has been accepted yet. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}\label{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}} 
+int \mbox{\hyperlink{structcommunicator__struct_adb57a91f78ea8e7de88517ce5c4388b5}{name\+\_\+length}}
+\begin{DoxyCompactList}\small\item\em The value of M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+TH for the connected code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}\label{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}} 
+int \mbox{\hyperlink{structcommunicator__struct_ad7dc9351efe6afbba7a8ff734819270f}{command\+\_\+length}}
+\begin{DoxyCompactList}\small\item\em The value of M\+D\+I\+\_\+\+C\+O\+M\+M\+A\+N\+D\+\_\+\+L\+E\+N\+G\+TH for the connected code. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__global_8h}{mdi\+\_\+global.\+h}}\end{DoxyCompactItemize}
+/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__global_8h}{mdi\+\_\+global.\+h}}\end{DoxyCompactItemize}

@@ -9,8 +9,89 @@ char \mbox{\hyperlink{structcode__struct_aaeb05160ef936a0534c4f325bb0bf8aa}{name
 \mbox{\Hypertarget{structcode__struct_a69ca505581dded9315313ba027484d4e}\label{structcode__struct_a69ca505581dded9315313ba027484d4e}} 
 char \mbox{\hyperlink{structcode__struct_a69ca505581dded9315313ba027484d4e}{role}} \mbox{[}M\+D\+I\+\_\+\+N\+A\+M\+E\+\_\+\+L\+E\+N\+G\+T\+H\+\_\+\mbox{]}
 \begin{DoxyCompactList}\small\item\em Role of the driver/engine. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}\label{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}} 
-int \mbox{\hyperlink{structcode__struct_a4f7f1d635be40cc03fc03082ff9c35c2}{id}}
+\mbox{\Hypertarget{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}\label{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}} 
+void $\ast$ \mbox{\hyperlink{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}{execute\+\_\+command\+\_\+obj}}
+\begin{DoxyCompactList}\small\item\em Pointer to the class object that is passed to any call to execute\+\_\+command. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a213cad27fe198175bd7d7ff983f45289}\label{structcode__struct_a213cad27fe198175bd7d7ff983f45289}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a213cad27fe198175bd7d7ff983f45289}{nodes}}
+\begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}\label{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}{comms}}
+\begin{DoxyCompactList}\small\item\em Vector containing all communicators associated with this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a8e5d2b9d5c710d631aa4c86e9b585f6c}\label{structcode__struct_a8e5d2b9d5c710d631aa4c86e9b585f6c}} 
+\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a8e5d2b9d5c710d631aa4c86e9b585f6c}{methods}}
+\begin{DoxyCompactList}\small\item\em Vector containing all supported methods. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab9121b32657cf3175782b87ef50e677d}\label{structcode__struct_ab9121b32657cf3175782b87ef50e677d}} 
+char $\ast$ \mbox{\hyperlink{structcode__struct_ab9121b32657cf3175782b87ef50e677d}{plugin\+\_\+path}}
+\begin{DoxyCompactList}\small\item\em Path to the plugins available to this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a280e0b5408ad4e489e2d7b39adf220de}\label{structcode__struct_a280e0b5408ad4e489e2d7b39adf220de}} 
+int $\ast$ \mbox{\hyperlink{structcode__struct_a280e0b5408ad4e489e2d7b39adf220de}{plugin\+\_\+argc\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Argument count for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a5c759617d8e1eeb69c75883d44f10275}\label{structcode__struct_a5c759617d8e1eeb69c75883d44f10275}} 
+char $\ast$$\ast$$\ast$ \mbox{\hyperlink{structcode__struct_a5c759617d8e1eeb69c75883d44f10275}{plugin\+\_\+argv\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Argument vector for plugin command-\/line options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_aaf9542a804ffab8d77c53a24db318a79}\label{structcode__struct_aaf9542a804ffab8d77c53a24db318a79}} 
+char $\ast$$\ast$ \mbox{\hyperlink{structcode__struct_aaf9542a804ffab8d77c53a24db318a79}{plugin\+\_\+unedited\+\_\+options\+\_\+ptr}}
+\begin{DoxyCompactList}\small\item\em Unedited command-\/line options for currently running plugin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a90b88b983007c9cf14121ad3a49327b5}\label{structcode__struct_a90b88b983007c9cf14121ad3a49327b5}} 
+void $\ast$ \mbox{\hyperlink{structcode__struct_a90b88b983007c9cf14121ad3a49327b5}{shared\+\_\+state\+\_\+from\+\_\+driver}}
+\begin{DoxyCompactList}\small\item\em Shared plugin state, received from the driver during plugin calculations. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a950117c2da1210fad3e0ca0f479525a3}\label{structcode__struct_a950117c2da1210fad3e0ca0f479525a3}} 
+char $\ast$ \mbox{\hyperlink{structcode__struct_a950117c2da1210fad3e0ca0f479525a3}{hostname}}
+\begin{DoxyCompactList}\small\item\em Hostname of the driver. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a6bc436089823926b8893de02e1a57bf4}\label{structcode__struct_a6bc436089823926b8893de02e1a57bf4}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a6bc436089823926b8893de02e1a57bf4}{driver\+\_\+callback\+\_\+actual}} )(void $\ast$, int, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer to the actual callback for the driver. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a4fa28e6c885d57d5dca1ae3a984fab63}\label{structcode__struct_a4fa28e6c885d57d5dca1ae3a984fab63}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a4fa28e6c885d57d5dca1ae3a984fab63}{execute\+\_\+command\+\_\+wrapper}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Function pointer to the language-\/specific wrapper for the execute\+\_\+command function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab5a06815a83db6ee6cdd451892c2c122}\label{structcode__struct_ab5a06815a83db6ee6cdd451892c2c122}} 
+M\+D\+I\+\_\+execute\+\_\+command\+\_\+type \mbox{\hyperlink{structcode__struct_ab5a06815a83db6ee6cdd451892c2c122}{execute\+\_\+command}}
+\begin{DoxyCompactList}\small\item\em Function pointer to the generic execute\+\_\+command\+\_\+function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a57fa80d3c227ae1c267799b5f914fa5b}\label{structcode__struct_a57fa80d3c227ae1c267799b5f914fa5b}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a57fa80d3c227ae1c267799b5f914fa5b}{language\+\_\+on\+\_\+destroy}} )(int)
+\begin{DoxyCompactList}\small\item\em Function pointer to the language-\/specific destructor function. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a4ac39b17819faceec612602213342c62}\label{structcode__struct_a4ac39b17819faceec612602213342c62}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a4ac39b17819faceec612602213342c62}{mpi4py\+\_\+recv\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Recv. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_af6a1528a53a357d060b3435dedcac42d}\label{structcode__struct_af6a1528a53a357d060b3435dedcac42d}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_af6a1528a53a357d060b3435dedcac42d}{mpi4py\+\_\+send\+\_\+callback}} )(void $\ast$, int, int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Send. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab3f2c18b06a132146bbbdff45266e0e4}\label{structcode__struct_ab3f2c18b06a132146bbbdff45266e0e4}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_ab3f2c18b06a132146bbbdff45266e0e4}{mpi4py\+\_\+allgather\+\_\+callback}} )(void $\ast$, void $\ast$)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for the initial M\+PI allgather. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a709c8bc3122358d55c675d679e54380c}\label{structcode__struct_a709c8bc3122358d55c675d679e54380c}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a709c8bc3122358d55c675d679e54380c}{mpi4py\+\_\+gather\+\_\+names\+\_\+callback}} )(void $\ast$, void $\ast$, int $\ast$, int $\ast$)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for gathering names. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab5f74c747016892b98c3482100a5cdfd}\label{structcode__struct_ab5f74c747016892b98c3482100a5cdfd}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_ab5f74c747016892b98c3482100a5cdfd}{mpi4py\+\_\+split\+\_\+callback}} )(int, int, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+split. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_aab7a62b271de340773d67d4f9a76e585}\label{structcode__struct_aab7a62b271de340773d67d4f9a76e585}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_aab7a62b271de340773d67d4f9a76e585}{mpi4py\+\_\+rank\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+rank. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a384aee57d05855f1ca54c1b61fb5b5ef}\label{structcode__struct_a384aee57d05855f1ca54c1b61fb5b5ef}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_a384aee57d05855f1ca54c1b61fb5b5ef}{mpi4py\+\_\+size\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+size. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_af9ebcfcc8dfb9d06d4d0f9598a5c0feb}\label{structcode__struct_af9ebcfcc8dfb9d06d4d0f9598a5c0feb}} 
+int($\ast$ \mbox{\hyperlink{structcode__struct_af9ebcfcc8dfb9d06d4d0f9598a5c0feb}{mpi4py\+\_\+barrier\+\_\+callback}} )(int)
+\begin{DoxyCompactList}\small\item\em Python callback pointer for M\+P\+I\+\_\+\+Comm\+\_\+barrier. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}\label{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}} 
+M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}{intra\+\_\+\+M\+P\+I\+\_\+comm}}
+\begin{DoxyCompactList}\small\item\em M\+PI intra-\/communicator that spans all ranks associated with this code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a973b57f18427b4ca8ab0bcd65bad51f5}\label{structcode__struct_a973b57f18427b4ca8ab0bcd65bad51f5}} 
+sock\+\_\+t \mbox{\hyperlink{structcode__struct_a973b57f18427b4ca8ab0bcd65bad51f5}{tcp\+\_\+socket}}
+\begin{DoxyCompactList}\small\item\em Socket for T\+CP connections. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}\label{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}} 
+int \mbox{\hyperlink{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}{is\+\_\+library}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code is being used as a library 0\+: Not a library 1\+: Is an E\+N\+G\+I\+NE library, but has not connected to the driver 2\+: Is an E\+N\+G\+I\+NE library that has connected to the driver. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ade3bdc2940e5af5e43096d4577f2bf94}\label{structcode__struct_ade3bdc2940e5af5e43096d4577f2bf94}} 
+int \mbox{\hyperlink{structcode__struct_ade3bdc2940e5af5e43096d4577f2bf94}{world\+\_\+size}}
+\begin{DoxyCompactList}\small\item\em Size of M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a93cdd432cbb4c6258a654154dd06307e}\label{structcode__struct_a93cdd432cbb4c6258a654154dd06307e}} 
+int \mbox{\hyperlink{structcode__struct_a93cdd432cbb4c6258a654154dd06307e}{world\+\_\+rank}}
+\begin{DoxyCompactList}\small\item\em Rank of this process within M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a63ddc4042b0239ffd700a064265a0d81}\label{structcode__struct_a63ddc4042b0239ffd700a064265a0d81}} 
+size\+\_\+t \mbox{\hyperlink{structcode__struct_a63ddc4042b0239ffd700a064265a0d81}{id}}
 \begin{DoxyCompactList}\small\item\em Handle for this code. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}\label{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}} 
 int \mbox{\hyperlink{structcode__struct_aadd2a0711072e4bf29c73c7e599e23b9}{returned\+\_\+comms}}
@@ -27,29 +108,32 @@ int \mbox{\hyperlink{structcode__struct_ade7a49e570c12978d69f01b145a44027}{intra
 \mbox{\Hypertarget{structcode__struct_a65f58e831f66250515c6b7ac94382e45}\label{structcode__struct_a65f58e831f66250515c6b7ac94382e45}} 
 int \mbox{\hyperlink{structcode__struct_a65f58e831f66250515c6b7ac94382e45}{called\+\_\+set\+\_\+execute\+\_\+command\+\_\+func}}
 \begin{DoxyCompactList}\small\item\em Flag whether this code has called set\+\_\+execute\+\_\+command\+\_\+func. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}\label{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}} 
-M\+P\+I\+\_\+\+Comm \mbox{\hyperlink{structcode__struct_a653f0f54e8e1939716b6a0f7a12ecdde}{intra\+\_\+\+M\+P\+I\+\_\+comm}}
-\begin{DoxyCompactList}\small\item\em M\+PI intra-\/communicator that spans all ranks associated with this code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a213cad27fe198175bd7d7ff983f45289}\label{structcode__struct_a213cad27fe198175bd7d7ff983f45289}} 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a213cad27fe198175bd7d7ff983f45289}{nodes}}
-\begin{DoxyCompactList}\small\item\em Vector containing all nodes supported by this code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}\label{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}} 
-\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$ \mbox{\hyperlink{structcode__struct_a55009ad789bdb3f0013248fcbb55dbe3}{comms}}
-\begin{DoxyCompactList}\small\item\em Vector containing all communicators associated with this code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_ab9121b32657cf3175782b87ef50e677d}\label{structcode__struct_ab9121b32657cf3175782b87ef50e677d}} 
-char $\ast$ \mbox{\hyperlink{structcode__struct_ab9121b32657cf3175782b87ef50e677d}{plugin\+\_\+path}}
-\begin{DoxyCompactList}\small\item\em Path to the plugins available to this code. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}\label{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}} 
-int($\ast$ \mbox{\hyperlink{structcode__struct_a3fbc6c7947fd3550eba445a489a1023f}{execute\+\_\+command}} )(const char $\ast$, M\+D\+I\+\_\+\+Comm\+\_\+\+Type, void $\ast$)
-\begin{DoxyCompactList}\small\item\em Function pointer to the generic execute\+\_\+command\+\_\+function. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}\label{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}} 
-void $\ast$ \mbox{\hyperlink{structcode__struct_ab9e035e85aeacb8b0b5fff6d41825322}{execute\+\_\+command\+\_\+obj}}
-\begin{DoxyCompactList}\small\item\em Pointer to the class object that is passed to any call to execute\+\_\+command. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}\label{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}} 
-int \mbox{\hyperlink{structcode__struct_a210ad0ac1c0b05ecdd39d4ebd9d3751c}{is\+\_\+library}}
-\begin{DoxyCompactList}\small\item\em Flag whether this code is being used as a library 0\+: Not a library 1\+: Is an E\+N\+G\+I\+NE library, but has not connected to the driver 2\+: Is an E\+N\+G\+I\+NE library that has connected to the driver. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\mbox{\Hypertarget{structcode__struct_aad1f0be9f3853d575e2120f1d278cc3b}\label{structcode__struct_aad1f0be9f3853d575e2120f1d278cc3b}} 
+int \mbox{\hyperlink{structcode__struct_aad1f0be9f3853d575e2120f1d278cc3b}{selected\+\_\+method\+\_\+id}}
+\begin{DoxyCompactList}\small\item\em ID of the method being used for inter-\/code communication. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ae16e1255ba3397ee3bb060ca711b88e2}\label{structcode__struct_ae16e1255ba3397ee3bb060ca711b88e2}} 
+int \mbox{\hyperlink{structcode__struct_ae16e1255ba3397ee3bb060ca711b88e2}{ipi\+\_\+compatibility}}
+\begin{DoxyCompactList}\small\item\em Flag for whether M\+DI is running in i-\/\+PI compatibility mode. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a0aabd745169604569b80cbd90334366b}\label{structcode__struct_a0aabd745169604569b80cbd90334366b}} 
+int \mbox{\hyperlink{structcode__struct_a0aabd745169604569b80cbd90334366b}{initialized\+\_\+mpi}}
+\begin{DoxyCompactList}\small\item\em Flag for whether M\+DI called M\+P\+I\+\_\+\+Init. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a2385319a0ba5680e6c317d9538a96b0c}\label{structcode__struct_a2385319a0ba5680e6c317d9538a96b0c}} 
+int \mbox{\hyperlink{structcode__struct_a2385319a0ba5680e6c317d9538a96b0c}{tcp\+\_\+initialized}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code has previously initialized T\+CP. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_aaf1f1f56a7598ccc5735e937db289690}\label{structcode__struct_aaf1f1f56a7598ccc5735e937db289690}} 
+int \mbox{\hyperlink{structcode__struct_aaf1f1f56a7598ccc5735e937db289690}{mpi\+\_\+initialized}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code has previously initialized M\+PI. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a9789a2296eff425d696173c6b07e4131}\label{structcode__struct_a9789a2296eff425d696173c6b07e4131}} 
+int \mbox{\hyperlink{structcode__struct_a9789a2296eff425d696173c6b07e4131}{test\+\_\+initialized}}
+\begin{DoxyCompactList}\small\item\em Flag whether this code has previously initialized T\+E\+ST. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_ab72425e4ac4c2d24be4cb49b2c014077}\label{structcode__struct_ab72425e4ac4c2d24be4cb49b2c014077}} 
+int \mbox{\hyperlink{structcode__struct_ab72425e4ac4c2d24be4cb49b2c014077}{port}}
+\begin{DoxyCompactList}\small\item\em Port over which the driver will listen. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcode__struct_a45ea8d00a8d9f1d1a6419d874c49b7a2}\label{structcode__struct_a45ea8d00a8d9f1d1a6419d874c49b7a2}} 
+int \mbox{\hyperlink{structcode__struct_a45ea8d00a8d9f1d1a6419d874c49b7a2}{debug\+\_\+mode}}
+\begin{DoxyCompactList}\small\item\em Flag for whether this code is running in debug mode. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__global_8h}{mdi\+\_\+global.\+h}}\end{DoxyCompactItemize}
+/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/\mbox{\hyperlink{mdi__global_8h}{mdi\+\_\+global.\+h}}\end{DoxyCompactItemize}

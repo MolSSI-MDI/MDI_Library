@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi_plug_py.h File Reference</title>
+<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi_plug_py.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -80,8 +80,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">mdi_plug_py.h File Reference</div>  </div>
 </div><!--header-->
@@ -97,20 +96,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a0c0faed4ce075538e0545544182525ae"><td class="memItemLeft" align="right" valign="top"><a id="a0c0faed4ce075538e0545544182525ae"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>print_traceback</b> ()</td></tr>
 <tr class="separator:a0c0faed4ce075538e0545544182525ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afae072c55473a602e960b09b18bb2972"><td class="memItemLeft" align="right" valign="top"><a id="afae072c55473a602e960b09b18bb2972"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>python_plugin_init</b> (const char *engine_name, const char *engine_path, void *engine_comm_ptr)</td></tr>
-<tr class="separator:afae072c55473a602e960b09b18bb2972"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:aefcfa5ce4e0c1567f119976f36406d44"><td class="memItemLeft" align="right" valign="top"><a id="aefcfa5ce4e0c1567f119976f36406d44"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__plug__py_8h.html#aefcfa5ce4e0c1567f119976f36406d44">python_interpreter_initialized</a></td></tr>
-<tr class="memdesc:aefcfa5ce4e0c1567f119976f36406d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag whether the Python interpreter has been initialized. <br /></td></tr>
-<tr class="separator:aefcfa5ce4e0c1567f119976f36406d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3097c8a62136724cee1eb5786ace0645"><td class="memItemLeft" align="right" valign="top"><a id="a3097c8a62136724cee1eb5786ace0645"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__plug__py_8h.html#a3097c8a62136724cee1eb5786ace0645">python_interpreter_dict</a></td></tr>
-<tr class="memdesc:a3097c8a62136724cee1eb5786ace0645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the original Python interpreter's dictionary. Only used for Python plugins. <br /></td></tr>
-<tr class="separator:a3097c8a62136724cee1eb5786ace0645"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d1a9fa190acfa79a618319b90814191"><td class="memItemLeft" align="right" valign="top"><a id="a1d1a9fa190acfa79a618319b90814191"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>python_plugin_init</b> (const char *engine_name, const char *engine_path, void *engine_comm_ptr, void *shared_state)</td></tr>
+<tr class="separator:a1d1a9fa190acfa79a618319b90814191"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of library-based communication. </p>

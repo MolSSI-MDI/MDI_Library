@@ -1,5 +1,5 @@
-\hypertarget{mdi__tcp_8c}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.c File Reference}
-\label{mdi__tcp_8c}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_tcp.c@{/repo/build/MDI\_Library/MDI\_Library/mdi\_tcp.c}}
+\hypertarget{mdi__tcp_8c}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+tcp.c File Reference}
+\label{mdi__tcp_8c}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.c@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_tcp.c}}
 
 
 T\+CP communication implementation.  
@@ -22,8 +22,8 @@ T\+CP communication implementation.
 \item 
 void \mbox{\hyperlink{mdi__tcp_8c_a47630f8f823b92ad9333c3c5f130cf90}{sigint\+\_\+handler}} (int dummy)
 \begin{DoxyCompactList}\small\item\em S\+I\+G\+I\+NT handler to ensure the socket is closed on termination. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}\label{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}} 
-int \mbox{\hyperlink{mdi__tcp_8c_ab2b6606fb814d29a69fb2cdfa416c437}{enable\+\_\+tcp\+\_\+support}} ()
+\mbox{\Hypertarget{mdi__tcp_8c_a9e92ddf39c6d6ba0f02ceaea23133f53}\label{mdi__tcp_8c_a9e92ddf39c6d6ba0f02ceaea23133f53}} 
+int \mbox{\hyperlink{mdi__tcp_8c_a9e92ddf39c6d6ba0f02ceaea23133f53}{enable\+\_\+tcp\+\_\+support}} (int code\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Enable support for the T\+CP method. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}\label{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}} 
 int \mbox{\hyperlink{mdi__tcp_8c_ac2a9634d0b8e19bb873bf501ca72a04f}{tcp\+\_\+on\+\_\+selection}} ()
@@ -51,18 +51,6 @@ int \mbox{\hyperlink{mdi__tcp_8c_a813e2b1b10b9c069227b6a4afac0e2ed}{tcp\+\_\+sen
 \begin{DoxyCompactList}\small\item\em Send data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__tcp_8c_a1debb8c0b825d277a70db864450d1ac0}{tcp\+\_\+recv}} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm, int msg\+\_\+flag)
 \begin{DoxyCompactList}\small\item\em Receive data through an M\+DI connection, using T\+CP. \end{DoxyCompactList}\end{DoxyCompactItemize}
-\doxysubsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-\mbox{\Hypertarget{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}\label{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}} 
-char $\ast$ \mbox{\hyperlink{mdi__tcp_8c_af203df082d5c6dcaa0c88b07cf86466d}{hostname}} = N\+U\+LL
-\begin{DoxyCompactList}\small\item\em Hostname of the driver. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}\label{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}} 
-int \mbox{\hyperlink{mdi__tcp_8c_a63c89c04d1feae07ca35558055155ffb}{port}} = -\/1
-\begin{DoxyCompactList}\small\item\em Port over which the driver will listen. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}\label{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}} 
-sock\+\_\+t \mbox{\hyperlink{mdi__tcp_8c_ab6f3723dc8b08cb2534fa22a58cf7553}{tcp\+\_\+socket}} = -\/1
-\begin{DoxyCompactList}\small\item\em Socket over which a driver will listen for incoming connections. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}

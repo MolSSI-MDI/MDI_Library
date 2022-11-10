@@ -5,7 +5,7 @@ If you just want a quick tl;dr summary of the minimum steps involved in implemen
 \begin{DoxyEnumerate}
 \item If your engine is written in a compiled language, build and link your engine against M\+DI just like any other library. If it is written in Python, just import the M\+DI Library.
 \item Add a way for end-\/users of your engine to send runtime options to the M\+DI Library, preferably through a {\ttfamily -\/mdi} command-\/line option.
-\item Call {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}} as early as possible in your engine.
+\item Call {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}} and {\ttfamily \mbox{\hyperlink{mdi_8c_a91c05f57c87bd5ca8aad65d2d6c3ca72}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}} as early as possible in your engine.
 \item Add some server-\/like code that allows your engine to listen for commands via M\+DI and respond to them appropriately.
 \item If your engine uses the Message Passing Interface (M\+PI), be aware that the M\+DI Library provides a replacement for M\+P\+I\+\_\+\+C\+O\+M\+M\+\_\+\+W\+O\+R\+LD, and that some M\+DI functions should only be called by {\ttfamily rank 0}.
 \end{DoxyEnumerate}
@@ -209,7 +209,7 @@ The following code snippets provide a guide to correctly initializing M\+DI and 
 \DoxyCodeLine{}
 \DoxyCodeLine{  \textcolor{comment}{/* Accept a connection from an external driver */}}
 \DoxyCodeLine{  \textcolor{keywordflow}{if} ( my\_rank == 0 ) \{}
-\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{MDI\_Accept\_communicator}}(\&mdi\_comm);}
+\DoxyCodeLine{    \mbox{\hyperlink{mdi_8c_a91c05f57c87bd5ca8aad65d2d6c3ca72}{MDI\_Accept\_communicator}}(\&mdi\_comm);}
 \DoxyCodeLine{  \}}
 \DoxyCodeLine{\}}
 \end{DoxyCode}
@@ -304,7 +304,7 @@ After implementing the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{comment}{\# Accept a connection from an external driver}}
 \DoxyCodeLine{\textcolor{keywordflow}{if} my\_rank == 0:}
-\DoxyCodeLine{    mdi\_comm = \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{MDI\_Accept\_communicator}}()}
+\DoxyCodeLine{    mdi\_comm = \mbox{\hyperlink{mdi_8c_a91c05f57c87bd5ca8aad65d2d6c3ca72}{MDI\_Accept\_communicator}}()}
 \end{DoxyCode}
 
 
@@ -488,7 +488,7 @@ M\+DI requires you to \char`\"{}register\char`\"{} a list of all nodes and comma
 
 Fortunately, this is a very simple process. The only argument to the {\ttfamily \mbox{\hyperlink{mdi_8c_ae191ab5848b0c586643f63412a18dcf2}{M\+D\+I\+\_\+\+Register\+\_\+node()}}} function is the name of the node, {\ttfamily @D\+E\+F\+A\+U\+LT}. The {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} function accepts two arguments\+: the name of the node, and the name of the command that we are registering at that node, {\ttfamily E\+X\+IT}. In time, you may add support for additional commands at the default node, making additional calls to {\ttfamily \mbox{\hyperlink{mdi_8c_a6c9047a0e290090af2d8a2fc3a04d44d}{M\+D\+I\+\_\+\+Register\+\_\+command()}}} for each newly supported command. If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the {\ttfamily @D\+E\+F\+A\+U\+LT} node.
 
-For now, place the following code immediately after your engine\textquotesingle{}s call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}. It is important that it be called prior to the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a21a41738e9b43ab70c977f8ce63c0957}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}}.
+For now, place the following code immediately after your engine\textquotesingle{}s call to {\ttfamily \mbox{\hyperlink{mdi_8c_a9f26d9f67413c6c194a2f5e4bd69b911}{M\+D\+I\+\_\+\+Init()}}}. It is important that it be called prior to the call to {\ttfamily \mbox{\hyperlink{mdi_8c_a91c05f57c87bd5ca8aad65d2d6c3ca72}{M\+D\+I\+\_\+\+Accept\+\_\+communicator()}}}.
 
 
 

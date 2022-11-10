@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi_general.h File Reference</title>
+<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi_general.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -80,8 +80,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">mdi_general.h File Reference</div>  </div>
 </div><!--header-->
@@ -96,6 +95,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a4fc4e4b320cb76653202e9e5572c4b43"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a4fc4e4b320cb76653202e9e5572c4b43">general_init_code</a> ()</td></tr>
+<tr class="memdesc:a4fc4e4b320cb76653202e9e5572c4b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a new code.  <a href="mdi__general_8h.html#a4fc4e4b320cb76653202e9e5572c4b43">More...</a><br /></td></tr>
+<tr class="separator:a4fc4e4b320cb76653202e9e5572c4b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12009556a91d0d280ff6190a6856f5df"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a12009556a91d0d280ff6190a6856f5df">general_init</a> (const char *options)</td></tr>
 <tr class="memdesc:a12009556a91d0d280ff6190a6856f5df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize communication through the MDI library.  <a href="mdi__general_8h.html#a12009556a91d0d280ff6190a6856f5df">More...</a><br /></td></tr>
 <tr class="separator:a12009556a91d0d280ff6190a6856f5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,9 +116,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aeeda32ecb1993508a73a5ad56a0df791"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#aeeda32ecb1993508a73a5ad56a0df791">general_recv_command</a> (char *buf, MDI_Comm comm)</td></tr>
 <tr class="memdesc:aeeda32ecb1993508a73a5ad56a0df791"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a command of length <code>MDI_COMMAND_LENGTH</code> through the MDI connection.  <a href="mdi__general_8h.html#aeeda32ecb1993508a73a5ad56a0df791">More...</a><br /></td></tr>
 <tr class="separator:aeeda32ecb1993508a73a5ad56a0df791"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2aa020b5f84bf7d5ee4250850a45219"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#ab2aa020b5f84bf7d5ee4250850a45219">general_builtin_command</a> (const char *buf, MDI_Comm comm)</td></tr>
-<tr class="memdesc:ab2aa020b5f84bf7d5ee4250850a45219"><td class="mdescLeft">&#160;</td><td class="mdescRight">Respond to a general built-in command.  <a href="mdi__general_8h.html#ab2aa020b5f84bf7d5ee4250850a45219">More...</a><br /></td></tr>
-<tr class="separator:ab2aa020b5f84bf7d5ee4250850a45219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8366351383f206736131a3d3b1e395e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a8366351383f206736131a3d3b1e395e5">general_builtin_command</a> (const char *buf, MDI_Comm comm, int *flag)</td></tr>
+<tr class="memdesc:a8366351383f206736131a3d3b1e395e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Respond to a general built-in command.  <a href="mdi__general_8h.html#a8366351383f206736131a3d3b1e395e5">More...</a><br /></td></tr>
+<tr class="separator:a8366351383f206736131a3d3b1e395e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13565a7590af2e05f10a55bb7cf5cbff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a13565a7590af2e05f10a55bb7cf5cbff">register_node</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *node_vec, const char *node_name)</td></tr>
 <tr class="memdesc:a13565a7590af2e05f10a55bb7cf5cbff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a node.  <a href="mdi__general_8h.html#a13565a7590af2e05f10a55bb7cf5cbff">More...</a><br /></td></tr>
 <tr class="separator:a13565a7590af2e05f10a55bb7cf5cbff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,16 +149,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a63440a569e9873f6c300b443e98e85dc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a63440a569e9873f6c300b443e98e85dc">get_node_info</a> (MDI_Comm comm)</td></tr>
 <tr class="memdesc:a63440a569e9873f6c300b443e98e85dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get information about the nodes of a particular code.  <a href="mdi__general_8h.html#a63440a569e9873f6c300b443e98e85dc">More...</a><br /></td></tr>
 <tr class="separator:a63440a569e9873f6c300b443e98e85dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b1489b20de3fb01aca285b92543c3b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdynamic__array__struct.html">vector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a1b1489b20de3fb01aca285b92543c3b5">get_node_vector</a> (MDI_Comm comm)</td></tr>
-<tr class="memdesc:a1b1489b20de3fb01aca285b92543c3b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the node vector associated with a particular communicator.  <a href="mdi__general_8h.html#a1b1489b20de3fb01aca285b92543c3b5">More...</a><br /></td></tr>
-<tr class="separator:a1b1489b20de3fb01aca285b92543c3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="memItemLeft" align="right" valign="top"><a id="a8d9b664d1a8a97ed1354b1fff3ea94eb"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a8d9b664d1a8a97ed1354b1fff3ea94eb">execute_command</a> )(const char *, MDI_Comm)</td></tr>
-<tr class="memdesc:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function pointer to the generic execute_command function. <br /></td></tr>
-<tr class="separator:a8d9b664d1a8a97ed1354b1fff3ea94eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26364a55fce8761ecf4339ba4bccdafa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__general_8h.html#a26364a55fce8761ecf4339ba4bccdafa">get_node_vector</a> (MDI_Comm comm, <a class="el" href="structdynamic__array__struct.html">vector</a> **vector_ptr)</td></tr>
+<tr class="memdesc:a26364a55fce8761ecf4339ba4bccdafa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the node vector associated with a particular communicator.  <a href="mdi__general_8h.html#a26364a55fce8761ecf4339ba4bccdafa">More...</a><br /></td></tr>
+<tr class="separator:a26364a55fce8761ecf4339ba4bccdafa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Generic MDI function calls. </p>
@@ -181,8 +176,8 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 
 </div>
 </div>
-<a id="ab2aa020b5f84bf7d5ee4250850a45219"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2aa020b5f84bf7d5ee4250850a45219">&#9670;&nbsp;</a></span>general_builtin_command()</h2>
+<a id="a8366351383f206736131a3d3b1e395e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8366351383f206736131a3d3b1e395e5">&#9670;&nbsp;</a></span>general_builtin_command()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,7 +192,13 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>flag</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -208,11 +209,12 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 </div><div class="memdoc">
 
 <p>Respond to a general built-in command. </p>
-<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>1</code> if the command is a built-in command and <code>0</code> otherwise.</p>
+<p>If running with MPI, this function must be called only by rank <code>0</code>. The function returns <code>0</code> on success.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">buf</td><td>Pointer to the buffer for the command name. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>MDI communicator associated with the connection to the sending code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">flag</td><td>Returns <code>1</code> if the command is a built-in command and <code>0</code> otherwise. </td></tr>
   </table>
   </dd>
 </dl>
@@ -243,6 +245,26 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a4fc4e4b320cb76653202e9e5572c4b43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fc4e4b320cb76653202e9e5572c4b43">&#9670;&nbsp;</a></span>general_init_code()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int general_init_code </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize a new code. </p>
+<p>The function returns <code>0</code> on a success. </p>
 
 </div>
 </div>
@@ -453,18 +475,28 @@ int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi
 
 </div>
 </div>
-<a id="a1b1489b20de3fb01aca285b92543c3b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b1489b20de3fb01aca285b92543c3b5">&#9670;&nbsp;</a></span>get_node_vector()</h2>
+<a id="a26364a55fce8761ecf4339ba4bccdafa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26364a55fce8761ecf4339ba4bccdafa">&#9670;&nbsp;</a></span>get_node_vector()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structdynamic__array__struct.html">vector</a>* get_node_vector </td>
+          <td class="memname">int get_node_vector </td>
           <td>(</td>
           <td class="paramtype">MDI_Comm&#160;</td>
-          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structdynamic__array__struct.html">vector</a> **&#160;</td>
+          <td class="paramname"><em>vector_ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

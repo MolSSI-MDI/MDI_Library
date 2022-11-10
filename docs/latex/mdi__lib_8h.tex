@@ -1,5 +1,5 @@
-\hypertarget{mdi__lib_8h}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
-\label{mdi__lib_8h}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_lib.h@{/repo/build/MDI\_Library/MDI\_Library/mdi\_lib.h}}
+\hypertarget{mdi__lib_8h}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+lib.h File Reference}
+\label{mdi__lib_8h}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_lib.h}}
 
 
 Implementation of library-\/based communication.  
@@ -10,6 +10,8 @@ Implementation of library-\/based communication.
 \doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
+struct \mbox{\hyperlink{structplugin__shared__state__struct}{plugin\+\_\+shared\+\_\+state\+\_\+struct}}
+\item 
 struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+struct}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
@@ -18,14 +20,17 @@ struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+stru
 \mbox{\Hypertarget{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}\label{mdi__lib_8h_af1f3df53f4d8199d3e2ba24481ff07a2}} 
 typedef int($\ast$ {\bfseries M\+D\+I\+\_\+\+Plugin\+\_\+init\+\_\+t}) ()
 \item 
+\mbox{\Hypertarget{mdi__lib_8h_a2ae05a354b41a8f35e0d246c58a20a03}\label{mdi__lib_8h_a2ae05a354b41a8f35e0d246c58a20a03}} 
+typedef struct \mbox{\hyperlink{structplugin__shared__state__struct}{plugin\+\_\+shared\+\_\+state\+\_\+struct}} {\bfseries plugin\+\_\+shared\+\_\+state}
+\item 
 \mbox{\Hypertarget{mdi__lib_8h_a9b2a0470cc67b6fbebdee644c0218c89}\label{mdi__lib_8h_a9b2a0470cc67b6fbebdee644c0218c89}} 
 typedef struct \mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data\+\_\+struct}} {\bfseries library\+\_\+data}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}\label{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}} 
-int \mbox{\hyperlink{mdi__lib_8h_ad7abe35c94a10f7dd9f040df674dba70}{enable\+\_\+plug\+\_\+support}} ()
+\mbox{\Hypertarget{mdi__lib_8h_ace73df2d37c62db99ba9e34bedaee231}\label{mdi__lib_8h_ace73df2d37c62db99ba9e34bedaee231}} 
+int \mbox{\hyperlink{mdi__lib_8h_ace73df2d37c62db99ba9e34bedaee231}{enable\+\_\+plug\+\_\+support}} (int code\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Enable support for the P\+L\+UG method. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}\label{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}} 
 int \mbox{\hyperlink{mdi__lib_8h_a34394b3dbbaeefacfde090e639b82edd}{plug\+\_\+on\+\_\+selection}} ()
@@ -55,12 +60,9 @@ int {\bfseries library\+\_\+close\+\_\+plugin} (M\+D\+I\+\_\+\+Comm mdi\+\_\+com
 \item 
 int \mbox{\hyperlink{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}{library\+\_\+initialize}} ()
 \begin{DoxyCompactList}\small\item\em Perform initialization of a communicator for library-\/based communication. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__lib_8h_a63ecbf6a80c775d9977153e69ada09d1}{library\+\_\+accept\+\_\+communicator}} ()
-\begin{DoxyCompactList}\small\item\em Perform L\+I\+B\+R\+A\+RY method operations upon a call to M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__lib_8h_aace2263cc5a50162e432fdd1ece07ebd}{library\+\_\+set\+\_\+driver\+\_\+current}} ()
-\begin{DoxyCompactList}\small\item\em Set the driver as the current code. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__lib_8h_a18fe86795599d83234e9054e150abb2a}{library\+\_\+get\+\_\+matching\+\_\+handle}} (M\+D\+I\+\_\+\+Comm comm)
-\begin{DoxyCompactList}\small\item\em Get the handle to the matching communicator on the code to which comm points. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_aace2263cc5a50162e432fdd1ece07ebd}\label{mdi__lib_8h_aace2263cc5a50162e432fdd1ece07ebd}} 
+int {\bfseries library\+\_\+set\+\_\+driver\+\_\+current} ()
+\item 
 int \mbox{\hyperlink{mdi__lib_8h_a396792d658225d047aeaecc0737596dd}{library\+\_\+set\+\_\+command}} (const char $\ast$command, M\+D\+I\+\_\+\+Comm comm)
 \begin{DoxyCompactList}\small\item\em Set the next command that will be executed through the library communicator. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__lib_8h_a4dc4e78fb4ebf75990666e46dc437b97}{library\+\_\+execute\+\_\+command}} (M\+D\+I\+\_\+\+Comm comm)
@@ -75,9 +77,24 @@ int {\bfseries library\+\_\+send\+\_\+msg} (const void $\ast$buf, int count, M\+
 \mbox{\Hypertarget{mdi__lib_8h_adfa2b70d4efd8deed1be7d5a2cb73e11}\label{mdi__lib_8h_adfa2b70d4efd8deed1be7d5a2cb73e11}} 
 int {\bfseries library\+\_\+recv\+\_\+msg} (void $\ast$buf, int count, M\+D\+I\+\_\+\+Datatype datatype, M\+D\+I\+\_\+\+Comm comm)
 \item 
+\mbox{\Hypertarget{mdi__lib_8h_a3e5e5f9b3cdc071b28a26544972acf72}\label{mdi__lib_8h_a3e5e5f9b3cdc071b28a26544972acf72}} 
+int \mbox{\hyperlink{mdi__lib_8h_a3e5e5f9b3cdc071b28a26544972acf72}{library\+\_\+set\+\_\+state}} (void $\ast$state)
+\begin{DoxyCompactList}\small\item\em Function to set the plugin\textquotesingle{}s state. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_aa25ae701f28d12ff5b44bda1b07cd9d8}\label{mdi__lib_8h_aa25ae701f28d12ff5b44bda1b07cd9d8}} 
+int \mbox{\hyperlink{mdi__lib_8h_aa25ae701f28d12ff5b44bda1b07cd9d8}{library\+\_\+activate\+\_\+code}} (void $\ast$codes\+\_\+in, int code\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Function to set the active code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_ae1c31fb3e69da7b90e8b9986aaf6a77b}\label{mdi__lib_8h_ae1c31fb3e69da7b90e8b9986aaf6a77b}} 
+int {\bfseries library\+\_\+activate\+\_\+driver} (\mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$libd)
+\item 
+\mbox{\Hypertarget{mdi__lib_8h_af12408582f4abea9b5f7228ea3ddff1b}\label{mdi__lib_8h_af12408582f4abea9b5f7228ea3ddff1b}} 
+int {\bfseries library\+\_\+activate\+\_\+engine} (\mbox{\hyperlink{structlibrary__data__struct}{library\+\_\+data}} $\ast$libd)
+\item 
 \mbox{\Hypertarget{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}\label{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}} 
 int \mbox{\hyperlink{mdi__lib_8h_aec19ca110ab49179a8709637a68124ce}{communicator\+\_\+delete\+\_\+lib}} (void $\ast$comm)
-\begin{DoxyCompactList}\small\item\em Function for L\+I\+B\+R\+A\+R\+Y-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Function for L\+I\+B\+R\+A\+R\+Y-\/specific deletion operations for communicator deletion. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{mdi__lib_8h_a8167c86e7af813d26477f32f6e246712}\label{mdi__lib_8h_a8167c86e7af813d26477f32f6e246712}} 
+int \mbox{\hyperlink{mdi__lib_8h_a8167c86e7af813d26477f32f6e246712}{library\+\_\+delete\+\_\+engine}} (size\+\_\+t code\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Function to delete all of the engine\textquotesingle{}s state. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -86,16 +103,6 @@ Implementation of library-\/based communication.
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{mdi__lib_8h_a63ecbf6a80c775d9977153e69ada09d1}\label{mdi__lib_8h_a63ecbf6a80c775d9977153e69ada09d1}} 
-\index{mdi\_lib.h@{mdi\_lib.h}!library\_accept\_communicator@{library\_accept\_communicator}}
-\index{library\_accept\_communicator@{library\_accept\_communicator}!mdi\_lib.h@{mdi\_lib.h}}
-\doxysubsubsection{\texorpdfstring{library\_accept\_communicator()}{library\_accept\_communicator()}}
-{\footnotesize\ttfamily int library\+\_\+accept\+\_\+communicator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Perform L\+I\+B\+R\+A\+RY method operations upon a call to M\+D\+I\+\_\+\+Accept\+\_\+\+Communicator. 
-
 \mbox{\Hypertarget{mdi__lib_8h_a4dc4e78fb4ebf75990666e46dc437b97}\label{mdi__lib_8h_a4dc4e78fb4ebf75990666e46dc437b97}} 
 \index{mdi\_lib.h@{mdi\_lib.h}!library\_execute\_command@{library\_execute\_command}}
 \index{library\_execute\_command@{library\_execute\_command}!mdi\_lib.h@{mdi\_lib.h}}
@@ -113,23 +120,6 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \mbox{\texttt{ in}}  & {\em command} & Pointer to the command to be executed. \\
 \hline
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
-\hline
-\end{DoxyParams}
-\mbox{\Hypertarget{mdi__lib_8h_a18fe86795599d83234e9054e150abb2a}\label{mdi__lib_8h_a18fe86795599d83234e9054e150abb2a}} 
-\index{mdi\_lib.h@{mdi\_lib.h}!library\_get\_matching\_handle@{library\_get\_matching\_handle}}
-\index{library\_get\_matching\_handle@{library\_get\_matching\_handle}!mdi\_lib.h@{mdi\_lib.h}}
-\doxysubsubsection{\texorpdfstring{library\_get\_matching\_handle()}{library\_get\_matching\_handle()}}
-{\footnotesize\ttfamily int library\+\_\+get\+\_\+matching\+\_\+handle (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Comm}]{comm }\end{DoxyParamCaption})}
-
-
-
-Get the handle to the matching communicator on the code to which comm points. 
-
-If running with M\+PI, this function must be called only by rank {\ttfamily 0}. The function returns {\ttfamily 0} on a success.
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the linked code. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}\label{mdi__lib_8h_a3a7d422a4cce77e23f0f2b0c64431830}} 
@@ -247,13 +237,3 @@ If running with M\+PI, this function must be called only by rank {\ttfamily 0}. 
 \mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator associated with the intended recipient code. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi__lib_8h_aace2263cc5a50162e432fdd1ece07ebd}\label{mdi__lib_8h_aace2263cc5a50162e432fdd1ece07ebd}} 
-\index{mdi\_lib.h@{mdi\_lib.h}!library\_set\_driver\_current@{library\_set\_driver\_current}}
-\index{library\_set\_driver\_current@{library\_set\_driver\_current}!mdi\_lib.h@{mdi\_lib.h}}
-\doxysubsubsection{\texorpdfstring{library\_set\_driver\_current()}{library\_set\_driver\_current()}}
-{\footnotesize\ttfamily int library\+\_\+set\+\_\+driver\+\_\+current (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-
-
-Set the driver as the current code. 
-

@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi_tcp.h File Reference</title>
+<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi_tcp.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -80,8 +80,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">mdi_tcp.h File Reference</div>  </div>
 </div><!--header-->
@@ -99,10 +98,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a47630f8f823b92ad9333c3c5f130cf90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#a47630f8f823b92ad9333c3c5f130cf90">sigint_handler</a> (int dummy)</td></tr>
 <tr class="memdesc:a47630f8f823b92ad9333c3c5f130cf90"><td class="mdescLeft">&#160;</td><td class="mdescRight">SIGINT handler to ensure the socket is closed on termination.  <a href="mdi__tcp_8h.html#a47630f8f823b92ad9333c3c5f130cf90">More...</a><br /></td></tr>
 <tr class="separator:a47630f8f823b92ad9333c3c5f130cf90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b6606fb814d29a69fb2cdfa416c437"><td class="memItemLeft" align="right" valign="top"><a id="ab2b6606fb814d29a69fb2cdfa416c437"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#ab2b6606fb814d29a69fb2cdfa416c437">enable_tcp_support</a> ()</td></tr>
-<tr class="memdesc:ab2b6606fb814d29a69fb2cdfa416c437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable support for the TCP method. <br /></td></tr>
-<tr class="separator:ab2b6606fb814d29a69fb2cdfa416c437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e92ddf39c6d6ba0f02ceaea23133f53"><td class="memItemLeft" align="right" valign="top"><a id="a9e92ddf39c6d6ba0f02ceaea23133f53"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#a9e92ddf39c6d6ba0f02ceaea23133f53">enable_tcp_support</a> (int code_id)</td></tr>
+<tr class="memdesc:a9e92ddf39c6d6ba0f02ceaea23133f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable support for the TCP method. <br /></td></tr>
+<tr class="separator:a9e92ddf39c6d6ba0f02ceaea23133f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2a9634d0b8e19bb873bf501ca72a04f"><td class="memItemLeft" align="right" valign="top"><a id="ac2a9634d0b8e19bb873bf501ca72a04f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#ac2a9634d0b8e19bb873bf501ca72a04f">tcp_on_selection</a> ()</td></tr>
 <tr class="memdesc:ac2a9634d0b8e19bb873bf501ca72a04f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback when the end-user selects TCP as the method. <br /></td></tr>
@@ -139,21 +138,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__
 <tr class="memitem:a1debb8c0b825d277a70db864450d1ac0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#a1debb8c0b825d277a70db864450d1ac0">tcp_recv</a> (void *buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag)</td></tr>
 <tr class="memdesc:a1debb8c0b825d277a70db864450d1ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data through an MDI connection, using TCP.  <a href="mdi__tcp_8h.html#a1debb8c0b825d277a70db864450d1ac0">More...</a><br /></td></tr>
 <tr class="separator:a1debb8c0b825d277a70db864450d1ac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="memItemLeft" align="right" valign="top"><a id="ab6f3723dc8b08cb2534fa22a58cf7553"></a>
-sock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#ab6f3723dc8b08cb2534fa22a58cf7553">tcp_socket</a></td></tr>
-<tr class="memdesc:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket over which a driver will listen for incoming connections. <br /></td></tr>
-<tr class="separator:ab6f3723dc8b08cb2534fa22a58cf7553"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af203df082d5c6dcaa0c88b07cf86466d"><td class="memItemLeft" align="right" valign="top"><a id="af203df082d5c6dcaa0c88b07cf86466d"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#af203df082d5c6dcaa0c88b07cf86466d">hostname</a></td></tr>
-<tr class="memdesc:af203df082d5c6dcaa0c88b07cf86466d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hostname of the driver. <br /></td></tr>
-<tr class="separator:af203df082d5c6dcaa0c88b07cf86466d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63c89c04d1feae07ca35558055155ffb"><td class="memItemLeft" align="right" valign="top"><a id="a63c89c04d1feae07ca35558055155ffb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__tcp_8h.html#a63c89c04d1feae07ca35558055155ffb">port</a></td></tr>
-<tr class="memdesc:a63c89c04d1feae07ca35558055155ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Port over which the driver will listen. <br /></td></tr>
-<tr class="separator:a63c89c04d1feae07ca35558055155ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>TCP communication implementation. </p>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hostname_55',['hostname',['../mdi__tcp_8c.html#af203df082d5c6dcaa0c88b07cf86466d',1,'hostname():&#160;mdi_tcp.c'],['../mdi__tcp_8h.html#af203df082d5c6dcaa0c88b07cf86466d',1,'hostname():&#160;mdi_tcp.c']]]
+  ['hostname_76',['hostname',['../structcode__struct.html#a950117c2da1210fad3e0ca0f479525a3',1,'code_struct']]]
 ];
