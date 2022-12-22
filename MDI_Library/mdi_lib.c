@@ -241,13 +241,6 @@ int plug_on_recv_command(MDI_Comm comm) {
   libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, 
                                             libd->shared_state->driver_code_id );
 
-  // update "this_code"
-  ret = get_current_code(&this_code);
-  if ( ret != 0 ) {
-    mdi_error("Error in plug_on_recv_command: second get_current_code failed");
-    return 1;
-  }
-
   void* mpi_ptr = libd->shared_state->mpi_comm_ptr;
   /*
   if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
@@ -584,11 +577,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // This will also delete the engine code and its communicator
   delete_communicator(libd->shared_state->driver_code_id, comm);
 
+  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished call to delete_communicator\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: fourth mdi_debug failed");
     return ret;
   }
+  */
 
   if (is_python == 0 ) {
   // Close the plugin library
@@ -603,11 +598,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 #endif
   }
 
+  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished closing the plugin\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: fifth mdi_debug failed");
     return ret;
   }
+  */
 
   /*************************************************/
   /**************** END PLUGIN MODE ****************/
@@ -615,11 +612,13 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 
 
 
+  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: sixth mdi_debug failed");
     return ret;
   }
+  */
 
   return 0;
 }

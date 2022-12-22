@@ -76,6 +76,14 @@ typedef int MDI_Comm_Type;
 typedef int MDI_Datatype_Type;
 typedef int (*MDI_execute_command_type)(void*, MDI_Comm_Type, void*);
 
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!! ABI WARNING !!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Changing this structure will affect the plugin ABI
+
+*/
 typedef struct dynamic_array_struct {
   /*! \brief The elements stored by this vector */
   unsigned char* data;
@@ -90,6 +98,23 @@ typedef struct dynamic_array_struct {
   /*! \brief Flag whether the vector has been initialized */
   int initialized;
 } vector;
+
+
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!! ABI WARNING !!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Changing this structure will affect the plugin ABI
+
+*/
+typedef struct element_struct {
+  /*! \brief The actual data for this element */
+  void* data;
+  /*! \brief ID of this element */
+  size_t id;
+} element;
+
 
 typedef struct method_struct {
   /*! \brief Function pointer for method initialization work */

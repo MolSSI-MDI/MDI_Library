@@ -2130,7 +2130,7 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
                                 driver_node_callback,
                                 driver_callback_object);
   if ( ret != 0 ) {
-    mdi_error("Error in MDI_Launch_plugin: second mdi_debug failed");
+    mdi_error("Error in MDI_Launch_plugin: library_launch_plugin failed");
     return ret;
   }
 

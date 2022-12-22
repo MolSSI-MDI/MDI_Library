@@ -297,15 +297,3 @@ Error in MDI_Init_with_options
 """
     assert driver_err == expected_err
     assert driver_out == ""
-
-    # Test double initialization
-    driver_proc = subprocess.Popen([sys.executable, "../build/ut_init_double.py"],
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_dir)
-    driver_tup = driver_proc.communicate()
-    driver_out = format_return(driver_tup[0])
-    driver_err = format_return(driver_tup[1])
-    expected_err = """MDI_Init found multiple codes with the same name
-Error in MDI_Init_with_options
-"""
-    assert driver_err == expected_err
-    assert driver_out == ""

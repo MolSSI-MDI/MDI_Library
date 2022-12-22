@@ -11,6 +11,14 @@
 
 typedef int (*MDI_Plugin_init_t)();
 
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!! ABI WARNING !!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Changing this structure will affect the plugin ABI
+
+*/
 typedef struct plugin_shared_state_struct {
   /*! \brief Name of the next command to be executed on this code.
   This is only used by engines. */

@@ -128,15 +128,35 @@ jobs:
           /opt/debugpython/bin/python3 -m pip install numpy
           /opt/debugpython/bin/python3 -m pip install -U pytest pytest-cov
 
-      - name: Install dependencies (macos)
+      - name: Update Brew (MacOS)
         if: matrix.platform == 'macos-latest'
         run: |
           source env.source
           brew update > /dev/null
+
+      - name: Install GCC (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          source env.source
           brew uninstall --ignore-dependencies gcc || true
-          brew install gcc
-          [ "${{ matrix.mpilib }}" == "mpich" ] && brew install mpich
-          [ "${{ matrix.mpilib }}" == "openmpi" ] && brew install openmpi
+          brew install gcc || brew link --overwrite python@3.10
+
+      - name: Install MPICH (MacOS)
+        if: matrix.platform == 'macos-latest' && matrix.mpilib == 'mpich'
+        run: |
+          source env.source
+          brew install mpich
+
+      - name: Install OpenMPI (MacOS)
+        if: matrix.platform == 'macos-latest' && matrix.mpilib == 'openmpi'
+        run: |
+          source env.source
+          brew install openmpi
+
+      - name: Install Pip dependencies (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          source env.source
           python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
           python3 -m pip install numpy

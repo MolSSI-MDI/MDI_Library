@@ -267,47 +267,47 @@ int free_node_vector(vector* v) {
 int new_code(size_t* code_id) {
   int ret;
 
-  code new_code;
-  new_code.returned_comms = 0;
-  new_code.next_comm = 1;
-  new_code.intra_MPI_comm = MPI_COMM_WORLD;
-  new_code.language = MDI_LANGUAGE_C;
-  new_code.language_on_destroy = NULL;
-  new_code.selected_method_id = 0;
-  new_code.initialized_mpi = 0;
-  new_code.ipi_compatibility = 0;
-  new_code.plugin_argc_ptr = NULL;
-  new_code.plugin_argv_ptr = NULL;
-  new_code.plugin_unedited_options_ptr = NULL;
-  new_code.tcp_initialized = 0;
-  new_code.mpi_initialized = 0;
-  new_code.test_initialized = 0;
-  new_code.shared_state_from_driver = NULL;
-  new_code.tcp_socket = -1;
-  new_code.port = -1;
-  new_code.hostname = NULL;
-  new_code.debug_mode = 0;
-  new_code.execute_command = NULL;
+  code* new_code = malloc(sizeof(code));
+  new_code->returned_comms = 0;
+  new_code->next_comm = 1;
+  new_code->intra_MPI_comm = MPI_COMM_WORLD;
+  new_code->language = MDI_LANGUAGE_C;
+  new_code->language_on_destroy = NULL;
+  new_code->selected_method_id = 0;
+  new_code->initialized_mpi = 0;
+  new_code->ipi_compatibility = 0;
+  new_code->plugin_argc_ptr = NULL;
+  new_code->plugin_argv_ptr = NULL;
+  new_code->plugin_unedited_options_ptr = NULL;
+  new_code->tcp_initialized = 0;
+  new_code->mpi_initialized = 0;
+  new_code->test_initialized = 0;
+  new_code->shared_state_from_driver = NULL;
+  new_code->tcp_socket = -1;
+  new_code->port = -1;
+  new_code->hostname = NULL;
+  new_code->debug_mode = 0;
+  new_code->execute_command = NULL;
 
   // initialize the name and role strings
   int ichar;
   for (ichar=0; ichar < MDI_NAME_LENGTH_; ichar++) {
-    new_code.name[ichar] = '\0';
-    new_code.role[ichar] = '\0';
+    new_code->name[ichar] = '\0';
+    new_code->role[ichar] = '\0';
   }
 
   // initialize the character buffer for the plugin path
-  new_code.plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
+  new_code->plugin_path = malloc(PLUGIN_PATH_LENGTH * sizeof(char));
   for (ichar=0; ichar < PLUGIN_PATH_LENGTH; ichar++) {
-    new_code.plugin_path[ichar] = '\0';
+    new_code->plugin_path[ichar] = '\0';
   }
 
-  new_code.is_library = 0;
-  new_code.id = (int)codes.size;
-  new_code.called_set_execute_command_func = 0;
-  new_code.intra_rank = 0;
-  new_code.world_rank = -1;
-  new_code.world_size = -1;
+  new_code->is_library = 0;
+  new_code->id = (int)codes.size;
+  new_code->called_set_execute_command_func = 0;
+  new_code->intra_rank = 0;
+  new_code->world_rank = -1;
+  new_code->world_size = -1;
 
   // initialize the node vector
   vector* node_vec = malloc(sizeof(vector));
@@ -316,7 +316,7 @@ int new_code(size_t* code_id) {
     mdi_error("Error in new_code: could not initialize node vector");
     return ret;
   }
-  new_code.nodes = node_vec;
+  new_code->nodes = node_vec;
 
   // initialize the comms vector
   vector* comms_vec = malloc(sizeof(vector));
@@ -325,7 +325,7 @@ int new_code(size_t* code_id) {
     mdi_error("Error in new_code: could not initialize comms vector");
     return ret;
   }
-  new_code.comms = comms_vec;
+  new_code->comms = comms_vec;
 
   // initialize the methods vector
   vector* methods_vec = malloc(sizeof(vector));
@@ -334,10 +334,13 @@ int new_code(size_t* code_id) {
     mdi_error("Error in new_code: could not initialize methods vector");
     return ret;
   }
-  new_code.methods = methods_vec;
+  new_code->methods = methods_vec;
 
   // add the new code to the global vector of codes
-  ret = vector_push_back( &codes, &new_code );
+  element elem;
+  elem.id = new_code->id;
+  elem.data = new_code;
+  ret = vector_push_back( &codes, &elem );
   if ( ret != 0 ) {
     mdi_error("Error in new_code: could not add code to global codes vector");
     return ret;
@@ -360,15 +363,15 @@ int get_code(size_t code_id, code** ret_code) {
   int icode;
   for (icode = 0; icode < codes.size; icode++ ) {
 
-    code* this_code;
+    element* this_element;
 
-    ret = vector_get( &codes, icode, (void**)&this_code );
+    ret = vector_get( &codes, icode, (void**)&this_element );
     if ( ret != 0 ) {
       mdi_error("Error in get_code: vector_get failed");
       return ret;
     }
-    if ( this_code->id == code_id ) {
-      *ret_code = this_code;
+    if ( this_element->id == code_id ) {
+      *ret_code = this_element->data;
       return 0;
     }
 
@@ -420,8 +423,8 @@ int delete_code(size_t code_id) {
   int code_index;
   int code_found = 0;
   for (icode = 0; icode < codes.size; icode++ ) {
-    code* check_code;
-      
+    element* check_code;
+
     ret = vector_get( &codes, icode, (void**)&check_code );
     if ( ret != 0 ) {
       mdi_error("Error in delete_code: vector_get failed");
@@ -465,6 +468,9 @@ int delete_code(size_t code_id) {
 
   // delete the data for this code from the global vector of codes
   vector_delete(&codes, code_index);
+
+  // delete the data for the code structure
+  free( this_code );
 
   return 0;
 }
