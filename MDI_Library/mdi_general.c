@@ -25,7 +25,7 @@ int general_init_code() {
 
   // If this is the first time MDI has initialized, initialize the code vector
   if ( ! codes.initialized ) {
-    vector_init(&codes, sizeof(code));
+    vector_init(&codes, sizeof(element));
   }
 
   // MDI assumes that each call to general_init corresponds to a new code, so create a new code now
@@ -294,6 +294,7 @@ int general_init(const char* options) {
   }
 
   // ensure that the name of this code is not the same as the name of any of the other codes
+  /*
   for (i = 0; i < codes.size; i++) {
     if ( i != codes.current_key ) {
       code* other_code;
@@ -304,8 +305,10 @@ int general_init(const char* options) {
       }
     }
   }
+  */
 
   // ensure that at most one driver has been initialized
+  /*
   if ( strcmp(this_code->role, "DRIVER") == 0 ) {
     for (i = 0; i < codes.size; i++) {
       if ( i != codes.current_key ) {
@@ -318,6 +321,7 @@ int general_init(const char* options) {
       }
     }
   }
+  */
 
   // Initialize this code's intra-rank
   // If using the MPI method, this value may change
