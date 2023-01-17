@@ -819,28 +819,19 @@ void mdi_warning(const char* message) {
  */
 int mdi_debug(const char *message, ...)
 {
-  int ret;
 
-  code* this_code;
-  ret = get_current_code(&this_code);
-  if ( ret != 0 ) {
-    mdi_error("Error in mdi_debug: get_current_code failed");
-    return 1;
-  }
+#if _MDI_DEBUG == 1
 
-  if ( this_code->debug_mode ) {
+  va_list args;
+  va_start(args, message);
+  vprintf(message, args);
+  va_end(args);
+  fflush(stdout);
 
-    va_list args;
-    va_start(args, message);
-
-    vprintf(message, args);
-
-    va_end(args);
-
-    fflush(stdout);
-  }
+#endif
 
   return 0;
+
 }
 
 
