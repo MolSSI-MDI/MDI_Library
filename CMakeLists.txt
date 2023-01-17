@@ -10,6 +10,7 @@ option(python_version "python version number" OFF)
 option(test_codes "on or off" OFF)
 option(test_drivers "on or off" ${test_codes})
 option(test_engines "on or off" ${test_codes})
+option(debug "on or off" OFF)
 
 set(use_C "")
 set(use_CXX "")
@@ -41,6 +42,12 @@ project(mdi
         VERSION 1.4.14
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
+# set a definition to enable MDI debug mode
+if( ${debug} )
+  add_definitions(-D_MDI_DEBUG=1)
+else()
+  add_definitions(-D_MDI_DEBUG=0)
+endif()
 
 # Check for Python developement libraries, which are used for Python plugins
 if( python_plugins )
