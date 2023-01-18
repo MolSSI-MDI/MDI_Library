@@ -154,6 +154,7 @@ DllExport int MDI_Set_Mpi4py_Split_Callback(int (*mpi4py_split)(int, int, MDI_Co
 DllExport int MDI_Set_Mpi4py_Rank_Callback(int (*mpi4py_rank)(int));
 DllExport int MDI_Set_Mpi4py_Size_Callback(int (*mpi4py_size)(int));
 DllExport int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int));
+DllExport int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int));
 
 // only used internally by MDI
 DllExport int MDI_Init_code();

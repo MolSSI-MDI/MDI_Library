@@ -2577,6 +2577,27 @@ int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int)) {
 }
 
 
+/*! \brief Set the callback MDI uses for MDI_Plugin_init when the driver is in Python
+ *
+ * The function returns \p 0 on a success.
+ *
+ * \param [in]       launch_plugin
+ *                   Function pointer to the launch_plugin callback
+ */
+int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int)) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Set_Launch_Plugin_Callback: get_current_code failed");
+    return ret;
+  }
+  this_code->py_launch_plugin_callback = launch_plugin;
+  return 0;
+}
+
+
 /*! \brief Set the language of an MDI plugin
  *
  * The function returns \p 0 on a success.

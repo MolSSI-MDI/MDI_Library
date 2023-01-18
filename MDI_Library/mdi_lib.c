@@ -334,7 +334,7 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
 
     libd->is_python = 1;
     libd->shared_state->engine_language = MDI_LANGUAGE_PYTHON;
-    ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state );
+    ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state, mode );
     if ( ret != 0 ) {
       mdi_error("Error in python_plugin_init");
       return -1;
@@ -863,6 +863,8 @@ int library_initialize() {
 
   // allocate the method data
   library_data* libd = malloc(sizeof(library_data));
+
+  // initialize the libd data
   libd->execute_on_send = 0;
   libd->mpi_comm = MPI_COMM_NULL;
 

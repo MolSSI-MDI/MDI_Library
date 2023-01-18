@@ -216,6 +216,8 @@ typedef struct code_struct {
   int (*mpi4py_size_callback)(int);
   /*! \brief Python callback pointer for MPI_Comm_barrier */
   int (*mpi4py_barrier_callback)(int);
+  /*! \brief Python callback pointer for MPI_Comm_barrier */
+  int (*py_launch_plugin_callback)(void*, void*, void*, int);
   /*! \brief MPI intra-communicator that spans all ranks associated with this code */
   MPI_Comm intra_MPI_comm;
   /*! \brief Socket for TCP connections */
