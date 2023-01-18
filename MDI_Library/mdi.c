@@ -2254,8 +2254,16 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
 
 
 int MDI_Set_plugin_state(void* state) {
-  int ret = MDI_Init_code();
+  int ret;
+  ret = mdi_debug("[MDI:MDI_Set_plugin_state] Start\n");
   if ( ret != 0 ) {
+    mdi_error("Error in MDI_Set_plugin_state: mdi_debug failed");
+    return ret;
+  }
+
+  ret = MDI_Init_code();
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Set_plugin_state: MDI_Init_code failed");
     return ret;
   }
 
