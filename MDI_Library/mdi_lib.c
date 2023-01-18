@@ -325,6 +325,13 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
     return ret;
   }
   if ( exists_flag ) {
+
+    ret = mdi_debug("[MDI:library_load_init] Attempting to load a python plugin\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in library_load_init: mdi_debug failed");
+      return ret;
+    }
+
     libd->is_python = 1;
     libd->shared_state->engine_language = MDI_LANGUAGE_PYTHON;
     ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state );
