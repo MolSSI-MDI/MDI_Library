@@ -213,7 +213,7 @@ For an alternative command that is more appropriate for plane wave quantum mecha
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> 3 * NLATTICE </c> <br>
-<b> Format: </b> Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order
+<b> Format: </b> Sequentially ascending order of lattice charge index, with the coordinates for each individual lattice charge being provided in xyz order
 
 
 
@@ -494,7 +494,26 @@ For an alternative command that is more appropriate for plane wave quantum mecha
 \par
 <b> Data Type: </b> \c MDI_DOUBLE <br>
 <b> Quantity: </b> <c> NLATTICE </c> <br>
-<b> Format: </b> Sequentially ascending order of point charge index
+<b> Format: </b> Sequentially ascending order of lattice charge index
+
+
+
+\subsection recv_lattice_forces <LATTICE_FORCES
+
+If the engine is at the \c @DEFAULT node, it calculates and sends the forces on any lattice charges (which must have previously assigned with the \c >LATTICE command) to the driver.
+Prior to sending this command, the driver must have set the number, coordinates, and magnitudes of the lattice charges using the \c >NLATTICE, \c >CLATTICE, and \c >LATTICE commands.
+These forces must include only electrostatic interactions between the lattice charges and the atomic nuclei, and between the lattice charges and any electrons.
+They must not include electrostatic interactions between the lattice charges and other lattice charges.
+If the engine has previously calculated these forces, and no intervening commands from the driver could have changed the forces, the engine is permitted to send the previously calculated forces instead of recalculating them.
+
+If the engine is not at the \c @DEFAULT node, it sends its most recently calculated lattice forces to the driver.
+
+This command is primarily intended for use with gas-phase quantum mechanics codes.
+
+\par
+<b> Data Type: </b> \c MDI_DOUBLE <br>
+<b> Quantity: </b> <c> 3 * NLATTICE </c> <br>
+<b> Format: </b> Sequentially ascending order of lattice charge index, with the forces for each individual lattice charge being provided in xyz order
 
 
 

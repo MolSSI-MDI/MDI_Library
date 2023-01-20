@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['data_20',['data',['../structdynamic__array__struct.html#acdf8715c6be1adbb6ab128b47290df75',1,'dynamic_array_struct']]],
+  ['data_20',['data',['../structdynamic__array__struct.html#acdf8715c6be1adbb6ab128b47290df75',1,'dynamic_array_struct::data()'],['../structelement__struct.html#a298d4009fd04004556d050e73f9c6514',1,'element_struct::data()']]],
   ['datatype_5finfo_21',['datatype_info',['../mdi__global_8c.html#a87a268a3dc5bc82001aca5c45bbe4f6a',1,'datatype_info(MDI_Datatype_Type datatype, size_t *size, MDI_Datatype_Type *base):&#160;mdi_global.c'],['../mdi__global_8h.html#a87a268a3dc5bc82001aca5c45bbe4f6a',1,'datatype_info(MDI_Datatype_Type datatype, size_t *size, MDI_Datatype_Type *base):&#160;mdi_global.c']]],
   ['datatype_5fmpitype_22',['datatype_mpitype',['../mdi__global_8c.html#aa98bf7a7635471166b92b0a22d60a1a4',1,'datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype *mpitype):&#160;mdi_global.c'],['../mdi__global_8h.html#aa98bf7a7635471166b92b0a22d60a1a4',1,'datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype *mpitype):&#160;mdi_global.c']]],
   ['debug_5fmode_23',['debug_mode',['../structcode__struct.html#a45ea8d00a8d9f1d1a6419d874c49b7a2',1,'code_struct']]],

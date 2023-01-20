@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi.c File Reference</title>
+<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -316,6 +316,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Set_plugin_state</
 <tr class="memitem:aaf70b8b181eca7c16d282e548b029ad6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#aaf70b8b181eca7c16d282e548b029ad6">MDI_Set_Mpi4py_Barrier_Callback</a> (int(*mpi4py_barrier)(int))</td></tr>
 <tr class="memdesc:aaf70b8b181eca7c16d282e548b029ad6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the callback MDI uses for MPI_Barrier when using mpi4py.  <a href="mdi_8c.html#aaf70b8b181eca7c16d282e548b029ad6">More...</a><br /></td></tr>
 <tr class="separator:aaf70b8b181eca7c16d282e548b029ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1f1e65f7942e4c85bc8353b93c10efc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#af1f1e65f7942e4c85bc8353b93c10efc">MDI_Set_Launch_Plugin_Callback</a> (int(*launch_plugin)(void *, void *, void *, int))</td></tr>
+<tr class="memdesc:af1f1e65f7942e4c85bc8353b93c10efc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the callback MDI uses for MDI_Plugin_init when the driver is in Python.  <a href="mdi_8c.html#af1f1e65f7942e4c85bc8353b93c10efc">More...</a><br /></td></tr>
+<tr class="separator:af1f1e65f7942e4c85bc8353b93c10efc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ecbc257bc3d76f8d108f6b720fd579a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi_8c.html#a9ecbc257bc3d76f8d108f6b720fd579a">MDI_Set_plugin_language</a> (int language, void *plugin_state)</td></tr>
 <tr class="memdesc:a9ecbc257bc3d76f8d108f6b720fd579a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the language of an MDI plugin.  <a href="mdi_8c.html#a9ecbc257bc3d76f8d108f6b720fd579a">More...</a><br /></td></tr>
 <tr class="separator:a9ecbc257bc3d76f8d108f6b720fd579a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2780,6 +2783,33 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">execute_command</td><td>Execute command callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af1f1e65f7942e4c85bc8353b93c10efc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1f1e65f7942e4c85bc8353b93c10efc">&#9670;&nbsp;</a></span>MDI_Set_Launch_Plugin_Callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MDI_Set_Launch_Plugin_Callback </td>
+          <td>(</td>
+          <td class="paramtype">int(*)(void *, void *, void *, int)&#160;</td>
+          <td class="paramname"><em>launch_plugin</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the callback MDI uses for MDI_Plugin_init when the driver is in Python. </p>
+<p>The function returns <code>0</code> on a success.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">launch_plugin</td><td>Function pointer to the launch_plugin callback </td></tr>
   </table>
   </dd>
 </dl>

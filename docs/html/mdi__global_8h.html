@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: /home/taylor/Documents/mdi/MDI_Library/MDI_Library/mdi_global.h File Reference</title>
+<title>Molssi Driver Interface Library: /repo/build/MDI_Library/MDI_Library/mdi_global.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -99,6 +99,8 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdynamic__array__struct.html">dynamic_array_struct</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structelement__struct.html">element_struct</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmethod__struct.html">method_struct</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,6 +224,9 @@ typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_execute_
 <tr class="memitem:a0f09e051f8a906705e5ecbb5ece0d438"><td class="memItemLeft" align="right" valign="top"><a id="a0f09e051f8a906705e5ecbb5ece0d438"></a>
 typedef struct <a class="el" href="structdynamic__array__struct.html">dynamic_array_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>vector</b></td></tr>
 <tr class="separator:a0f09e051f8a906705e5ecbb5ece0d438"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6d16d37f4bc3e4d21976dae25a55dc4"><td class="memItemLeft" align="right" valign="top"><a id="af6d16d37f4bc3e4d21976dae25a55dc4"></a>
+typedef struct <a class="el" href="structelement__struct.html">element_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>element</b></td></tr>
+<tr class="separator:af6d16d37f4bc3e4d21976dae25a55dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab8b445eef4cce50be7395e3a21353d3"><td class="memItemLeft" align="right" valign="top"><a id="aab8b445eef4cce50be7395e3a21353d3"></a>
 typedef struct <a class="el" href="structmethod__struct.html">method_struct</a>&#160;</td><td class="memItemRight" valign="bottom"><b>method</b></td></tr>
 <tr class="separator:aab8b445eef4cce50be7395e3a21353d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -240,10 +245,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a6c749e461a84e471bcab02d8115a1dfa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a6c749e461a84e471bcab02d8115a1dfa">vector_init</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, size_t stride)</td></tr>
 <tr class="memdesc:a6c749e461a84e471bcab02d8115a1dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize memory allocation for a vector structure.  <a href="mdi__global_8h.html#a6c749e461a84e471bcab02d8115a1dfa">More...</a><br /></td></tr>
 <tr class="separator:a6c749e461a84e471bcab02d8115a1dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53e2a90f50c539f8239225d6f39c0213"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a53e2a90f50c539f8239225d6f39c0213">vector_push_back</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, void *element)</td></tr>
+<tr class="memitem:a53e2a90f50c539f8239225d6f39c0213"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a53e2a90f50c539f8239225d6f39c0213">vector_push_back</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, void *<a class="el" href="structelement__struct.html">element</a>)</td></tr>
 <tr class="memdesc:a53e2a90f50c539f8239225d6f39c0213"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a new element to the end of the vector.  <a href="mdi__global_8h.html#a53e2a90f50c539f8239225d6f39c0213">More...</a><br /></td></tr>
 <tr class="separator:a53e2a90f50c539f8239225d6f39c0213"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69b06c1e9f6ae8fca62780d1878ef5b1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a69b06c1e9f6ae8fca62780d1878ef5b1">vector_get</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index, void **element)</td></tr>
+<tr class="memitem:a69b06c1e9f6ae8fca62780d1878ef5b1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a69b06c1e9f6ae8fca62780d1878ef5b1">vector_get</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index, void **<a class="el" href="structelement__struct.html">element</a>)</td></tr>
 <tr class="memdesc:a69b06c1e9f6ae8fca62780d1878ef5b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to an element of a vector.  <a href="mdi__global_8h.html#a69b06c1e9f6ae8fca62780d1878ef5b1">More...</a><br /></td></tr>
 <tr class="separator:a69b06c1e9f6ae8fca62780d1878ef5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bab71c9dec13cb06e7d5ae0197a04fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mdi__global_8h.html#a0bab71c9dec13cb06e7d5ae0197a04fb">vector_delete</a> (<a class="el" href="structdynamic__array__struct.html">vector</a> *v, int index)</td></tr>

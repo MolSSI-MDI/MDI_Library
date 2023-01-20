@@ -1,5 +1,5 @@
-\hypertarget{mdi__global_8c}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.c File Reference}
-\label{mdi__global_8c}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.c@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.c}}
+\hypertarget{mdi__global_8c}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.c File Reference}
+\label{mdi__global_8c}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.c@{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.c}}
 
 
 Global structures used by M\+DI.  
@@ -18,13 +18,13 @@ Global structures used by M\+DI.
 \item 
 int \mbox{\hyperlink{mdi__global_8c_a6c749e461a84e471bcab02d8115a1dfa}{vector\+\_\+init}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, size\+\_\+t stride)
 \begin{DoxyCompactList}\small\item\em Initialize memory allocation for a vector structure. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}{vector\+\_\+push\+\_\+back}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$element)
+int \mbox{\hyperlink{mdi__global_8c_a53e2a90f50c539f8239225d6f39c0213}{vector\+\_\+push\+\_\+back}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$\mbox{\hyperlink{structelement__struct}{element}})
 \begin{DoxyCompactList}\small\item\em Append a new element to the end of the vector. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8c_a0bab71c9dec13cb06e7d5ae0197a04fb}{vector\+\_\+delete}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
 \begin{DoxyCompactList}\small\item\em Remove an element from a vector. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8c_a4efb113e1a013d1de3065394cde82202}{vector\+\_\+free}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v)
 \begin{DoxyCompactList}\small\item\em Free all data associated with a vector. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__global_8c_a69b06c1e9f6ae8fca62780d1878ef5b1}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index, void $\ast$$\ast$element)
+int \mbox{\hyperlink{mdi__global_8c_a69b06c1e9f6ae8fca62780d1878ef5b1}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index, void $\ast$$\ast$\mbox{\hyperlink{structelement__struct}{element}})
 \begin{DoxyCompactList}\small\item\em Return a pointer to an element of a vector. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8c_ad49e6c1f80018cebd100e57c17d6bb13}{get\+\_\+node\+\_\+index}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, const char $\ast$node\+\_\+name, int $\ast$node\+\_\+index)
 \begin{DoxyCompactList}\small\item\em Determine the index of a node within a vector of nodes. \end{DoxyCompactList}\item 

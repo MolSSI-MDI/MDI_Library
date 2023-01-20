@@ -152,6 +152,12 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>mpi4py_split_callback<
 <tr class="memitem:a91099ed5bdb87daa7d059337640de6e2"><td class="memItemLeft" align="right" valign="top"><a id="a91099ed5bdb87daa7d059337640de6e2"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>set_mpi4py_split_callback</b> ()</td></tr>
 <tr class="separator:a91099ed5bdb87daa7d059337640de6e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fcf890cb3a71a66f3bf1ec768ae3d90"><td class="memItemLeft" align="right" valign="top"><a id="a6fcf890cb3a71a66f3bf1ec768ae3d90"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>launch_plugin_callback</b> (plugin_name_c, plugin_path_c, plugin_state, mode)</td></tr>
+<tr class="separator:a6fcf890cb3a71a66f3bf1ec768ae3d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48c5f0ada7381c43ea0ddf3ae487b84c"><td class="memItemLeft" align="right" valign="top"><a id="a48c5f0ada7381c43ea0ddf3ae487b84c"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>set_launch_plugin_callback</b> ()</td></tr>
+<tr class="separator:a48c5f0ada7381c43ea0ddf3ae487b84c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3d3efbe7fb0eb3d84a2f8664c0bef34"><td class="memItemLeft" align="right" valign="top"><a id="af3d3efbe7fb0eb3d84a2f8664c0bef34"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>MDI_Get_python_plugin_mpi_world_ptr</b> (plugin_state)</td></tr>
 <tr class="separator:af3d3efbe7fb0eb3d84a2f8664c0bef34"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -525,6 +531,12 @@ dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>execute_command
 <tr class="memitem:a969125787277e56201f74016351d5f48"><td class="memItemLeft" align="right" valign="top"><a id="a969125787277e56201f74016351d5f48"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>mpi4py_split_callback_c</b> = <a class="el" href="namespaceMDI__Library_1_1mdi.html#aab5aee33007a01724ccee012cce25eb1">mpi4py_split_func_type</a>( mpi4py_split_callback )</td></tr>
 <tr class="separator:a969125787277e56201f74016351d5f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62ed5c3848dcbb2dba1a6c3013298b15"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMDI__Library_1_1mdi.html#a62ed5c3848dcbb2dba1a6c3013298b15">launch_plugin_func_type</a></td></tr>
+<tr class="memdesc:a62ed5c3848dcbb2dba1a6c3013298b15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch Plugin Callback #.  <a href="namespaceMDI__Library_1_1mdi.html#a62ed5c3848dcbb2dba1a6c3013298b15">More...</a><br /></td></tr>
+<tr class="separator:a62ed5c3848dcbb2dba1a6c3013298b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22a448376f6672823a32878f7e278eb8"><td class="memItemLeft" align="right" valign="top"><a id="a22a448376f6672823a32878f7e278eb8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>launch_plugin_callback_c</b> = <a class="el" href="namespaceMDI__Library_1_1mdi.html#a62ed5c3848dcbb2dba1a6c3013298b15">launch_plugin_func_type</a>( launch_plugin_callback )</td></tr>
+<tr class="separator:a22a448376f6672823a32878f7e278eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07efccaafa5ea385aa7b31eefa2db877"><td class="memItemLeft" align="right" valign="top"><a id="a07efccaafa5ea385aa7b31eefa2db877"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>execute_command_func_type</b> = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_char), ctypes.c_int, ctypes.c_void_p)</td></tr>
 <tr class="separator:a07efccaafa5ea385aa7b31eefa2db877"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -575,6 +587,27 @@ dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>execute_command
 <p>Node / Command / Callback management functions #. </p>
 <p>Plugin functions #.</p>
 <p>MDI_Register_Node </p>
+
+</div>
+</div>
+<a id="a62ed5c3848dcbb2dba1a6c3013298b15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62ed5c3848dcbb2dba1a6c3013298b15">&#9670;&nbsp;</a></span>launch_plugin_func_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MDI_Library.mdi.launch_plugin_func_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;=  ctypes.CFUNCTYPE(ctypes.c_int, <span class="comment"># return</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                                         ctypes.c_char_p, <span class="comment"># plugin_name</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;                                         ctypes.c_char_p, <span class="comment"># plugin_path</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;                                         ctypes.POINTER(ctypes.c_byte), <span class="comment"># plugin_state</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                         ctypes.c_int)</div>
+</div><!-- fragment -->
+<p>Launch Plugin Callback #. </p>
 
 </div>
 </div>

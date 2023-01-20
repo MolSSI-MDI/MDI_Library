@@ -198,7 +198,7 @@ Command List</h1>
 <p>This command is primarily intended for use with gas-phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the <code>&gt;POTENTIAL</code> command.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> 3 * NLATTICE </code> <br  />
- <b> Format: </b> Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order</dd></dl>
+ <b> Format: </b> Sequentially ascending order of lattice charge index, with the coordinates for each individual lattice charge being provided in xyz order</dd></dl>
 <h2><a class="anchor" id="coords_node"></a>
 @COORDS</h2>
 <p>The engine proceeds to the next <code>@COORDS</code>  node (see <a class="el" href="mdi_standard.html#standard_nodes_sec">Nodes</a>). This command is not valid at the <code>@DEFAULT</code>  node.</p>
@@ -337,7 +337,15 @@ EXIT</h2>
 <p>This command is primarily intended for use with gas-phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the <code>&gt;POTENTIAL</code> command.</p>
 <dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
  <b> Quantity: </b> <code> NLATTICE </code> <br  />
- <b> Format: </b> Sequentially ascending order of point charge index</dd></dl>
+ <b> Format: </b> Sequentially ascending order of lattice charge index</dd></dl>
+<h2><a class="anchor" id="recv_lattice_forces"></a>
+&lt;LATTICE_FORCES</h2>
+<p>If the engine is at the <code>@DEFAULT</code>  node, it calculates and sends the forces on any lattice charges (which must have previously assigned with the <code>&gt;LATTICE</code> command) to the driver. Prior to sending this command, the driver must have set the number, coordinates, and magnitudes of the lattice charges using the <code>&gt;NLATTICE</code>, <code>&gt;CLATTICE</code>, and <code>&gt;LATTICE</code> commands. These forces must include only electrostatic interactions between the lattice charges and the atomic nuclei, and between the lattice charges and any electrons. They must not include electrostatic interactions between the lattice charges and other lattice charges. If the engine has previously calculated these forces, and no intervening commands from the driver could have changed the forces, the engine is permitted to send the previously calculated forces instead of recalculating them.</p>
+<p>If the engine is not at the <code>@DEFAULT</code>  node, it sends its most recently calculated lattice forces to the driver.</p>
+<p>This command is primarily intended for use with gas-phase quantum mechanics codes.</p>
+<dl class="section user"><dt></dt><dd><b> Data Type: </b> <code>MDI_DOUBLE</code> <br  />
+ <b> Quantity: </b> <code> 3 * NLATTICE </code> <br  />
+ <b> Format: </b> Sequentially ascending order of lattice charge index, with the forces for each individual lattice charge being provided in xyz order</dd></dl>
 <h2><a class="anchor" id="recv_masses"></a>
 &lt;MASSES</h2>
 <p>The engine sends the driver the mass of each of the atoms.</p>
