@@ -68,8 +68,6 @@ class MDIEngine:
         else:
             self.forces = forces
 
-    def run(self):
-
         # get the MPI communicator
         if use_mpi4py:
             self.mpi_world = MPI.COMM_WORLD
@@ -102,15 +100,17 @@ class MDIEngine:
         mdi.MDI_Set_Execute_Command_Func(execute_command, self)
 
         # Connect to the driver
-        comm = mdi.MDI_Accept_Communicator()
+        self.comm = mdi.MDI_Accept_Communicator()
+
+    def run(self):
 
         while not self.exit_flag:
 
-            command = mdi.MDI_Recv_Command(comm)
+            command = mdi.MDI_Recv_Command(self.comm)
             if use_mpi4py:
                 command = self.mpi_world.bcast(command, root=0)
 
-            execute_command( command, comm, self )
+            execute_command( command, self.comm, self )
 
 def MDI_Plugin_init_engine_py(plugin_state):
 
@@ -118,6 +118,12 @@ def MDI_Plugin_init_engine_py(plugin_state):
 
     engine = MDIEngine()
     engine.run()
+
+def MDI_Plugin_open_engine_py(plugin_state):
+
+    mdi.MDI_Set_plugin_state(plugin_state)
+
+    engine = MDIEngine()
 
 if __name__== "__main__":
     mdi.MDI_Init(sys.argv[2])

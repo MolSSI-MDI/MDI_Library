@@ -274,3 +274,20 @@
    fun:_PyFunction_Vectorcall
    ...
 }
+
+
+{
+   Python SetItem conditional jump error
+   Memcheck:Cond
+   ...
+   fun:_Py_Dealloc
+   fun:_Py_DECREF
+   fun:_Py_XDECREF
+   fun:insertdict
+   fun:PyDict_SetItem
+   fun:_PyEval_EvalFrameDefault
+   fun:_PyEval_EvalFrame
+   fun:_PyEval_EvalCode
+   fun:_PyFunction_Vectorcall
+   ...
+}

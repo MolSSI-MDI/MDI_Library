@@ -5,6 +5,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 import ctypes
 import sys
+import importlib
 
 # attempt to import numpy
 try:
@@ -495,6 +496,58 @@ def set_mpi4py_split_callback():
     global mpi4py_split_callback_c
     mdi.MDI_Set_Mpi4py_Split_Callback( mpi4py_split_callback_c )
 
+##################################################
+# Launch Plugin Callback                           #
+##################################################
+
+# define the type of the callback function
+launch_plugin_func_type = ctypes.CFUNCTYPE(ctypes.c_int, # return
+                                         ctypes.c_char_p, # plugin_name
+                                         ctypes.c_char_p, # plugin_path
+                                         ctypes.POINTER(ctypes.c_byte), # plugin_state
+                                         ctypes.c_int) # mode
+
+# define the c function that allows the callback function to be set
+mdi.MDI_Set_Launch_Plugin_Callback.restype = ctypes.c_int
+mdi.MDI_Set_Launch_Plugin_Callback.argtypes = [launch_plugin_func_type]
+
+# define the python callback function
+def launch_plugin_callback(plugin_name_c, plugin_path_c, plugin_state, mode):
+    try:
+        # convert the C strings to Python values
+        plugin_name = plugin_name_c.decode('utf-8')
+        plugin_path_str = plugin_path_c.decode('utf-8')
+        plugin_path = os.path.abspath(plugin_path_str)
+
+        sys.path.append(plugin_path)
+        engine_module = importlib.import_module(plugin_name)
+        if mode == 0:
+            init_func = getattr(engine_module, "MDI_Plugin_init_" + str(plugin_name))
+        else:
+            init_func = getattr(engine_module, "MDI_Plugin_open_" + str(plugin_name))
+
+        init_func(plugin_state)
+
+        return 0
+
+    except Exception as e:
+
+        sys.stderr.write("MDI Error in launch_plugin_callback: \n" + str(e) + "\n")
+        sys.stderr.flush()
+        return -1
+
+# define the python function that will set the callback function in c
+launch_plugin_callback_c = launch_plugin_func_type( launch_plugin_callback )
+def set_launch_plugin_callback():
+    global launch_plugin_callback_c
+    mdi.MDI_Set_Launch_Plugin_Callback( launch_plugin_callback_c )
+
+
+
+
+
+
+
 
 # MDI_Get_python_plugin_mpi_world_ptr
 mdi.MDI_Get_python_plugin_mpi_world_ptr.argtypes = [ctypes.POINTER(ctypes.c_void_p), ctypes.c_void_p]
@@ -601,6 +654,7 @@ def MDI_Init(arg1, arg2 = None):
         raise Exception("MDI Error: MDI_Init during call to MDI_Init_code failed")
 
     MDI_MPI_initialization()
+    set_launch_plugin_callback()
 
     # call MDI_Init
     command = arg1.encode('utf-8')

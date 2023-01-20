@@ -63,28 +63,81 @@ int print_traceback()
   return 0;
 }
 
-int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr, void* shared_state ) {
+int python_plugin_init( const char* engine_name, const char* engine_path, void* engine_comm_ptr, void* shared_state, int mode ) {
+  int ret;
+  ret = mdi_debug("[MDI:python_plugin_init] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in python_plugin_init: mdi_debug failed");
+    return ret;
+  }
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in python_plugin_init: get_current_code failed");
+    return ret;
+  }
+
+  // If the driver is a Python code, just call the callback and return
+  if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
+    this_code->py_launch_plugin_callback(engine_name, engine_path, shared_state, mode);
+    return 0;
+  }
+
   plugin_shared_state* my_state = (plugin_shared_state*) shared_state;
 
   // Initialize the Python interpreter
   // Because Python has problems with reinitialization, only initialize Python once
   if ( ! my_state->python_interpreter_initialized ) {
+
+    ret = mdi_debug("[MDI:python_plugin_init] Initializing the Python interpreter\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in python_plugin_init: mdi_debug failed");
+      return ret;
+    }
+
     Py_Initialize();
     if ( ! Py_IsInitialized() ) {
       mdi_error("Unable to initialize Python interpreter");
       return 1;
     }
+
+    ret = mdi_debug("[MDI:python_plugin_init] Creating an initial Python dictionary\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in python_plugin_init: mdi_debug failed");
+      return ret;
+    }
+
     PyObject* main_module = PyImport_AddModule("__main__");
     PyObject* original_dict = PyModule_GetDict(main_module);
     my_state->python_interpreter_dict = PyDict_Copy(original_dict);
     my_state->python_interpreter_initialized = 1;
   }
+
+  ret = mdi_debug("[MDI:python_plugin_init] Initializing a Python dictionary for this plugin\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in python_plugin_init: mdi_debug failed");
+    return ret;
+  }
+
   PyObject* main_dict = PyDict_Copy(my_state->python_interpreter_dict);
+
+  ret = mdi_debug("[MDI:python_plugin_init] Finished initializing the Python interpreter\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in python_plugin_init: mdi_debug failed");
+    return ret;
+  }
 
   // Open the Python script for the Engine
   FILE* engine_script = fopen(engine_path, "r");
 
   if( engine_script ) {
+
+    ret = mdi_debug("[MDI:python_plugin_init] Setting up the Python environment\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in python_plugin_init: mdi_debug failed");
+      return ret;
+    }
 
     // Get the pointer to the plugin state
     uintptr_t plugin_state_int = (uintptr_t)shared_state;
@@ -107,6 +160,12 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
     }
     Py_XDECREF(sysrun);
 
+    ret = mdi_debug("[MDI:python_plugin_init] Running the engine script\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in python_plugin_init: mdi_debug failed");
+      return ret;
+    }
+
     // Run the engine file, which will make the MDI_Plugin_init function available
     PyObject* filerun = PyRun_File(engine_script, engine_path,
                    Py_file_input,
@@ -118,9 +177,20 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
     }
     Py_XDECREF(filerun);
 
+    ret = mdi_debug("[MDI:python_plugin_init] Calling MDI_Plugin_init\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in python_plugin_init: mdi_debug failed");
+      return ret;
+    }
+
     // Call the MDI_Plugin_init function for this plugin
     char* plugin_init_name = malloc( PLUGIN_PATH_LENGTH * sizeof(char) );
-    snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "plugin_state = ctypes.c_void_p(%ld)\nMDI_Plugin_init_%s(plugin_state)", plugin_state_int, engine_name);
+    if ( mode == 0 ) {
+      snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "plugin_state = ctypes.c_void_p(%ld)\nMDI_Plugin_init_%s(plugin_state)", plugin_state_int, engine_name);
+    }
+    else {
+      snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "plugin_state = ctypes.c_void_p(%ld)\nMDI_Plugin_open_%s(plugin_state)", plugin_state_int, engine_name);
+    }
     PyObject* initrun = PyRun_String(plugin_init_name,
                      Py_file_input,
                      main_dict, main_dict);
@@ -133,7 +203,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
     Py_XDECREF(initrun);
 
   }
-  
+
   // Close the script
   fclose( engine_script );
 
@@ -144,6 +214,12 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
   // Because Python has problems with reinitialization, only initialize Python once
   //Py_DECREF(python_interpreter_dict);
   //Py_Finalize();
+
+  ret = mdi_debug("[MDI:python_plugin_init] Finished\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in python_plugin_init: mdi_debug failed");
+    return ret;
+  }
 
   return 0;
 }

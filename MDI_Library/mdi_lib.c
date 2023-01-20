@@ -72,6 +72,12 @@ int plug_on_selection() {
 int plug_on_accept_communicator() {
   int ret;
 
+  ret = mdi_debug("[MDI:plug_on_accept_communicator] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_accept_communicator: mdi_debug failed");
+    return ret;
+  }
+
   code* this_code;
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
@@ -104,6 +110,11 @@ int plug_on_accept_communicator() {
 /*! \brief Callback when the PLUG method must send a command */
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
   int ret;
+  ret = mdi_debug("[MDI:plug_on_send_command] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_send_command: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -210,6 +221,11 @@ int plug_after_send_command(const char* command, MDI_Comm comm) {
 /*! \brief Callback when the PLUG method must receive a command */
 int plug_on_recv_command(MDI_Comm comm) {
   int ret;
+  ret = mdi_debug("[MDI:plug_on_recv_command] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_recv_command: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -271,6 +287,11 @@ int plug_on_recv_command(MDI_Comm comm) {
 int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
                       library_data* libd, int mode) {
   int ret;
+  ret = mdi_debug("[MDI:library_load_init] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_load_init: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -304,9 +325,16 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
     return ret;
   }
   if ( exists_flag ) {
+
+    ret = mdi_debug("[MDI:library_load_init] Attempting to load a python plugin\n");
+    if ( ret != 0 ) {
+      mdi_error("Error in library_load_init: mdi_debug failed");
+      return ret;
+    }
+
     libd->is_python = 1;
     libd->shared_state->engine_language = MDI_LANGUAGE_PYTHON;
-    ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state );
+    ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state, mode );
     if ( ret != 0 ) {
       mdi_error("Error in python_plugin_init");
       return -1;
@@ -388,6 +416,12 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
  *
  */
 int library_parse_options(const char* options, library_data* libd) {
+  int ret;
+  ret = mdi_debug("[MDI:library_parse_options] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_parse_options: mdi_debug failed");
+    return ret;
+  }
 
   // Begin parsing the options char array into an argv-style array of char arrays
 
@@ -479,6 +513,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
                           MDI_Driver_node_callback_t driver_node_callback,
                           void* driver_callback_object) {
   int ret;
+  ret = mdi_debug("[MDI:library_launch_plugin] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_launch_plugin: mdi_debug failed");
+    return ret;
+  }
 
   ret = mdi_debug("[MDI:library_launch_plugin] Name: %s\n", plugin_name);
   if ( ret != 0 ) {
@@ -577,13 +616,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
   // This will also delete the engine code and its communicator
   delete_communicator(libd->shared_state->driver_code_id, comm);
 
-  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished call to delete_communicator\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: fourth mdi_debug failed");
     return ret;
   }
-  */
 
   if (is_python == 0 ) {
   // Close the plugin library
@@ -598,13 +635,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 #endif
   }
 
-  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished closing the plugin\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: fifth mdi_debug failed");
     return ret;
   }
-  */
 
   /*************************************************/
   /**************** END PLUGIN MODE ****************/
@@ -612,13 +647,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 
 
 
-  /*
   ret = mdi_debug("[MDI:library_launch_plugin] Finished\n");
   if ( ret != 0 ) {
     mdi_error("Error in library_launch_plugin: sixth mdi_debug failed");
     return ret;
   }
-  */
 
   return 0;
 }
@@ -631,6 +664,11 @@ int library_launch_plugin(const char* plugin_name, const char* options, void* mp
 int library_open_plugin(const char* plugin_name, const char* options, void* mpi_comm_ptr,
                           MDI_Comm* mdi_comm_ptr) {
   int ret;
+  ret = mdi_debug("[MDI:library_open_plugin] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_open_plugin: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -745,6 +783,11 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
 
 int library_close_plugin(MDI_Comm mdi_comm) {
   int ret;
+  ret = mdi_debug("[MDI:library_close_plugin] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_close_plugin: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -782,6 +825,11 @@ int library_close_plugin(MDI_Comm mdi_comm) {
  */
 int library_initialize() {
   int ret;
+  ret = mdi_debug("[MDI:library_initialize] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_initialize: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -815,6 +863,8 @@ int library_initialize() {
 
   // allocate the method data
   library_data* libd = malloc(sizeof(library_data));
+
+  // initialize the libd data
   libd->execute_on_send = 0;
   libd->mpi_comm = MPI_COMM_NULL;
 
@@ -879,6 +929,11 @@ int library_initialize() {
  */
 int library_set_driver_current(MDI_Comm comm) {
   int ret;
+  ret = mdi_debug("[MDI:library_set_driver_current] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_driver_current: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -915,6 +970,11 @@ int library_set_driver_current(MDI_Comm comm) {
  */
 int library_set_command(const char* command, MDI_Comm comm) {
   int ret;
+  ret = mdi_debug("[MDI:library_set_command] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_command: mdi_debug failed");
+    return ret;
+  }
 
   communicator* this;
   ret = get_communicator(codes.current_key, comm, &this);
@@ -951,7 +1011,13 @@ int library_set_command(const char* command, MDI_Comm comm) {
  *                   MDI communicator associated with the intended recipient code.
  */
 int library_execute_command(MDI_Comm comm) {
-  int ret = 0;
+  int ret;
+  ret = mdi_debug("[MDI:library_execute_command] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_execute_command: mdi_debug failed");
+    return ret;
+  }
+
   communicator* this;
   ret = get_communicator(codes.current_key, comm, &this);
   if ( ret != 0 ) {
@@ -1007,6 +1073,11 @@ int library_execute_command(MDI_Comm comm) {
  */
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
+  ret = mdi_debug("[MDI:library_send] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_send: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -1142,6 +1213,11 @@ int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
  */
 int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag) {
   int ret;
+  ret = mdi_debug("[MDI:library_recv] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_recv: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
@@ -1347,6 +1423,11 @@ int library_delete_engine(size_t code_id) {
  */
 int library_set_state(void* state) {
   int ret;
+  ret = mdi_debug("[MDI:library_set_state] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in library_set_state: mdi_debug failed");
+    return ret;
+  }
 
   code* this_code;
   ret = get_current_code(&this_code);
