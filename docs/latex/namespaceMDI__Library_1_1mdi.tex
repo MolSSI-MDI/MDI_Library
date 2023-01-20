@@ -65,6 +65,12 @@ def {\bfseries mpi4py\+\_\+split\+\_\+callback} (color, key, mdi\+\_\+comm, comm
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a91099ed5bdb87daa7d059337640de6e2}\label{namespaceMDI__Library_1_1mdi_a91099ed5bdb87daa7d059337640de6e2}} 
 def {\bfseries set\+\_\+mpi4py\+\_\+split\+\_\+callback} ()
 \item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a6fcf890cb3a71a66f3bf1ec768ae3d90}\label{namespaceMDI__Library_1_1mdi_a6fcf890cb3a71a66f3bf1ec768ae3d90}} 
+def {\bfseries launch\+\_\+plugin\+\_\+callback} (plugin\+\_\+name\+\_\+c, plugin\+\_\+path\+\_\+c, plugin\+\_\+state, mode)
+\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a48c5f0ada7381c43ea0ddf3ae487b84c}\label{namespaceMDI__Library_1_1mdi_a48c5f0ada7381c43ea0ddf3ae487b84c}} 
+def {\bfseries set\+\_\+launch\+\_\+plugin\+\_\+callback} ()
+\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_af3d3efbe7fb0eb3d84a2f8664c0bef34}\label{namespaceMDI__Library_1_1mdi_af3d3efbe7fb0eb3d84a2f8664c0bef34}} 
 def {\bfseries M\+D\+I\+\_\+\+Get\+\_\+python\+\_\+plugin\+\_\+mpi\+\_\+world\+\_\+ptr} (plugin\+\_\+state)
 \item 
@@ -401,6 +407,11 @@ dictionary {\bfseries execute\+\_\+command\+\_\+dict} = \{\}
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a969125787277e56201f74016351d5f48}\label{namespaceMDI__Library_1_1mdi_a969125787277e56201f74016351d5f48}} 
 {\bfseries mpi4py\+\_\+split\+\_\+callback\+\_\+c} = \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_aab5aee33007a01724ccee012cce25eb1}{mpi4py\+\_\+split\+\_\+func\+\_\+type}}( mpi4py\+\_\+split\+\_\+callback )
 \item 
+\mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a62ed5c3848dcbb2dba1a6c3013298b15}{launch\+\_\+plugin\+\_\+func\+\_\+type}}
+\begin{DoxyCompactList}\small\item\em Launch Plugin Callback \#. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a22a448376f6672823a32878f7e278eb8}\label{namespaceMDI__Library_1_1mdi_a22a448376f6672823a32878f7e278eb8}} 
+{\bfseries launch\+\_\+plugin\+\_\+callback\+\_\+c} = \mbox{\hyperlink{namespaceMDI__Library_1_1mdi_a62ed5c3848dcbb2dba1a6c3013298b15}{launch\+\_\+plugin\+\_\+func\+\_\+type}}( launch\+\_\+plugin\+\_\+callback )
+\item 
 \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a07efccaafa5ea385aa7b31eefa2db877}\label{namespaceMDI__Library_1_1mdi_a07efccaafa5ea385aa7b31eefa2db877}} 
 {\bfseries execute\+\_\+command\+\_\+func\+\_\+type} = ctypes.\+C\+F\+U\+N\+C\+T\+Y\+PE(ctypes.\+c\+\_\+int, ctypes.\+P\+O\+I\+N\+T\+ER(ctypes.\+c\+\_\+char), ctypes.\+c\+\_\+int, ctypes.\+c\+\_\+void\+\_\+p)
 \item 
@@ -445,7 +456,26 @@ Node / Command / Callback management functions \#.
 
 Plugin functions \#.
 
-M\+D\+I\+\_\+\+Register\+\_\+\+Node \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}\label{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}} 
+M\+D\+I\+\_\+\+Register\+\_\+\+Node \mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_a62ed5c3848dcbb2dba1a6c3013298b15}\label{namespaceMDI__Library_1_1mdi_a62ed5c3848dcbb2dba1a6c3013298b15}} 
+\index{MDI\_Library.mdi@{MDI\_Library.mdi}!launch\_plugin\_func\_type@{launch\_plugin\_func\_type}}
+\index{launch\_plugin\_func\_type@{launch\_plugin\_func\_type}!MDI\_Library.mdi@{MDI\_Library.mdi}}
+\doxysubsubsection{\texorpdfstring{launch\_plugin\_func\_type}{launch\_plugin\_func\_type}}
+{\footnotesize\ttfamily M\+D\+I\+\_\+\+Library.\+mdi.\+launch\+\_\+plugin\+\_\+func\+\_\+type}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 =  ctypes.CFUNCTYPE(ctypes.c\_int, \textcolor{comment}{\# return}}
+\DoxyCodeLine{2                                          ctypes.c\_char\_p, \textcolor{comment}{\# plugin\_name}}
+\DoxyCodeLine{3                                          ctypes.c\_char\_p, \textcolor{comment}{\# plugin\_path}}
+\DoxyCodeLine{4                                          ctypes.POINTER(ctypes.c\_byte), \textcolor{comment}{\# plugin\_state}}
+\DoxyCodeLine{5                                          ctypes.c\_int)}
+
+\end{DoxyCode}
+
+
+Launch Plugin Callback \#. 
+
+\mbox{\Hypertarget{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}\label{namespaceMDI__Library_1_1mdi_acb2aaf883a2cd598e93d0c85754d83e3}} 
 \index{MDI\_Library.mdi@{MDI\_Library.mdi}!mpi4py\_allgather\_func\_type@{mpi4py\_allgather\_func\_type}}
 \index{mpi4py\_allgather\_func\_type@{mpi4py\_allgather\_func\_type}!MDI\_Library.mdi@{MDI\_Library.mdi}}
 \doxysubsubsection{\texorpdfstring{mpi4py\_allgather\_func\_type}{mpi4py\_allgather\_func\_type}}

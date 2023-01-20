@@ -13,7 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Molssi Driver Interface Library: method_struct Struct Reference</title>
+<title>Molssi Driver Interface Library: element_struct Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,38 +77,22 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structmethod__struct-members.html">List of all members</a>  </div>
+<a href="structelement__struct-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">method_struct Struct Reference</div>  </div>
+<div class="title">element_struct Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a821ab723d31f0aa98508e58e730e2ec0"><td class="memItemLeft" align="right" valign="top"><a id="a821ab723d31f0aa98508e58e730e2ec0"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmethod__struct.html#a821ab723d31f0aa98508e58e730e2ec0">on_selection</a> )()</td></tr>
-<tr class="memdesc:a821ab723d31f0aa98508e58e730e2ec0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function pointer for method initialization work. <br /></td></tr>
-<tr class="separator:a821ab723d31f0aa98508e58e730e2ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a320c5f46b250957731e37bef653e226a"><td class="memItemLeft" align="right" valign="top"><a id="a320c5f46b250957731e37bef653e226a"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><b>on_accept_communicator</b> )()</td></tr>
-<tr class="separator:a320c5f46b250957731e37bef653e226a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5dfc24083ba23b2ad518a9295475def"><td class="memItemLeft" align="right" valign="top"><a id="ab5dfc24083ba23b2ad518a9295475def"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><b>on_send_command</b> )(const char *, MDI_Comm_Type, int *skip_flag)</td></tr>
-<tr class="separator:ab5dfc24083ba23b2ad518a9295475def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f7625ddf2dc4de8430af6eba71c9bbe"><td class="memItemLeft" align="right" valign="top"><a id="a9f7625ddf2dc4de8430af6eba71c9bbe"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><b>after_send_command</b> )(const char *, MDI_Comm_Type)</td></tr>
-<tr class="separator:a9f7625ddf2dc4de8430af6eba71c9bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e32cae361b54cc21b603ee74d1df28b"><td class="memItemLeft" align="right" valign="top"><a id="a2e32cae361b54cc21b603ee74d1df28b"></a>
-int(*&#160;</td><td class="memItemRight" valign="bottom"><b>on_recv_command</b> )(MDI_Comm_Type)</td></tr>
-<tr class="separator:a2e32cae361b54cc21b603ee74d1df28b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84803c506d596c77de45b8f21d57d3af"><td class="memItemLeft" align="right" valign="top"><a id="a84803c506d596c77de45b8f21d57d3af"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmethod__struct.html#a84803c506d596c77de45b8f21d57d3af">id</a></td></tr>
-<tr class="memdesc:a84803c506d596c77de45b8f21d57d3af"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of this method. <br /></td></tr>
-<tr class="separator:a84803c506d596c77de45b8f21d57d3af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf07395a4c514ec2fe2b0620f2c6d87a"><td class="memItemLeft" align="right" valign="top"><a id="adf07395a4c514ec2fe2b0620f2c6d87a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmethod__struct.html#adf07395a4c514ec2fe2b0620f2c6d87a">method_id</a></td></tr>
-<tr class="memdesc:adf07395a4c514ec2fe2b0620f2c6d87a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Communication method. <br /></td></tr>
-<tr class="separator:adf07395a4c514ec2fe2b0620f2c6d87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a298d4009fd04004556d050e73f9c6514"><td class="memItemLeft" align="right" valign="top"><a id="a298d4009fd04004556d050e73f9c6514"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structelement__struct.html#a298d4009fd04004556d050e73f9c6514">data</a></td></tr>
+<tr class="memdesc:a298d4009fd04004556d050e73f9c6514"><td class="mdescLeft">&#160;</td><td class="mdescRight">The actual data for this element. <br /></td></tr>
+<tr class="separator:a298d4009fd04004556d050e73f9c6514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ae137cc64dab9da2b9908c6bd4846fe"><td class="memItemLeft" align="right" valign="top"><a id="a5ae137cc64dab9da2b9908c6bd4846fe"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structelement__struct.html#a5ae137cc64dab9da2b9908c6bd4846fe">id</a></td></tr>
+<tr class="memdesc:a5ae137cc64dab9da2b9908c6bd4846fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of this element. <br /></td></tr>
+<tr class="separator:a5ae137cc64dab9da2b9908c6bd4846fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/repo/build/MDI_Library/MDI_Library/<a class="el" href="mdi__global_8h_source.html">mdi_global.h</a></li>

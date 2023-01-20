@@ -137,7 +137,7 @@ This command is primarily intended for use with gas-\/phase quantum mechanics co
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+L\+A\+T\+T\+I\+CE } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of point charge index, with the coordinates for each individual point charge being provided in xyz order
+ {\bfseries{ Format\+: }} Sequentially ascending order of lattice charge index, with the coordinates for each individual lattice charge being provided in xyz order
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_coords_node}{}\doxysubsection{@\+C\+O\+O\+R\+DS}\label{mdi_standard_coords_node}
 The engine proceeds to the next {\ttfamily @\+C\+O\+O\+R\+DS}  node (see \mbox{\hyperlink{mdi_standard_standard_nodes_sec}{Nodes}}). This command is not valid at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node.\hypertarget{mdi_standard_send_coords}{}\doxysubsection{$>$\+C\+O\+O\+R\+DS}\label{mdi_standard_send_coords}
@@ -315,7 +315,19 @@ This command is primarily intended for use with gas-\/phase quantum mechanics co
 \begin{DoxyParagraph}{}
 {\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
  {\bfseries{ Quantity\+: }} {\ttfamily  N\+L\+A\+T\+T\+I\+CE } ~\newline
- {\bfseries{ Format\+: }} Sequentially ascending order of point charge index
+ {\bfseries{ Format\+: }} Sequentially ascending order of lattice charge index
+\end{DoxyParagraph}
+\hypertarget{mdi_standard_recv_lattice_forces}{}\doxysubsection{$<$\+L\+A\+T\+T\+I\+C\+E\+\_\+\+F\+O\+R\+C\+ES}\label{mdi_standard_recv_lattice_forces}
+If the engine is at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node, it calculates and sends the forces on any lattice charges (which must have previously assigned with the {\ttfamily $>$L\+A\+T\+T\+I\+CE} command) to the driver. Prior to sending this command, the driver must have set the number, coordinates, and magnitudes of the lattice charges using the {\ttfamily $>$N\+L\+A\+T\+T\+I\+CE}, {\ttfamily $>$C\+L\+A\+T\+T\+I\+CE}, and {\ttfamily $>$L\+A\+T\+T\+I\+CE} commands. These forces must include only electrostatic interactions between the lattice charges and the atomic nuclei, and between the lattice charges and any electrons. They must not include electrostatic interactions between the lattice charges and other lattice charges. If the engine has previously calculated these forces, and no intervening commands from the driver could have changed the forces, the engine is permitted to send the previously calculated forces instead of recalculating them.
+
+If the engine is not at the {\ttfamily @\+D\+E\+F\+A\+U\+LT}  node, it sends its most recently calculated lattice forces to the driver.
+
+This command is primarily intended for use with gas-\/phase quantum mechanics codes.
+
+\begin{DoxyParagraph}{}
+{\bfseries{ Data Type\+: }} {\ttfamily M\+D\+I\+\_\+\+D\+O\+U\+B\+LE} ~\newline
+ {\bfseries{ Quantity\+: }} {\ttfamily  3 $\ast$ N\+L\+A\+T\+T\+I\+CE } ~\newline
+ {\bfseries{ Format\+: }} Sequentially ascending order of lattice charge index, with the forces for each individual lattice charge being provided in xyz order
 \end{DoxyParagraph}
 \hypertarget{mdi_standard_recv_masses}{}\doxysubsection{$<$\+M\+A\+S\+S\+ES}\label{mdi_standard_recv_masses}
 The engine sends the driver the mass of each of the atoms.

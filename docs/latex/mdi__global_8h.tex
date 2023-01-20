@@ -1,5 +1,5 @@
-\hypertarget{mdi__global_8h}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.h File Reference}
-\label{mdi__global_8h}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.h@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi\_global.h}}
+\hypertarget{mdi__global_8h}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi\+\_\+global.h File Reference}
+\label{mdi__global_8h}\index{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.h@{/repo/build/MDI\_Library/MDI\_Library/mdi\_global.h}}
 
 
 Global structures used by M\+DI.  
@@ -10,6 +10,8 @@ Global structures used by M\+DI.
 \begin{DoxyCompactItemize}
 \item 
 struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}}
+\item 
+struct \mbox{\hyperlink{structelement__struct}{element\+\_\+struct}}
 \item 
 struct \mbox{\hyperlink{structmethod__struct}{method\+\_\+struct}}
 \item 
@@ -133,6 +135,9 @@ typedef int($\ast$ {\bfseries M\+D\+I\+\_\+execute\+\_\+command\+\_\+type}) (voi
 \mbox{\Hypertarget{mdi__global_8h_a0f09e051f8a906705e5ecbb5ece0d438}\label{mdi__global_8h_a0f09e051f8a906705e5ecbb5ece0d438}} 
 typedef struct \mbox{\hyperlink{structdynamic__array__struct}{dynamic\+\_\+array\+\_\+struct}} {\bfseries vector}
 \item 
+\mbox{\Hypertarget{mdi__global_8h_af6d16d37f4bc3e4d21976dae25a55dc4}\label{mdi__global_8h_af6d16d37f4bc3e4d21976dae25a55dc4}} 
+typedef struct \mbox{\hyperlink{structelement__struct}{element\+\_\+struct}} {\bfseries element}
+\item 
 \mbox{\Hypertarget{mdi__global_8h_aab8b445eef4cce50be7395e3a21353d3}\label{mdi__global_8h_aab8b445eef4cce50be7395e3a21353d3}} 
 typedef struct \mbox{\hyperlink{structmethod__struct}{method\+\_\+struct}} {\bfseries method}
 \item 
@@ -150,9 +155,9 @@ typedef struct \mbox{\hyperlink{structcode__struct}{code\+\_\+struct}} {\bfserie
 \item 
 int \mbox{\hyperlink{mdi__global_8h_a6c749e461a84e471bcab02d8115a1dfa}{vector\+\_\+init}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, size\+\_\+t stride)
 \begin{DoxyCompactList}\small\item\em Initialize memory allocation for a vector structure. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__global_8h_a53e2a90f50c539f8239225d6f39c0213}{vector\+\_\+push\+\_\+back}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$element)
+int \mbox{\hyperlink{mdi__global_8h_a53e2a90f50c539f8239225d6f39c0213}{vector\+\_\+push\+\_\+back}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, void $\ast$\mbox{\hyperlink{structelement__struct}{element}})
 \begin{DoxyCompactList}\small\item\em Append a new element to the end of the vector. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi__global_8h_a69b06c1e9f6ae8fca62780d1878ef5b1}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index, void $\ast$$\ast$element)
+int \mbox{\hyperlink{mdi__global_8h_a69b06c1e9f6ae8fca62780d1878ef5b1}{vector\+\_\+get}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index, void $\ast$$\ast$\mbox{\hyperlink{structelement__struct}{element}})
 \begin{DoxyCompactList}\small\item\em Return a pointer to an element of a vector. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi__global_8h_a0bab71c9dec13cb06e7d5ae0197a04fb}{vector\+\_\+delete}} (\mbox{\hyperlink{structdynamic__array__struct}{vector}} $\ast$v, int index)
 \begin{DoxyCompactList}\small\item\em Remove an element from a vector. \end{DoxyCompactList}\item 

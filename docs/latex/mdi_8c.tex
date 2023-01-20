@@ -1,5 +1,5 @@
-\hypertarget{mdi_8c}{}\doxysection{/home/taylor/\+Documents/mdi/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi.c File Reference}
-\label{mdi_8c}\index{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi.c@{/home/taylor/Documents/mdi/MDI\_Library/MDI\_Library/mdi.c}}
+\hypertarget{mdi_8c}{}\doxysection{/repo/build/\+M\+D\+I\+\_\+\+Library/\+M\+D\+I\+\_\+\+Library/mdi.c File Reference}
+\label{mdi_8c}\index{/repo/build/MDI\_Library/MDI\_Library/mdi.c@{/repo/build/MDI\_Library/MDI\_Library/mdi.c}}
 
 
 Functions callable by users of the Mol\+S\+SI Driver Interface.  
@@ -163,6 +163,8 @@ int \mbox{\hyperlink{mdi_8c_adc63c403ea182348f1949b6fbec8f788}{M\+D\+I\+\_\+\+Se
 \begin{DoxyCompactList}\small\item\em Set the callback M\+DI uses for M\+P\+I\+\_\+\+Comm\+\_\+size when using mpi4py. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_aaf70b8b181eca7c16d282e548b029ad6}{M\+D\+I\+\_\+\+Set\+\_\+\+Mpi4py\+\_\+\+Barrier\+\_\+\+Callback}} (int($\ast$mpi4py\+\_\+barrier)(int))
 \begin{DoxyCompactList}\small\item\em Set the callback M\+DI uses for M\+P\+I\+\_\+\+Barrier when using mpi4py. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_af1f1e65f7942e4c85bc8353b93c10efc}{M\+D\+I\+\_\+\+Set\+\_\+\+Launch\+\_\+\+Plugin\+\_\+\+Callback}} (int($\ast$launch\+\_\+plugin)(void $\ast$, void $\ast$, void $\ast$, int))
+\begin{DoxyCompactList}\small\item\em Set the callback M\+DI uses for M\+D\+I\+\_\+\+Plugin\+\_\+init when the driver is in Python. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a9ecbc257bc3d76f8d108f6b720fd579a}{M\+D\+I\+\_\+\+Set\+\_\+plugin\+\_\+language}} (int language, void $\ast$plugin\+\_\+state)
 \begin{DoxyCompactList}\small\item\em Set the language of an M\+DI plugin. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a17be79ed7246c8b78975987fe4b275fe}{M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+execute\+\_\+command}} (int($\ast$execute\+\_\+command)(void $\ast$, M\+D\+I\+\_\+\+Comm, void $\ast$))
@@ -1477,6 +1479,23 @@ The function returns {\ttfamily 0} on a success.
 
 \begin{DoxyParams}[1]{Parameters}
 \mbox{\texttt{ in}}  & {\em execute\+\_\+command} & Execute command callback \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_af1f1e65f7942e4c85bc8353b93c10efc}\label{mdi_8c_af1f1e65f7942e4c85bc8353b93c10efc}} 
+\index{mdi.c@{mdi.c}!MDI\_Set\_Launch\_Plugin\_Callback@{MDI\_Set\_Launch\_Plugin\_Callback}}
+\index{MDI\_Set\_Launch\_Plugin\_Callback@{MDI\_Set\_Launch\_Plugin\_Callback}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Set\_Launch\_Plugin\_Callback()}{MDI\_Set\_Launch\_Plugin\_Callback()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Set\+\_\+\+Launch\+\_\+\+Plugin\+\_\+\+Callback (\begin{DoxyParamCaption}\item[{int($\ast$)(void $\ast$, void $\ast$, void $\ast$, int)}]{launch\+\_\+plugin }\end{DoxyParamCaption})}
+
+
+
+Set the callback M\+DI uses for M\+D\+I\+\_\+\+Plugin\+\_\+init when the driver is in Python. 
+
+The function returns {\ttfamily 0} on a success.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em launch\+\_\+plugin} & Function pointer to the launch\+\_\+plugin callback \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{mdi_8c_a9db0aed6228db1309a14926b7009f064}\label{mdi_8c_a9db0aed6228db1309a14926b7009f064}} 
