@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ ubuntu-18.04, macos-latest ]
+        platform: [ ubuntu-latest, macos-latest ]
         mpilib: [null, mpich, openmpi]
 
     # The type of runner that the job will run on
@@ -54,13 +54,13 @@ jobs:
 
       # Only custom build python on ubuntu
       # On Mac, just use the prebuilt package
-      - uses: actions/setup-python@v2
-        if: matrix.platform == 'ubuntu-18.04'
-        with:
-          python-version: '3.7'
+      #- uses: actions/setup-python@v2
+      #  if: matrix.platform == 'ubuntu-latest'
+      #  with:
+      #    python-version: '3.7'
 
       - name: Install dependencies (ubuntu)
-        if: matrix.platform == 'ubuntu-18.04'
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           source env.source
           sudo apt-get clean
@@ -78,7 +78,7 @@ jobs:
           cd ..
 
       - name: Install dependencies (ubuntu, MPICH)
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'mpich' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mpilib == 'mpich' }}
         run: |
           echo 'export PATH="${PATH}:/usr/mpich/bin"' >> env.source
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/mpich/lib"' >> env.source
@@ -86,12 +86,12 @@ jobs:
           wget https://github.com/pmodels/mpich/releases/download/v3.4.2/mpich-3.4.2.tar.gz
           tar -xvf ./mpich-3.4.2.tar.gz
           cd mpich-3.4.2
-          ./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=dbg,meminit CPPFLAGS='-I/usr/include/valgrind'
+          ./configure --prefix="/usr/mpich" --with-device=ch4:ofi --enable-g=dbg,meminit CPPFLAGS='-I/usr/include/valgrind' FFLAGS='-fallow-argument-mismatch'
           make -j 2
           sudo make install
 
       - name: Install dependencies (ubuntu, OpenMPI)
-        if: ${{ matrix.platform == 'ubuntu-18.04' && matrix.mpilib == 'openmpi' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mpilib == 'openmpi' }}
         run: |
           echo 'export PATH="${PATH}:/usr/openmpi/bin"' >> env.source
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/openmpi/lib"' >> env.source
@@ -105,18 +105,18 @@ jobs:
           sudo make install
 
       - name: Install Python dependencies (ubuntu)
-        if: matrix.platform == 'ubuntu-18.04'
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           source env.source
           sudo apt-get install python3-dev
-          sudo apt-get install libpython3.7-dev
+          sudo apt-get install libpython3.10-dev
           python -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && python -m pip install mpi4py
           python -m pip install numpy
           python -m pip install -U pytest pytest-cov
 
       - name: Install Python dependencies for custom-built Python (ubuntu)
-        if: matrix.platform == 'ubuntu-18.04'
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           echo 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/debugpython/lib"' >> env.source
           source env.source
@@ -180,7 +180,7 @@ jobs:
           cd build
           export FC=gfortran
           export CMAKE_COVERAGE_FLAGS=""
-          [ "${{ matrix.platform }}" == "ubuntu-18.04" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+          [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
           cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
           make VERBOSE=1
           make install
@@ -207,7 +207,7 @@ jobs:
           bash <(curl -s https://codecov.io/bash)
 
       - name: Install local valgrind build
-        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           source env.source
           rm -rf build
@@ -223,7 +223,7 @@ jobs:
           make VERBOSE=1
 
       - name: Run valgrind tests
-        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           source env.source
           cat env.source
@@ -232,13 +232,13 @@ jobs:
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --valgrind
 
       - name: Print valgrind results
-        if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && ( success() || failure() ) }}
         run: |
           source env.source
           cat tests/valgrind*.txt
 
       - name: Run valgrind tests that span two different MDI builds
-        if: ${{ matrix.platform == 'ubuntu-18.04' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           source env.source
           cat env.source
@@ -247,7 +247,7 @@ jobs:
           /opt/debugpython/bin/python3 -m pytest -vv -k "${MDI_TESTS}" --driver_dir="../build2" --valgrind
 
       - name: Print valgrind results
-        if: ${{ matrix.platform == 'ubuntu-18.04' && ( success() || failure() ) }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && ( success() || failure() ) }}
         run: |
           source env.source
           cat tests/valgrind*.txt
