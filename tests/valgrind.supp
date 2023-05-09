@@ -291,3 +291,39 @@
    fun:_PyFunction_Vectorcall
    ...
 }
+
+
+{
+   Python Import
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:dl_open_worker_begin
+   fun:_dl_catch_exception
+   fun:dl_open_worker
+   fun:_dl_catch_exception
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_exception
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen_implementation
+   ...
+   fun:_PyImport_FindSharedFuncptr
+}
+
+
+{
+   Writev Param
+   Memcheck:Param
+   writev(vector[...])
+   fun:__writev
+   fun:writev
+   ...
+   fun:event_persist_closure
+   fun:event_process_active_single_queue
+   fun:event_process_active
+   ...
+   fun:start_thread
+   fun:clone
+}
