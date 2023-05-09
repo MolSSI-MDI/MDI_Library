@@ -26,21 +26,27 @@ MODULE MDI_IMPLEMENTATION
 
 CONTAINS
 
-  FUNCTION driver_plugin_callback(mpi_comm, mdi_comm, class_obj) bind ( C )
-    INTEGER, VALUE                  :: mpi_comm
-    INTEGER, VALUE                  :: mdi_comm
+  FUNCTION driver_plugin_callback(class_obj) bind ( C )
     TYPE(C_PTR), VALUE, INTENT(IN)  :: class_obj
     INTEGER(KIND=C_INT)             :: driver_plugin_callback
+
+    INTEGER :: mpi_comm_plug, mdi_comm
 
     INTEGER :: ierr, opened_mdi_comm
     CHARACTER(len=:), ALLOCATABLE :: message
 
     ALLOCATE( CHARACTER(MDI_COMMAND_LENGTH) :: message )
 
-   ! Launch another plugin
+    ! Get the MPI communicator
+    CALL MDI_MPI_get_world_comm(mpi_comm_plug, ierr)
+
+    ! Get the MDI communicator
+    CALL MDI_Get_communicator(mdi_comm, 0, ierr)
+
+    ! Launch another plugin
     CALL MDI_Open_plugin("engine_cxx", &
                           "-mdi ""-role ENGINE -method LINK -name OPENED""", &
-                          mpi_comm, &
+                          mpi_comm_plug, &
                           opened_mdi_comm, &
                           ierr)
 

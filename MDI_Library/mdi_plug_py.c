@@ -80,7 +80,11 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
 
   // If the driver is a Python code, just call the callback and return
   if ( this_code->language == MDI_LANGUAGE_PYTHON ) {
-    this_code->py_launch_plugin_callback(engine_name, engine_path, shared_state, mode);
+    char engine_name_copy[MDI_NAME_LENGTH_];
+    char engine_path_copy[PLUGIN_PATH_LENGTH];
+    snprintf(engine_name_copy, strlen(engine_name)+1, "%s", engine_name);
+    snprintf(engine_path_copy, strlen(engine_path)+1, "%s", engine_path);
+    this_code->py_launch_plugin_callback(engine_name_copy, engine_path_copy, shared_state, mode);
     return 0;
   }
 

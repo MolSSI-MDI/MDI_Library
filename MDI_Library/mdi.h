@@ -37,6 +37,7 @@ typedef int MDI_Comm;
 typedef int MDI_Datatype;
 
 typedef int (*MDI_Driver_node_callback_t)(void*, int, void*);
+typedef int (*MDI_Driver_node_callback_f90_t)(void*);
 
 // MDI version numbers
 DllExport extern const int MDI_MAJOR_VERSION;
@@ -170,8 +171,9 @@ DllExport int MDI_Set_on_destroy_code(int (*func)(int));
 DllExport int MDI_Set_plugin_language(int language, void* plugin_state);
 DllExport int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, void*));
 DllExport int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*);
-DllExport MDI_Driver_node_callback_t MDI_Get_language_driver_callback();
-DllExport int MDI_Set_language_driver_callback(MDI_Driver_node_callback_t callback);
+DllExport MDI_Driver_node_callback_f90_t MDI_Get_language_driver_callback();
+DllExport int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback);
+DllExport int MDI_Call_language_driver_callback(void*);
 
 #ifdef __cplusplus
 }
