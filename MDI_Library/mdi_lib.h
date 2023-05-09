@@ -9,7 +9,7 @@
 #include "mdi.h"
 #include "mdi_global.h"
 
-typedef int (*MDI_Plugin_init_t)();
+typedef int (*MDI_Plugin_init_t)( void* shared_state );
 
 /*
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -133,7 +133,7 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
                           MDI_Comm* mdi_comm_ptr);
 int library_close_plugin(MDI_Comm mdi_comm);
 int library_initialize();
-int library_set_driver_current();
+int library_set_driver_current(MDI_Comm comm);
 int library_set_command(const char* command, MDI_Comm comm);
 int library_execute_command(MDI_Comm comm);
 int library_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int msg_flag);

@@ -192,8 +192,8 @@ typedef struct code_struct {
   void* shared_state_from_driver;
   /*! \brief Hostname of the driver */
   char* hostname;
-  /*! \brief Function pointer to the actual callback for the driver */
-  int (*driver_callback_actual)(void*, int, void*);
+  /*! \brief Function pointer to the actual callback for Fortran drivers */
+  int (*driver_callback_f90)(void*);
   /*! \brief Function pointer to the language-specific wrapper for the execute_command function */
   int (*execute_command_wrapper)(const char*, MDI_Comm_Type, void*);
   /*! \brief Function pointer to the generic execute_command_function */

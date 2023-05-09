@@ -2683,7 +2683,7 @@ int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*) {
  * \param [in]       comm
  *                   MDI communicator
  */
-MDI_Driver_node_callback_t MDI_Get_language_driver_callback() {
+MDI_Driver_node_callback_f90_t MDI_Get_language_driver_callback() {
   int ret;
 
   code* this_code;
@@ -2692,7 +2692,7 @@ MDI_Driver_node_callback_t MDI_Get_language_driver_callback() {
     mdi_error("Error in MDI_Get_language_driver_callback: get_current_code failed");
     //return ret;
   }
-  return this_code->driver_callback_actual;
+  return this_code->driver_callback_f90;
 }
 
 
@@ -2703,7 +2703,7 @@ MDI_Driver_node_callback_t MDI_Get_language_driver_callback() {
  * \param [in]       callback
  *                   Driver callback
  */
-int MDI_Set_language_driver_callback(MDI_Driver_node_callback_t callback) {
+int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback) {
   int ret;
 
   code* this_code;
@@ -2712,6 +2712,30 @@ int MDI_Set_language_driver_callback(MDI_Driver_node_callback_t callback) {
     mdi_error("Error in MDI_Set_language_driver_callback: get_current_code failed");
     return ret;
   }
-  this_code->driver_callback_actual = callback;
+  this_code->driver_callback_f90 = callback;
   return 0;
 }
+
+
+/*! \brief Call the language driver callback needed by a language wrapper
+ *
+ * The function returns a function pointer to the driver callback function.
+ *
+ * \param [out]      callback
+ *                   Driver callback
+ * \param [in]       comm
+ *                   MDI communicator
+ */
+int MDI_Call_language_driver_callback(void* class_obj) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in MDI_Get_language_driver_callback: get_current_code failed");
+  }
+  ret = this_code->driver_callback_f90(class_obj);
+  return 0;
+}
+
+
