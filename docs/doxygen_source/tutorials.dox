@@ -3,60 +3,111 @@
 \section user_tutorial User Tutorial
 
 In this tutorial we will use an MDI driver to perform a simple <em> Ab Initio </em> Molecular Dynamics (AIMD) simulation, using Quantum ESPRESSO (QE) to calculate forces and LAMMPS to update the atomic coordinates each time step.
+LAMMPS is a code that simulates chemical systems using molecular mechanics (MM) force fields, which are computationally very efficient to evaluate and can be used for lengthy dynamics simulations of large systems.
+Quantum ESPRESSO is a code that runs quantum mechanics (QM) calculations, which are much more computationally expensive, but can be applied much more straigtforwardly to chemically reactive systems and other specific use cases.
+MM codes like LAMMPS often offer time integration features that are not widely available in QM codes, so it can be desirable to be able to mix the time integration functionality of an MM code with the force evaluation functionality of a QM code.
 
-\subsection tutorial_engine_compile Compiling the Engines
-
-We will need access to a QM code and an MM code, both of which must be capable of being run as an MDI engine.
-This tutorial will describe the use of Quantum ESPRESSO (QE) as the QM code and LAMMPS as the MM code; however, you can use any MDI-enabled QM and MM codes you prefer.
+Although we will be using QE and LAMMPS as the MDI engines in this tutorial, you could do similar calculations using other MDI engines.
 A list of codes that support MDI can be found \ref mdi_ecosystem "here", along with instructions on how to compile them with MDI support.
 
-Before moving to the next step, compile both \ref ecosystem_qe "QE" and \ref ecosystem_lammps "LAMMPS" (or your preferred QM and MM packages) with MDI support by following the \ref ecosystem_overview "instructions provided".
+\subsection tutorial_engine_compile Compiling the Driver and Engines
 
-\subsection driver_compile Compiling the AIMD Driver
+The hardest part of getting an MDI calculation working is often getting all the necessary codes compiled.
+Computational chemistry software packages tend to be complex, often with numerous dependencies that can themselves be challenging to compile.
+You <em> could </em> try to compile the codes manually by following the specific compile process for each code, and the next section will offer some guidance for this process; however, this tutorial will also describe an easier way to get the codes compiled using containers.
 
-The MDI Standard supports the creation of many different types of drivers for a broad variety of applications.
-For this tutorial, we will download a simple AIMD driver:
+\subsubsection manual_compile The Hard Way: Manually Compile the Engines
+
+As mention earlier, manually compiling computational chemistry software can be challenging.
+Depending on your computational environment, you can easily spend days trying to get certain codes operating properly.
+This section will offer an overview of the manual compile process for the codes used in this tutorial, but you may wish to consider skipping to the next section, which describes an easier way to get started with your first MDI calculations.
+
+First, compile both \ref ecosystem_qe "QE" and \ref ecosystem_lammps "LAMMPS" (or your preferred QM and MM packages) with MDI support by following the \ref ecosystem_overview "instructions provided".
+
+After you've finished compiling the engines, you can download and compile the AIMD driver with the following commands:
 
 \code
 git clone git@github.com:MolSSI/MDI_AIMD_Driver.git
-\endcode
-
-First, navigate to the directory where you want the driver to be compiled.
-For this tutorial, we will do:
-
-\code
 mkdir MDI_AIMD_Driver/build
 cd MDI_AIMD_Driver/build
-\endcode
-
-Then compile using CMake:
-
-\code
 cmake ..
 make
 \endcode
+
+In \c MDI_AIMD_Driver/tests/locations there are several single-line text files, each of which is intended to indicate the location of one of the codes you installed above.
+Edit each of them so that they provide the absolute path to the corresponding code's executable.
+
+\subsubsection container_compile The Easy(er) Way: Compile Using MDI Mechanic
+
+MDI provides a support tool, called MDI Mechanic, which can help you avoid the need to figure out how to compile various QM and MM codes yourself.
+MDI Mechanic automatically builds Docker images from recipes you provide it, allowing you to compile and run all the codes you need for this tutorial in a self-contained, portable environment.
+Before continuing, you'll need to install and launch Docker Desktop.
+
+You can now install MDI Mechanic with:
+
+\code
+pip install mdimechanic
+\endcode
+
+You can download the MDI Mechanic recipe you need with:
+
+\code
+git clone https://github.com/MolSSI-MDI/MDI_AIMD_Driver_container.git
+\endcode
+
+This recipe contains instructions for building QE, LAMMPS, and the MDI_AIMD_Driver code within a self-contained Docker environment.
+To build the recipes, do:
+
+\code
+cd MDI_AIMD_Driver_container
+mdimechanic build
+\endcode
+
+This is likely to take a significant amount of time to complete, as QE and LAMMPS are both large codes.
+Once it has successfully finished, you can start working in the environment it has created using:
+
+\code
+mdimechanic interactive
+\endcode
+
+This will start an interactive container session.
+If you're not familiar with Docker or containerization, you may wish to read a bit about these tools.
+Otherwise, you can think about the "mdimechanic interactive" session as being similar to logging onto a remote computer via ssh - except that in the case of containers, the computer you are "logging into" is actually running as a self-contained environment on your local machine.
+While you are in the interactive session, you can run tests and other calculations within the containerized environment.
+Any changes you make to the environment while within the interactive session are transient, and will be discarded upon exiting the session (exception: any changes to files or subdirectories within the directory where mdimechanic.yml is located will be preserved upon exiting the interactive session).
+
+For more information about MDI Mechanic, please see the MDI Mechanic documentation.
+
+While in the interactive session, you can find the compiled codes in subdirectories of the "/repo/build" directory.
+Go ahead and check that now:
+
+\code
+cd /repo/build
+ls
+\endcode
+
+You should see subdirectories for LAMMPS, QE, and the MDI_AIMD_Driver code.
+
+
+
+
+
+
 
 \subsection user_run Running the Simulation
 
 We will now run a simple AIMD simulation.
 
-In \c MDI_AIMD_Driver/tests/locations there are three single-line text files, each of which is intended to indicate the location of one of the codes you installed above.
-Edit each of them so that they provide the absolute path to the corresponding code's executable.
-
 There is a simple test calculation in \c MDI_AIMD_Driver/tests/water.
 Within this directory, the \c data subdirectory contains standard input files for LAMMPS and QE.
-The input files correspond to a small water box of 8 water molecule.
+The input files correspond to a small water box of 8 water molecules.
 They are exactly like any non-MDI input files for their respective codes, except for \c data/lammps.in.
-Near the end of \c data/lammps.in is an mdi fix, followed by an mdi command:
+At the end of \c data/lammps.in is a command that tells LAMMPS it should begin running as an MDI engine:
 
 \code
-fix             1 all mdi
 ...
-mdi
+mdi engine
 \endcode
-
-These two lines are required in any LAMMPS input file that is intended to be used in conjuction with MDI.
-The mdi fix allows LAMMPS to communicate with the driver at the appropriate points throughout the simulation, while the mdi LAMMPS command indicates the point when LAMMPS begins listening for MDI commands from the driver.
 
 There are two scripts associated with the water test: \c tcp.sh and \c mpi.sh.
 The \c tcp.sh script will run the simulation using the TCP/IP method for communicating between the driver and the engines.
@@ -108,7 +159,8 @@ Finally, the wait command at the end ensures that the driver and the engines are
 
 You can now execute the \c tcp.sh script, which should print out the energies of LAMMPS and QE for several timesteps of a short AIMD simulation.
 
-If you compiled everything (QE, LAMMPS, MDI_AIMD_Driver, and the internal copies of the MDI Library) with MPI, you can also execute the \c mpi.sh script, which will run the same simulation using MPI for the inter-code communication.
+If you compiled everything (QE, LAMMPS, MDI_AIMD_Driver, and the internal copies of the MDI Library) with MPI or are using the MDI Mechanic build, you can also execute the \c mpi.sh script, which will run the same simulation using MPI for the inter-code communication.
+The \c mpi.sh script redirects the driver's output to a file called \c work/driver.out .
 The output produced by QE and LAMMPS can be found in \c work/qe.out and \c work/lammps.out, respectively.
 
 \section aimd_tutorial Driver Development Tutorial
