@@ -76,7 +76,7 @@ Otherwise, you can think about the "mdimechanic interactive" session as being si
 While you are in the interactive session, you can run tests and other calculations within the containerized environment.
 Any changes you make to the environment while within the interactive session are transient, and will be discarded upon exiting the session (exception: any changes to files or subdirectories within the directory where mdimechanic.yml is located will be preserved upon exiting the interactive session).
 
-For more information about MDI Mechanic, please see the MDI Mechanic documentation.
+For more information about MDI Mechanic, please see the <a href="https://github.com/MolSSI-MDI/MDI_Mechanic/blob/master/docs/getting_started.rst">MDI Mechanic Getting Started Guide</a>.
 
 While in the interactive session, you can find the compiled codes in subdirectories of the "/repo/build" directory.
 Go ahead and check that now:

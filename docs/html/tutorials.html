@@ -110,7 +110,7 @@ The Easy(er) Way: Compile Using MDI Mechanic</h3>
 </div><!-- fragment --><p>This is likely to take a significant amount of time to complete, as QE and LAMMPS are both large codes. Once it has successfully finished, you can start working in the environment it has created using:</p>
 <div class="fragment"><div class="line">mdimechanic interactive</div>
 </div><!-- fragment --><p>This will start an interactive container session. If you're not familiar with Docker or containerization, you may wish to read a bit about these tools. Otherwise, you can think about the "mdimechanic interactive" session as being similar to logging onto a remote computer via ssh - except that in the case of containers, the computer you are "logging into" is actually running as a self-contained environment on your local machine. While you are in the interactive session, you can run tests and other calculations within the containerized environment. Any changes you make to the environment while within the interactive session are transient, and will be discarded upon exiting the session (exception: any changes to files or subdirectories within the directory where mdimechanic.yml is located will be preserved upon exiting the interactive session).</p>
-<p>For more information about MDI Mechanic, please see the MDI Mechanic documentation.</p>
+<p>For more information about MDI Mechanic, please see the <a href="https://github.com/MolSSI-MDI/MDI_Mechanic/blob/master/docs/getting_started.rst">MDI Mechanic Getting Started Guide</a>.</p>
 <p>While in the interactive session, you can find the compiled codes in subdirectories of the "/repo/build" directory. Go ahead and check that now:</p>
 <div class="fragment"><div class="line">cd /repo/build</div>
 <div class="line">ls</div>
