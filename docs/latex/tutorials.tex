@@ -1,48 +1,84 @@
 \hypertarget{tutorials_user_tutorial}{}\doxysection{User Tutorial}\label{tutorials_user_tutorial}
-In this tutorial we will use an M\+DI driver to perform a simple {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulation, using Quantum E\+S\+P\+R\+E\+S\+SO (QE) to calculate forces and L\+A\+M\+M\+PS to update the atomic coordinates each time step.\hypertarget{tutorials_tutorial_engine_compile}{}\doxysubsection{Compiling the Engines}\label{tutorials_tutorial_engine_compile}
-We will need access to a QM code and an MM code, both of which must be capable of being run as an M\+DI engine. This tutorial will describe the use of Quantum E\+S\+P\+R\+E\+S\+SO (QE) as the QM code and L\+A\+M\+M\+PS as the MM code; however, you can use any M\+D\+I-\/enabled QM and MM codes you prefer. A list of codes that support M\+DI can be found \mbox{\hyperlink{mdi_ecosystem}{here}}, along with instructions on how to compile them with M\+DI support.
+In this tutorial we will use an M\+DI driver to perform a simple {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulation, using Quantum E\+S\+P\+R\+E\+S\+SO (QE) to calculate forces and L\+A\+M\+M\+PS to update the atomic coordinates each time step. L\+A\+M\+M\+PS is a code that simulates chemical systems using molecular mechanics (MM) force fields, which are computationally very efficient to evaluate and can be used for lengthy dynamics simulations of large systems. Quantum E\+S\+P\+R\+E\+S\+SO is a code that runs quantum mechanics (QM) calculations, which are much more computationally expensive, but can be applied much more straigtforwardly to chemically reactive systems and other specific use cases. MM codes like L\+A\+M\+M\+PS often offer time integration features that are not widely available in QM codes, so it can be desirable to be able to mix the time integration functionality of an MM code with the force evaluation functionality of a QM code.
 
-Before moving to the next step, compile both \mbox{\hyperlink{mdi_ecosystem_ecosystem_qe}{QE}} and \mbox{\hyperlink{mdi_ecosystem_ecosystem_lammps}{L\+A\+M\+M\+PS}} (or your preferred QM and MM packages) with M\+DI support by following the \mbox{\hyperlink{mdi_ecosystem_ecosystem_overview}{instructions provided}}.\hypertarget{tutorials_driver_compile}{}\doxysubsection{Compiling the A\+I\+M\+D Driver}\label{tutorials_driver_compile}
-The M\+DI Standard supports the creation of many different types of drivers for a broad variety of applications. For this tutorial, we will download a simple A\+I\+MD driver\+:
+Although we will be using QE and L\+A\+M\+M\+PS as the M\+DI engines in this tutorial, you could do similar calculations using other M\+DI engines. A list of codes that support M\+DI can be found \mbox{\hyperlink{mdi_ecosystem}{here}}, along with instructions on how to compile them with M\+DI support.\hypertarget{tutorials_tutorial_engine_compile}{}\doxysubsection{Compiling the Driver and Engines}\label{tutorials_tutorial_engine_compile}
+The hardest part of getting an M\+DI calculation working is often getting all the necessary codes compiled. Computational chemistry software packages tend to be complex, often with numerous dependencies that can themselves be challenging to compile. You {\itshape  could } try to compile the codes manually by following the specific compile process for each code, and the next section will offer some guidance for this process; however, this tutorial will also describe an easier way to get the codes compiled using containers.\hypertarget{tutorials_manual_compile}{}\doxysubsubsection{The Hard Way\+: Manually Compile the Engines}\label{tutorials_manual_compile}
+As mention earlier, manually compiling computational chemistry software can be challenging. Depending on your computational environment, you can easily spend days trying to get certain codes operating properly. This section will offer an overview of the manual compile process for the codes used in this tutorial, but you may wish to consider skipping to the next section, which describes an easier way to get started with your first M\+DI calculations.
+
+First, compile both \mbox{\hyperlink{mdi_ecosystem_ecosystem_qe}{QE}} and \mbox{\hyperlink{mdi_ecosystem_ecosystem_lammps}{L\+A\+M\+M\+PS}} (or your preferred QM and MM packages) with M\+DI support by following the \mbox{\hyperlink{mdi_ecosystem_ecosystem_overview}{instructions provided}}.
+
+After you\textquotesingle{}ve finished compiling the engines, you can download and compile the A\+I\+MD driver with the following commands\+:
 
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{git clone git@github.com:MolSSI/MDI\_AIMD\_Driver.git}
-\end{DoxyCode}
-
-
-First, navigate to the directory where you want the driver to be compiled. For this tutorial, we will do\+:
-
-
-\begin{DoxyCode}{0}
 \DoxyCodeLine{mkdir MDI\_AIMD\_Driver/build}
 \DoxyCodeLine{cd MDI\_AIMD\_Driver/build}
-\end{DoxyCode}
-
-
-Then compile using C\+Make\+:
-
-
-\begin{DoxyCode}{0}
 \DoxyCodeLine{cmake ..}
 \DoxyCodeLine{make}
 \end{DoxyCode}
-\hypertarget{tutorials_user_run}{}\doxysubsection{Running the Simulation}\label{tutorials_user_run}
-We will now run a simple A\+I\+MD simulation.
 
-In {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/locations} there are three single-\/line text files, each of which is intended to indicate the location of one of the codes you installed above. Edit each of them so that they provide the absolute path to the corresponding code\textquotesingle{}s executable.
 
-There is a simple test calculation in {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/water}. Within this directory, the {\ttfamily data} subdirectory contains standard input files for L\+A\+M\+M\+PS and QE. The input files correspond to a small water box of 8 water molecule. They are exactly like any non-\/\+M\+DI input files for their respective codes, except for {\ttfamily data/lammps.\+in}. Near the end of {\ttfamily data/lammps.\+in} is an mdi fix, followed by an mdi command\+:
+In {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/locations} there are several single-\/line text files, each of which is intended to indicate the location of one of the codes you installed above. Edit each of them so that they provide the absolute path to the corresponding code\textquotesingle{}s executable.\hypertarget{tutorials_container_compile}{}\doxysubsubsection{The Easy(er) Way\+: Compile Using M\+D\+I Mechanic}\label{tutorials_container_compile}
+M\+DI provides a support tool, called M\+DI Mechanic, which can help you avoid the need to figure out how to compile various QM and MM codes yourself. M\+DI Mechanic automatically builds Docker images from recipes you provide it, allowing you to compile and run all the codes you need for this tutorial in a self-\/contained, portable environment. Before continuing, you\textquotesingle{}ll need to install and launch Docker Desktop.
+
+You can now install M\+DI Mechanic with\+:
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{fix             1 all mdi}
-\DoxyCodeLine{...}
-\DoxyCodeLine{mdi}
+\DoxyCodeLine{pip install mdimechanic}
 \end{DoxyCode}
 
 
-These two lines are required in any L\+A\+M\+M\+PS input file that is intended to be used in conjuction with M\+DI. The mdi fix allows L\+A\+M\+M\+PS to communicate with the driver at the appropriate points throughout the simulation, while the mdi L\+A\+M\+M\+PS command indicates the point when L\+A\+M\+M\+PS begins listening for M\+DI commands from the driver.
+You can download the M\+DI Mechanic recipe you need with\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone https:\textcolor{comment}{//github.com/MolSSI-\/MDI/MDI\_AIMD\_Driver\_container.git}}
+\end{DoxyCode}
+
+
+This recipe contains instructions for building QE, L\+A\+M\+M\+PS, and the M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver code within a self-\/contained Docker environment. To build the recipes, do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd MDI\_AIMD\_Driver\_container}
+\DoxyCodeLine{mdimechanic build}
+\end{DoxyCode}
+
+
+This is likely to take a significant amount of time to complete, as QE and L\+A\+M\+M\+PS are both large codes. Once it has successfully finished, you can start working in the environment it has created using\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mdimechanic interactive}
+\end{DoxyCode}
+
+
+This will start an interactive container session. If you\textquotesingle{}re not familiar with Docker or containerization, you may wish to read a bit about these tools. Otherwise, you can think about the \char`\"{}mdimechanic interactive\char`\"{} session as being similar to logging onto a remote computer via ssh -\/ except that in the case of containers, the computer you are \char`\"{}logging into\char`\"{} is actually running as a self-\/contained environment on your local machine. While you are in the interactive session, you can run tests and other calculations within the containerized environment. Any changes you make to the environment while within the interactive session are transient, and will be discarded upon exiting the session (exception\+: any changes to files or subdirectories within the directory where mdimechanic.\+yml is located will be preserved upon exiting the interactive session).
+
+For more information about M\+DI Mechanic, please see the M\+DI Mechanic documentation.
+
+While in the interactive session, you can find the compiled codes in subdirectories of the \char`\"{}/repo/build\char`\"{} directory. Go ahead and check that now\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd /repo/build}
+\DoxyCodeLine{ls}
+\end{DoxyCode}
+
+
+You should see subdirectories for L\+A\+M\+M\+PS, QE, and the M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver code.\hypertarget{tutorials_user_run}{}\doxysubsection{Running the Simulation}\label{tutorials_user_run}
+We will now run a simple A\+I\+MD simulation.
+
+There is a simple test calculation in {\ttfamily M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver/tests/water}. Within this directory, the {\ttfamily data} subdirectory contains standard input files for L\+A\+M\+M\+PS and QE. The input files correspond to a small water box of 8 water molecules. They are exactly like any non-\/\+M\+DI input files for their respective codes, except for {\ttfamily data/lammps.\+in}. At the end of {\ttfamily data/lammps.\+in} is a command that tells L\+A\+M\+M\+PS it should begin running as an M\+DI engine\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+\DoxyCodeLine{mdi engine}
+\end{DoxyCode}
+
 
 There are two scripts associated with the water test\+: {\ttfamily tcp.\+sh} and {\ttfamily mpi.\+sh}. The {\ttfamily tcp.\+sh} script will run the simulation using the T\+C\+P/\+IP method for communicating between the driver and the engines. It consists of the following code\+:
 
@@ -90,7 +126,7 @@ Note the presence of an ampersand (\char`\"{}\&\char`\"{}) at the end of each ru
 
 You can now execute the {\ttfamily tcp.\+sh} script, which should print out the energies of L\+A\+M\+M\+PS and QE for several timesteps of a short A\+I\+MD simulation.
 
-If you compiled everything (QE, L\+A\+M\+M\+PS, M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver, and the internal copies of the M\+DI Library) with M\+PI, you can also execute the {\ttfamily mpi.\+sh} script, which will run the same simulation using M\+PI for the inter-\/code communication. The output produced by QE and L\+A\+M\+M\+PS can be found in {\ttfamily work/qe.\+out} and {\ttfamily work/lammps.\+out}, respectively.\hypertarget{tutorials_aimd_tutorial}{}\doxysection{Driver Development Tutorial}\label{tutorials_aimd_tutorial}
+If you compiled everything (QE, L\+A\+M\+M\+PS, M\+D\+I\+\_\+\+A\+I\+M\+D\+\_\+\+Driver, and the internal copies of the M\+DI Library) with M\+PI or are using the M\+DI Mechanic build, you can also execute the {\ttfamily mpi.\+sh} script, which will run the same simulation using M\+PI for the inter-\/code communication. The {\ttfamily mpi.\+sh} script redirects the driver\textquotesingle{}s output to a file called {\ttfamily work/driver.\+out} . The output produced by QE and L\+A\+M\+M\+PS can be found in {\ttfamily work/qe.\+out} and {\ttfamily work/lammps.\+out}, respectively.\hypertarget{tutorials_aimd_tutorial}{}\doxysection{Driver Development Tutorial}\label{tutorials_aimd_tutorial}
 Please complete the \mbox{\hyperlink{tutorials_user_tutorial}{User Tutorial}} before starting this tutorial.
 
 In this tutorial we will set up a simple driver for running {\itshape  Ab Initio } Molecular Dynamics (A\+I\+MD) simulations. We will use a quantum chemistry (QM) code to compute the forces, while using a molecular mechanics (MM) code to propagate the atomic coordinates each time step.\hypertarget{tutorials_requirements_sec}{}\doxysubsection{Creating a New Project}\label{tutorials_requirements_sec}

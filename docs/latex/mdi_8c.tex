@@ -169,10 +169,12 @@ int \mbox{\hyperlink{mdi_8c_a9ecbc257bc3d76f8d108f6b720fd579a}{M\+D\+I\+\_\+\+Se
 \begin{DoxyCompactList}\small\item\em Set the language of an M\+DI plugin. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{mdi_8c_a17be79ed7246c8b78975987fe4b275fe}{M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+execute\+\_\+command}} (int($\ast$execute\+\_\+command)(void $\ast$, M\+D\+I\+\_\+\+Comm, void $\ast$))
 \begin{DoxyCompactList}\small\item\em Set the language execute\+\_\+command function needed by a language wrapper. \end{DoxyCompactList}\item 
-M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t \mbox{\hyperlink{mdi_8c_ab6da1b33f517717441e44e37dd83c8fe}{M\+D\+I\+\_\+\+Get\+\_\+language\+\_\+driver\+\_\+callback}} ()
+M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+f90\+\_\+t \mbox{\hyperlink{mdi_8c_a1a74dd4c758e8bb729fe166ba284311f}{M\+D\+I\+\_\+\+Get\+\_\+language\+\_\+driver\+\_\+callback}} ()
 \begin{DoxyCompactList}\small\item\em Get the language driver callback needed by a language wrapper. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{mdi_8c_acbd5b1e7f5535b1bfdd1b1a39e091805}{M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+driver\+\_\+callback}} (M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t callback)
-\begin{DoxyCompactList}\small\item\em Set the language-\/specific driver\+\_\+callback function needed by a language wrapper. \end{DoxyCompactList}\end{DoxyCompactItemize}
+int \mbox{\hyperlink{mdi_8c_a7589a51fcc42702126188bd8fbd80b1b}{M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+driver\+\_\+callback}} (M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+f90\+\_\+t callback)
+\begin{DoxyCompactList}\small\item\em Set the language-\/specific driver\+\_\+callback function needed by a language wrapper. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{mdi_8c_ae34bd575d2b19c22ad51aec41c7c119e}{M\+D\+I\+\_\+\+Call\+\_\+language\+\_\+driver\+\_\+callback}} (void $\ast$class\+\_\+obj)
+\begin{DoxyCompactList}\small\item\em Call the language driver callback needed by a language wrapper. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -287,7 +289,26 @@ The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between 
 
 Accept a new M\+DI communicator. 
 
-The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}. \mbox{\Hypertarget{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}\label{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}} 
+The function returns an M\+D\+I\+\_\+\+Comm that describes a connection between two codes. If no new communicators are available, the function returns {\ttfamily M\+D\+I\+\_\+\+C\+O\+M\+M\+\_\+\+N\+U\+LL}. \mbox{\Hypertarget{mdi_8c_ae34bd575d2b19c22ad51aec41c7c119e}\label{mdi_8c_ae34bd575d2b19c22ad51aec41c7c119e}} 
+\index{mdi.c@{mdi.c}!MDI\_Call\_language\_driver\_callback@{MDI\_Call\_language\_driver\_callback}}
+\index{MDI\_Call\_language\_driver\_callback@{MDI\_Call\_language\_driver\_callback}!mdi.c@{mdi.c}}
+\doxysubsubsection{\texorpdfstring{MDI\_Call\_language\_driver\_callback()}{MDI\_Call\_language\_driver\_callback()}}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Call\+\_\+language\+\_\+driver\+\_\+callback (\begin{DoxyParamCaption}\item[{void $\ast$}]{class\+\_\+obj }\end{DoxyParamCaption})}
+
+
+
+Call the language driver callback needed by a language wrapper. 
+
+The function returns a function pointer to the driver callback function.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em callback} & Driver callback \\
+\hline
+\mbox{\texttt{ in}}  & {\em comm} & M\+DI communicator \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}\label{mdi_8c_a64d917aa46b3585d7b9e4ce08a010a4b}} 
 \index{mdi.c@{mdi.c}!MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}}
 \index{MDI\_Check\_Callback\_Exists@{MDI\_Check\_Callback\_Exists}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Check\_Callback\_Exists()}{MDI\_Check\_Callback\_Exists()}}
@@ -731,11 +752,11 @@ Get the current code.
 
 Get the rank of this process within the M\+PI intra-\/communicator for the current code. 
 
-This function is only used by the Fortran wrapper \mbox{\Hypertarget{mdi_8c_ab6da1b33f517717441e44e37dd83c8fe}\label{mdi_8c_ab6da1b33f517717441e44e37dd83c8fe}} 
+This function is only used by the Fortran wrapper \mbox{\Hypertarget{mdi_8c_a1a74dd4c758e8bb729fe166ba284311f}\label{mdi_8c_a1a74dd4c758e8bb729fe166ba284311f}} 
 \index{mdi.c@{mdi.c}!MDI\_Get\_language\_driver\_callback@{MDI\_Get\_language\_driver\_callback}}
 \index{MDI\_Get\_language\_driver\_callback@{MDI\_Get\_language\_driver\_callback}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Get\_language\_driver\_callback()}{MDI\_Get\_language\_driver\_callback()}}
-{\footnotesize\ttfamily M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t M\+D\+I\+\_\+\+Get\+\_\+language\+\_\+driver\+\_\+callback (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+f90\+\_\+t M\+D\+I\+\_\+\+Get\+\_\+language\+\_\+driver\+\_\+callback (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -1447,11 +1468,11 @@ The function returns {\ttfamily 0} on a success.
 \mbox{\texttt{ in}}  & {\em execute\+\_\+command} & Function pointer to the generic execute\+\_\+command function \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{mdi_8c_acbd5b1e7f5535b1bfdd1b1a39e091805}\label{mdi_8c_acbd5b1e7f5535b1bfdd1b1a39e091805}} 
+\mbox{\Hypertarget{mdi_8c_a7589a51fcc42702126188bd8fbd80b1b}\label{mdi_8c_a7589a51fcc42702126188bd8fbd80b1b}} 
 \index{mdi.c@{mdi.c}!MDI\_Set\_language\_driver\_callback@{MDI\_Set\_language\_driver\_callback}}
 \index{MDI\_Set\_language\_driver\_callback@{MDI\_Set\_language\_driver\_callback}!mdi.c@{mdi.c}}
 \doxysubsubsection{\texorpdfstring{MDI\_Set\_language\_driver\_callback()}{MDI\_Set\_language\_driver\_callback()}}
-{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+driver\+\_\+callback (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+t}]{callback }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int M\+D\+I\+\_\+\+Set\+\_\+language\+\_\+driver\+\_\+callback (\begin{DoxyParamCaption}\item[{M\+D\+I\+\_\+\+Driver\+\_\+node\+\_\+callback\+\_\+f90\+\_\+t}]{callback }\end{DoxyParamCaption})}
 
 
 
