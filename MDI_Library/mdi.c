@@ -2662,7 +2662,7 @@ int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, voi
  * \param [in]       comm
  *                   MDI communicator
  */
-int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*) {
+int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_execute_command, MDI_Comm comm) {
   communicator* this_comm;
   int ret = get_communicator(codes.current_key, comm, &this_comm);
   if ( ret != 0 ) {
@@ -2670,7 +2670,8 @@ int (*MDI_Get_language_execute_command(MDI_Comm comm))(void*, MDI_Comm, void*) {
     //return ret;
   }
   library_data* libd = (library_data*) this_comm->method_data;
-  return libd->shared_state->execute_command;
+  *language_execute_command = libd->shared_state->execute_command;
+  return 0;
 }
 
 

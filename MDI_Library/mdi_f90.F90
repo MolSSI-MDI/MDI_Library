@@ -124,10 +124,11 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Set_language_execute_command_
      END FUNCTION MDI_Set_language_execute_command_
 
-     FUNCTION MDI_Get_language_execute_command_(comm) bind(c, name="MDI_Get_language_execute_command")
+     FUNCTION MDI_Get_language_execute_command_(out_ptr, comm) bind(c, name="MDI_Get_language_execute_command")
        USE, INTRINSIC :: iso_c_binding
        INTEGER(KIND=C_INT), VALUE               :: comm
-       TYPE(C_FUNPTR)                           :: MDI_Get_language_execute_command_
+       TYPE(C_FUNPTR)                           :: out_ptr
+       INTEGER(KIND=C_INT) :: MDI_Get_language_execute_command_
      END FUNCTION MDI_Get_language_execute_command_
 
      FUNCTION MDI_Set_language_driver_callback_(func_ptr) bind(c, name="MDI_Set_language_driver_callback")
@@ -470,7 +471,7 @@ CONTAINS
     ! convert from C string to Fortran string
     fbuf = str_c_to_f(buf, MDI_COMMAND_LENGTH)
 
-    this_func_ptr = MDI_Get_language_execute_command_(comm)
+    ierr = MDI_Get_language_execute_command_(this_func_ptr, comm)
 
     CALL c_f_procpointer(this_func_ptr, this_func)
 
