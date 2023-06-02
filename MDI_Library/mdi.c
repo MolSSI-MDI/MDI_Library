@@ -2238,7 +2238,7 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
     communicator* comm;
     ret = vector_get( this_code->comms, icomm, (void**)&comm );
     if ( ret != 0 ) {
-      mdi_error("Error in MDI_Set_language_execute_command: vector_get failed");
+      mdi_error("Error in MDI_Set_execute_command_func: vector_get failed");
       return ret;
     }
 
@@ -2716,27 +2716,3 @@ int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback) {
   this_code->driver_callback_f90 = callback;
   return 0;
 }
-
-
-/*! \brief Call the language driver callback needed by a language wrapper
- *
- * The function returns a function pointer to the driver callback function.
- *
- * \param [out]      callback
- *                   Driver callback
- * \param [in]       comm
- *                   MDI communicator
- */
-int MDI_Call_language_driver_callback(void* class_obj) {
-  int ret;
-
-  code* this_code;
-  ret = get_current_code(&this_code);
-  if ( ret != 0 ) {
-    mdi_error("Error in MDI_Get_language_driver_callback: get_current_code failed");
-  }
-  ret = this_code->driver_callback_f90(class_obj);
-  return 0;
-}
-
-

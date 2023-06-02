@@ -32,7 +32,7 @@
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
 #define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 19
+#define MDI_PATCH_VERSION_ 20
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256
@@ -193,7 +193,7 @@ typedef struct code_struct {
   /*! \brief Hostname of the driver */
   char* hostname;
   /*! \brief Function pointer to the actual callback for Fortran drivers */
-  int (*driver_callback_f90)(void*);
+  int (*driver_callback_f90)(void*, int, void*);
   /*! \brief Function pointer to the language-specific wrapper for the execute_command function */
   int (*execute_command_wrapper)(const char*, MDI_Comm_Type, void*);
   /*! \brief Function pointer to the generic execute_command_function */
