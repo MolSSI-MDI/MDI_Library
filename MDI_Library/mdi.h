@@ -172,7 +172,7 @@ DllExport int MDI_Set_on_destroy_code(int (*func)(int));
 DllExport int MDI_Set_plugin_language(int language, void* plugin_state);
 DllExport int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, void*));
 DllExport int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_execute_command, MDI_Comm comm);
-DllExport MDI_Driver_node_callback_f90_t MDI_Get_language_driver_callback();
+DllExport int MDI_Get_language_driver_callback(MDI_Driver_node_callback_f90_t* language_driver_callback);
 DllExport int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback);
 
 #ifdef __cplusplus

@@ -139,9 +139,10 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Set_language_driver_callback_
      END FUNCTION MDI_Set_language_driver_callback_
 
-     FUNCTION MDI_Get_language_driver_callback_() bind(c, name="MDI_Get_language_driver_callback")
+     FUNCTION MDI_Get_language_driver_callback_(out_ptr) bind(c, name="MDI_Get_language_driver_callback")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_FUNPTR)                           :: MDI_Get_language_driver_callback_
+       TYPE(C_FUNPTR)                           :: out_ptr
+       INTEGER(KIND=C_INT) :: MDI_Get_language_driver_callback_
      END FUNCTION MDI_Get_language_driver_callback_
 
   END INTERFACE
@@ -1328,7 +1329,7 @@ CONTAINS
 
     mdi_comm = mdi_comm_c
 
-    this_func_ptr = MDI_Get_language_driver_callback_()
+    ierr = MDI_Get_language_driver_callback_(this_func_ptr)
 
     CALL c_f_procpointer(this_func_ptr, this_func)
 

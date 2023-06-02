@@ -2684,7 +2684,7 @@ int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_ex
  * \param [in]       comm
  *                   MDI communicator
  */
-MDI_Driver_node_callback_f90_t MDI_Get_language_driver_callback() {
+int MDI_Get_language_driver_callback(MDI_Driver_node_callback_f90_t* language_driver_callback) {
   int ret;
 
   code* this_code;
@@ -2693,7 +2693,8 @@ MDI_Driver_node_callback_f90_t MDI_Get_language_driver_callback() {
     mdi_error("Error in MDI_Get_language_driver_callback: get_current_code failed");
     //return ret;
   }
-  return this_code->driver_callback_f90;
+  *language_driver_callback = this_code->driver_callback_f90;
+  return 0;
 }
 
 
