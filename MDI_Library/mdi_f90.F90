@@ -59,8 +59,10 @@ MODULE MDI
   END INTERFACE
 
   ABSTRACT INTERFACE
-    FUNCTION driver_plugin_callback(class_obj)
+    FUNCTION driver_plugin_callback(mpi_comm, mdi_comm, class_obj)
       USE, INTRINSIC :: ISO_C_BINDING
+      INTEGER, VALUE                  :: mpi_comm
+      INTEGER, VALUE                  :: mdi_comm
       TYPE(C_PTR), VALUE, INTENT(IN)  :: class_obj
       INTEGER(KIND=C_INT)             :: driver_plugin_callback
     END FUNCTION driver_plugin_callback
@@ -137,16 +139,11 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Set_language_driver_callback_
      END FUNCTION MDI_Set_language_driver_callback_
 
-     FUNCTION MDI_Get_language_driver_callback_() bind(c, name="MDI_Get_language_driver_callback")
+     FUNCTION MDI_Get_language_driver_callback_(out_ptr) bind(c, name="MDI_Get_language_driver_callback")
        USE, INTRINSIC :: iso_c_binding
-       TYPE(C_FUNPTR)                           :: MDI_Get_language_driver_callback_
+       TYPE(C_FUNPTR)                           :: out_ptr
+       INTEGER(KIND=C_INT) :: MDI_Get_language_driver_callback_
      END FUNCTION MDI_Get_language_driver_callback_
-
-     FUNCTION MDI_Call_language_driver_callback_(class_obj) bind(c, name="MDI_Call_language_driver_callback")
-       USE, INTRINSIC :: iso_c_binding
-       TYPE(C_PTR), VALUE, INTENT(IN)           :: class_obj
-       INTEGER(C_INT)                           :: MDI_Call_language_driver_callback_
-     END FUNCTION MDI_Call_language_driver_callback_
 
   END INTERFACE
 
@@ -1309,7 +1306,6 @@ CONTAINS
     END SUBROUTINE MDI_Set_plugin_state
 
   FUNCTION MDI_Driver_callback_f(mpi_comm_ptr, mdi_comm_c, class_obj) bind (c)
-    USE, INTRINSIC :: ISO_C_BINDING
     TYPE(C_PTR), VALUE, INTENT(IN)  :: mpi_comm_ptr
     INTEGER(KIND=C_INT), VALUE      :: mdi_comm_c
     TYPE(C_PTR), VALUE, INTENT(IN)  :: class_obj
@@ -1324,7 +1320,20 @@ CONTAINS
 
     INTEGER(KIND=C_INT), TARGET :: cworld_comm
 
-    ierr = MDI_Call_language_driver_callback_(class_obj)
+    ! The actual MPI communicator we want is the intra_MPI_comm for the engine, which is converted into the Fortran format
+    ierr = MDI_MPI_get_world_comm_( c_loc(cworld_comm) )
+    mpi_comm = cworld_comm
+
+    !CALL c_f_pointer(mpi_comm_ptr, mpi_comm_ptr_f)
+    !mpi_comm = mpi_comm_ptr_f
+
+    mdi_comm = mdi_comm_c
+
+    ierr = MDI_Get_language_driver_callback_(this_func_ptr)
+
+    CALL c_f_procpointer(this_func_ptr, this_func)
+
+    ierr = this_func(mpi_comm, mdi_comm, class_obj)
 
     MDI_Driver_callback_f = ierr
 
