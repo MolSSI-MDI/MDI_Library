@@ -194,14 +194,16 @@ endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
         DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 if( (NOT language) OR (language STREQUAL "Fortran") )
-  if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/mdi.mod")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.mod
-            DESTINATION ${MDI_INSTALL_INCLUDEDIR})
-  endif()
-  if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/MDI.mod")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MDI.mod
-            DESTINATION ${MDI_INSTALL_INCLUDEDIR})
-  endif()
+install(CODE "
+    # Check for both lowercase and uppercase versions of the file
+    if(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\")
+        file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
+    elseif(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\")
+        file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
+    else()
+        message(FATAL_ERROR \"Fortran module file not found\")
+    endif()
+")
 endif()
 if( (NOT language) OR (language STREQUAL "Python") )
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
