@@ -194,6 +194,7 @@ endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
         DESTINATION ${MDI_INSTALL_INCLUDEDIR})
 if( (NOT language) OR (language STREQUAL "Fortran") )
+  if( python_package STREQUAL "OFF" )
 install(CODE "
     # Check for both lowercase and uppercase versions of the file
     if(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\")
@@ -204,6 +205,7 @@ install(CODE "
         message(FATAL_ERROR \"Fortran module file not found\")
     endif()
 ")
+  endif()
 endif()
 if( (NOT language) OR (language STREQUAL "Python") )
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
