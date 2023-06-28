@@ -322,6 +322,7 @@ jobs:
           ls
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      # To execute: Click the GitHub "Actions" tab, then "CI", then "Run Workflow", then set debugging to "true"
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
@@ -336,3 +337,82 @@ jobs:
         run: |
           codecov.exe -f coverage.xml -t "99465b5f-26b4-4487-8355-fbcac5249a05"
 
+
+
+  # Build for posix systems
+  conda:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ ubuntu-latest ]
+        mpilib: [null]
+
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      OMPI_MCA_btl_base_warn_component_unused: "0"
+      CODECOV_TOKEN: "99465b5f-26b4-4487-8355-fbcac5249a05"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Install Miniconda
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
+
+      - name: Create source file with all required environment variables
+        shell: bash -el {0}
+        run: |
+          # Create a source file that will contain environment variables used in additional steps
+          # Environment variabls are not normally preserved between steps, so the source file is necessary
+          touch env.source
+
+          # Set MDI_TESTS, which defines which tests will be performed for this job
+          [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
+
+          cat env.source
+
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          source env.source
+          sudo apt-get clean
+          sudo apt-get update
+          sudo apt-get install gfortran
+          conda install -y -c conda-forge numpy
+          conda install -y -c conda-forge pytest
+          conda install -y -c conda-forge pymdi
+
+      - name: Install local build
+        shell: bash -el {0}
+        run: |
+          source env.source
+          mkdir build
+          cd build
+          cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install ..
+          make VERBOSE=1
+          #make install
+          rm MDI_Library/__init__.py
+          rm MDI_Library/mdi.py
+          ls
+          ls MDI_Library
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      # To execute: Click the GitHub "Actions" tab, then "CI", then "Run Workflow", then set debugging to "true"
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
+      - name: Run test scripts
+        shell: bash -el {0}
+        run: |
+          source env.source
+          conda list
+          cd tests
+          pytest -vv -k "${MDI_TESTS}"
