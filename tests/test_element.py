@@ -18,6 +18,10 @@ def import_mdi():
     try: # Check for local build
         sys.path.append('../build')
         import MDI_Library as mdi
+        try:
+            testvar = mdi.MDI_COMMAND_LENGTH
+        except AttributeError:
+            import mdi
     except ImportError: # Check for installed package
         import mdi
     return mdi

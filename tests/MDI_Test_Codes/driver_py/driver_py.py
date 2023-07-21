@@ -3,6 +3,7 @@ import time
 
 try: # Check for local build
     import MDI_Library as mdi
+    testvar = mdi.MDI_COMMAND_LENGTH
 except: # Check for installed package
     import mdi
 
