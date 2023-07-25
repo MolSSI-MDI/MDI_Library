@@ -166,9 +166,9 @@ jobs:
         run: |
           source env.source
           echo "Python implementation: "
-          python -c "import platform; platform.python_implementation()"
+          python -c "import platform; print(platform.python_implementation())"
           echo "Python3 implementation: "
-          python3 -c "import platform; platform.python_implementation()"
+          python3 -c "import platform; print(platform.python_implementation())"
 
       - name: Install MDI Library Python package
         run: |
@@ -445,7 +445,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v4 
         with:
-          python-version: 'pypy3.9' 
+          python-version: '3.10'
 
       - name: Create source file with all required environment variables
         run: |
@@ -485,9 +485,9 @@ jobs:
         run: |
           source env.source
           echo "Python implementation: "
-          python -c "import platform; platform.python_implementation()"
+          python -c "import platform; print(platform.python_implementation())"
           echo "Python3 implementation: "
-          python3 -c "import platform; platform.python_implementation()"
+          python3 -c "import platform; print(platform.python_implementation())"
 
       - name: Install MDI Library Python package
         run: |
