@@ -162,6 +162,14 @@ jobs:
           python3 -m pip install numpy
           python3 -m pip install -U pytest pytest-cov
 
+      - name: Print the Python Implementation
+        run: |
+          source env.source
+          echo "Python implementation: "
+          python -c "import platform; platform.python_implementation()"
+          echo "Python3 implementation: "
+          python3 -c "import platform; platform.python_implementation()"
+
       - name: Install MDI Library Python package
         run: |
           source env.source
@@ -435,6 +443,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4 
+        with:
+          python-version: 'pypy3.9' 
 
       - name: Create source file with all required environment variables
         run: |
@@ -469,6 +480,14 @@ jobs:
           [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
           python3 -m pip install numpy
           python3 -m pip install -U pytest pytest-cov
+
+      - name: Print the Python Implementation
+        run: |
+          source env.source
+          echo "Python implementation: "
+          python -c "import platform; platform.python_implementation()"
+          echo "Python3 implementation: "
+          python3 -c "import platform; platform.python_implementation()"
 
       - name: Install MDI Library Python package
         run: |
