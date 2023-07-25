@@ -62,12 +62,12 @@ if( python_plugins )
    endif()
 
    # Python plugins do not currently support PyPy
-   if(Python_Development_FOUND AND "${Python_INTERPRETER_ID}" STREQUAL "PyPy")
-      message( WARNING "Python Plugins are not currently supported for PyPy.  Disabling Python Plugins." )
-      set(Python_Development_FOUND off)
-   endif()
+   #if(Python_Development_FOUND AND "${Python_INTERPRETER_ID}" STREQUAL "PyPy")
+   #   message( WARNING "Python Plugins are not currently supported for PyPy.  Disabling Python Plugins." )
+   #   set(Python_Development_FOUND off)
+   #endif()
 
-   # Python plugins do not currently support PyPy
+   # Python plugins do not currently support Windows
    if(Python_Development_FOUND AND WIN32)
       message( WARNING "Python Plugins are not currently supported on Windows.  Disabling Python Plugins." )
       set(Python_Development_FOUND off)
