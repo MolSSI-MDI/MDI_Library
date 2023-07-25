@@ -454,10 +454,11 @@ jobs:
           touch env.source
 
       - name: Remove the old Python version
+        continue-on-error: true
         run: |
           source env.source
-          rm -rf /usr/local/Frameworks/Python.framework && true
-          rm -rf /Library/Frameworks/Python.framework && true
+          rm -rf /usr/local/Frameworks/Python.framework
+          rm -rf /Library/Frameworks/Python.framework
 
       - name: Update Brew (MacOS)
         if: matrix.platform == 'macos-latest'
