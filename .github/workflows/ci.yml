@@ -415,4 +415,87 @@ jobs:
           source env.source
           conda list
           cd tests
-          pytest -vv -k "${MDI_TESTS}"
+          pytest -vv
+
+  pypy:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ macos-latest ]
+        mpilib: [mpich]
+
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      OMPI_MCA_btl_base_warn_component_unused: "0"
+      CODECOV_TOKEN: "99465b5f-26b4-4487-8355-fbcac5249a05"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Update Brew (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          source env.source
+          brew update > /dev/null
+
+      - name: Install GCC (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          source env.source
+          brew uninstall --ignore-dependencies gcc || true
+          brew install gcc || brew link --overwrite python@3.10
+
+      - name: Install MPICH (MacOS)
+        if: matrix.platform == 'macos-latest' && matrix.mpilib == 'mpich'
+        run: |
+          source env.source
+          brew install mpich
+
+      - name: Install Pip dependencies (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          source env.source
+          python3 -m pip install --upgrade pip
+          [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
+          python3 -m pip install numpy
+          python3 -m pip install -U pytest pytest-cov
+
+      - name: Install MDI Library Python package
+        run: |
+          source env.source
+          mkdir python_build
+          cd python_build
+          cmake -Dpython_package=ON -Dlanguage=Python ..
+          make VERBOSE=1
+          sudo make install
+          cd ..
+
+      - name: Install local build
+        run: |
+          source env.source
+          [ "${{ matrix.platform }}" == "macos-latest" ] && python3-config --include
+          mkdir build
+          cd build
+          export FC=gfortran
+          export CMAKE_COVERAGE_FLAGS=""
+          [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
+          cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+          make VERBOSE=1
+          make install
+          ls
+          ls MDI_Library
+
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
+      - name: Run test scripts
+        run: |
+          source env.source
+          cd tests
+          pytest -vv --cov-report=xml --cov=MDI_Library -k "${MDI_TESTS}"
