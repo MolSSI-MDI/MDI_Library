@@ -415,7 +415,7 @@ jobs:
           source env.source
           conda list
           cd tests
-          pytest -vv
+          pytest -vv -k "${MDI_TESTS}"
 
   pypy:
     strategy:
@@ -435,6 +435,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: Create source file with all required environment variables
+        run: |
+          # Create a source file that will contain environment variables used in additional steps
+          # Environment variabls are not normally preserved between steps, so the source file is necessary
+          touch env.source
 
       - name: Update Brew (MacOS)
         if: matrix.platform == 'macos-latest'
@@ -498,4 +504,4 @@ jobs:
         run: |
           source env.source
           cd tests
-          pytest -vv --cov-report=xml --cov=MDI_Library -k "${MDI_TESTS}"
+          pytest -vv --cov-report=xml --cov=MDI_Library
