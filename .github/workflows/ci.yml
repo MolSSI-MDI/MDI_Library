@@ -456,8 +456,8 @@ jobs:
       - name: Remove the old Python version
         run: |
           source env.source
-          rm -rf /usr/local/Frameworks/Python.framework/
-          rm -rf /Library/Frameworks/Python.framework
+          rm -rf /usr/local/Frameworks/Python.framework && true
+          rm -rf /Library/Frameworks/Python.framework && true
 
       - name: Update Brew (MacOS)
         if: matrix.platform == 'macos-latest'
