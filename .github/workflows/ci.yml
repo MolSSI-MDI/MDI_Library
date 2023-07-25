@@ -453,6 +453,12 @@ jobs:
           # Environment variabls are not normally preserved between steps, so the source file is necessary
           touch env.source
 
+      - name: Remove the old Python version
+        run: |
+          source env.source
+          rm -rf /usr/local/Frameworks/Python.framework/
+          rm -rf /Library/Frameworks/Python.framework
+
       - name: Update Brew (MacOS)
         if: matrix.platform == 'macos-latest'
         run: |
