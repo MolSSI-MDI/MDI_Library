@@ -496,15 +496,15 @@ jobs:
           echo "Python3 implementation: "
           python3 -c "import platform; print(platform.python_implementation())"
 
-      - name: Install MDI Library Python package
-        run: |
-          source env.source
-          mkdir python_build
-          cd python_build
-          cmake -Dpython_package=ON -Dlanguage=Python ..
-          make VERBOSE=1
-          sudo make install
-          cd ..
+      #- name: Install MDI Library Python package
+      #  run: |
+      #    source env.source
+      #    mkdir python_build
+      #    cd python_build
+      #    cmake -Dpython_package=ON -Dlanguage=Python ..
+      #    make VERBOSE=1
+      #    sudo make install
+      #    cd ..
 
       - name: Install local build
         run: |
