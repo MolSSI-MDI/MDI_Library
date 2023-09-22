@@ -18,10 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.7"
 ]
 
-# Update the urls once the hosting is set up.
-#[project.urls]
-#"Source" = "https://github.com/<username>/{{cookiecutter.repo_name}}/"
-#"Documentation" = "https://{{cookiecutter.repo_name}}.readthedocs.io/"
+[project.urls]
+"Source" = "https://github.com/MolSSI-MDI/MDI_Library"
+"Documentation" = "https://molssi-mdi.github.io/MDI_Library/html/index.html"
 
 [dependencies]
 
