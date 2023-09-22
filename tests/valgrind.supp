@@ -365,3 +365,21 @@
    fun:call_function
    fun:_PyEval_EvalFrameDefault
 }
+
+{
+   Python read object leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_PyMem_RawMalloc
+   fun:PyObject_Malloc
+   fun:PyFloat_FromDouble
+   fun:r_object
+   fun:r_object
+   fun:r_object
+   fun:r_object
+   fun:r_object
+   fun:r_object
+   fun:r_object
+   fun:read_object
+}

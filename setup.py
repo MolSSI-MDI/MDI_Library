@@ -83,23 +83,7 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    name='pymdi',
     version=mdi_version,
-    description='A library that enables code interoperability via the MolSSI Driver Interface.',
-    long_description='',
-    url='https://github.com/MolSSI-MDI/MDI_Library',
-    author='Taylor Barnes',
-    author_email='info@molssi.org',
-    license='BSD 3-clause',
-    packages=['mdi'],
-    package_dir={'mdi': 'MDI_Library'},
     ext_modules=[CMakeExtension('mdi')],
     cmdclass=dict(build_ext=CMakeBuild),
-    install_requires=[],
-    classifiers=[
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.7',
-        ],
     )
