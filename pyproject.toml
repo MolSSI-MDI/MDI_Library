@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "cmake>=3.5.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymdi"
+dynamic = ["version"]
+description = "A library that enables code interoperability via the MolSSI Driver Interface."
+readme = "README.md"
+authors = [
+    { name = "Taylor Barnes", email = "mdi@molssi.org" }
+]
+license = { text = "BSD-3-Clause" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.7"
+]
+
+# Update the urls once the hosting is set up.
+#[project.urls]
+#"Source" = "https://github.com/<username>/{{cookiecutter.repo_name}}/"
+#"Documentation" = "https://{{cookiecutter.repo_name}}.readthedocs.io/"
+
+[dependencies]
+
+[tool.setuptools]
+packages = ["mdi"]
+package-dir = { "mdi" = "MDI_Library" }
