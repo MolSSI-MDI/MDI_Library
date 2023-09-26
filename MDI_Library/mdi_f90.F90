@@ -115,8 +115,9 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Get_Current_Code_
      END FUNCTION MDI_Get_Current_Code_
 
-     FUNCTION MDI_Get_intra_rank_() bind(c, name="MDI_Get_intra_rank")
+     FUNCTION MDI_Get_intra_rank_(intra_rank) bind(c, name="MDI_Get_intra_rank")
        USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: intra_rank
        INTEGER(KIND=C_INT)                      :: MDI_Get_intra_rank_
      END FUNCTION MDI_Get_intra_rank_
 
@@ -479,9 +480,14 @@ CONTAINS
   END FUNCTION MDI_Execute_Command_f
 
   FUNCTION MDI_Get_intra_rank()
+    USE, INTRINSIC :: ISO_C_BINDING
     INTEGER                                  :: MDI_Get_intra_rank
-    MDI_Get_intra_rank = MDI_Get_intra_rank_()
+    INTEGER(KIND=C_INT), TARGET              :: cnnodes
+    INTEGER                                  :: ierr
+    ierr = MDI_Get_intra_rank_( c_loc(cnnodes) )
+    MDI_Get_intra_rank = cnnodes
   END FUNCTION 
+
 
 
 
