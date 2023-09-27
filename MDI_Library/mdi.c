@@ -1079,7 +1079,7 @@ void MDI_Set_World_Rank(int world_rank_in)
  * This function is only used by the Fortran wrapper
  *
  */
-int MDI_Get_intra_rank(int intra_rank_out)
+int MDI_Get_intra_rank(int* intra_rank_out)
 {
   int ret;
   if ( codes.initialized == 0 ) {
@@ -1092,7 +1092,8 @@ int MDI_Get_intra_rank(int intra_rank_out)
     mdi_error("Error in MDI_Get_intra_rank: get_current_code failed");
     return 1;
   }
-  return this_code->intra_rank;
+  *intra_rank_out = this_code->intra_rank;
+  return 0;
 }
 
 

@@ -5,7 +5,7 @@ import subprocess
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
+from packaging.version import Version
 
 
 # Get version number information
@@ -49,7 +49,11 @@ class CMakeBuild(build_ext):
         except OSError:
             raise RuntimeError("CMake is required for the following extensions: " +
                                ", ".join(e.name for e in self.extensions))
-        cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', version.decode()).group(1))
+        version_match = re.search(r'version\s*([\d.]+)', version.decode())
+        if version_match:
+            cmake_version = Version(version_match.group(1))
+        else:
+            raise ValueError("Unable to find version number")
         if cmake_version < '3.5.0':
             raise RuntimeError("CMake >= 3.5.0 is required for the following extensions: " +
                                ", ".join(e.name for e in self.extensions))
