@@ -173,7 +173,7 @@ set(PN ${PROJECT_NAME})
 if( python_package STREQUAL "ON" )
 
     execute_process(
-        COMMAND python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+        COMMAND python -c "import sysconfig; print(sysconfig.get_path('platlib'))"
         OUTPUT_VARIABLE _site_packages
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
