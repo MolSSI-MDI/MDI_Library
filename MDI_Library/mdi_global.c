@@ -1344,7 +1344,7 @@ int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
     }
 
   }
-  else if ( sendtype == MDI_UINT64_T_ ) {
+  else if ( sendtype == MDI_UINT16_T_ ) {
     uint16_t* sendbuf = (uint16_t*) sendbuf_in;
 
     if ( recvtype == MDI_INT_ ) {
@@ -1407,7 +1407,7 @@ int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
     }
 
   }
-  else if ( sendtype == MDI_UINT64_T_ ) {
+  else if ( sendtype == MDI_UINT32_T_ ) {
     uint32_t* sendbuf = (uint32_t*) sendbuf_in;
 
     if ( recvtype == MDI_INT_ ) {
