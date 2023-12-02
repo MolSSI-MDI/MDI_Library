@@ -181,6 +181,7 @@ int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag) {
     ret = get_communicator(codes.current_key, comm, &this);
     if ( ret != 0 ) {
       mdi_error("Error in plug_on_send_command: second get_communicator failed");
+      free( command_bcast );
       return ret;
     }
     library_data* libd = (library_data*) this->method_data;

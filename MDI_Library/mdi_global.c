@@ -313,6 +313,8 @@ int new_code(size_t* code_id) {
   vector* node_vec = malloc(sizeof(vector));
   ret = vector_init(node_vec, sizeof(node));
   if ( ret != 0 ) {
+    free(new_code);
+    free(node_vec);
     mdi_error("Error in new_code: could not initialize node vector");
     return ret;
   }

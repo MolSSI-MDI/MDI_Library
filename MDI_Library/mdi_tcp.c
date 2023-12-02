@@ -374,6 +374,11 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
   communicator* new_comm;
   ret = get_communicator(this_code->id, comm_id, &new_comm);
   if ( ret != 0 ) {
+#if _WIN32
+    closesocket(sockfd);
+#else
+    close(sockfd);
+#endif
     mdi_error("Error in tcp_request_connection: get_communicator failed");
     return ret;
   }

@@ -158,6 +158,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
                     Py_file_input,
                     main_dict, main_dict);
     if ( PyErr_Occurred() ) {
+      fclose(engine_script);
       mdi_error("Unable to set system properties for Python plugin");
       print_traceback();
       return 1;

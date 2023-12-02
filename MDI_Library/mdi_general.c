@@ -1455,6 +1455,7 @@ int get_node_info(MDI_Comm comm) {
       name_length = (int)(name_end - name_start);
     }
     if ( name_length >= MDI_COMMAND_LENGTH_ ) {
+      free(current_node);
       mdi_error("Error obtaining node information: could not parse node name");
       return 1;
     }

@@ -359,6 +359,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   else {
     ret = this_code->mpi4py_gather_names_callback(buffer, names, name_lengths, name_displs);
     if ( ret != 0 ) {
+      free(unique_names);
       mdi_error("Error in mpi4py_gather_names_callback");
       return ret;
     }
