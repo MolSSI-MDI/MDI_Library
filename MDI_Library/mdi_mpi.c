@@ -376,7 +376,9 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     }
   }
   if ( driver_rank == -1 ) {
-    mdi_error("Unable to identify driver when attempting to connect via MPI"); 
+    free(name);
+    free(unique_names);
+    mdi_error("Unable to identify driver when attempting to connect via MPI");
     return 1;
   }
 

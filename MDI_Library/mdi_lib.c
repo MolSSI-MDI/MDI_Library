@@ -397,6 +397,8 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
     // Initialize an instance of the plugin
     ret = libd->plugin_init( libd->shared_state );
     if ( ret != 0 ) {
+      free( plugin_path );
+      free( plugin_init_name );
       mdi_error("MDI plugin init function returned non-zero exit code");
       return -1;
     }

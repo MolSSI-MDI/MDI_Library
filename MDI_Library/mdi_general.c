@@ -124,11 +124,15 @@ int general_init(const char* options) {
     //-role
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -role option");
         return 1;
       }
       role = argv[iarg+1];
       if ( strlen(role) > MDI_NAME_LENGTH_ ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Role option is larger than MDI_NAME_LENGTH");
         return 1;
       }
@@ -139,6 +143,8 @@ int general_init(const char* options) {
     //-method
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -method option");
         return 1;
       }
@@ -149,10 +155,14 @@ int general_init(const char* options) {
     //-name
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -name option");
         return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH_ ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
         return 1;
       }
@@ -163,6 +173,8 @@ int general_init(const char* options) {
     //-hostname
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -hostname option");
         return 1;
       }
@@ -172,6 +184,8 @@ int general_init(const char* options) {
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -port option");
         return 1;
       }
@@ -186,6 +200,8 @@ int general_init(const char* options) {
     //-out
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -out option");
         return 1;
       }
@@ -196,10 +212,14 @@ int general_init(const char* options) {
     //-plugin_path
     else if (strcmp(argv[iarg],"-plugin_path") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
         return 1;
       }
       if ( strlen(argv[iarg+1]) > PLUGIN_PATH_LENGTH ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Plugin path is larger than PLUGIN_PATH_LENGTH");
         return 1;
       }
@@ -210,6 +230,8 @@ int general_init(const char* options) {
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -_language option");
         return 1;
       }
@@ -221,11 +243,16 @@ int general_init(const char* options) {
         this_code->language = MDI_LANGUAGE_FORTRAN;
       }
       else {
-        mdi_error("Error in MDI_Init: Invalide -_language argument");
+        free(argv);
+        free(argv_line);
+        mdi_error("Error in MDI_Init: Invalid -_language argument");
+        return 1;
       }
       iarg += 2;
     }
     else {
+      free(argv);
+      free(argv_line);
       mdi_error("Error in MDI_Init: Unrecognized option");
       return 1;
     }
@@ -1255,6 +1282,7 @@ int send_node_list(MDI_Comm comm) {
     ret = vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     if ( strlen(this_node->name) >= MDI_COMMAND_LENGTH_ ) {
+      free(node_list);
       mdi_error("Error in send_node_list: Node name is larger than MDI_COMMAND_LENGTH");
       return 1;
     }
@@ -1502,6 +1530,7 @@ int get_node_info(MDI_Comm comm) {
       node_flag = 0;
     }
     else {
+      free(command_name);
       mdi_error("Error obtaining node information: could not parse delimiter");
       return 1;
     }
