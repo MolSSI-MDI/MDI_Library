@@ -10,7 +10,7 @@
 int print_traceback()
 {
   // Function to print the Python traceback
-  
+
   PyObject *ptype, *pvalue, *ptraceback;
   PyObject *traceback_module;
   char *c_traceback;
@@ -22,11 +22,11 @@ int print_traceback()
     PyObject *traceback_list, *empty_str, *traceback_pystr;
 
     traceback_list = PyObject_CallMethod(traceback_module,
-					 "format_exception",
-					 "OOO",
-					 ptype,
-					 pvalue == NULL ? Py_None : pvalue,
-					 ptraceback == NULL ? Py_None : ptraceback);
+                                         "format_exception",
+                                         "OOO",
+                                         ptype,
+                                         pvalue == NULL ? Py_None : pvalue,
+                                         ptraceback == NULL ? Py_None : ptraceback);
 
 #if PY_MAJOR_VERSION >= 3
     empty_str = PyUnicode_FromString("");

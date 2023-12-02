@@ -1279,7 +1279,7 @@ int send_node_list(MDI_Comm comm) {
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
     node* this_node;
-    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
+    vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     if ( strlen(this_node->name) >= MDI_COMMAND_LENGTH_ ) {
       free(node_list);
@@ -1328,7 +1328,7 @@ int send_ncommands(MDI_Comm comm) {
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node;
-    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
+    vector_get(this_code->nodes, inode, (void**)&this_node);
     ncommands += (int)this_node->commands->size;
   }
 
