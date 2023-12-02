@@ -857,11 +857,11 @@ int register_node(vector* node_vec, const char* node_name)
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_node: get_node_index failed"); 
+    mdi_error("Error in register_node: get_node_index failed");
     return 1;
   }
   if ( node_index != -1 ) {
-    mdi_error("This node is already registered"); 
+    mdi_error("This node is already registered");
     return 1;
   }
 
@@ -924,7 +924,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_command: get_node_index failed"); 
+    mdi_error("Error in register_command: get_node_index failed");
     return 1;
   }
   if ( node_index == -1 ) {
@@ -938,7 +938,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   int command_index;
   ret = get_command_index(target_node, command_name, &command_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_command: get_command_index failed"); 
+    mdi_error("Error in register_command: get_command_index failed");
     return 1;
   }
   if ( command_index != -1 ) {
@@ -1001,7 +1001,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_callback: get_node_index failed"); 
+    mdi_error("Error in register_callback: get_node_index failed");
     return 1;
   }
   if ( node_index == -1 ) {
@@ -1015,7 +1015,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   int callback_index;
   ret = get_callback_index(target_node, callback_name, &callback_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_callback: get_callback_index failed"); 
+    mdi_error("Error in register_callback: get_callback_index failed");
     return 1;
   }
   if ( callback_index != -1 ) {
@@ -1064,13 +1064,13 @@ int send_command_list(MDI_Comm comm) {
     mdi_error("Attempting to send command information from the incorrect rank");
     return 1;
   }
-  
+
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
   if ( this_comm->command_length < MDI_COMMAND_LENGTH_ ) {
     clength = this_comm->command_length;
   }
-  
+
   int ncommands = 0;
   int nnodes = (int)this_code->nodes->size;
   int inode, icommand;
@@ -1114,13 +1114,13 @@ int send_command_list(MDI_Comm comm) {
       length = (int)strlen(command);
       snprintf(&commands[ islot * stride ], clength, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
-	commands[ islot * stride + ichar ] = ' ';
+        commands[ islot * stride + ichar ] = ' ';
       }
       if ( icommand == this_node->commands->size - 1 ) {
-	commands[ islot * stride + stride - 1 ] = ';';
+        commands[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	commands[ islot * stride + stride - 1 ] = ',';
+        commands[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1163,13 +1163,13 @@ int send_callback_list(MDI_Comm comm) {
   int ncallbacks = 0;
   int nnodes = (int)this_code->nodes->size;
   int inode, icallback;
-  
+
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
   if ( this_comm->command_length < MDI_COMMAND_LENGTH_ ) {
     clength = this_comm->command_length;
   }
-  
+
   int stride = clength + 1;
 
   // determine the number of callbakcs
@@ -1214,13 +1214,13 @@ int send_callback_list(MDI_Comm comm) {
       length = (int)strlen(callback);
       snprintf(&callbacks[ islot * stride ], clength, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
-	callbacks[ islot * stride + ichar ] = ' ';
+        callbacks[ islot * stride + ichar ] = ' ';
       }
       if ( icallback == this_node->callbacks->size - 1 ) {
-	callbacks[ islot * stride + stride - 1 ] = ';';
+        callbacks[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	callbacks[ islot * stride + stride - 1 ] = ',';
+        callbacks[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1604,7 +1604,7 @@ int get_node_info(MDI_Comm comm) {
     // free the memory for the node name
     free( callback_name );
   }
-  
+
   // free the memory
   free( node_list );
   free( commands );
@@ -1620,7 +1620,7 @@ int get_node_info(MDI_Comm comm) {
  * The function returns the node vector for the communicator.
  *
  * \param [in]       comm
- *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI communicator of the engine.  If comm is set to
  *                   MDI_COMM_NULL, the function will return the node vector for the calling engine.
  */
 int get_node_vector(MDI_Comm comm, vector** vector_ptr) {

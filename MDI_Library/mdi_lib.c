@@ -254,7 +254,7 @@ int plug_on_recv_command(MDI_Comm comm) {
   libd->shared_state->execute_command_obj = this_code->execute_command_obj;
 
   // set the current code to the driver
-  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr, 
+  libd->shared_state->driver_activate_code( libd->shared_state->driver_codes_ptr,
                                             libd->shared_state->driver_code_id );
 
   void* mpi_ptr = libd->shared_state->mpi_comm_ptr;
@@ -474,7 +474,7 @@ int library_parse_options(const char* options, library_data* libd) {
       in_double_quotes = (in_double_quotes + 1) % 2;
       libd->shared_state->plugin_options[ichar] = '\0';
     }
-    else if (libd->shared_state->plugin_options[ichar] == '\'') { 
+    else if (libd->shared_state->plugin_options[ichar] == '\'') {
       if ( in_double_quotes ) {
         mdi_error("Nested quotes not supported by MDI_Launch_plugin \"options\" argument.");
       }
@@ -736,7 +736,7 @@ int library_open_plugin(const char* plugin_name, const char* options, void* mpi_
   libd->shared_state->driver_activate_code = library_activate_code;
   libd->shared_state->driver_callback_obj = libd->driver_callback_obj;
 
-  // Assign the global command-line options variables to the values for this plugin  
+  // Assign the global command-line options variables to the values for this plugin
   //plugin_argc = libd->shared_state->plugin_argc;
   //plugin_argv = libd->shared_state->plugin_argv;
   //plugin_unedited_options = libd->plugin_unedited_options;
@@ -817,7 +817,7 @@ int library_close_plugin(MDI_Comm mdi_comm) {
   // Delete the driver's communicator to the engine
   // This will also delete the engine code and its communicator
   delete_communicator(codes.current_key, mdi_comm);
-  
+
   return 0;
 }
 
@@ -917,7 +917,7 @@ int library_initialize() {
     else {
       this_code->intra_rank = 0;
     }
-      
+
     libd->shared_state->intra_rank = this_code->intra_rank;
 
   }
@@ -1272,7 +1272,7 @@ int library_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm, int
   // receive message header information
   // only do this if communicating with MDI version 1.1 or higher
   if ( ( this->mdi_version[0] > 1 ||
-	 ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
+         ( this->mdi_version[0] == 1 && this->mdi_version[1] >= 1 ) )
        && this_code->ipi_compatibility != 1 ) {
 
     if ( msg_flag == 1 ) { // message header
@@ -1441,7 +1441,7 @@ int library_set_state(void* state) {
 
   plugin_shared_state* shared_state = (plugin_shared_state*) state;
 
-  ret = MDI_Init_with_argv(&shared_state->plugin_argc, 
+  ret = MDI_Init_with_argv(&shared_state->plugin_argc,
                            &shared_state->plugin_argv);
   if ( ret != 0 ) {
     return ret;
