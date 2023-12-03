@@ -416,7 +416,7 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
 /*! \brief Accept a TCP connection request
  */
 int tcp_accept_connection() {
-  sock_t connection;
+  sock_t connection = -1;
   int ret;
 
   code* this_code;
