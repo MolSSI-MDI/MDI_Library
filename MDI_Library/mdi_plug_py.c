@@ -210,7 +210,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
   }
 
   // Close the script
-  fclose( engine_script );
+  if (engine_script) fclose( engine_script );
 
   // free main_dict
   Py_DECREF(main_dict);
