@@ -238,7 +238,7 @@ int mpi_after_send_command(const char* command, MDI_Comm comm) {
       MPI_Finalize();
     }
   }
-  
+
   return 0;
 }
 
@@ -256,7 +256,7 @@ int mpi_on_recv_command(MDI_Comm comm) {
  * If use_mpi4py == 0, this function will call MPI_Comm_split to create an intra-code communicator for each code.
  *
  * \param [in]       code_name
- *                   MDI name of the code associated with this process, indicated by the user with the -name 
+ *                   MDI name of the code associated with this process, indicated by the user with the -name
  *                   runtime option.
  * \param [in]       use_mpi4py
  *                   Flag to indicate whether MPI_Comm_split should be called in order to create an intra-code
@@ -304,7 +304,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   my_version[3] = MDI_COMMAND_LENGTH;
   my_version[4] = MDI_NAME_LENGTH;
   if ( use_mpi4py == 0 ) {
-    MPI_Allgather(my_version, 5, MPI_INT, all_versions, 5, 
+    MPI_Allgather(my_version, 5, MPI_INT, all_versions, 5,
         MPI_INT, world_comm);
   }
   else {
@@ -351,7 +351,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   // gather the name of the code associated with each rank
   if ( use_mpi4py == 0 ) {
     //MPI_Allgather(buffer, MDI_NAME_LENGTH, MPI_CHAR, names, MDI_NAME_LENGTH,
-	//	  MPI_CHAR, world_comm);
+        //        MPI_CHAR, world_comm);
     MPI_Allgatherv(buffer, MDI_NAME_LENGTH, MPI_CHAR, names,
         name_lengths, name_displs,
         MPI_CHAR, world_comm);
@@ -359,6 +359,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
   else {
     ret = this_code->mpi4py_gather_names_callback(buffer, names, name_lengths, name_displs);
     if ( ret != 0 ) {
+      free(unique_names);
       mdi_error("Error in mpi4py_gather_names_callback");
       return ret;
     }
@@ -371,12 +372,14 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     if ( driver_rank == -1 ) {
       memcpy( name, &names[i*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
       if ( strcmp(name, "") == 0 ) {
-	driver_rank = i;
+        driver_rank = i;
       }
     }
   }
   if ( driver_rank == -1 ) {
-    mdi_error("Unable to identify driver when attempting to connect via MPI"); 
+    free(name);
+    free(unique_names);
+    mdi_error("Unable to identify driver when attempting to connect via MPI");
     return 1;
   }
 
@@ -391,7 +394,7 @@ int mpi_identify_codes(const char* code_name, int use_mpi4py, MPI_Comm world_com
     for (j=0; j<i; j++) {
       memcpy( prev_name, &names[j*MDI_NAME_LENGTH], MDI_NAME_LENGTH );
       if ( strcmp(name, prev_name) == 0 ) {
-	found = 1;
+        found = 1;
       }
     }
 

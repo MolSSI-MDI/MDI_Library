@@ -313,6 +313,8 @@ int new_code(size_t* code_id) {
   vector* node_vec = malloc(sizeof(vector));
   ret = vector_init(node_vec, sizeof(node));
   if ( ret != 0 ) {
+    free(new_code);
+    free(node_vec);
     mdi_error("Error in new_code: could not initialize node vector");
     return ret;
   }
@@ -348,7 +350,7 @@ int new_code(size_t* code_id) {
 
   // return the index of the new code
   *code_id = codes.size - 1;
-  
+
   return 0;
 }
 
@@ -729,7 +731,7 @@ int delete_communicator(size_t code_id, MDI_Comm_Type comm_id) {
     }
   }
   if ( comm_found != 1 ) {
-    mdi_error("Communicator not found during delete"); 
+    mdi_error("Communicator not found during delete");
     return 1;
   }
 
@@ -962,8 +964,8 @@ int datatype_mpitype(MDI_Datatype_Type datatype, MPI_Datatype* mpitype) {
 
 /*! \brief Convert a buffer from one datatype to another */
 int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
-			 void* sendbuf_in, MDI_Datatype_Type sendtype,
-			 int count) {
+                         void* sendbuf_in, MDI_Datatype_Type sendtype,
+                         int count) {
   int ii;
 
   if ( sendtype == MDI_INT_ ) {
@@ -1027,7 +1029,7 @@ int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
       mdi_error("Unrecognized datatype in convert_buf_datatype.");
       return 1;
     }
-    
+
   }
   else if ( sendtype == MDI_INT8_T_ ) {
     int8_t* sendbuf = (int8_t*) sendbuf_in;
@@ -1344,7 +1346,7 @@ int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
     }
 
   }
-  else if ( sendtype == MDI_UINT64_T_ ) {
+  else if ( sendtype == MDI_UINT16_T_ ) {
     uint16_t* sendbuf = (uint16_t*) sendbuf_in;
 
     if ( recvtype == MDI_INT_ ) {
@@ -1407,7 +1409,7 @@ int convert_buf_datatype(void* recvbuf_in, MDI_Datatype_Type recvtype,
     }
 
   }
-  else if ( sendtype == MDI_UINT64_T_ ) {
+  else if ( sendtype == MDI_UINT32_T_ ) {
     uint32_t* sendbuf = (uint32_t*) sendbuf_in;
 
     if ( recvtype == MDI_INT_ ) {

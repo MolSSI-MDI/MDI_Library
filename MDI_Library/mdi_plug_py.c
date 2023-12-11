@@ -10,7 +10,7 @@
 int print_traceback()
 {
   // Function to print the Python traceback
-  
+
   PyObject *ptype, *pvalue, *ptraceback;
   PyObject *traceback_module;
   char *c_traceback;
@@ -22,11 +22,11 @@ int print_traceback()
     PyObject *traceback_list, *empty_str, *traceback_pystr;
 
     traceback_list = PyObject_CallMethod(traceback_module,
-					 "format_exception",
-					 "OOO",
-					 ptype,
-					 pvalue == NULL ? Py_None : pvalue,
-					 ptraceback == NULL ? Py_None : ptraceback);
+                                         "format_exception",
+                                         "OOO",
+                                         ptype,
+                                         pvalue == NULL ? Py_None : pvalue,
+                                         ptraceback == NULL ? Py_None : ptraceback);
 
 #if PY_MAJOR_VERSION >= 3
     empty_str = PyUnicode_FromString("");
@@ -158,6 +158,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
                     Py_file_input,
                     main_dict, main_dict);
     if ( PyErr_Occurred() ) {
+      fclose(engine_script);
       mdi_error("Unable to set system properties for Python plugin");
       print_traceback();
       return 1;
@@ -209,7 +210,7 @@ int python_plugin_init( const char* engine_name, const char* engine_path, void* 
   }
 
   // Close the script
-  fclose( engine_script );
+  if (engine_script) fclose( engine_script );
 
   // free main_dict
   Py_DECREF(main_dict);

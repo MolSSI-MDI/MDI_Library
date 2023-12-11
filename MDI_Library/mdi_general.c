@@ -124,11 +124,15 @@ int general_init(const char* options) {
     //-role
     if (strcmp(argv[iarg],"-role") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -role option");
         return 1;
       }
       role = argv[iarg+1];
       if ( strlen(role) > MDI_NAME_LENGTH_ ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Role option is larger than MDI_NAME_LENGTH");
         return 1;
       }
@@ -139,6 +143,8 @@ int general_init(const char* options) {
     //-method
     else if (strcmp(argv[iarg],"-method") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -method option");
         return 1;
       }
@@ -149,10 +155,14 @@ int general_init(const char* options) {
     //-name
     else if (strcmp(argv[iarg],"-name") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -name option");
         return 1;
       }
       if ( strlen(argv[iarg+1]) > MDI_NAME_LENGTH_ ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Name argument length exceeds MDI_NAME_LENGTH");
         return 1;
       }
@@ -163,6 +173,8 @@ int general_init(const char* options) {
     //-hostname
     else if (strcmp(argv[iarg],"-hostname") == 0){
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -hostname option");
         return 1;
       }
@@ -172,6 +184,8 @@ int general_init(const char* options) {
     //-port
     else if (strcmp(argv[iarg],"-port") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -port option");
         return 1;
       }
@@ -186,6 +200,8 @@ int general_init(const char* options) {
     //-out
     else if (strcmp(argv[iarg],"-out") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -out option");
         return 1;
       }
@@ -196,10 +212,14 @@ int general_init(const char* options) {
     //-plugin_path
     else if (strcmp(argv[iarg],"-plugin_path") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -plugin_path option");
         return 1;
       }
       if ( strlen(argv[iarg+1]) > PLUGIN_PATH_LENGTH ) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Plugin path is larger than PLUGIN_PATH_LENGTH");
         return 1;
       }
@@ -210,6 +230,8 @@ int general_init(const char* options) {
     //_language
     else if (strcmp(argv[iarg],"_language") == 0) {
       if (iarg+2 > argc) {
+        free(argv);
+        free(argv_line);
         mdi_error("Error in MDI_Init: Argument missing from -_language option");
         return 1;
       }
@@ -221,11 +243,16 @@ int general_init(const char* options) {
         this_code->language = MDI_LANGUAGE_FORTRAN;
       }
       else {
-        mdi_error("Error in MDI_Init: Invalide -_language argument");
+        free(argv);
+        free(argv_line);
+        mdi_error("Error in MDI_Init: Invalid -_language argument");
+        return 1;
       }
       iarg += 2;
     }
     else {
+      free(argv);
+      free(argv_line);
       mdi_error("Error in MDI_Init: Unrecognized option");
       return 1;
     }
@@ -830,11 +857,11 @@ int register_node(vector* node_vec, const char* node_name)
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_node: get_node_index failed"); 
+    mdi_error("Error in register_node: get_node_index failed");
     return 1;
   }
   if ( node_index != -1 ) {
-    mdi_error("This node is already registered"); 
+    mdi_error("This node is already registered");
     return 1;
   }
 
@@ -897,7 +924,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_command: get_node_index failed"); 
+    mdi_error("Error in register_command: get_node_index failed");
     return 1;
   }
   if ( node_index == -1 ) {
@@ -911,7 +938,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   int command_index;
   ret = get_command_index(target_node, command_name, &command_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_command: get_command_index failed"); 
+    mdi_error("Error in register_command: get_command_index failed");
     return 1;
   }
   if ( command_index != -1 ) {
@@ -974,7 +1001,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   int node_index;
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_callback: get_node_index failed"); 
+    mdi_error("Error in register_callback: get_node_index failed");
     return 1;
   }
   if ( node_index == -1 ) {
@@ -988,7 +1015,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   int callback_index;
   ret = get_callback_index(target_node, callback_name, &callback_index);
   if ( ret != 0 ) {
-    mdi_error("Error in register_callback: get_callback_index failed"); 
+    mdi_error("Error in register_callback: get_callback_index failed");
     return 1;
   }
   if ( callback_index != -1 ) {
@@ -1037,13 +1064,13 @@ int send_command_list(MDI_Comm comm) {
     mdi_error("Attempting to send command information from the incorrect rank");
     return 1;
   }
-  
+
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
   if ( this_comm->command_length < MDI_COMMAND_LENGTH_ ) {
     clength = this_comm->command_length;
   }
-  
+
   int ncommands = 0;
   int nnodes = (int)this_code->nodes->size;
   int inode, icommand;
@@ -1087,13 +1114,13 @@ int send_command_list(MDI_Comm comm) {
       length = (int)strlen(command);
       snprintf(&commands[ islot * stride ], clength, "%s", command);
       for (ichar = length; ichar < stride-1; ichar++) {
-	commands[ islot * stride + ichar ] = ' ';
+        commands[ islot * stride + ichar ] = ' ';
       }
       if ( icommand == this_node->commands->size - 1 ) {
-	commands[ islot * stride + stride - 1 ] = ';';
+        commands[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	commands[ islot * stride + stride - 1 ] = ',';
+        commands[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1136,13 +1163,13 @@ int send_callback_list(MDI_Comm comm) {
   int ncallbacks = 0;
   int nnodes = (int)this_code->nodes->size;
   int inode, icallback;
-  
+
   // Use the smaller of MDI_COMMAND_LENGTH between the two codes
   int clength = MDI_COMMAND_LENGTH_;
   if ( this_comm->command_length < MDI_COMMAND_LENGTH_ ) {
     clength = this_comm->command_length;
   }
-  
+
   int stride = clength + 1;
 
   // determine the number of callbakcs
@@ -1187,13 +1214,13 @@ int send_callback_list(MDI_Comm comm) {
       length = (int)strlen(callback);
       snprintf(&callbacks[ islot * stride ], clength, "%s", callback);
       for (ichar = length; ichar < stride-1; ichar++) {
-	callbacks[ islot * stride + ichar ] = ' ';
+        callbacks[ islot * stride + ichar ] = ' ';
       }
       if ( icallback == this_node->callbacks->size - 1 ) {
-	callbacks[ islot * stride + stride - 1 ] = ';';
+        callbacks[ islot * stride + stride - 1 ] = ';';
       }
       else {
-	callbacks[ islot * stride + stride - 1 ] = ',';
+        callbacks[ islot * stride + stride - 1 ] = ',';
       }
       islot++;
     }
@@ -1252,9 +1279,10 @@ int send_node_list(MDI_Comm comm) {
   for (inode = 0; inode < nnodes; inode++) {
     // add the name of this node to the list
     node* this_node;
-    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
+    vector_get(this_code->nodes, inode, (void**)&this_node);
     int length = (int)strlen(this_node->name);
     if ( strlen(this_node->name) >= MDI_COMMAND_LENGTH_ ) {
+      free(node_list);
       mdi_error("Error in send_node_list: Node name is larger than MDI_COMMAND_LENGTH");
       return 1;
     }
@@ -1300,7 +1328,7 @@ int send_ncommands(MDI_Comm comm) {
   // determine the number of commands
   for (inode = 0; inode < nnodes; inode++) {
     node* this_node;
-    ret = vector_get(this_code->nodes, inode, (void**)&this_node);
+    vector_get(this_code->nodes, inode, (void**)&this_node);
     ncommands += (int)this_node->commands->size;
   }
 
@@ -1427,6 +1455,7 @@ int get_node_info(MDI_Comm comm) {
       name_length = (int)(name_end - name_start);
     }
     if ( name_length >= MDI_COMMAND_LENGTH_ ) {
+      free(current_node);
       mdi_error("Error obtaining node information: could not parse node name");
       return 1;
     }
@@ -1502,6 +1531,7 @@ int get_node_info(MDI_Comm comm) {
       node_flag = 0;
     }
     else {
+      free(command_name);
       mdi_error("Error obtaining node information: could not parse delimiter");
       return 1;
     }
@@ -1575,7 +1605,7 @@ int get_node_info(MDI_Comm comm) {
     // free the memory for the node name
     free( callback_name );
   }
-  
+
   // free the memory
   free( node_list );
   free( commands );
@@ -1591,7 +1621,7 @@ int get_node_info(MDI_Comm comm) {
  * The function returns the node vector for the communicator.
  *
  * \param [in]       comm
- *                   MDI communicator of the engine.  If comm is set to 
+ *                   MDI communicator of the engine.  If comm is set to
  *                   MDI_COMM_NULL, the function will return the node vector for the calling engine.
  */
 int get_node_vector(MDI_Comm comm, vector** vector_ptr) {
