@@ -2120,9 +2120,10 @@ int MDI_Launch_plugin(const char* plugin_name, const char* options, void* mpi_co
 
   // If this is a Fortran code, convert the MPI communicator
   void* mpi_comm_ptr_use = mpi_comm_ptr;
+  MPI_Comm c_comm = MPI_COMM_NULL;
   if ( this_code->language == MDI_LANGUAGE_FORTRAN ) {
     MPI_Fint* f_comm_ptr = (MPI_Fint*) mpi_comm_ptr;
-    MPI_Comm c_comm = MPI_Comm_f2c( *f_comm_ptr );
+    c_comm = MPI_Comm_f2c( *f_comm_ptr );
     mpi_comm_ptr_use = (void*)(&c_comm);
   }
 
