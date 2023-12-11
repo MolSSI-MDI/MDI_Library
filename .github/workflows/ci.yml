@@ -308,10 +308,6 @@ jobs:
           echo "$(dirname $(which gfortran))/../lib/mingw/tools/install/mingw64/bin" >> $GITHUB_PATH
           echo "$(dirname $(which gfortran))/../lib/mingw/tools/install/mingw64/lib" >> $GITHUB_PATH
 
-      - name: Copy libgfortran-5.dll into the path
-        run: |
-          cp C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin\libgfortran* C:\ProgramData\chocolatey\bin
-
       - name: Fortran executables don't seem to search the $PATH variable
         run: |
           cd build
