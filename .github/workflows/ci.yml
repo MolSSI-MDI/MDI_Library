@@ -142,7 +142,7 @@ jobs:
         run: |
           source env.source
           brew uninstall --ignore-dependencies gcc || true
-          brew install gcc || brew link --overwrite python@3.10
+          brew install gcc || brew link --overwrite python@3.12
 
       - name: Install MPICH (MacOS)
         if: matrix.platform == 'macos-latest' && matrix.mpilib == 'mpich'
