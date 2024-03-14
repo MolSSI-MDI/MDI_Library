@@ -27,6 +27,7 @@ jobs:
       matrix:
         platform: [ ubuntu-latest, macos-latest ]
         mpilib: [null, mpich, openmpi]
+        plugins: [OFF, ON]
 
     # The type of runner that the job will run on
     runs-on: ${{ matrix.platform }}
@@ -47,8 +48,10 @@ jobs:
           touch env.source
 
           # Set MDI_TESTS, which defines which tests will be performed for this job
-          [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
-          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug and not py_cxx_plug"' >> env.source
+          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
+          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug and not py_cxx_plug"' >> env.source
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi and not plug"' >> env.source
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not plug"' >> env.source
 
           cat env.source
 
@@ -181,7 +184,7 @@ jobs:
           export FC=gfortran
           export CMAKE_COVERAGE_FLAGS=""
           [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
-          cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+          cmake -Dtest_codes=ON -Dplugins=${{ matrix.plugins }} -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
           make VERBOSE=1
           make install
           ls
