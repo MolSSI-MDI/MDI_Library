@@ -161,9 +161,13 @@ jobs:
         run: |
           source env.source
           python3 -m pip install --upgrade pip
-          [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
-          python3 -m pip install numpy
-          python3 -m pip install -U pytest pytest-cov
+          [ ! "${{ matrix.mpilib }}" == "" ] && brew install mpi4py
+          brew install numpy
+          brew install pytest
+          brew install pytest-cov
+          #[ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
+          #python3 -m pip install numpy
+          #python3 -m pip install -U pytest pytest-cov
 
       - name: Install MDI Library Python package
         run: |
