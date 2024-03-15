@@ -53,7 +53,7 @@ def execute_command(command, comm, self):
 
 class MDIEngine:
 
-    def __init__(self):
+    def __init__(self, is_plugin = False):
         self.exit_flag = False
 
         # MPI variables
@@ -98,7 +98,8 @@ class MDIEngine:
         mdi.MDI_Register_Callback("@FORCES",">FORCES")
 
         # Set the generic execute_command function
-        mdi.MDI_Set_Execute_Command_Func(execute_command, self)
+        if is_plugin:
+            mdi.MDI_Set_Execute_Command_Func(execute_command, self)
 
         # Connect to the driver
         self.comm = mdi.MDI_Accept_Communicator()
@@ -117,14 +118,14 @@ def MDI_Plugin_init_engine_py(plugin_state):
 
     mdi.MDI_Set_plugin_state(plugin_state)
 
-    engine = MDIEngine()
+    engine = MDIEngine(is_plugin = True)
     engine.run()
 
 def MDI_Plugin_open_engine_py(plugin_state):
 
     mdi.MDI_Set_plugin_state(plugin_state)
 
-    engine = MDIEngine()
+    engine = MDIEngine(is_plugin = True)
 
 if __name__== "__main__":
     mdi.MDI_Init(sys.argv[2])
