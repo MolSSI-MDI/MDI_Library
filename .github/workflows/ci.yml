@@ -48,10 +48,12 @@ jobs:
           touch env.source
 
           # Set MDI_TESTS, which defines which tests will be performed for this job
-          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
-          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug and not py_cxx_plug"' >> env.source
-          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi and not plug"' >> env.source
-          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not plug"' >> env.source
+          export MDI_TESTS_TEMP=""
+          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" == "" ] && export MDI_TESTS_TEMP="not mpi"
+          [ "${{ matrix.plugins }}" == "ON" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && export MDI_TESTS_TEMP="not mpi and not py_plug and not py_cxx_plug"
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" == "" ] && export MDI_TESTS_TEMP="not mpi and not plug"
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && export MDI_TESTS_TEMP="not mpi and not plug"
+          echo "export MDI_TESTS=\"${MDI_TESTS_TEMP}\"" >> env.source
 
           cat env.source
 
