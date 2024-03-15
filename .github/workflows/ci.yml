@@ -53,8 +53,8 @@ jobs:
           [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && export MDI_TESTS_TEMP="not mpi and not py_plug and not py_cxx_plug"
 
           # Ensure that plugins tests are not run if plugins are not enabled
-          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" == "" ] export MDI_TESTS_TEMP="not plug"
-          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" != "" ] export MDI_TESTS_TEMP="${MDI_TESTS_TEMP} and not plug"
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" == "" ] && export MDI_TESTS_TEMP="not plug"
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" != "" ] && export MDI_TESTS_TEMP="${MDI_TESTS_TEMP} and not plug"
 
           echo "export MDI_TESTS=\"${MDI_TESTS_TEMP}\"" >> env.source
           cat env.source
