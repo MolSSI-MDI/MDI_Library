@@ -33,11 +33,6 @@ int initialize_mdi(MDI_Comm* comm_ptr) {
   // Connect to the driver
   MDI_Accept_communicator(comm_ptr);
 
-  // Create the execute_command pointer
-  int (*generic_command)(const char*, MDI_Comm, void*) = execute_command;
-  void* engine_obj;
-  MDI_Set_execute_command_func(generic_command, engine_obj);
-
   return 0;
 }
 
