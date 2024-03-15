@@ -27,6 +27,7 @@ jobs:
       matrix:
         platform: [ ubuntu-latest, macos-latest ]
         mpilib: [null, mpich, openmpi]
+        plugins: [OFF, ON]
 
     # The type of runner that the job will run on
     runs-on: ${{ matrix.platform }}
@@ -47,9 +48,15 @@ jobs:
           touch env.source
 
           # Set MDI_TESTS, which defines which tests will be performed for this job
-          [ "${{ matrix.mpilib }}" == "" ] && echo 'export MDI_TESTS="not mpi"' >> env.source
-          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && echo 'export MDI_TESTS="not mpi and not py_plug and not py_cxx_plug"' >> env.source
+          export MDI_TESTS_TEMP=""
+          [ "${{ matrix.mpilib }}" == "" ] && export MDI_TESTS_TEMP="not mpi"
+          [ "${{ matrix.mpilib }}" != "" ] && [ "${{ matrix.platform }}" == "macos-latest" ] && export MDI_TESTS_TEMP="not mpi and not py_plug and not py_cxx_plug"
 
+          # Ensure that plugins tests are not run if plugins are not enabled
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" == "" ] && export MDI_TESTS_TEMP="not plug"
+          [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" != "" ] && export MDI_TESTS_TEMP="${MDI_TESTS_TEMP} and not plug"
+
+          echo "export MDI_TESTS=\"${MDI_TESTS_TEMP}\"" >> env.source
           cat env.source
 
       # Only custom build python on ubuntu
@@ -139,7 +146,7 @@ jobs:
         run: |
           source env.source
           brew uninstall --ignore-dependencies gcc || true
-          brew install gcc || brew link --overwrite python@3.10
+          brew install gcc || brew link --overwrite python@3.12
 
       - name: Install MPICH (MacOS)
         if: matrix.platform == 'macos-latest' && matrix.mpilib == 'mpich'
@@ -153,10 +160,18 @@ jobs:
           source env.source
           brew install openmpi
 
+      - name: Create and activate a virtual environment (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          python3 -m venv venv
+          cat venv/bin/activate >> env.source
+          source env.source
+
       - name: Install Pip dependencies (MacOS)
         if: matrix.platform == 'macos-latest'
         run: |
           source env.source
+          source venv/bin/activate
           python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
           python3 -m pip install numpy
@@ -181,7 +196,7 @@ jobs:
           export FC=gfortran
           export CMAKE_COVERAGE_FLAGS=""
           [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
-          cmake -Dtest_codes=ON -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+          cmake -Dtest_codes=ON -Dplugins=${{ matrix.plugins }} -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
           make VERBOSE=1
           make install
           ls

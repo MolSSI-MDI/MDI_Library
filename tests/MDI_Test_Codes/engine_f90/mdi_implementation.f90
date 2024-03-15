@@ -34,6 +34,9 @@ CONTAINS
     CHARACTER(LEN=1024) :: option
     CHARACTER(LEN=1024) :: mdi_options
     LOGICAL :: mdi_options_found
+    PROCEDURE(execute_command), POINTER :: generic_command => null()
+    TYPE(C_PTR)                         :: class_obj
+    generic_command => execute_command
 
     CALL MDI_Set_plugin_state(plugin_state, ierr)
 
@@ -42,6 +45,9 @@ CONTAINS
 
     ! Perform one-time operations required to establish a connection with the driver
     CALL initialize_mdi()
+
+    ! Set the generic execute_command function
+    CALL MDI_Set_execute_command_func(c_funloc(generic_command), class_obj, ierr)
 
     ! Respond to commands from the driver
     CALL respond_to_commands()
@@ -52,10 +58,6 @@ CONTAINS
 
   SUBROUTINE initialize_mdi()
     INTEGER :: ierr, role
-
-    PROCEDURE(execute_command), POINTER :: generic_command => null()
-    TYPE(C_PTR)                         :: class_obj
-    generic_command => execute_command
 
     ! Confirm that the code is being run as an ENGINE
     call MDI_Get_role(role, ierr)
@@ -79,9 +81,6 @@ CONTAINS
 
     ! Connct to the driver
     CALL MDI_Accept_communicator(comm, ierr)
-
-    ! Set the generic execute_command function
-    CALL MDI_Set_execute_command_func(c_funloc(generic_command), class_obj, ierr)
 
   END SUBROUTINE initialize_mdi
 

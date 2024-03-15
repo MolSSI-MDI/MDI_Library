@@ -2220,6 +2220,7 @@ int MDI_Set_Execute_Command_Func(int (*generic_command)(const char*, MDI_Comm, v
  *                   Function pointer to the generic execute_command function
  */
 int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, void*), void* class_object) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2252,10 +2253,15 @@ int MDI_Set_execute_command_func(int (*generic_command)(const char*, MDI_Comm, v
   }
 
   return 0;
+#else
+  mdi_error("MDI_Set_execute_command_func was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
 int MDI_Set_plugin_state(void* state) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
   ret = mdi_debug("[MDI:MDI_Set_plugin_state] Start\n");
   if ( ret != 0 ) {
@@ -2270,6 +2276,10 @@ int MDI_Set_plugin_state(void* state) {
   }
 
   return library_set_state(state);
+#else
+  mdi_error("MDI_Set_plugin_state was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2279,7 +2289,12 @@ int MDI_Set_plugin_state(void* state) {
  *
  */
 int MDI_Set_plugin_state_internal(void* state) {
+#if _MDI_PLUGIN_SUPPORT == 1
   return library_set_state(state);
+#else
+  mdi_error("MDI_Set_plugin_state_internal was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2314,6 +2329,7 @@ int MDI_Get_Current_Code() {
  *
  */
 int MDI_Plugin_get_argc(int* argc_ptr) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2328,6 +2344,10 @@ int MDI_Plugin_get_argc(int* argc_ptr) {
   }
   *argc_ptr = *this_code->plugin_argc_ptr;
   return 0;
+#else
+  mdi_error("MDI_Plugin_get_argc was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2335,6 +2355,7 @@ int MDI_Plugin_get_argc(int* argc_ptr) {
  *
  */
 int MDI_Plugin_get_argv(char*** argv_ptr) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2349,6 +2370,10 @@ int MDI_Plugin_get_argv(char*** argv_ptr) {
   }
   *argv_ptr = *this_code->plugin_argv_ptr;
   return 0;
+#else
+  mdi_error("MDI_Plugin_get_argv was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2356,6 +2381,7 @@ int MDI_Plugin_get_argv(char*** argv_ptr) {
  *
  */
 int MDI_Plugin_get_args(char** args_ptr) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2370,6 +2396,10 @@ int MDI_Plugin_get_args(char** args_ptr) {
   }
   *args_ptr = *this_code->plugin_unedited_options_ptr;
   return 0;
+#else
+  mdi_error("MDI_Plugin_get_args was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2377,6 +2407,7 @@ int MDI_Plugin_get_args(char** args_ptr) {
  *
  */
 int MDI_Plugin_get_arg(int index, char** arg_ptr) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2399,6 +2430,10 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
   }
   *arg_ptr = (*this_code->plugin_argv_ptr)[index];
   return 0;
+#else
+  mdi_error("MDI_Plugin_get_arg was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2406,9 +2441,14 @@ int MDI_Plugin_get_arg(int index, char** arg_ptr) {
  *
  */
 int MDI_Get_python_plugin_mpi_world_ptr(void** python_plugin_mpi_world_ptr_ptr, void* state_in) {
+#if _MDI_PLUGIN_SUPPORT == 1
   plugin_shared_state* this_state = (plugin_shared_state*) state_in;
   *python_plugin_mpi_world_ptr_ptr = this_state->mpi_comm_ptr;
   return 0;
+#else
+  mdi_error("MDI_Get_python_plugin_mpi_world_ptr was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2587,6 +2627,7 @@ int MDI_Set_Mpi4py_Barrier_Callback(int (*mpi4py_barrier)(int)) {
  *                   Function pointer to the launch_plugin callback
  */
 int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int)) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2597,6 +2638,11 @@ int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int
   }
   this_code->py_launch_plugin_callback = launch_plugin;
   return 0;
+#else
+  // This function is automatically called when Python codes call MDI_Init
+  // We don't want to throw an error message here; simply return
+  return 0;
+#endif
 }
 
 
@@ -2608,9 +2654,14 @@ int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int
  *                   Language of the plugin
  */
 int MDI_Set_plugin_language(int language, void* plugin_state) {
+#if _MDI_PLUGIN_SUPPORT == 1
   plugin_shared_state* this_state = (plugin_shared_state*) plugin_state;
   this_state->engine_language = language;
   return 0;
+#else
+  mdi_error("MDI_Set_plugin_language was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2622,6 +2673,7 @@ int MDI_Set_plugin_language(int language, void* plugin_state) {
  *                   Execute command callback
  */
 int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, void*)) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2651,6 +2703,10 @@ int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, voi
   }
 
   return 0;
+#else
+  mdi_error("MDI_Set_language_execute_command was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2665,6 +2721,7 @@ int MDI_Set_language_execute_command(int (*execute_command)(void*, MDI_Comm, voi
  *                   MDI communicator
  */
 int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_execute_command, MDI_Comm comm) {
+#if _MDI_PLUGIN_SUPPORT == 1
   communicator* this_comm;
   int ret = get_communicator(codes.current_key, comm, &this_comm);
   if ( ret != 0 ) {
@@ -2674,6 +2731,10 @@ int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_ex
   library_data* libd = (library_data*) this_comm->method_data;
   *language_execute_command = libd->shared_state->execute_command;
   return 0;
+#else
+  mdi_error("MDI_Get_language_execute_command was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2687,6 +2748,7 @@ int MDI_Get_language_execute_command(MDI_Execute_command_callback_t* language_ex
  *                   MDI communicator
  */
 int MDI_Get_language_driver_callback(MDI_Driver_node_callback_f90_t* language_driver_callback) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2697,6 +2759,10 @@ int MDI_Get_language_driver_callback(MDI_Driver_node_callback_f90_t* language_dr
   }
   *language_driver_callback = this_code->driver_callback_f90;
   return 0;
+#else
+  mdi_error("MDI_Get_language_driver_callback was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
 
 
@@ -2708,6 +2774,7 @@ int MDI_Get_language_driver_callback(MDI_Driver_node_callback_f90_t* language_dr
  *                   Driver callback
  */
 int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback) {
+#if _MDI_PLUGIN_SUPPORT == 1
   int ret;
 
   code* this_code;
@@ -2718,4 +2785,8 @@ int MDI_Set_language_driver_callback(MDI_Driver_node_callback_f90_t callback) {
   }
   this_code->driver_callback_f90 = callback;
   return 0;
+#else
+  mdi_error("MDI_Set_language_driver_callback was called, but this build of the MDI Library was built without plugin support.");
+  return 1;
+#endif
 }
