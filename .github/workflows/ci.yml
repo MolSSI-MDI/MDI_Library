@@ -160,7 +160,7 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           source env.source
-          python3 -m pip install --upgrade pip
+          #python3 -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && brew install mpi4py
           brew install numpy
           brew install pytest
