@@ -2639,8 +2639,9 @@ int MDI_Set_Launch_Plugin_Callback(int (*launch_plugin)(void*, void*, void*, int
   this_code->py_launch_plugin_callback = launch_plugin;
   return 0;
 #else
-  mdi_error("MDI_Set_Launch_Plugin_Callback was called, but this build of the MDI Library was built without plugin support.");
-  return 1;
+  // This function is automatically called when Python codes call MDI_Init
+  // We don't want to throw an error message here; simply return
+  return 0;
 #endif
 }
 
