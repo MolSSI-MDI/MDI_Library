@@ -156,17 +156,20 @@ jobs:
           source env.source
           brew install openmpi
 
+      - name: Create and activate a virtual environment (MacOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+
       - name: Install Pip dependencies (MacOS)
         if: matrix.platform == 'macos-latest'
         run: |
           source env.source
-          #python3 -m pip install --upgrade pip
-          [ ! "${{ matrix.mpilib }}" == "" ] && brew install mpi4py
-          brew install numpy
-          #brew install pytest
-          #brew install pytest-cov
-          #[ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
-          #python3 -m pip install numpy
+          source venv/bin/activate
+          python3 -m pip install --upgrade pip
+          [ ! "${{ matrix.mpilib }}" == "" ] && python3 -m pip install mpi4py
+          python3 -m pip install numpy
           python3 -m pip install -U pytest pytest-cov
 
       - name: Install MDI Library Python package
