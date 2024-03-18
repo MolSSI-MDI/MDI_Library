@@ -1,0 +1,6 @@
+pydata-sphinx-theme
+sphinx-design
+sphinx-copybutton
+myst-parser
+sphinx-tags
+grip

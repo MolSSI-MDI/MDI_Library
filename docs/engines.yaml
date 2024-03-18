@@ -1,0 +1,10 @@
+LAMMPS:
+  name: LAMMPS
+  install_repo: https://github.com/MolSSI-MDI/lammps
+  mdimechanic_report: https://github.com/MolSSI-MDI/MDI_lammps
+  website: https://www.lammps.org/
+  documentation: https://docs.lammps.org/Manual.html
+
+Psi4:
+  name: Psi4
+  mdimechanic_report: https://github.com/MolSSI-MDI/MDI_psi4

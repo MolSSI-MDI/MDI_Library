@@ -1,0 +1,16 @@
+name: docs
+channels:
+  - conda-forge
+dependencies:
+    # Base depends
+  - python
+  - pip
+  - pydata-sphinx-theme
+  - sphinx-design
+  - sphinx-copybutton
+  - myst_parser
+  - sphinx_design
+    # Pip-only installs
+  #- pip:
+
+
