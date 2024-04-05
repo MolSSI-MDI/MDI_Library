@@ -59,6 +59,8 @@ jobs:
           echo "export MDI_TESTS=\"${MDI_TESTS_TEMP}\"" >> env.source
           mkdir -p ~/mditmp
           echo "export TMPDIR=~/mditmp" >> env.source
+          echo "export OMPI_MCA_pml=ucx" >> env.source
+          echo "export OMPI_MCA_osc=ucx" >> env.source
           cat env.source
 
       # Only custom build python on ubuntu
