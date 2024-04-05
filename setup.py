@@ -73,7 +73,8 @@ class CMakeBuild(build_ext):
         cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + install_dir,
                       '-DCMAKE_INSTALL_INCLUDEDIR=' + ext_dir,
                       '-DCMAKE_INSTALL_LIBDIR=' + ext_dir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
+                      '-DPYTHON_EXECUTABLE=' + sys.executable,
+                      '-Dlanguage=Python']
 
         # Do the CMake install
         if not os.path.exists(self.build_temp):
