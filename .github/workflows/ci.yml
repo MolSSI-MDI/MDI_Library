@@ -57,6 +57,7 @@ jobs:
           [ "${{ matrix.plugins }}" == "OFF" ] && [ "${MDI_TESTS_TEMP}" != "" ] && export MDI_TESTS_TEMP="${MDI_TESTS_TEMP} and not plug"
 
           echo "export MDI_TESTS=\"${MDI_TESTS_TEMP}\"" >> env.source
+          echo "export TMPDIR=/tmp" >> env.source
           cat env.source
 
       # Only custom build python on ubuntu
