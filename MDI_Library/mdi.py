@@ -676,6 +676,20 @@ def MDI_MPI_set_world_comm(new_comm):
     global intra_code_comm
     intra_code_comm = new_comm
 
+# MDI_Check_Command_Exists
+mdi.MDI_Check_for_communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]
+mdi.MDI_Check_for_communicator.restype = ctypes.c_int
+def MDI_Check_for_communicator():
+    arg_size = ctypes.sizeof(ctypes.c_int)
+    flag = (ctypes.c_int*arg_size)()
+
+    ret = mdi.MDI_Check_for_communicator(flag)
+    if ret != 0:
+        raise Exception("MDI Error: MDI_Check_Command_Exists failed")
+    flag_cast = ctypes.cast(flag, ctypes.POINTER(ctypes.c_int)).contents
+
+    return flag_cast.value
+
 # MDI_Accept_Communicator
 mdi.MDI_Accept_Communicator.argtypes = [ctypes.POINTER(ctypes.c_int)]
 mdi.MDI_Accept_Communicator.restype = ctypes.c_int

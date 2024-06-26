@@ -173,6 +173,12 @@ MODULE MDI
        INTEGER(KIND=C_INT)                      :: MDI_Init_with_options_
      END FUNCTION MDI_Init_with_options_
 
+     FUNCTION MDI_Check_for_communicator_(flag) bind(c, name="MDI_Check_for_communicator")
+       USE, INTRINSIC :: iso_c_binding
+       TYPE(C_PTR), VALUE                       :: flag
+       INTEGER(KIND=C_INT)                      :: MDI_Check_for_communicator_
+     END FUNCTION MDI_Check_for_communicator_
+
      FUNCTION MDI_Accept_Communicator_(comm) bind(c, name="MDI_Accept_Communicator")
        USE, INTRINSIC :: iso_c_binding
        TYPE(C_PTR), VALUE                       :: comm
@@ -507,6 +513,22 @@ CONTAINS
       ierr = MDI_Init_with_options_( TRIM(foptions)//" _language Fortran"//c_null_char )
 
     END SUBROUTINE MDI_Init
+
+    SUBROUTINE MDI_Check_for_communicator(flag, ierr)
+      USE, INTRINSIC :: ISO_C_BINDING
+      IMPLICIT NONE
+#if MDI_WINDOWS
+      !GCC$ ATTRIBUTES DLLEXPORT :: MDI_Check_for_communicator
+      !DEC$ ATTRIBUTES DLLEXPORT :: MDI_Check_for_communicator
+#endif
+      INTEGER, INTENT(OUT) :: flag
+      INTEGER, INTENT(OUT) :: ierr
+
+      INTEGER(KIND=C_INT), TARGET              :: cbuf
+
+      ierr = MDI_Check_for_communicator_(c_loc(cbuf))
+      flag = cbuf
+    END SUBROUTINE MDI_Check_for_communicator
 
     SUBROUTINE MDI_Accept_Communicator(communicator, ierr)
       USE, INTRINSIC :: ISO_C_BINDING

@@ -6,7 +6,7 @@ from .mdi import MDI_COMMAND_LENGTH, MDI_NAME_LENGTH, MDI_LABEL_LENGTH, \
     MDI_TCP, MDI_MPI, MDI_LINK, MDI_PLUGIN, MDI_TEST, \
     MDI_DRIVER, MDI_ENGINE, \
     MDI_MAJOR_VERSION, MDI_MINOR_VERSION, MDI_PATCH_VERSION, \
-    MDI_Init, MDI_Accept_Communicator, \
+    MDI_Init, MDI_Check_for_communicator, MDI_Accept_Communicator, \
     MDI_Send, MDI_Recv, MDI_Send_Command, MDI_Recv_Command, \
     MDI_Conversion_Factor, MDI_Get_Role, \
     MDI_MPI_get_world_comm, \

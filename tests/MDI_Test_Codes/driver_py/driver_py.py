@@ -53,6 +53,13 @@ role = mdi.MDI_Get_Role()
 if not role == mdi.MDI_DRIVER:
     raise Exception("Must run driver_py.py as a DRIVER")
 
+# Check that there is another communicator
+new_comm_flag = 0
+while new_comm_flag != 1:
+    new_comm_flag = mdi.MDI_Check_for_communicator()
+    if use_mpi4py:
+        new_comm_flag = mpi_world.bcast(new_comm_flag, root=0)
+
 # Connect to the engine
 comm = mdi.MDI_Accept_Communicator()
 
