@@ -119,6 +119,7 @@ typedef struct element_struct {
 typedef struct method_struct {
   /*! \brief Function pointer for method initialization work */
   int (*on_selection)();
+  int (*on_check_communicator)(int* flag);
   int (*on_accept_communicator)();
   int (*on_send_command)(const char*, MDI_Comm_Type, int* skip_flag);
   int (*after_send_command)(const char*, MDI_Comm_Type);

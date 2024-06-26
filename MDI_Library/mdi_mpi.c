@@ -70,6 +70,7 @@ int enable_mpi_support(int code_id) {
     return ret;
   }
   this_method->on_selection = mpi_on_selection;
+  this_method->on_check_communicator = mpi_on_check_communicator;
   this_method->on_accept_communicator = mpi_on_accept_communicator;
   this_method->on_send_command = mpi_on_send_command;
   this_method->after_send_command = mpi_after_send_command;
@@ -178,6 +179,28 @@ int mpi_on_selection() {
 }
 
 
+/*! \brief Callback when the MPI method must check whether there is a new communicator */
+int mpi_on_check_communicator(int* flag) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in mpi_on_accept_communicator: get_current_code failed");
+    return ret;
+  }
+
+  // If MDI hasn't returned some connections, return true
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    *flag = 1;
+  }
+  else {
+    *flag = 0;
+  }
+
+  return 0;
+}
+
 
 /*! \brief Callback when the MPI method must accept a communicator */
 int mpi_on_accept_communicator() {
@@ -187,7 +210,7 @@ int mpi_on_accept_communicator() {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in mpi_on_accept_communicator: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // If MDI hasn't returned some connections, do that now

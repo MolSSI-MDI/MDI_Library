@@ -118,6 +118,7 @@ typedef struct library_data_struct {
 
 int enable_plug_support(int code_id);
 int plug_on_selection();
+int plug_on_check_communicator(int* flag);
 int plug_on_accept_communicator();
 int plug_on_send_command(const char* command, MDI_Comm comm, int* skip_flag);
 int plug_after_send_command(const char* command, MDI_Comm comm);

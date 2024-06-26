@@ -271,6 +271,21 @@ int MDI_Initialized(int* flag)
   return 0;
 }
 
+/*! \brief Check if a new communicator is available
+ *
+ * The function returns whether there is currently a new communicator that can be accepted via MDI_Accept_communicator.
+ * If new communicators are available, the function returns \p 1.  Otherwise, it returns \p 0.
+ *
+ */
+int MDI_Check_for_communicator(int* flag)
+{
+  if ( codes.initialized == 0 ) {
+    mdi_error("MDI_Check_for_communicator called but MDI has not been initialized");
+    return 1;
+  }
+  return general_check_communicator(flag);
+}
+
 /*! \brief Accept a new MDI communicator
  *
  * The function returns an MDI_Comm that describes a connection between two codes.
@@ -294,14 +309,14 @@ int MDI_Accept_communicator(MDI_Comm* comm)
   int ret;
 
   if ( codes.initialized == 0 ) {
-    mdi_error("MDI_Accept_Communicator called but MDI has not been initialized");
+    mdi_error("MDI_Accept_communicator called but MDI has not been initialized");
     return 1;
   }
   *comm = general_accept_communicator();
 
   ret = mdi_debug("[MDI:MDI_Accept_communicator] Comm: %d\n", *comm);
   if ( ret != 0 ) {
-    mdi_error("Error in MDI_Accept_Communicator: mdi_debug failed");
+    mdi_error("Error in MDI_Accept_communicator: mdi_debug failed");
     return ret;
   }
 
