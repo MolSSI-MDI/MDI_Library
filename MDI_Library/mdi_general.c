@@ -397,7 +397,7 @@ int general_check_communicator(int* flag) {
     mdi_error("Error in general_check_communicator: get_method failed");
     return ret;
   }
-  return selected_method->on_accept_communicator(flag);
+  return selected_method->on_check_communicator(flag);
 }
 
 
