@@ -10,13 +10,13 @@
   #include <sys/socket.h>
   #include <netdb.h>
   #include <unistd.h>
+  #include <poll.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <errno.h>
-#include <poll.h>
 #include "mdi.h"
 #include "mdi_tcp.h"
 #include "mdi_global.h"
@@ -474,7 +474,11 @@ int tcp_check_for_connection(int* flag) {
 
   if ( this_code->intra_rank == 0 ) { // Running on rank 0
 
+#ifdef _WIN32
+    ret = WSAPoll(&poll_args, 1, 0);
+#else
     ret = poll(&poll_args, 1, 0);
+#endif
     if (ret > 0) {
       if ( poll_args.revents & POLLIN ) {
         *flag = 1;
