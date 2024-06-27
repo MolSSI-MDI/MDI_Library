@@ -37,6 +37,7 @@ int enable_plug_support( int code_id ) {
     return ret;
   }
   this_method->on_selection = plug_on_selection;
+  this_method->on_check_communicator = plug_on_check_communicator;
   this_method->on_accept_communicator = plug_on_accept_communicator;
   this_method->on_send_command = plug_on_send_command;
   this_method->after_send_command = plug_after_send_command;
@@ -68,6 +69,36 @@ int plug_on_selection() {
 
 
 
+/*! \brief Callback when the PLUG method must check whether a new communicator exists */
+int plug_on_check_communicator(int* flag) {
+  int ret;
+
+  ret = mdi_debug("[MDI:plug_on_accept_communicator] Start\n");
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_accept_communicator: mdi_debug failed");
+    return ret;
+  }
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in plug_on_accept_communicator: get_current_code failed");
+    return ret;
+  }
+
+  // If MDI hasn't returned some connections, do that now
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    *flag = 1;
+  }
+  else {
+    *flag = 0;
+  }
+
+  return 0;
+}
+
+
+
 /*! \brief Callback when the PLUG method must accept a communicator */
 int plug_on_accept_communicator() {
   int ret;
@@ -82,7 +113,7 @@ int plug_on_accept_communicator() {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in plug_on_accept_communicator: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // Give the library method an opportunity to update the current code

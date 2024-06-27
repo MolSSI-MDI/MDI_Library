@@ -61,7 +61,7 @@ int general_init(const char* options) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_init: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // Create method objects for each supported method
@@ -376,6 +376,31 @@ int general_init(const char* options) {
 }
 
 
+/*! \brief Check if a new communicator is available
+ *
+ * The function returns whether there is currently a new communicator that can be accepted via MDI_Accept_communicator.
+ * If new communicators are available, the function returns \p 1.  Otherwise, it returns \p 0.
+ *
+ */
+int general_check_communicator(int* flag) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_check_communicator: get_current_code failed");
+    return ret;
+  }
+  method* selected_method;
+  ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
+  if ( ret != 0 ) {
+    mdi_error("Error in general_check_communicator: get_method failed");
+    return ret;
+  }
+  return selected_method->on_check_communicator(flag);
+}
+
+
 /*! \brief Accept a new MDI communicator
  *
  * The function returns an MDI_Comm that describes a connection between two codes.
@@ -389,7 +414,7 @@ int general_accept_communicator() {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_accept_communicator: get_current_code failed");
-    return 1;
+    return ret;
   }
   method* selected_method;
   ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
@@ -422,7 +447,7 @@ int general_send(const void* buf, int count, MDI_Datatype datatype, MDI_Comm com
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_send: get_current_code failed");
-    return 1;
+    return ret;
   }
   communicator* this;
   ret = get_communicator(codes.current_key, comm, &this);
@@ -486,7 +511,7 @@ int general_recv(void* buf, int count, MDI_Datatype datatype, MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_recv: get_current_code failed");
-    return 1;
+    return ret;
   }
   communicator* this;
   ret = get_communicator(codes.current_key, comm, &this);
@@ -597,7 +622,7 @@ int general_send_command(const char* buf, MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_send_command: get_current_code failed");
-    return 1;
+    return ret;
   }
   method* selected_method;
   ret = get_method(codes.current_key, this_code->selected_method_id, &selected_method);
@@ -676,7 +701,7 @@ int general_builtin_command(const char* buf, MDI_Comm comm, int* flag) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_builtin_command: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // check if this command corresponds to one of MDI's standard built-in commands
@@ -756,7 +781,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_recv_command: get_current_code failed");
-    return 1;
+    return ret;
   }
   communicator* this;
   ret = get_communicator(codes.current_key, comm, &this);
@@ -782,7 +807,7 @@ int general_recv_command(char* buf, MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in general_recv_command: second get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // only receive on rank 0
@@ -841,7 +866,7 @@ int register_node(vector* node_vec, const char* node_name)
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in register_node: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     return 0;
@@ -858,7 +883,7 @@ int register_node(vector* node_vec, const char* node_name)
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
     mdi_error("Error in register_node: get_node_index failed");
-    return 1;
+    return ret;
   }
   if ( node_index != -1 ) {
     mdi_error("This node is already registered");
@@ -902,7 +927,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in register_command: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     return 0;
@@ -925,7 +950,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
     mdi_error("Error in register_command: get_node_index failed");
-    return 1;
+    return ret;
   }
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a command on an unregistered node");
@@ -939,7 +964,7 @@ int register_command(vector* node_vec, const char* node_name, const char* comman
   ret = get_command_index(target_node, command_name, &command_index);
   if ( ret != 0 ) {
     mdi_error("Error in register_command: get_command_index failed");
-    return 1;
+    return ret;
   }
   if ( command_index != -1 ) {
     mdi_error("This command is already registered for this node");
@@ -979,7 +1004,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in register_callback: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     return 0;
@@ -1002,7 +1027,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   ret = get_node_index(node_vec, node_name, &node_index);
   if ( ret != 0 ) {
     mdi_error("Error in register_callback: get_node_index failed");
-    return 1;
+    return ret;
   }
   if ( node_index == -1 ) {
     mdi_error("Attempting to register a callback on an unregistered node");
@@ -1016,7 +1041,7 @@ int register_callback(vector* node_vec, const char* node_name, const char* callb
   ret = get_callback_index(target_node, callback_name, &callback_index);
   if ( ret != 0 ) {
     mdi_error("Error in register_callback: get_callback_index failed");
-    return 1;
+    return ret;
   }
   if ( callback_index != -1 ) {
     mdi_error("This callback is already registered for this node");
@@ -1051,7 +1076,7 @@ int send_command_list(MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in send_command_list: get_current_code failed");
-    return 1;
+    return ret;
   }
   communicator* this_comm;
   ret = get_communicator(codes.current_key, comm, &this_comm);
@@ -1247,7 +1272,7 @@ int send_node_list(MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in send_node_list: get_current_code failed");
-    return 1;
+    return ret;
   }
   communicator* this_comm;
   ret = get_communicator(codes.current_key, comm, &this_comm);
@@ -1315,7 +1340,7 @@ int send_ncommands(MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in send_ncommands: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send command information from the incorrect rank");
@@ -1352,7 +1377,7 @@ int send_ncallbacks(MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in send_ncallbacks: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");
@@ -1389,7 +1414,7 @@ int send_nnodes(MDI_Comm comm) {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in send_nnodes: get_current_code failed");
-    return 1;
+    return ret;
   }
   if ( this_code->intra_rank != 0 ) {
     mdi_error("Attempting to send callback information from the incorrect rank");

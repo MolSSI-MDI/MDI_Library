@@ -6,7 +6,7 @@ USE mdi,              ONLY : MDI_CHAR, MDI_NAME_LENGTH, MDI_COMMAND_LENGTH, &
      MDI_Send, MDI_Init, MDI_MPI_get_world_comm, MDI_Get_role, &
      MDI_Accept_communicator, MDI_Send_command, MDI_Recv, MDI_Conversion_factor, &
      MDI_Check_Node_exists, MDI_Check_command_exists, MDI_Check_callback_exists, &
-     MDI_Get_nnodes, MDI_Get_ncommands, MDI_Get_ncallbacks, &
+     MDI_Get_nnodes, MDI_Get_ncommands, MDI_Get_ncallbacks, MDI_Check_for_communicator, &
      MDI_Get_node, MDI_Get_command, MDI_Get_callback, MDI_DRIVER, MDI_String_to_atomic_number
 
 IMPLICIT NONE
@@ -17,7 +17,7 @@ IMPLICIT NONE
    CHARACTER(len=1024) :: arg, mdi_options
    CHARACTER(len=:), ALLOCATABLE :: message
 
-   INTEGER :: nnodes, ncommands, ncallbacks
+   INTEGER :: nnodes, ncommands, ncallbacks, new_comm_flag
    CHARACTER(len=MDI_NAME_LENGTH) :: test_node, test_command, test_callback
 
    ALLOCATE( character(MDI_COMMAND_LENGTH) :: message )
@@ -53,6 +53,13 @@ IMPLICIT NONE
 
    ! Get the MPI rank within world_comm
    call MPI_Comm_rank( world_comm, world_rank, ierr );
+
+   ! Check for a new communicator
+   new_comm_flag = 0
+   DO WHILE ( new_comm_flag .ne. 1 )
+     call MDI_Check_for_communicator( new_comm_flag, ierr )
+     call MPI_Bcast( new_comm_flag, 1, MPI_INT, 0, world_comm, ierr );
+   END DO
 
    ! Connct to the engine
    call MDI_Accept_communicator(comm, ierr)

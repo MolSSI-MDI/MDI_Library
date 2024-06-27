@@ -12,7 +12,7 @@
    INTEGER :: MPI_CHAR = 5
 
    INTERFACE MPI_Bcast
-      MODULE PROCEDURE MPI_Bcast_s
+      MODULE PROCEDURE MPI_Bcast_s, MPI_Bcast_i
    END INTERFACE
 
   CONTAINS
@@ -49,6 +49,15 @@
 
       ierr = 0
     END SUBROUTINE MPI_Bcast_s
+
+    SUBROUTINE MPI_Bcast_i(buffer, count, datatype, root, comm, ierr)
+      IMPLICIT NONE
+      INTEGER                                  :: buffer
+      INTEGER                                  :: count, datatype, root, comm
+      INTEGER, INTENT(OUT)                     :: ierr
+
+      ierr = 0
+    END SUBROUTINE MPI_Bcast_i
 
     SUBROUTINE MPI_Finalize(ierr)
       IMPLICIT NONE

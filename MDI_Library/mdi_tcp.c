@@ -10,6 +10,7 @@
   #include <sys/socket.h>
   #include <netdb.h>
   #include <unistd.h>
+  #include <poll.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,6 +56,7 @@ int enable_tcp_support(int code_id) {
     return ret;
   }
   this_method->on_selection = tcp_on_selection;
+  this_method->on_check_communicator = tcp_on_check_communicator;
   this_method->on_accept_communicator = tcp_on_accept_communicator;
   this_method->on_send_command = tcp_on_send_command;
   this_method->after_send_command = tcp_after_send_command;
@@ -123,6 +125,47 @@ int tcp_on_selection() {
 
 
 
+/*! \brief Callback when the TCP method must check whether a new communicator exists */
+int tcp_on_check_communicator(int* flag) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_on_accept_communicator: get_current_code failed");
+    return ret;
+  }
+
+  // If MDI hasn't returned some connections, return true
+  if ( this_code->returned_comms < this_code->next_comm - 1 ) {
+    *flag = 1;
+    return 0;
+  }
+
+  // Check for any production codes connecting via TCP
+  if ( this_code->tcp_socket > 0 ) {
+      /*
+    // Accept a connection via TCP
+    // NOTE: If this is not intra_rank==0, this will always create a dummy communicator
+    int size_before = this_code->comms->size;
+    tcp_accept_connection();
+    int size_after = this_code->comms->size;
+
+    // if MDI hasn't returned some connections, return true
+    if ( size_before < size_after ) {
+      *flag = 1;
+      return 0;
+    }
+    */
+    tcp_check_for_connection(flag);
+    return 0;
+  }
+
+  *flag = 0;
+  return 0;
+}
+
+
 /*! \brief Callback when the TCP method must accept a communicator */
 int tcp_on_accept_communicator() {
   int ret;
@@ -131,7 +174,7 @@ int tcp_on_accept_communicator() {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in tcp_on_accept_communicator: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   // If MDI hasn't returned some connections, do that now
@@ -415,6 +458,47 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
 
 /*! \brief Accept a TCP connection request
  */
+int tcp_check_for_connection(int* flag) {
+  int ret;
+
+  code* this_code;
+  ret = get_current_code(&this_code);
+  if ( ret != 0 ) {
+    mdi_error("Error in tcp_check_for_connection: get_current_code failed");
+    return ret;
+  }
+
+  struct pollfd poll_args;
+  poll_args.fd = this_code->tcp_socket;
+  poll_args.events = POLLIN;
+
+  if ( this_code->intra_rank == 0 ) { // Running on rank 0
+
+#ifdef _WIN32
+    ret = WSAPoll(&poll_args, 1, 0);
+#else
+    ret = poll(&poll_args, 1, 0);
+#endif
+    if (ret > 0) {
+      if ( poll_args.revents & POLLIN ) {
+        *flag = 1;
+        return 0;
+      }
+    }
+    else if ( ret == -1 ) {
+      mdi_error("Error in tcp_check_for_connection: poll failed");
+      return ret;
+    }
+    *flag = 0;
+
+  }
+
+  return 0;
+}
+
+
+/*! \brief Accept a TCP connection request
+ */
 int tcp_accept_connection() {
   sock_t connection = -1;
   int ret;
@@ -423,7 +507,7 @@ int tcp_accept_connection() {
   ret = get_current_code(&this_code);
   if ( ret != 0 ) {
     mdi_error("Error in tcp_accept_connection: get_current_code failed");
-    return 1;
+    return ret;
   }
 
   if ( this_code->intra_rank == 0 ) { // Running on rank 0
