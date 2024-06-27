@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
     MDI_Check_for_communicator(&new_comm_flag);
     MPI_Bcast(&new_comm_flag, 1, MPI_INT, 0, world_comm);
   }
+
   /*
   if ( new_comm_flag != 1 ) {
     throw std::runtime_error("Couldn't find a new communicator");
@@ -57,6 +58,13 @@ int main(int argc, char **argv) {
   // Connect to the engine
   MDI_Comm comm;
   MDI_Accept_communicator(&comm);
+
+  // Confirm that there is no additional communicator
+  MDI_Check_for_communicator(&new_comm_flag);
+  MPI_Bcast(&new_comm_flag, 1, MPI_INT, 0, world_comm);
+  if ( new_comm_flag != 0 ) {
+    throw std::runtime_error("After accepting the connection, there is still a communicator");
+  }
 
   // Confirm that the engine has the @DEFAULT node
   int exists = 1;
