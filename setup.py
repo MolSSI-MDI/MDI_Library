@@ -88,6 +88,7 @@ class CMakeBuild(build_ext):
 
 
 setup(
+    name='pymdi',
     version=mdi_version,
     ext_modules=[CMakeExtension('mdi')],
     cmdclass=dict(build_ext=CMakeBuild),
