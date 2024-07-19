@@ -39,7 +39,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.27
+        VERSION 1.4.29
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # set a definition to enable MDI debug mode
