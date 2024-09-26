@@ -368,15 +368,26 @@ Your code should allow users to set certain MDI parameters at runtime.
 Typically, end-users should be able to set these parameters through the use of a `-mdi` command-line option when your engine is launched.
 In this case, the user should be able to launch your code by doing something along the lines of:
 \code{.sh}
-engine_exectable -mdi "-name engine -role ENGINE -method TCP -hostname localhost -port 8021"
+engine_exectable --mdi "-name engine -role ENGINE -method TCP -hostname localhost -port 8021"
 \endcode
 The details of how you read this command-line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-line options.
-The argument to the `-mdi` command-line option should be represented as a `char*` in C++, a `CHARACTER` array in Fortran, and a `String` in Python.
+The argument to the `--mdi` command-line option should be represented as a `char*` in C++, a `CHARACTER` array in Fortran, and a `String` in Python.
 Subsequent steps in this tutorial will assume that you have named the corresponding variable `mdi_options`.
 
 We understand that some codes prefer to eschew command-line options where possible.
-If it is preferable not to introduce support for a `-mdi` command-line option, ensure that there is some other mechanism for the user to provide the MDI parameters at runtime.
+If it is preferable not to introduce support for a `--mdi` command-line option, ensure that there is some other mechanism for the user to provide the MDI parameters at runtime.
 
+Regardless of how you decide to handle user input of the MDI options, you'll need to modify your `engine_tests` script to ensure that MDI Mechanic can pass this information to your code at runtime.
+When running tests, MDI Mechanic handles selection of MDI options by setting an `MDI_OPTIONS` environment variable.
+If you decide to use a command-line `--mdi` option to allow user input of the MDI options, you'll need to pass this environment variable as the argument to your `--mdi` option.
+For example:
+
+\code{.yml}
+engine_tests:
+  - script:
+      - cd tests/test1
+      - ../../${ENGINE_EXECUTABLE_PATH} --mdi ${MDI_OPTIONS} -in test.inp
+\endcode
 
 
 
