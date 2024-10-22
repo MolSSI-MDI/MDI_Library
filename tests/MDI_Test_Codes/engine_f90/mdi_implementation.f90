@@ -25,7 +25,7 @@ MODULE MDI_IMPLEMENTATION
 
 CONTAINS
 
-  FUNCTION MDI_Plugin_init_engine_f90(plugin_state) bind ( C, name="MDI_Plugin_init_engine_f90" )
+  FUNCTION MDI_Plugin_launch_engine_f90(plugin_state) bind ( C, name="MDI_Plugin_init_engine_f90" )
     TYPE(C_PTR), VALUE :: plugin_state
     INTEGER :: MDI_Plugin_init_engine_f90
     INTEGER :: ierr
