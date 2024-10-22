@@ -25,9 +25,9 @@ MODULE MDI_IMPLEMENTATION
 
 CONTAINS
 
-  FUNCTION MDI_Plugin_launch_engine_f90(plugin_state) bind ( C, name="MDI_Plugin_init_engine_f90" )
+  FUNCTION MDI_Plugin_launch_engine_f90(plugin_state) bind ( C, name="MDI_Plugin_launch_engine_f90" )
     TYPE(C_PTR), VALUE :: plugin_state
-    INTEGER :: MDI_Plugin_init_engine_f90
+    INTEGER :: MDI_Plugin_launch_engine_f90
     INTEGER :: ierr
     INTEGER :: argc
     INTEGER :: iarg
@@ -52,8 +52,8 @@ CONTAINS
     ! Respond to commands from the driver
     CALL respond_to_commands()
 
-    MDI_Plugin_init_engine_f90 = 0
-  END FUNCTION MDI_Plugin_init_engine_f90
+    MDI_Plugin_launch_engine_f90 = 0
+  END FUNCTION MDI_Plugin_launch_engine_f90
 
 
   SUBROUTINE initialize_mdi()
