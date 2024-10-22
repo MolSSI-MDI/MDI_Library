@@ -389,11 +389,25 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
   // Load a plugin's initialization function
   libd->plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( libd->plugin_handle, plugin_init_name );
   if ( ! libd->plugin_init ) {
-    free( plugin_path );
-    free( plugin_init_name );
-    FreeLibrary( libd->plugin_handle );
-    mdi_error("Unable to load MDI plugin init function");
-    return -1;
+    // If this is a call to MDI_Launch_plugin, also try MDI_Plugin_launch_<plugin_name>
+    if ( mode == 0 ) {
+      snprintf(plugin_init_name, PLUGIN_PATH_LENGTH, "MDI_Plugin_launch_%s", plugin_name);
+      libd->plugin_init = (MDI_Plugin_init_t) (intptr_t) GetProcAddress( libd->plugin_handle, plugin_init_name );
+      if ( ! libd->plugin_init ) {
+        free( plugin_path );
+        free( plugin_init_name );
+        FreeLibrary( libd->plugin_handle );
+        mdi_error("Unable to load MDI plugin launch function");
+        return -1;
+      }
+    }
+    else {
+      free( plugin_path );
+      free( plugin_init_name );
+      FreeLibrary( libd->plugin_handle );
+      mdi_error("Unable to load MDI plugin open function");
+      return -1;
+    }
   }
 
 #else
