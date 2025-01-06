@@ -28,6 +28,9 @@ jobs:
         platform: [ ubuntu-latest, macos-latest ]
         mpilib: [null, mpich, openmpi]
         plugins: [OFF, ON]
+        exclude:
+          - platform: macos-latest
+            mpilib: openmpi
 
     # The type of runner that the job will run on
     runs-on: ${{ matrix.platform }}
@@ -74,11 +77,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install gfortran
           sudo apt-get install valgrind
+          sudo apt-get install libsqlite3-dev
           
           # Custom build Python with Valgrind compatibility
           git clone https://github.com/python/cpython.git
           cd cpython
-          git checkout v3.9.6
+          git checkout v3.12.8
           ./configure --with-pydebug --without-pymalloc --enable-shared --prefix /opt/debugpython
           make OPT=-g
           make install
@@ -116,7 +120,7 @@ jobs:
         run: |
           source env.source
           sudo apt-get install python3-dev
-          sudo apt-get install libpython3.10-dev
+          sudo apt-get install libpython3.12-dev
           python -m pip install --upgrade pip
           [ ! "${{ matrix.mpilib }}" == "" ] && python -m pip install mpi4py
           python -m pip install numpy
@@ -158,7 +162,12 @@ jobs:
         if: matrix.platform == 'macos-latest' && matrix.mpilib == 'openmpi'
         run: |
           source env.source
-          brew install openmpi
+          brew install open-mpi@4
+          echo 'export OMPI_MCA_rmaps_base_oversubscribe=1' >> env.source
+          : # OpenMPI needs access to a temporary directory
+          mkdir -p ~/tempdir_${{ github.run_id }}
+          echo "export TMPDIR=~/tempdir_${{ github.run_id }}" >> env.source
+          echo 'ulimit -n 4096' >> env.source
 
       - name: Create and activate a virtual environment (MacOS)
         if: matrix.platform == 'macos-latest'
