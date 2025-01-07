@@ -82,7 +82,7 @@ jobs:
           # Custom build Python with Valgrind compatibility
           git clone https://github.com/python/cpython.git
           cd cpython
-          git checkout v3.12.8
+          git checkout v3.10.15
           ./configure --with-pydebug --without-pymalloc --enable-shared --prefix /opt/debugpython
           make OPT=-g
           make install
