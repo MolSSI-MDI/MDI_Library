@@ -241,6 +241,24 @@
 
 
 {
+   Python Calculate Path Condition
+   Memcheck:Cond
+   fun:__wcscat_avx2
+   fun:calculate_module_search_path
+   fun:calculate_path
+   fun:_PyPathConfig_Calculate
+   fun:pathconfig_init
+   fun:config_init_pathconfig
+   fun:_PyConfig_InitPathConfig
+   fun:init_interp_main
+   fun:pyinit_main
+   fun:Py_InitializeFromConfig
+   fun:Py_InitializeEx
+   fun:Py_Initialize
+}
+
+
+{
    MPI_Allgatherv
    Memcheck:Addr2
    fun:memmove
