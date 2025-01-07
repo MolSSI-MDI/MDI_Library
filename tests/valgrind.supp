@@ -102,6 +102,17 @@
 }
 
 {
+   OMPI writev
+   Memcheck:Param
+   writev(vector[1])
+   fun:__writev
+   fun:writev
+   ...
+   fun:start_thread
+   fun:clone
+}
+
+{
    PMIX server fence cond
    Memcheck:Cond
    fun:pmix_server_fence
@@ -185,7 +196,6 @@
    fun:_PyMem_RawMalloc
    fun:PyObject_Malloc
    ...
-   fun:PyModule_ExecDef
 }
 
 

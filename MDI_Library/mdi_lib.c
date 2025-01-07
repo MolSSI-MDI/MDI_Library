@@ -353,6 +353,8 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
   int exists_flag;
   ret = file_exists( plugin_path, &exists_flag );
   if ( ret != 0 ) {
+    free( plugin_path );
+    free( plugin_init_name );
     mdi_error("Error in library_load_init: file_exists failed");
     return ret;
   }
@@ -360,6 +362,8 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
 
     ret = mdi_debug("[MDI:library_load_init] Attempting to load a python plugin\n");
     if ( ret != 0 ) {
+      free( plugin_path );
+      free( plugin_init_name );
       mdi_error("Error in library_load_init: mdi_debug failed");
       return ret;
     }
@@ -368,6 +372,8 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
     libd->shared_state->engine_language = MDI_LANGUAGE_PYTHON;
     ret = python_plugin_init( plugin_name, plugin_path, mpi_comm_ptr, libd->shared_state, mode );
     if ( ret != 0 ) {
+      free( plugin_path );
+      free( plugin_init_name );
       mdi_error("Error in python_plugin_init");
       return -1;
     }
@@ -382,6 +388,7 @@ int library_load_init(const char* plugin_name, void* mpi_comm_ptr,
   if ( ! libd->plugin_handle ) {
     // Unable to find the plugin library
     free( plugin_path );
+    free( plugin_init_name );
     mdi_error("Unable to open MDI plugin");
     return -1;
   }
