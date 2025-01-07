@@ -231,6 +231,37 @@
 
 
 {
+   Python calculate_path
+   Memcheck:Addr32
+   fun:__wcscat_avx2
+   ...
+   fun:calculate_path
+   ...
+}
+
+
+{
+   Python Calculate Path Condition
+   Memcheck:Cond
+   fun:__wcscat_avx2
+   ...
+   fun:calculate_path
+   ...
+}
+
+
+{
+   Python EvalFrame Cond
+   Memcheck:Cond
+   ...
+   fun:_PyEval_EvalFrameDefault
+   fun:_PyEval_EvalFrame
+   fun:_PyEval_Vector
+   ...
+}
+
+
+{
    MPI_Allgatherv
    Memcheck:Addr2
    fun:memmove
