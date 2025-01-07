@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.7)
 
 # Options
-option(MDI_CXX "Build with CXX suport (on or off)" ON)
-option(MDI_Fortran "Build with Fortran support (on or off)" ON)
-option(MDI_Python "Build with Python support (on or off)" ON)
+option(MDI_CXX "Build with CXX suport - ON (DEFAULT) or OFF)" ON)
+option(MDI_Fortran "Build with Fortran support - ON (DEFAULT) or OFF)" ON)
+option(MDI_Python "Build with Python support - ON (DEFAULT) or OFF)" ON)
 
-option(libtype "libtype")
 option(mpi "on or off" ON)
 option(python_package "on or off" OFF)
 option(plugins "on or off" ON)
@@ -17,7 +16,8 @@ option(test_engines "on or off" ${test_codes})
 option(debug "on or off" OFF)
 
 # Deprecated Options
-option(language "language")
+option(language "Deprecated; use MDI_CXX, MDI_Fortran, and/or MDI_Python instead.")
+option(libtype "Deprecated; use BUILD_SHARED_LIBS instead.")
 
 set(use_C "")
 set(use_CXX "")
@@ -52,7 +52,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.30
+        VERSION 1.4.31
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # set a definition to enable MDI debug mode
