@@ -7,17 +7,6 @@ endmacro(string_to_list _VAR _STR)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-# Check for MPI
-if ( NOT ( mpi STREQUAL "OFF") )
-   find_package(MPI)
-endif()
-if( NOT MPI_FOUND )
-   if( mpi STREQUAL "ON" )
-      message( WARNING "Could not find MPI.  Compiling without MPI support." )
-   endif()
-   set(mpi "OFF")
-endif()
-
 # Confirm that "language" is a valid value
 if( language AND (NOT language STREQUAL "C") AND (NOT language STREQUAL "CXX") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
    message( FATAL_ERROR "Value of language not recognized. Accepted values are: C; CXX; Fortran; Python." )
@@ -122,7 +111,7 @@ elseif( mpi STREQUAL "OFF" )
 
 else()
 
-   message( FATAL_ERROR "Value of mpi not recognized. Accepted values are: ON; OFF." )
+   message( FATAL_ERROR "Value of mpi (${mpi}) not recognized. Accepted values are: ON; OFF." )
 
 endif()
 
