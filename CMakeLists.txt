@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.7)
 
-option(language "language")
+# Options
+option(MDI_CXX "Build with CXX suport (on or off)" ON)
+option(MDI_Fortran "Build with Fortran support (on or off)" ON)
+option(MDI_Python "Build with Python support (on or off)" ON)
+
 option(libtype "libtype")
 option(mpi "on or off" ON)
 option(python_package "on or off" OFF)
@@ -12,6 +16,9 @@ option(test_drivers "on or off" ${test_codes})
 option(test_engines "on or off" ${test_codes})
 option(debug "on or off" OFF)
 
+# Deprecated Options
+option(language "language")
+
 set(use_C "")
 set(use_CXX "")
 set(use_Fortran "")
@@ -20,9 +27,15 @@ set(use_Python "")
 if( NOT language )
    # By default, compile for all languages
    set(use_C "C")
-   set(use_CXX "CXX")
-   set(use_Fortran "Fortran")
-   set(use_Python "Python")
+   if( MDI_CXX )
+      set(use_CXX "CXX")
+   endif()
+   if( MDI_Fortran )
+      set(use_Fortran "Fortran")
+   endif()
+   if( MDI_Python )
+      set(use_Python "Python")
+   endif()
 elseif( language STREQUAL "C" )
    set(use_C "C")
 elseif( language STREQUAL "CXX" )
