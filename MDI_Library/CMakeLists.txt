@@ -60,9 +60,6 @@ endif()
 if ( libtype STREQUAL "SHARED" )
    set(BUILD_SHARED_LIBS ON)
 endif()
-if ( NOT libtype )
-   set(BUILD_SHARED_LIBS ON)
-endif()
 if (BUILD_SHARED_LIBS)
    set(mdi_STATIC_BUILD OFF)
 else()
@@ -75,6 +72,11 @@ add_library(mdi)
 # Add the source files
 target_sources(mdi
         PRIVATE ${sources})
+
+# If this is a static library, should compile with position independent code
+if ( mdi_STATIC_BUILD )
+  set_target_properties(mdi PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # Set API version of MDI Library
 set_target_properties(mdi PROPERTIES SOVERSION 1)  # bump whenever interface has changes or removals
