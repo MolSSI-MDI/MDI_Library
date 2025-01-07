@@ -247,7 +247,17 @@
    ...
    fun:calculate_path
    ...
-   fun:Py_Initialize
+}
+
+
+{
+   Python EvalFrame Cond
+   Memcheck:Cond
+   ...
+   fun:_PyEval_EvalFrameDefault
+   fun:_PyEval_EvalFrame
+   fun:_PyEval_Vector
+   ...
 }
 
 
