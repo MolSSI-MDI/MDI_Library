@@ -1,20 +1,9 @@
-# Check for MPI
-
-if ( NOT ( mpi STREQUAL "OFF") )
-   find_package(MPI)
-endif()
-if( NOT MPI_FOUND )
-   if( mpi STREQUAL "ON" )
-      message( WARNING "Could not find MPI.  Compiling without MPI support." )
-   endif()
+# Include MPI stubs, if needed
+if( mpi STREQUAL "OFF" )
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/STUBS_MPI/mpi.h ${CMAKE_CURRENT_BINARY_DIR}/STUBS_MPI/mpi.h COPYONLY)
-   set(mpi "OFF")
 endif()
-
-
 
 # Macro to link target to MPI
-
 macro(link_against_mpi _TAR)
    if( mpi STREQUAL "ON" )
 

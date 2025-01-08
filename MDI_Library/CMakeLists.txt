@@ -4,34 +4,12 @@ macro(string_to_list _VAR _STR)
     STRING(REPLACE " " ";" ${_VAR} "${_STR}")
 endmacro(string_to_list _VAR _STR)
 
-
-################################# MDI Project ##################################
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-
-#check for MPI
-if ( NOT ( mpi STREQUAL "OFF") )
-   find_package(MPI)
-endif()
-if( NOT MPI_FOUND )
-   if( mpi STREQUAL "ON" )
-      message( WARNING "Could not find MPI.  Compiling without MPI support." )
-   endif()
-   set(mpi "OFF")
-endif()
-
-#confirm that "language" is a valid value
+# Confirm that "language" is a valid value
 if( language AND (NOT language STREQUAL "C") AND (NOT language STREQUAL "CXX") AND (NOT language STREQUAL "Fortran") AND (NOT language STREQUAL "Python") )
    message( FATAL_ERROR "Value of language not recognized. Accepted values are: C; CXX; Fortran; Python." )
-endif()
-
-#determine whether this is a SHARED or STATIC build
-if( NOT libtype )
-   set(libtype "SHARED")
-elseif ( (NOT libtype STREQUAL "STATIC") AND 
-         (NOT libtype STREQUAL "SHARED") )
-   message( FATAL_ERROR "Value of libtype not recognized. Accepted values are: SHARED; STATIC; PACKAGE." )
 endif()
 
 # Set flag for whether to build plugins
@@ -41,8 +19,7 @@ else()
   add_definitions(-D_MDI_PLUGIN_SUPPORT=0)
 endif()
 
-
-#construct the list of source files
+# Construct the list of source files
 list(APPEND sources "mdi.c")
 list(APPEND sources "mdi_global.h")
 list(APPEND sources "mdi_global.c")
@@ -79,18 +56,41 @@ if( (NOT language) OR (language STREQUAL "Fortran") )
    list(APPEND sources "mdi_f90.F90")
 endif()
 
-add_library(mdi ${libtype}
-                ${sources})
+# Set whether MDI should be built as a shared or static library
+if ( libtype STREQUAL "SHARED" )
+   set(BUILD_SHARED_LIBS ON)
+endif()
+if ( (NOT BUILD_SHARED_LIBS) AND MDI_Python )
+   message( WARNING "Python support requires that the MDI Library be compiled as a shared library.  Turning on shared library build.  To disable this warning, set -DBUILD_SHARED_LIBS=ON or -DMDI_Python=OFF." )
+   set(BUILD_SHARED_LIBS ON)
+endif()
+if (BUILD_SHARED_LIBS)
+   set(mdi_STATIC_BUILD OFF)
+else()
+   set(mdi_STATIC_BUILD ON)
+endif()
 
-# set API version of MDI Library
+# Add the MDI target
+add_library(mdi)
+
+# Add the source files
+target_sources(mdi
+        PRIVATE ${sources})
+
+# If this is a static library, should compile with position independent code
+if ( mdi_STATIC_BUILD )
+  set_target_properties(mdi PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
+# Set API version of MDI Library
 set_target_properties(mdi PROPERTIES SOVERSION 1)  # bump whenever interface has changes or removals
 
-#if this is a Windows build, link to ws2_32
+# If this is a Windows build, link to ws2_32
 if(WIN32)
   target_link_libraries(mdi wsock32 ws2_32)
 endif()
 
-#link to libdl, which is used for the plugin system
+# Link to libdl, which is used for the plugin system
 if(NOT WIN32)
   target_link_libraries(mdi dl)
 endif()
@@ -102,10 +102,10 @@ else()
   add_definitions(-DMDI_WINDOWS=0)
 endif()
 
-#include and link to MPI
+# Include and link to MPI
 if( mpi STREQUAL "ON" )
 
-   #include MPI
+   # Include MPI
    string_to_list(MPI_C_COMPILE_OPTIONS   "${MPI_C_COMPILE_FLAGS}")
    string_to_list(MPI_C_LINK_OPTIONS      "${MPI_C_LINK_FLAGS}")
 
@@ -120,7 +120,7 @@ elseif( mpi STREQUAL "OFF" )
 
 else()
 
-   message( FATAL_ERROR "Value of mpi not recognized. Accepted values are: ON; OFF." )
+   message( FATAL_ERROR "Value of mpi (${mpi}) not recognized. Accepted values are: ON; OFF." )
 
 endif()
 
@@ -136,7 +136,7 @@ else()
 
 endif()
 
-#do any Python-specific work
+# Do any Python-specific work
 if( (NOT language) OR (language STREQUAL "Python") )
 
    if( libtype STREQUAL "STATIC" )
@@ -221,7 +221,6 @@ install(TARGETS mdi
         ARCHIVE DESTINATION ${MDI_INSTALL_LIBDIR})
 
 # Provide support for packages
- 
 set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}")
 configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PN}Config.cmake.in"
                               "${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake"
