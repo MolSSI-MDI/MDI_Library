@@ -87,12 +87,12 @@ set_target_properties(mdi PROPERTIES SOVERSION 1)  # bump whenever interface has
 
 # If this is a Windows build, link to ws2_32
 if(WIN32)
-  target_link_libraries(mdi wsock32 ws2_32)
+  target_link_libraries(mdi PRIVATE wsock32 ws2_32)
 endif()
 
 # Link to libdl, which is used for the plugin system
 if(NOT WIN32)
-  target_link_libraries(mdi dl)
+  target_link_libraries(mdi PRIVATE dl)
 endif()
 
 # gfortran has trouble identifying windows, so use CMake to set the appropriate defines
@@ -111,7 +111,7 @@ if( mpi STREQUAL "ON" )
 
    target_include_directories(mdi PRIVATE ${MPI_C_INCLUDE_PATH})
    target_compile_options(mdi PRIVATE ${MPI_C_COMPILE_OPTIONS})
-   target_link_libraries(mdi ${MPI_C_LIBRARIES} ${MPI_C_LINK_OPTIONS})
+   target_link_libraries(mdi PRIVATE ${MPI_C_LIBRARIES} ${MPI_C_LINK_OPTIONS})
 
 elseif( mpi STREQUAL "OFF" )
 
@@ -128,7 +128,7 @@ endif()
 if( Python_Development_FOUND )
 
    target_include_directories(mdi PRIVATE ${Python_INCLUDE_DIRS})
-   target_link_libraries(mdi ${Python_LIBRARIES})
+   target_link_libraries(mdi PRIVATE ${Python_LIBRARIES})
 
 else()
 
