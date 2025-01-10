@@ -337,7 +337,7 @@ jobs:
           cd build
           ls
           ls install
-          cp "$(pwd)/install/lib/mdi/*.dll*" "$(pwd)"
+          cp "$(pwd)/install/lib/*.dll*" "$(pwd)"
           cp "$(pwd)/tests/MDI_Test_Codes/STUBS_MPI/*.dll*" "$(pwd)"
           ls
 
