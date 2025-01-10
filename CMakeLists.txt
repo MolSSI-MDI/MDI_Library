@@ -73,7 +73,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.32
+        VERSION 1.4.33
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # Check for MPI
