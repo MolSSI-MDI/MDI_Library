@@ -190,6 +190,14 @@ else()
 
 endif()
 
+# Set the RPATH
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+if(APPLE)
+    set(CMAKE_INSTALL_RPATH "\@loader_path/../lib")
+elseif(UNIX)
+    set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")
+endif()
+
 # Perform the installation
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
         DESTINATION ${MDI_INSTALL_INCLUDEDIR})
