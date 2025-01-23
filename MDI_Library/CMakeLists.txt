@@ -136,6 +136,10 @@ else()
 
 endif()
 
+set(MDI_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(MDI_INSTALL_LIBDIR     ${CMAKE_INSTALL_LIBDIR})
+set(MDI_INSTALL_BINDIR     ${CMAKE_INSTALL_BINDIR})
+
 # Do any Python-specific work
 if( use_Python )
 
@@ -151,10 +155,23 @@ if( use_Python )
    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_BINARY_DIR}/__init__.py COPYONLY)
 
    # Write the name of the mdi library, for use by mdi.py
-   file(GENERATE
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
-      CONTENT $<TARGET_FILE_NAME:mdi>
-   )
+   if( python_package )
+      if( WIN32 )
+         set(temp_lib_path "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/$<TARGET_FILE_NAME:mdi>")
+      else()
+         set(temp_lib_path "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/$<TARGET_FILE_NAME:mdi>")
+      endif()
+      file(TO_NATIVE_PATH "${temp_lib_path}" native_lib_path)
+      file(GENERATE
+         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+         CONTENT ${native_lib_path}
+      )
+   else()
+      file(GENERATE
+         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+         CONTENT $<TARGET_FILE_NAME:mdi>
+      )
+   endif()
 
 endif()
 
@@ -179,16 +196,6 @@ if( python_package STREQUAL "ON" )
     )
     set(PYTHON_SITE_PACKAGES "${_site_packages}" CACHE PATH INTERNAL)
     unset(_site_packages)
-
-    set(MDI_INSTALL_INCLUDEDIR ${PYTHON_SITE_PACKAGES}/mdi)
-    set(MDI_INSTALL_LIBDIR     ${PYTHON_SITE_PACKAGES}/mdi)
-    set(MDI_INSTALL_BINDIR     ${PYTHON_SITE_PACKAGES}/mdi)
-
-else()
-
-    set(MDI_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
-    set(MDI_INSTALL_LIBDIR     ${CMAKE_INSTALL_LIBDIR})
-    set(MDI_INSTALL_BINDIR     ${CMAKE_INSTALL_BINDIR})
 
 endif()
 
@@ -216,10 +223,17 @@ install(CODE "
 ")
 endif()
 if( use_Python )
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
-                ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
-                ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
-          DESTINATION ${MDI_INSTALL_LIBDIR})
+  if( python_package STREQUAL "ON" )
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
+                  ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+                  ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
+            DESTINATION ${PYTHON_SITE_PACKAGES}/mdi)
+  else()
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
+                  ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+                  ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
+            DESTINATION ${MDI_INSTALL_LIBDIR})
+  endif()
 endif()
 
 install(TARGETS mdi

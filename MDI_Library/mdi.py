@@ -17,12 +17,18 @@ except ImportError:
 use_mpi4py = False
 MPI = None
 
-# get the path to the MDI Library
+# get the name of the MDI Library
 mdi_name_path = os.path.join( dir_path, "mdi_name" )
 mdi_name_file = open( mdi_name_path, "r" )
 mdi_name = mdi_name_file.read()
-mdi_path = os.path.join( dir_path, mdi_name )
 mdi_name_file.close()
+
+# check if mdi_name is a full path to the MDI Library
+if os.path.exists(mdi_name):
+    mdi_path = mdi_name
+else:
+    # the mdi_name file includes only the name of the library
+    mdi_path = os.path.join( dir_path, mdi_name )
 
 # load the MDI Library
 try:
