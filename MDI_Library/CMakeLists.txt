@@ -52,7 +52,7 @@ if( mpi STREQUAL "OFF" )
 endif()
 
 # Add Fortran support, if requested
-if( (NOT language) OR (language STREQUAL "Fortran") )
+if( use_Fortran )
    list(APPEND sources "mdi_f90.F90")
 endif()
 
@@ -137,7 +137,7 @@ else()
 endif()
 
 # Do any Python-specific work
-if( (NOT language) OR (language STREQUAL "Python") )
+if( use_Python )
 
    if( libtype STREQUAL "STATIC" )
       if( NOT language )
@@ -195,29 +195,27 @@ endif()
 # Set the RPATH
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(APPLE)
-    set(CMAKE_INSTALL_RPATH "\@loader_path/../lib")
+  set(CMAKE_INSTALL_RPATH "\@loader_path/../lib")
 elseif(UNIX)
-    set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")
+  set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")
 endif()
 
 # Perform the installation
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.h
         DESTINATION ${MDI_INSTALL_INCLUDEDIR})
-if( (NOT language) OR (language STREQUAL "Fortran") )
-  if( python_package STREQUAL "OFF" )
+if( use_Fortran )
 install(CODE "
-    # Check for both lowercase and uppercase versions of the file
-    if(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\")
-        file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
-    elseif(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\")
-        file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
-    else()
-        message(FATAL_ERROR \"Fortran module file not found\")
-    endif()
-")
+  # Check for both lowercase and uppercase versions of the file
+  if(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\")
+    file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/mdi.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
+  elseif(EXISTS \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\")
+    file(INSTALL \"${CMAKE_CURRENT_BINARY_DIR}/MDI.mod\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${MDI_INSTALL_INCLUDEDIR}\")
+  else()
+    message(FATAL_ERROR \"Fortran module file not found\")
   endif()
+")
 endif()
-if( (NOT language) OR (language STREQUAL "Python") )
+if( use_Python )
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mdi.py
                 ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
                 ${CMAKE_CURRENT_BINARY_DIR}/__init__.py
