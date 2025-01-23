@@ -157,15 +157,16 @@ if( use_Python )
    # Write the name of the mdi library, for use by mdi.py
    if( python_package )
       if( WIN32 )
-         set(temp_lib_path "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/$<TARGET_FILE_NAME:mdi>")
+         file(GENERATE
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+	    CONTENT "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/$<TARGET_FILE_NAME:mdi>"
+         )
       else()
-         set(temp_lib_path "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/$<TARGET_FILE_NAME:mdi>")
+         file(GENERATE
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
+            CONTENT "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/$<TARGET_FILE_NAME:mdi>"
+         )
       endif()
-      file(TO_NATIVE_PATH "${temp_lib_path}" native_lib_path)
-      file(GENERATE
-         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
-         CONTENT ${native_lib_path}
-      )
    else()
       file(GENERATE
          OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mdi_name
