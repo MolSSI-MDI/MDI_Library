@@ -195,6 +195,7 @@ jobs:
           make VERBOSE=1
           sudo make install
           cd ..
+          python -c "import mdi; print(\"PATCH VERSION: \", mdi.MDI_PATCH_VERSION)"
 
       - name: Install local build
         run: |
@@ -319,6 +320,7 @@ jobs:
           mingw32-make VERBOSE=1
           mingw32-make install
           cd ..
+          python -c "import mdi; print(mdi.MDI_PATCH_VERSION)"
 
       - name: Install local build
         run: |
