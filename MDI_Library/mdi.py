@@ -1,6 +1,7 @@
 """ Python wrapper for MDI. """
 
 import os
+from pathlib import Path
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
 
