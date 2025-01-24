@@ -6,9 +6,13 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
 
 # Add the directory containing the DLL
-dll_directory = Path("C:\\Program Files (x86)\\mdi\\bin")
-os.add_dll_directory(str(dll_directory))
-print("AAAAAAAAAAAAAAAAAA: " + str(dll_directory))
+#dll_directory = Path("C:\\Program Files (x86)\\mdi\\bin")
+#os.add_dll_directory(str(dll_directory))
+#print("AAAAAAAAAAAAAAAAAA: " + str(dll_directory))
+
+for p in os.environ["PATH"].split( ';' ):
+    if os.path.isdir( p ):
+        os.add_dll_directory( p )
 
 import ctypes
 import sys
