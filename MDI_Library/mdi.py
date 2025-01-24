@@ -2,6 +2,7 @@
 
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
+os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
 
 import ctypes
 import sys
