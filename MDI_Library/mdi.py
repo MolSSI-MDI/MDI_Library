@@ -36,8 +36,10 @@ try:
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 except (ValueError, AttributeError, OSError) as e:
 
-    os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
-    
+    # Add the path to the library to the PATH variable
+    os.path.dirname(mdi_path)
+    os.environ["PATH"] += ";" + str(mdi_path)
+
     # On Windows, every DLL directory must be added through "add_dll_directory", or Python will refuse to open them
     for p in os.environ["PATH"].split( ';' ):
         if os.path.isdir( p ):
