@@ -1,18 +1,7 @@
 """ Python wrapper for MDI. """
 
 import os
-from pathlib import Path
 dir_path = os.path.dirname(os.path.realpath(__file__))
-os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
-
-# Add the directory containing the DLL
-#dll_directory = Path("C:\\Program Files (x86)\\mdi\\bin")
-#os.add_dll_directory(str(dll_directory))
-#print("AAAAAAAAAAAAAAAAAA: " + str(dll_directory))
-
-for p in os.environ["PATH"].split( ';' ):
-    if os.path.isdir( p ):
-        os.add_dll_directory( p )
 
 import ctypes
 import sys
@@ -46,6 +35,14 @@ try:
     mdi = ctypes.CDLL(mdi_path, ctypes.RTLD_GLOBAL)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 except (ValueError, AttributeError, OSError) as e:
+
+    os.environ["PATH"] += r";C:\Program Files (x86)\mdi\bin"
+    
+    # On Windows, every DLL directory must be added through "add_dll_directory", or Python will refuse to open them
+    for p in os.environ["PATH"].split( ';' ):
+        if os.path.isdir( p ):
+            os.add_dll_directory( p )
+
     mdi = ctypes.WinDLL(mdi_path, ctypes.RTLD_GLOBAL)
     MDI_COMMAND_LENGTH = ctypes.c_int.in_dll(mdi, "MDI_COMMAND_LENGTH").value
 
