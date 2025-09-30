@@ -1,0 +1,138 @@
+(COORDS-target)=
+# COORDS
+Exchange atomic coordinate information.
+
+
+
+## >COORDS
+
+Send atomic coordinates.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Units:** Bohr
+
+**Format:** Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order.
+
+ The driver sends a set of atomic coordinates to the engine,  which replaces its atomic coordinates with those sent by the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of atomic coordinates
+
+# send the atomic coordinates to the engine 
+mdi.MDI_Send_Command(">COORDS", mdi_engine)
+mdi.MDI_Send(coords, 3*natoms, mdi.MDI_DOUBLE, mdi_engine)  
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a vector of atomic coordinates 
+
+// send the atomic coordinates to the engine 
+MDI_Send_Command(">COORDS", mdi_engine);
+MDI_Send(coords.data(), 3*natoms, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## <COORDS
+
+Receive atomic coordinates.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Units:** Bohr
+
+**Format:** Sequentially ascending order of atomic index, with the coordinates for each individual atom being provided in xyz order.
+
+ The engine sends a set of atomic coordinates to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the atomic coordinates from the engine
+mdi.MDI_Send_Command("<COORDS", mdi_engine)
+coords = mdi.MDI_Recv(3*natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the atomic coordinates
+coords = np.zeros(3*natoms, dtype=float)
+
+# receive the atomic coordinates from the engine
+mdi.MDI_Send_Command("<COORDS", mdi_engine)
+mdi.MDI_Recv(3*natoms, mdi.MDI_DOUBLE, mdi_engine, buf=coords) 
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the atomic coordinates
+std::vector<double> coords(3*natoms);
+
+// receive the atomic coordinates from the engine
+MDI_Send_Command("<COORDS", mdi_engine);
+MDI_Recv(coords.data(), 3*natoms, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

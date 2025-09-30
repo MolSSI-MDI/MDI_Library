@@ -1,0 +1,60 @@
+(@COORDS-target)=
+# @COORDS
+Go to point in code after atomic coordinates have been updated.
+
+
+
+## @COORDS
+
+Go to @COORDS node.
+
+
+ The engine proceeds to the next @PRE-FORCES node. 
+The `@COORDS` node occurs after updating the atomic coordinates.
+This command is not valid at the [@DEFAULT](#@DEFAULT) node.
+One would typically proceed to the @FORCES node after initializing a simulation 
+(e.g. [@INIT_MD](#@INIT_MD), [@INIT_MC](#@INIT_MC), or [@INIT_OPTG](#@INIT_OPTG)).
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# first initialize a simulation
+mdi.MDI_Send_Command("@INIT_MD", mdi_engine)
+
+# go to forces node
+mdi.MDI_Send_Command("@COORDS", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// first initialize a simulation
+MDI_Send_Command("@INIT_MD", mdi_engine);
+
+// go to forces node.
+MDI_Send_Command("@COORDS", mdi_engine);
+
+```
+:::
+
+::::

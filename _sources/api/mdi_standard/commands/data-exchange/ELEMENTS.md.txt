@@ -1,0 +1,134 @@
+(ELEMENTS-target)=
+# ELEMENTS
+Exchange atomic element information.
+
+
+
+## >ELEMENTS
+
+Send atomic numbers.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `NATOMS`  
+**Format:** Sequentially ascending order of atomic index.
+
+ The driver sends a set of atomic numbers to the engine,  which replaces the atomic number of each atom in its system with the values sent by the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# retrieve the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# create a list of atomic numbers
+elements = # some array of atomic numbers
+
+# send the atomic numbers to the engine
+mdi.MDI_Send_Command(">ELEMENTS", mdi_engine)
+mdi.MDI_Send(elements, natoms, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// retrieve the number of atoms
+int natoms;
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+// create a vector of atomic numbers
+std::vector<int> elements(natoms);
+
+// send the atomic numbers to the engine
+MDI_Send_Command(">ELEMENTS", mdi_engine);
+MDI_Send(elements.data(), natoms, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::
+
+## <ELEMENTS
+
+Receive atomic numbers.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `NATOMS`  
+**Format:** Sequentially ascending order of atomic index.
+
+ The engine sends the atomic number of each atom in its system to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# retrieve the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# receive the atomic numbers from the engine
+mdi.MDI_Send_Command("<ELEMENTS", mdi_engine)
+elements = mdi.MDI_Recv(natoms, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// retrieve the number of atoms
+int natoms;
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+// create a buffer to hold the atomic numbers
+std::vector<int> elements(natoms);
+
+// receive the atomic numbers from the engine
+MDI_Send_Command("<ELEMENTS", mdi_engine);
+MDI_Recv(elements.data(), natoms, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

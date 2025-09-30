@@ -1,0 +1,72 @@
+(POTENTIAL-target)=
+# POTENTIAL
+Send potential grid values.
+
+
+
+## >POTENTIAL
+
+Send potential grid values.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `NPOTENTIAL`  
+
+ The driver sends an set of values to the engine that correspond to a potential on a grid. 
+If an scf_command command is later issued, this potential will be incorporated into the SCF calculation as an external potential.
+
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the [>NPOTENTIAL](NPOTENTIAL) command. 
+It is also necessary that the driver send the Cartesian coordinates of the grid points via the [>CPOTENTIAL](CPOTENTIAL) command prior to any subsequent scf_command command.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the number of potential grid points to the engine
+npotential = 10
+mdi.MDI_Send_Command(">NPOTENTIAL", mdi_engine)
+mdi.MDI_Send(npotential, 1, mdi.MDI_INT, mdi_engine)
+
+# create a list of potential grid points with npotential elements
+
+# send the potential grid points to the engine
+mdi.MDI_Send_Command(">POTENTIAL", mdi_engine)
+mdi.MDI_Send(potential, npotential, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the number of potential grid points to the engine
+int npotential = 10;
+MDI_Send_Command(">NPOTENTIAL", mdi_engine);
+MDI_Send(&npotential, 1, MDI_INT, mdi_engine);
+
+// create vector of the potential grid points with npotential elements
+
+// send the potential grid points to the engine
+MDI_Send_Command(">POTENTIAL", mdi_engine);
+MDI_Send(&potential, npotential, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

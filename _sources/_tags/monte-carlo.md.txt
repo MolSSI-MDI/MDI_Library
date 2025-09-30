@@ -1,0 +1,10 @@
+(sphx_tag_monte-carlo)=
+# MDI Standard Tags: Monte Carlo
+
+```{toctree}
+---
+maxdepth: 1
+caption: 
+---
+../api/mdi_standard/commands/node-management/@INIT_MC.md
+```

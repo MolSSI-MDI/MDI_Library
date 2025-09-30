@@ -1,0 +1,62 @@
+(NLATTICE-target)=
+# NLATTICE
+```{tags} Quantum Mechanics, Gas Phase Quantum Mechanics
+```
+
+Send number of lattice points.
+
+
+
+## >NLATTICE
+
+Send number of lattice points
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ This command, along with the [>CLATTICE](CLATTICE) and [>LATTICE](LATTICE) commands, allows the driver to assign a lattice of point charges to an engine, which incorporates the effects of these charges in all further calculations. 
+After sending this command, the driver sends the number of point charges to the engine. This command must be sent before either the [>CLATTICE](CLATTICE) or [>LATTICE](LATTICE) commands can be sent.
+
+This command is primarily intended for use with gas-phase quantum mechanics codes. For an alternative command that is more appropriate for plane wave quantum mechanics codes, see the [>POTENTIAL](POTENTIAL) command.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the number of lattice points to the engine
+nlattice = 10
+mdi.MDI_Send_Command(">NLATTICE", mdi_engine)
+mdi.MDI_Send(nlattice, 1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the number of lattice points to the engine
+int nlattice = 10;
+MDI_Send_Command(">NLATTICE", mdi_engine);
+MDI_Send(&nlattice, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

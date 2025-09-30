@@ -1,0 +1,63 @@
+(NPOTENTIAL-target)=
+# NPOTENTIAL
+```{tags} Quantum Mechanics
+```
+
+Send the number of potential grid points.
+
+
+
+## >NPOTENTIAL
+
+Send number of potential grid points
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ The driver sends the number of grid points it is using to represent a potential on a grid.  This command is intended to be used in conjuction with the [>CPOTENTIAL](CPOTENTIAL) and [>POTENTIAL](POTENTIAL) commands;  these three commands enable a driver to set an external potential that is incorporated into a subsequent scf_command command.  See the [>POTENTIAL](POTENTIAL) command for more details.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# set the number of potential points
+npotential = 10
+
+# send the number of potential grid points to the engine
+mdi.MDI_Send_Command(">NPOTENTIAL", mdi_engine)
+mdi.MDI_Send(npotential, 1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a variable for the number of potential grid points
+int npotential = 10
+
+// send the number of potential grid points to the engine
+MDI_Send_Command(">NPOTENTIAL", mdi_engine);
+MDI_Send(&npotential, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

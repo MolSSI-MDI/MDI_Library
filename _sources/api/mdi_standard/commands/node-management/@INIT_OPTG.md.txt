@@ -1,0 +1,57 @@
+(@INIT_OPTG-target)=
+# @INIT_OPTG
+Initialize a geometry optimization.
+
+
+
+## @INIT_OPTG
+
+Go to @INIT_OPTG node.
+
+
+ The engine performs any initialization operations that are necessary before a geometry optimization can be performed, 
+proceeding to the @INIT_OPTG node.
+
+
+:::{admonition} Note
+:class: caution
+
+This command may change the engine's atomic coordinates under certain circumstances, such as if the SHAKE algorithm is used.
+:::
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# initialize a geometry optimization.
+mdi.MDI_Send_Command("@INIT_OPTG", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// initialize a geometry optimization.
+MDI_Send_Command("@INIT_OPTG", mdi_engine);
+
+```
+:::
+
+::::

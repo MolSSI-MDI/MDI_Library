@@ -1,0 +1,37 @@
+code_name: 'Psi4'
+docker:
+  image_name: 'mdi/psi4'
+
+  build_image:
+    - apt-get update
+    - apt-get install -y git cmake liblapack-dev libeigen3-dev
+    - pip install numpy
+    - pip install pymdi
+    - pip install pydantic
+    - pip install Pint
+    - pip install scipy
+
+  build_engine:
+    - |
+      if [ ! -d "build/psi4" ]; then
+        git clone https://github.com/psi4/psi4.git build/psi4
+      fi
+    - export NUM_CPU_CORES=`grep -c ^processor /proc/cpuinfo`
+    - cd build/psi4
+    - |
+      if [ ! -d "objdir" ]; then
+        cmake -S. -Bobjdir
+      fi
+    - cd objdir
+    #- make -j $NUM_CPU_CORES
+    - make -j 1
+
+  validate_engine:
+    - cd tests/water
+    - ../../build/psi4/objdir/stage/bin/psi4 input.dat output.dat
+
+engine_tests:
+  # Provide at least one example input that can be used to test your code's MDI functionality
+  script:
+    - cd tests/embed
+    - ../../build/psi4/objdir/stage/bin/psi4 --mdi "${MDI_OPTIONS}" input.dat output.dat

@@ -1,0 +1,158 @@
+(CELL-target)=
+# CELL
+Exchange cell vectors for simulation boxes.
+
+
+
+## <CELL
+
+Receive cell vectors.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `9`  
+**Units:** Bohr
+
+**Format:** The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector.
+
+ The engine sends a set of cell vectors to the driver.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the cell vectors from the engine
+mdi.MDI_Send_Command("<CELL", mdi_engine)
+cell = mdi.MDI_Recv(9, mdi.MDI_DOUBLE, mdi_engine) 
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the cell vectors
+cell = np.zeros(9, dtype=float)
+
+# receive the cell vectors from the engine
+mdi.MDI_Send_Command("<CELL", mdi_engine)
+mdi.MDI_Recv(9, mdi.MDI_DOUBLE, mdi_engine, buf=cell)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// make a buffer to hold the cell vectors 
+std::vector<double> cell(9);
+
+// receive the cell vectors from the engine
+MDI_Send_Command("<CELL", mdi_engine);
+MDI_Recv(cell.data(), 9, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## >CELL
+
+Send cell vectors to resize simulation cell.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `9`  
+**Units:** Bohr
+
+**Format:** The first 3 values correspond to the x, y, and z values, respectively, of the first cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the second cell vector. The next 3 values correspond to the x, y, and z values, respectively, of the third cell vector.
+
+ The driver sends a set of cell vectors to the engine, which resizes its simulation cell to the dimensions specified by the cell vectors.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a list of cell vectors
+cell = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+
+# send the cell vectors to the engine
+mdi.MDI_Send_Command(">CELL", mdi_engine)
+mdi.MDI_Send(cell, 9, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of cell vectors
+cell = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0], dtype=float)
+
+# send the cell vectors to the engine
+mdi.MDI_Send_Command(">CELL", mdi_engine)
+mdi.MDI_Send(cell, 9, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a vector of cell vectors
+std::vector<double> cell = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+
+// send the cell vectors to the engine
+MDI_Send_Command(">CELL", mdi_engine);
+MDI_Send(cell.data(), 9, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

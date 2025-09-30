@@ -1,0 +1,60 @@
+(NDENSITY-target)=
+# NDENSITY
+Receive number of points for electronic density on a grid.
+
+
+
+## <NDENSITY
+
+Receive number of density grid points
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ The engine sends the number of grid points it is using to represent its electronic density on a grid. 
+This command is intended to be used in conjuction with the [<CDENSITY](CDENSITY) and [<DENSITY](DENSITY) commands; 
+these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation. 
+See the [<DENSITY](DENSITY) command for more details.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the number of density grid points from the engine
+mdi.MDI_Send_Command("<NDENSITY", mdi_engine)
+ndensity = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the number of density grid points
+int ndensity;
+
+// receive the number of density grid points from the engine
+MDI_Send_Command("<NDENSITY", mdi_engine);
+MDI_Recv(&ndensity, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

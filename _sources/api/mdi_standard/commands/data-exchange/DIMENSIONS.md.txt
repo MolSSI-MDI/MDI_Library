@@ -1,0 +1,83 @@
+(DIMENSIONS-target)=
+# DIMENSIONS
+Retrieve simulation cell dimensionality (periodic or non-periodic).
+
+
+
+## <DIMENSIONS
+
+Retrieve simulation cell dimensions.
+
+**Datatype:** `MDI_INIT`  
+**Quantity**: `3`  
+
+ The engine sends basic information about the dimensionality of its system to the driver. For each of its three cell vectors (see the [<CELL](CELL) command) the engine sends an integer that indicates whether that dimension is represented as periodic, non-periodic, or not represented at all (in the case of 1d or 2d systems). 
+
+The possible values for each cell vector are:
+
+- 0: Not represented
+- 1: Non-periodic
+- 2: Periodic
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the cell dimensions from the engine
+mdi.MDI_Send_Command("<DIMENSIONS", mdi_engine)
+dimensions = mdi.MDI_Recv(3, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the cell dimensions
+dimensions = np.empty(3, dtype=int)
+
+# receive the cell dimensions from the engine
+mdi.MDI_Send_Command("<DIMENSIONS", mdi_engine)
+mdi.MDI_Recv(3, mdi.MDI_INT, mdi_engine, buf=dimensions)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the cell dimensions
+std::vector<int> dimensions(3);
+
+// receive the cell dimensions from the engine
+MDI_Send_Command("<DIMENSIONS", mdi_engine);
+MDI_Recv(dimensions.data(), 3, MDI_INT, mdi_engine)
+
+```
+:::
+
+::::

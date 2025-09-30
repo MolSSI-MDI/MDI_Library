@@ -1,0 +1,86 @@
+(STRESS-target)=
+# STRESS
+Exchange virial stress tensor.
+
+
+
+## <STRESS
+
+Receive virial stress tensor
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `9`  
+
+ The driver sends a virial stress tensor to the engine,  which replaces its internal stress tensor with the stress tensor sent by the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the virial stress tensor from the engine
+mdi.MDI_Send_Command("<STRESS", mdi_engine)
+stress = mdi.MDI_Recv(9, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the virial stress tensor
+stress = np.zeros(9, dtype=float)
+
+# receive the virial stress tensor from the engine
+mdi.MDI_Send_Command("<STRESS", mdi_engine)
+mdi.MDI_Recv(9, mdi.MDI_DOUBLE, mdi_engine, buf=stress)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the virial stress tensor
+double stress[9];
+
+// receive the virial stress tensor from the engine
+MDI_Send_Command("<STRESS", mdi_engine);
+MDI_Recv(stress, 9, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## >STRESS
+
+Send virial stress tensor
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `9`  
+
+ Driver sends virial stress tensor to engine, replacing its internal tensor.

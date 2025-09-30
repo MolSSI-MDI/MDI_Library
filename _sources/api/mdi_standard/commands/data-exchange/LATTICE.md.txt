@@ -1,0 +1,74 @@
+(LATTICE-target)=
+# LATTICE
+Send lattice point charges.
+
+
+
+## >LATTICE
+
+Send lattice point charges
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `NLATTICE`  
+**Format:** Sequentially ascending order of lattice charge index.
+
+ This command, along with the [>NLATTICE](NLATTICE) and [>CLATTICE](CLATTICE) commands,  allows the driver to assign a lattice of point charges to an engine,  which incorporates the effects of these charges in all further calculations.  After sending this command, the driver sends the charges of each of the point charges to the engine.  Prior to sending this command, the driver must have set the number of point charges using the [>NLATTICE](NLATTICE) command.
+This command is primarily intended for use with gas-phase quantum mechanics codes.  For an alternative command that is more appropriate for plane wave quantum mechanics codes,  see the [>POTENTIAL](POTENTIAL) command.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send nlattice points to the engine
+nlattice = 10
+mdi.MDI_Send_Command(">NLATTICE", mdi_engine)
+mdi.MDI_Send(nlattice, 1, mdi.MDI_INT, mdi_engine)
+
+# create a list of lattice point charges
+
+# send the lattice point charges to the engine
+mdi.MDI_Send_Command(">LATTICE", mdi_engine)
+mdi.MDI_Send(lattice_charges, NLATTICE, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send nlattice points to the engine
+int nlattice = 10;
+MDI_Send_Command(">NLATTICE", mdi_engine);
+MDI_Send(&nlattice, 1, MDI_INT, mdi_engine);
+
+// create a buffer to hold the lattice point charges
+std::vector<double> lattice_charges(NLATTICE);
+
+// fill the lattice point charges with some values
+
+// send the lattice point charges to the engine
+MDI_Send_Command(">LATTICE", mdi_engine);
+MDI_Send(lattice_charges.data(), NLATTICE, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

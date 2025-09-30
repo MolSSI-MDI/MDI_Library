@@ -1,0 +1,63 @@
+(PE_NUC-target)=
+# PE_NUC
+Receive nuclear potential energy.
+
+
+
+## <PE_NUC
+
+Receive nuclear potential energy
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ If the engine is at the [@DEFAULT](#@DEFAULT-target) node, it calculates and sends its nuclear potential energy to the driver. 
+The nuclear potential energy is defined as including all interactions between the nuclei and any other particles or fields in the system, excluding any electrons. 
+It also includes the interactions between the nuclei and themselves. 
+If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, 
+the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the [@DEFAULT](#@DEFAULT-target) node, it sends its most recently calculated nuclear potential energy to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the nuclear potential energy from the engine
+mdi.MDI_Send_Command("<PE_NUC", mdi_engine)
+pe_nuc = mdi.MDI_Recv(1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the nuclear potential energy
+double pe_nuc;
+
+// receive the nuclear potential energy from the engine
+MDI_Send_Command("<PE_NUC", mdi_engine);
+MDI_Recv(&pe_nuc, 1, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

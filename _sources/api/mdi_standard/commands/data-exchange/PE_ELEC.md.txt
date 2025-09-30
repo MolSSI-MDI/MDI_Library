@@ -1,0 +1,62 @@
+(PE_ELEC-target)=
+# PE_ELEC
+Receive electronic potential energy.
+
+
+
+## <PE_ELEC
+
+Receive electronic potential energy.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ If the engine is at the [@DEFAULT](#@DEFAULT-target) node, it calculates and sends its electronic potential energy to the driver. 
+The electronic potential energy is defined as including all interactions between the electrons and any other particles or fields in the system. 
+It also includes the interactions between the electrons and themselves. If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy, 
+the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+If the engine is not at the [@DEFAULT](#@DEFAULT-target) node, it sends its most recently calculated electronic potential energy to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the electronic potential energy from the engine
+mdi.MDI_Send_Command("<PE_ELEC", mdi_engine)
+pe_elec = mdi.MDI_Recv(1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the electronic potential energy
+double pe_elec;
+
+// receive the electronic potential energy from the engine
+MDI_Send_Command("<PE_ELEC", mdi_engine);
+MDI_Recv(&pe_elec, 1, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

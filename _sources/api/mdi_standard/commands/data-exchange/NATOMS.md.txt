@@ -1,0 +1,56 @@
+(NATOMS-target)=
+# NATOMS
+Receive number of atoms.
+
+
+
+## <NATOMS
+
+Receive number of atoms
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ The engine sends the driver the number of atoms in the engine's system.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the number of atoms from the engine
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the number of atoms
+int natoms;
+
+// receive the number of atoms from the engine
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

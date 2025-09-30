@@ -1,0 +1,50 @@
+(@DEFAULT-target)=
+# @DEFAULT
+Operations related to the @DEFAULT node. The @DEFAULT node is the node that the engine goes to when launched.
+
+
+
+## @DEFAULT
+
+
+
+
+ This is the node that the engine goes to when launched. Typically `@DEFAULT` is called if the engine has been sent to a different node and the driver wants to return to the default node. If not already at the @DEFAULT node, the engine exits whatever simulation (i.e. MD, OPTG, etc.) it is performing  (possibly after completing an unfinished time step or geometry optimization step) and returns to the @DEFAULT node.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# initialize a Monte Carlo simulation
+mdi.MDI_Send_Command("@DEFAULT", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// initialize a Monte Carlo simulation
+MDI_Send_Command(">@DEFAULT", mdi_engine);
+
+```
+:::
+
+::::

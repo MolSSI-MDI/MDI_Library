@@ -1,0 +1,57 @@
+(ENERGY-target)=
+# ENERGY
+Receive total energy information.
+
+
+
+## <ENERGY
+
+Receive total energy.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ If the engine is at the @DEFAULT node, it calculates and sends the total energy of its system to the driver.  If the engine has previously calculated the energy of the system, and no intervening commands from the driver could have changed the energy,  the engine is permitted to send the previously calculated energy instead of recalculating it.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the total energy from the engine
+mdi.MDI_Send_Command("<ENERGY", mdi_engine)
+energy = mdi.MDI_Recv(1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the total energy
+double energy;
+
+// receive the total energy from the engine
+MDI_Send_Command("<ENERGY", mdi_engine);
+MDI_Recv(&energy, 1, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

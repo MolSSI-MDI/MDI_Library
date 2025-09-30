@@ -1,0 +1,68 @@
+(LABELS-target)=
+# LABELS
+Receive a label for each atom in the system.
+
+
+
+## <LABELS
+
+Receive atom labels.
+
+**Datatype:** `MDI_CHAR`  
+**Quantity**: `MDI_LABEL_LENGTH * NATOMS`  
+**Format:** An array of characters corresponding to the label of each atom in ascending order of atomic index, with each label consisting of `MDI_LABEL_LENGTH` characters and being padded with spaces where necessary.
+
+ The engine sends a label for each atom in its system.  "Labels" are intended primarily for the purpose of providing a human-readable identifier for each of the atoms,  and do not have a standardized physical meaning.  It is recommended that the labels correspond to the element of each atom (i.e., "H", "He", "Li", etc.),  a name associated with atoms of a particular type (i.e., "Carboxyl_Hydrogen", "Methyl_Hydrogen"),  or a similarly descriptive term.  The atom labels may correspond to a number identifier (i.e., "1", "2", "3", etc.) in cases where more descriptive labels are not practical,  but note that such labels must be represented using the MDI_CHAR data type, as indicated below.  It is required that atoms having different physical properties (i.e., different force field terms in a molecular mechanics simulation or different nuclear charges in a quantum chemistry simulation)  have different labels.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# get the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# receive the atom labels from the engine
+mdi.MDI_Send_Command("<LABELS", mdi_engine)
+labels = mdi.MDI_Recv(MDI_LABEL_LENGTH * natoms, mdi.MDI_CHAR, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// get the number of atoms
+int natoms;
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+// create a buffer to hold the atom labels
+std::<vector>char labels(MDI_LABEL_LENGTH * natoms);
+
+// receive the atom labels from the engine
+MDI_Send_Command("<LABELS", mdi_engine);
+MDI_Recv(labels, MDI_LABEL_LENGTH * natoms, MDI_CHAR, mdi_engine)
+
+```
+:::
+
+::::

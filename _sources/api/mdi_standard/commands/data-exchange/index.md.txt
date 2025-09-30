@@ -1,0 +1,79 @@
+# Data Exchange
+
+Commands that exchange data between the driver and the engine.
+
+Command Name | Description
+------------ | -----------
+[CDENSITY](CDENSITY) | Exchange Cartesian coordinates for grid points.
+[CELL](CELL) | Exchange cell vectors for simulation boxes.
+[CELL_DISPL](CELL_DISPL) | Exchange cell displacement vectors for simulation boxes.
+[CHARGES](CHARGES) | Exchange atomic charge information.
+[CLATTICE](CLATTICE) | Send lattice coordinates.
+[COORDS](COORDS) | Exchange atomic coordinate information.
+[CPOTENTIAL](CPOTENTIAL) | Send Cartesian coordinates of grid points.
+[DENSITY](DENSITY) | Retrieve electronic density information.
+[DIMENSIONS](DIMENSIONS) | Retrieve simulation cell dimensionality (periodic or non-periodic).
+[ELECT_MULT](ELECT_MULT) | Exchange electronic multiplicity.
+[ELEMENTS](ELEMENTS) | Exchange atomic element information.
+[ENERGY](ENERGY) | Receive total energy information.
+[FORCES](FORCES) | Exchange atomic forces information.
+[KE](KE) | Receive total kinetic energy.
+[KE_ELEC](KE_ELEC) | Receive electronic kinetic energy.
+[KE_NUC](KE_NUC) | Receive nuclear kinetic energy.
+[LABELS](LABELS) | Receive a label for each atom in the system.
+[LATTICE](LATTICE) | Send lattice point charges.
+[LATTICE_FORCES](LATTICE_FORCES) | Receive lattice forces.
+[MASSES](MASSES) | Retrieve atom masses.
+[MONKHORST-PACK_NPOINTS](MONKHORST-PACK_NPOINTS) | Send number of points for a Monkhorst-Pack grid.
+[MONKHORST-PACK_SHIFT](MONKHORST-PACK_SHIFT) | Send Monkhorst-Pack grid shift.
+[NATOMS](NATOMS) | Receive number of atoms.
+[NDENSITY](NDENSITY) | Receive number of points for electronic density on a grid.
+[NLATTICE](NLATTICE) | Send number of lattice points.
+[NPOTENTIAL](NPOTENTIAL) | Send the number of potential grid points.
+[PE](PE) | Receive total potential energy.
+[PE_ELEC](PE_ELEC) | Receive electronic potential energy.
+[PE_NUC](PE_NUC) | Receive nuclear potential energy.
+[POTENTIAL](POTENTIAL) | Send potential grid values.
+[SPIN_POLARIZATION](SPIN_POLARIZATION) | Exchange spin polarization information.
+[STRESS](STRESS) | Exchange virial stress tensor.
+[TOTCHARGE](TOTCHARGE) | Exchange total charge information
+[VELOCITES](VELOCITES) | Exchange atomic velocities.
+
+
+```{toctree}
+:hidden:
+
+CDENSITY
+CELL
+CELL_DISPL
+CHARGES
+CLATTICE
+COORDS
+CPOTENTIAL
+DENSITY
+DIMENSIONS
+ELECT_MULT
+ELEMENTS
+ENERGY
+FORCES
+KE
+KE_ELEC
+KE_NUC
+LABELS
+LATTICE
+LATTICE_FORCES
+MASSES
+MONKHORST-PACK_NPOINTS
+MONKHORST-PACK_SHIFT
+NATOMS
+NDENSITY
+NLATTICE
+NPOTENTIAL
+PE
+PE_ELEC
+PE_NUC
+POTENTIAL
+SPIN_POLARIZATION
+STRESS
+TOTCHARGE
+VELOCITES

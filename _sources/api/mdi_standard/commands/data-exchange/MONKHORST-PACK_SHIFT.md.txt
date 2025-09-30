@@ -1,0 +1,73 @@
+(MONKHORST-PACK_SHIFT-target)=
+# MONKHORST-PACK_SHIFT
+```{tags} Quantum Mechanics, DFT, Plane Wave DFT
+```
+
+Send Monkhorst-Pack grid shift.
+
+
+
+## >MONKHORST-PACK_SHIFT
+
+Send Monkhorst-Pack grid shift
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3`  
+**Format:** The fraction of a grid step by which the k-points should be displaced, in ascending order of vector. 
+A value of 0.0 indicates no displacement along the corresponding vector, while a value of 0.5 indicates a displacement of half a grid step in along the corresponding vector. 
+Note that some engines can only support values of 0.0 or 0.5.
+
+
+ This command is typically expected for use with plane wave DFT engines. 
+The driver sends the engine a set of values that indicate the extent to which a set of k-points on a Monkhorst-Pack grid should be displaced relative to the original (non-displaced) Monkhorst-Pack grid. 
+The engine then uses the shifted k-points for all further simulations.  
+
+
+:::{admonition} Note
+:class: note
+
+Some engines can only support values of 0.0 or 0.5.
+:::
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the Monkhorst-Pack grid shift
+mdi.MDI_Send_Command(">MONKHORST-PACK_SHIFT", mdi_engine)
+mdi.MDI_Send([0.0, 0.0, 0.0], 3, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the Monkhorst-Pack grid shift
+std::vector<double> shift = {0.0, 0.0, 0.0};
+
+// send the Monkhorst-Pack grid shift
+MDI_Send_Command(">MONKHORST-PACK_SHIFT", mdi_engine);
+MDI_Send(shift.data(), 3, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

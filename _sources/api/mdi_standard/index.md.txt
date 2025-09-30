@@ -1,0 +1,85 @@
+# MDI Standard
+
+This section provides details on the commands defined by the MDI Standard.The MDI Standard defines a set of commands that can be used to control simulations and communicate data between engines.
+
+You can also [tags](../../_tags/tagsindex) for the MDI Standard.
+
+
+
+```{toctree}
+:hidden:
+
+commands/node-management/index
+commands/data-exchange/index
+commands/information/index
+../../_tags/tagsindex
+```
+
+
+## Simulation Control and Node Management
+
+Commands that control the flow of the simulation and manage the engine's nodes.
+
+Command Name | Description
+------------ | -----------
+[@](commands/node-management/@) | Manage operations related to the current node.
+[@COORDS](commands/node-management/@COORDS) | Go to point in code after atomic coordinates have been updated.
+[@DEFAULT](commands/node-management/@DEFAULT) | Operations related to the @DEFAULT node. The @DEFAULT node is the node that the engine goes to when launched.
+[@FORCES](commands/node-management/@FORCES) | Go to point in code after forces have been calculated.
+[@INIT_MC](commands/node-management/@INIT_MC) | Initialize a Monte Carlo simulation.
+[@INIT_MD](commands/node-management/@INIT_MD) | Initialize a Molecular Dynamics simulation.
+[@INIT_OPTG](commands/node-management/@INIT_OPTG) | Initialize a geometry optimization.
+[@PRE-FORCES](commands/node-management/@PRE-FORCES) | Go to point in code where forces have been partially calcualted.
+[EXIT](commands/node-management/EXIT) | Exit the engine.
+
+
+## Data Exchange
+
+Commands that exchange data between the driver and the engine.
+
+Command Name | Description
+------------ | -----------
+[CDENSITY](commands/data-exchange/CDENSITY) | Exchange Cartesian coordinates for grid points.
+[CELL](commands/data-exchange/CELL) | Exchange cell vectors for simulation boxes.
+[CELL_DISPL](commands/data-exchange/CELL_DISPL) | Exchange cell displacement vectors for simulation boxes.
+[CHARGES](commands/data-exchange/CHARGES) | Exchange atomic charge information.
+[CLATTICE](commands/data-exchange/CLATTICE) | Send lattice coordinates.
+[COORDS](commands/data-exchange/COORDS) | Exchange atomic coordinate information.
+[CPOTENTIAL](commands/data-exchange/CPOTENTIAL) | Send Cartesian coordinates of grid points.
+[DENSITY](commands/data-exchange/DENSITY) | Retrieve electronic density information.
+[DIMENSIONS](commands/data-exchange/DIMENSIONS) | Retrieve simulation cell dimensionality (periodic or non-periodic).
+[ELECT_MULT](commands/data-exchange/ELECT_MULT) | Exchange electronic multiplicity.
+[ELEMENTS](commands/data-exchange/ELEMENTS) | Exchange atomic element information.
+[ENERGY](commands/data-exchange/ENERGY) | Receive total energy information.
+[FORCES](commands/data-exchange/FORCES) | Exchange atomic forces information.
+[KE](commands/data-exchange/KE) | Receive total kinetic energy.
+[KE_ELEC](commands/data-exchange/KE_ELEC) | Receive electronic kinetic energy.
+[KE_NUC](commands/data-exchange/KE_NUC) | Receive nuclear kinetic energy.
+[LABELS](commands/data-exchange/LABELS) | Receive a label for each atom in the system.
+[LATTICE](commands/data-exchange/LATTICE) | Send lattice point charges.
+[LATTICE_FORCES](commands/data-exchange/LATTICE_FORCES) | Receive lattice forces.
+[MASSES](commands/data-exchange/MASSES) | Retrieve atom masses.
+[MONKHORST-PACK_NPOINTS](commands/data-exchange/MONKHORST-PACK_NPOINTS) | Send number of points for a Monkhorst-Pack grid.
+[MONKHORST-PACK_SHIFT](commands/data-exchange/MONKHORST-PACK_SHIFT) | Send Monkhorst-Pack grid shift.
+[NATOMS](commands/data-exchange/NATOMS) | Receive number of atoms.
+[NDENSITY](commands/data-exchange/NDENSITY) | Receive number of points for electronic density on a grid.
+[NLATTICE](commands/data-exchange/NLATTICE) | Send number of lattice points.
+[NPOTENTIAL](commands/data-exchange/NPOTENTIAL) | Send the number of potential grid points.
+[PE](commands/data-exchange/PE) | Receive total potential energy.
+[PE_ELEC](commands/data-exchange/PE_ELEC) | Receive electronic potential energy.
+[PE_NUC](commands/data-exchange/PE_NUC) | Receive nuclear potential energy.
+[POTENTIAL](commands/data-exchange/POTENTIAL) | Send potential grid values.
+[SPIN_POLARIZATION](commands/data-exchange/SPIN_POLARIZATION) | Exchange spin polarization information.
+[STRESS](commands/data-exchange/STRESS) | Exchange virial stress tensor.
+[TOTCHARGE](commands/data-exchange/TOTCHARGE) | Exchange total charge information
+[VELOCITES](commands/data-exchange/VELOCITES) | Exchange atomic velocities.
+
+
+## Information
+
+Commands that provide information about MDI and/or an engine.
+
+Command Name | Description
+------------ | -----------
+[NAME](commands/information/NAME) | Receive engine name.
+[VERSION](commands/information/VERSION) | Receive MDI Library version.

@@ -1,0 +1,61 @@
+(MONKHORST-PACK_NPOINTS-target)=
+# MONKHORST-PACK_NPOINTS
+```{tags} Quantum Mechanics, DFT, Plane Wave DFT
+```
+
+Send number of points for a Monkhorst-Pack grid.
+
+
+
+## >MONKHORST-PACK_NPOINTS
+
+Send Monkhorst-Pack grid points
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `3`  
+**Format:** The number of k-points to generate along each vector of the Brillouin zone, in ascending order of vector.
+
+ This command is typically expected for use with plane wave DFT engines.  The driver sends the engine the number of k-points to generate on a Monkhorst-Pack grid.  The engine then uses the k-points generated on this Monkhorst-Pack grid for all further simulations. 
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the number of k-points to generate on a Monkhorst-Pack grid
+mdi.MDI_Send_Command(">MONKHORST-PACK_NPOINTS", mdi_engine)
+mdi.MDI_Send([10, 10, 10], 3, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the number of k-points to generate on a Monkhorst-Pack grid
+std::vector<int> npts = {10, 10, 10};
+
+// send the number of k-points to generate on a Monkhorst-Pack grid
+MDI_Send_Command(">MONKHORST-PACK_NPOINTS", mdi_engine);
+MDI_Send(npts.data(), 3, MDI_INT, mdi_engine);          
+
+```
+:::
+
+::::

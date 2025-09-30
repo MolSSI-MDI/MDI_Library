@@ -1,0 +1,158 @@
+(CELL_DISPL-target)=
+# CELL_DISPL
+Exchange cell displacement vectors for simulation boxes.
+
+
+
+## >CELL_DISPL
+
+Send cell displacement vector to adjust simulation cell origin.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3`  
+**Units:** Bohr
+
+**Format:** The 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector.
+
+ The driver sends a displacement vector to the engine, which adjusts the origin of its simulation cell to the value of the displacement vector.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a list of displacement values
+cell_displ = [0.0, 1.0, 1.0]
+
+# send the cell displacement values to the engine
+mdi.MDI_Send_Command(">CELL_DISPL", mdi_engine)
+mdi.MDI_Send(cell_displ, 3, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of cell displacement values
+cell_displ = np.array([0.0, 1.0, 1.0], dtype=float)
+
+# send the cell displacement values to the engine
+mdi.MDI_Send_Command(">CELL_DISPL", mdi_engine)
+mdi.MDI_Send(cell_displ, 3, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create an array of cell displacement values
+std::vector<double> cell_displ = {0.0, 1.0, 1.0};
+
+// send the cell displacement values to the engine
+MDI_Send_Command(">CELL_DISPL", mdi_engine);
+MDI_Send(cell_displ.data(), 3, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## <CELL_DISPL
+
+Retrieve the cell displacement vector.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3`  
+**Units:** Bohr
+
+**Format:** The 3 values correspond to the x, y, and z values, respectively, of the simulation cell displacement vector.
+
+ The engine sends the displacement vector of the origin of its simulation cell to the driver.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the cell displacement values from the engine
+mdi.MDI_Send_Command("<CELL_DISPL", mdi_engine)
+cell_displ = mdi.MDI_Recv(3, mdi.MDI_DOUBLE, mdi_engine) 
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the cell displacement values
+cell_displ = np.zeros(3, dtype=float)
+
+# receive the cell displacement values from the engine
+mdi.MDI_Send_Command("<CELL_DISPL", mdi_engine)
+mdi.MDI_Recv(3, mdi.MDI_DOUBLE, mdi_engine, buf=cell_displ) 
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the cell displacement values
+std::vector<double> cell_displ(3);
+
+// receive the cell displacement values from the engine
+MDI_Send_Command("<CELL_DISPL", mdi_engine);
+MDI_Recv(cell_displ.data(), 3, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

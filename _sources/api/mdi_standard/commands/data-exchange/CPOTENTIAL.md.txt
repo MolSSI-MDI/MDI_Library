@@ -1,0 +1,97 @@
+(CPOTENTIAL-target)=
+# CPOTENTIAL
+Send Cartesian coordinates of grid points.
+
+
+
+## >CPOTENTIAL
+
+Send Cartesian coordinates of grid points.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NPOTENTIAL`  
+**Units:** Bohr
+
+
+ The driver sends the Cartesian coordinates of a set of grid points.  This command is intended to be used in conjuction with the [>NPOTENTIAL](NPOTENTIAL) and [>POTENTIAL](POTENTIAL) commands;  these three commands enable a driver to set an external potential that is incorporated into a subsequent scf_command command.  See the [>POTENTIAL](POTENTIAL) command for more details.
+Before sending this command, the driver must have first sent the number of grid points used to represent the potential via the >NPOTENTIAL command.  It is also necessary that the driver send the values of the grid points via the >CPOTENTIAL command prior to any subsequent scf_command command.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Acmmunicator()
+
+# retrieve the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# create a list of atomic core potentials using
+# method appropriate for your use case.
+cpotential = # some array of atomic core potentials
+
+# send the atomic core potentials to the engine
+mdi.MDI_Send_Command(">CPOTENTIAL", mdi_engine)
+mdi.MDI_Send(cpotential, natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# retrieve the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# create an array of atomic core potentials using
+# method appropriate for your use case.
+# Zeros shown here for example.
+cpotential = np.zeros(natoms, dtype=float)
+
+# send the atomic core potentials to the engine
+mdi.MDI_Send_Command(">CPOTENTIAL", mdi_engine)
+mdi.MDI_Send(cpotential, natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// retrieve the number of atoms
+int natoms;
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+// create an vector of atomic core potentials
+std::vector<double>
+
+```
+:::
+
+::::

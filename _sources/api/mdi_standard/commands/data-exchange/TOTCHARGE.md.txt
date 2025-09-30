@@ -1,0 +1,111 @@
+(TOTCHARGE-target)=
+# TOTCHARGE
+Exchange total charge information
+
+
+
+## >TOTCHARGE
+
+Send total system charge
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ The driver sends a value for the total charge of the system, including electron and nuclear charges, to the engine, 
+which adjusts the number of electrons present in its system to the value required to reproduce the value sent by the driver. 
+This command is typically only appropriate for quantum mechanics engines. 
+Engines that support this command are not required to support non-integer charges; they are permitted to produce an error message if the value received deviates by more than 10^-12 from an integer, 
+and to otherwise round the value received to the nearest integer.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the total charge of the system to the engine
+mdi.MDI_Send_Command(">TOTCHARGE", mdi_engine)
+mdi.MDI_Send(0.0, 1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the total charge of the system to the engine
+double totcharge = 0.0;
+MDI_Send_Command(">TOTCHARGE", mdi_engine);
+MDI_Send(&totcharge, 1, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## <TOTCHARGE
+
+Receive total system charge
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ The engine sends the total charge of its system, including electron and nuclear charges, to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the total charge of the system from the engine
+mdi.MDI_Send_Command("<TOTCHARGE", mdi_engine)
+totcharge = mdi.MDI_Recv(1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the total charge of the system
+double totcharge;
+
+// receive the total charge of the system from the engine
+MDI_Send_Command("<TOTCHARGE", mdi_engine);
+MDI_Recv(&totcharge, 1, MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+::::

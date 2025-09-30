@@ -1,0 +1,122 @@
+(SPIN_POLARIZATION-target)=
+# SPIN_POLARIZATION
+```{tags} Quantum Mechanics, DFT, Plane Wave DFT
+```
+
+Exchange spin polarization information.
+
+
+
+## <SPIN_POLARIZATION
+
+Receive spin polarization setting.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+**Format:** A value of 0 indicates that simulations will be performed in a non-spin-polarized manner. 
+A value of 1 indicates that simulations will be performed in a spin-polarized manner,
+within the local spin density approximation (LSDA). 
+A value of 2 indicates that simulations will be performed in a spin-polarized, noncollinear manner.
+
+
+ The engine sends a value that indicates the manner in which it is currently simulating spin polarization. 
+This command is typically intended for use with plane wave DFT engines.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the spin polarization setting from the engine
+mdi.MDI_Send_Command("<SPIN_POLARIZATION", mdi_engine)
+spin_polarization = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the spin polarization setting
+int spin_polarization;
+
+// receive the spin polarization setting from the engine
+MDI_Send_Command("<SPIN_POLARIZATION", mdi_engine);
+MDI_Recv(&spin_polarization, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::
+
+## >SPIN_POLARIZATION
+
+Send spin polarization setting.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+**Format:** A value of 0 indicates that simulations will be performed in a non-spin-polarized manner. 
+A value of 1 indicates that simulations will be performed in a spin-polarized manner,
+within the local spin density approximation (LSDA). 
+A value of 2 indicates that simulations will be performed in a spin-polarized, noncollinear manner.
+
+
+ The driver sends a value that indicates the manner in which spin polarization should be simulated by the engine. 
+This command is typically intended for use with plane wave DFT engines.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the spin polarization setting to the engine
+mdi.MDI_Send_Command(">SPIN_POLARIZATION", mdi_engine)
+mdi.MDI_Send(1, 1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the spin polarization setting to the engine
+int spin_polarization = 1;
+MDI_Send_Command(">SPIN_POLARIZATION", mdi_engine);
+MDI_Send(&spin_polarization, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

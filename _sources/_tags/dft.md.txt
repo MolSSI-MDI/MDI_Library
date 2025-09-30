@@ -1,0 +1,12 @@
+(sphx_tag_dft)=
+# MDI Standard Tags: DFT
+
+```{toctree}
+---
+maxdepth: 1
+caption: 
+---
+../api/mdi_standard/commands/data-exchange/MONKHORST-PACK_NPOINTS.md
+../api/mdi_standard/commands/data-exchange/MONKHORST-PACK_SHIFT.md
+../api/mdi_standard/commands/data-exchange/SPIN_POLARIZATION.md
+```

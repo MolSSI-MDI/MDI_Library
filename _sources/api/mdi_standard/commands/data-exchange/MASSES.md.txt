@@ -1,0 +1,91 @@
+(MASSES-target)=
+# MASSES
+Retrieve atom masses.
+
+
+
+## <MASSES
+
+Receive atom masses
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `NATOMS`  
+
+ The engine sends the driver the mass of each of the atoms.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# get the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# receive the atom masses from the engine
+mdi.MDI_Send_Command("<MASSES", mdi_engine)
+masses = mdi.MDI_Recv(natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# get the number of atoms
+mdi.MDI_Send_Command("<NATOMS", mdi_engine)
+natoms = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# create a buffer to hold the atom masses
+masses = np.zeros(natoms, dtype=float)
+
+# receive the atom masses from the engine
+mdi.MDI_Send_Command("<MASSES", mdi_engine)
+mdi.MDI_Recv(natoms, mdi.MDI_DOUBLE, mdi_engine, buf=masses)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// get the number of atoms
+int natoms;
+MDI_Send_Command("<NATOMS", mdi_engine);
+MDI_Recv(&natoms, 1, MDI_INT, mdi_engine);
+
+// create a buffer to hold the atom masses
+std::vector<double> masses(natoms);
+
+// receive the atom masses from the engine
+MDI_Send_Command("<MASSES", mdi_engine);
+MDI_Recv(masses.data(), natoms, MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+::::

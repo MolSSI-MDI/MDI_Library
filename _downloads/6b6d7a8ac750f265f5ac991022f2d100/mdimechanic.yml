@@ -1,0 +1,129 @@
+code_name: 'LAMMPS'
+docker:
+  image_name: 'mdi/lammps'
+
+  build_image:
+    - apt-get clean
+    - apt-get update --fix-missing
+    - apt-get install -y git wget vim
+    - pip install cmake
+    - pip install pymdi
+    - pip install mpi4py
+
+    - echo "export PATH=$PATH:/repo/build/lammps/build" >> ~/.profile
+
+  build_code:
+    # Obtain a clone of LAMMPS
+    - |
+      if [ ! -d "build/lammps" ]; then
+        git clone https://github.com/lammps/lammps.git build/lammps
+      fi
+    - LAMMPS_INSTALL='mpi'
+
+    # Configure LAMMPS
+    #- cd build/lammps/src
+    #- make yes-asphere
+    #- make yes-body
+    #- make yes-class2
+    #- make yes-colloid
+    #- make yes-compress
+    #- make yes-coreshell
+    #- make yes-dipole
+    #- make yes-granular
+    #- make yes-kspace
+    #- make yes-manybody
+    #- make yes-mc
+    #- make yes-misc
+    #- make yes-molecule
+    #- make yes-opt
+    #- make yes-peri
+    #- make yes-qeq
+    #- make yes-replica
+    #- make yes-rigid
+    #- make yes-shock
+    #- make yes-srd
+    #- make yes-mdi
+
+    # Build the MDI Library
+    #- cd ../lib/mdi
+    #- python Install.py -m gcc
+    #- cd ../../src
+  
+    # Build LAMMPS
+    - cd build
+    - mkdir -p lammps/build
+    - cd lammps/build
+    - cmake -D PKG_RIGID=yes -D PKG_MOLECULE=yes -D PKG_KSPACE=yes -D PKG_MDI=yes -D BUILD_SHARED_LIBS=yes -D LAMMPS_MACHINE=mpi ../cmake
+    - make
+    - cp lmp_mpi lmp_mdi
+    - cp liblammps_mpi.so liblammps.so
+    #- if test "${LAMMPS_INSTALL}" = 'serial'; then make mpi-stubs; fi
+    #- make -j 4 mode=shared "${LAMMPS_INSTALL}"
+    #- cp lmp_"${LAMMPS_INSTALL}" lmp_mdi
+
+  validate_engine:
+    # Confirm that the engine's executable exists
+    - ENGINE_EXECUTABLE="build/lammps/build/lmp_mdi"
+    - |
+      if test -f "$ENGINE_EXECUTABLE"; then
+        echo "$ENGINE_EXECUTABLE exists"
+      else
+        echo "Could not find engine executable: $ENGINE_EXECUTABLE"
+        exit 1
+      fi
+
+    # Run a test calculation to confirm that the engine can run correctly
+    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/repo/build/lammps/src
+    - cd tests/engine_validation
+    - ../../${ENGINE_EXECUTABLE} -in lammps.in > lammps.out
+    - echo "Test output:"
+    - cat lammps.out
+
+    # Run the MDI example calculations
+    #- cd ../../
+    #- cd build/lammps/examples/USER/mdi
+    #- bash -e Script.sh
+
+#  build_engine:
+#    # Obtain a clone of LAMMPS
+#    - |
+#      if [ ! -d "build/lammps" ]; then
+#        git clone https://github.com/MolSSI-MDI/lammps.git --branch mdi build/lammps
+#      fi
+#    - |
+#      if [ ! -d "build/lammps/build" ]; then
+#        mkdir build/lammps/build
+#      fi
+#    - cd build/lammps/build
+#    - cmake -D PKG_RIGID=yes -D PKG_MOLECULE=yes -D PKG_KSPACE=yes -D PKG_USER-MDI=yes ../cmake
+#    - make -j 4
+
+engine_tests:
+  script:
+    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/repo/build/lammps/src
+    - cd tests/mdi_test
+    - ../../build/lammps/build/lmp_mdi -mdi "${MDI_OPTIONS}" -in lammps.in > lammps.out
+
+
+
+
+run_scripts:
+  min_driver:
+    containers:
+      container1:
+        image: 'mdi/lammps:dev'
+        script:
+          - cd tests/driver_test
+          - ../../build/lammps/build/lmp_mdi -mdi "-method TCP -role ENGINE -name LAMMPS -port 8021 -hostname localhost" -in water.in > water.out &
+          - python min_driver.py -mdi "-method TCP -role DRIVER -name driver -port 8021"
+
+  plugin:
+    containers:
+      container1:
+        image: 'mdi/lammps:dev'
+        script:
+          - cd tests/plugin
+          - mpiexec -n 1 python3 plugin_driver.py --plugin_name "lammps" --mdi "-role DRIVER -name driver -method LINK -plugin_path /repo/build/lammps/build" --plugin_command_line "-in water.in"
+
+
+

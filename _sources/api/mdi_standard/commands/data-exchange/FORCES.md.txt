@@ -1,0 +1,209 @@
+(FORCES-target)=
+# FORCES
+Exchange atomic forces information.
+
+
+
+## >FORCES
+
+Send atomic forces.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Units:** Hartree/Bohr
+
+**Format:** Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order.
+
+ The driver sends a set of atomic forces to the engine,  which replaces its internal forces with the forces sent by the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of atomic forces
+
+# send the atomic forces to the engine 
+mdi.MDI_Send_Command(">FORCES", mdi_engine)
+mdi.MDI_Send(forces, 3*natoms, mdi.MDI_DOUBLE, mdi_engine)  
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of atomic forces
+forces = np.zeros(3*natoms, dtype=float)
+
+# send the atomic forces to the engine
+mdi.MDI_Send_Command(">FORCES", mdi_engine)
+mdi.MDI_Send(forces, 3*natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a vector of atomic forces 
+
+// send the atomic forces to the engine 
+MDI_Send_Command(">FORCES", mdi_engine);
+MDI_Send(forces.data(), 3*natoms, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## <FORCES
+
+Receive atomic forces.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Units:** Hartree/Bohr
+
+**Format:** Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order.
+
+ If the engine is at the [@DEFAULT](#@DEFAULT-target) node, it calculates and sends its atomic forces to the driver.  These forces include all force contributions, including the force contributions associated with any constraint algorithm (e.g. SHAKE, RATTLE, etc.).  If the engine has previously calculated the atomic forces of the system,  and no intervening commands from the driver could have changed the atomic forces,  the engine is permitted to send the previously calculated atomic forces instead of recalculating them. 
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the atomic forces from the engine
+mdi.MDI_Send_Command("<FORCES", mdi_engine)
+forces = mdi.MDI_Recv(3*natoms, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the atomic forces
+forces = np.zeros(3*natoms, dtype=float)
+
+# receive the atomic forces from the engine
+mdi.MDI_Recv(3*natoms, mdi.MDI_DOUBLE, mdi_engine, buf=forces)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the atomic forces
+std::vector<double> forces(3*natoms);
+
+// receive the atomic forces from the engine
+MDI_Send_Command("<FORCES", mdi_engine);
+MDI_Recv(forces.data(), 3*natoms, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::
+
+## >+FORCES
+
+Send additional atomic forces.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Format:** Sequentially ascending order of atomic index, with the forces for each individual atom being provided in xyz order.
+
+ The driver sends a set of additional atomic forces to the engine,  which adds these forces to its internal forces. 
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create an array of additional atomic forces
+
+# send the additional atomic forces to the engine
+mdi.MDI_Send_Command(\">+FORCES\", mdi_engine)
+mdi.MDI_Send(forces, 3*natoms, mdi.MDI_DOUBLE, mdi_engine)"
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a vector of additional atomic forces 
+
+// send the additional atomic forces to the engine
+MDI_Send_Command(">+FORCES", mdi_engine);
+MDI_Send(forces.data(), 3*natoms, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

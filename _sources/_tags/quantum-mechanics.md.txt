@@ -1,0 +1,18 @@
+(sphx_tag_quantum-mechanics)=
+# MDI Standard Tags: Quantum Mechanics
+
+```{toctree}
+---
+maxdepth: 1
+caption: 
+---
+../api/mdi_standard/commands/data-exchange/CDENSITY.md
+../api/mdi_standard/commands/data-exchange/CLATTICE.md
+../api/mdi_standard/commands/data-exchange/DENSITY.md
+../api/mdi_standard/commands/data-exchange/ELECT_MULT.md
+../api/mdi_standard/commands/data-exchange/MONKHORST-PACK_NPOINTS.md
+../api/mdi_standard/commands/data-exchange/MONKHORST-PACK_SHIFT.md
+../api/mdi_standard/commands/data-exchange/NLATTICE.md
+../api/mdi_standard/commands/data-exchange/NPOTENTIAL.md
+../api/mdi_standard/commands/data-exchange/SPIN_POLARIZATION.md
+```

@@ -1,0 +1,54 @@
+(EXIT-target)=
+# EXIT
+Exit the engine.
+
+
+
+## EXIT
+
+End engine execution.
+
+
+ The engine terminates and can no longer be sent commands.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# perform some operations
+
+# exit the engine
+mdi.MDI_Send_Command("EXIT", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// perform some operations
+
+// exit the engine
+MDI_Send_Command("EXIT", mdi_engine);
+
+```
+:::
+
+::::

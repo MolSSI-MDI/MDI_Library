@@ -1,0 +1,16 @@
+(tagoverview)=
+
+# MDI Standard by Tag
+
+```{toctree}
+---
+caption: Tags
+maxdepth: 1
+---
+DFT (3) <dft>
+Gas Phase Quantum Mechanics (2) <gas-phase-quantum-mechanics>
+Molecular Dynamics (1) <molecular-dynamics>
+Monte Carlo (1) <monte-carlo>
+Plane Wave DFT (3) <plane-wave-dft>
+Quantum Mechanics (9) <quantum-mechanics>
+```

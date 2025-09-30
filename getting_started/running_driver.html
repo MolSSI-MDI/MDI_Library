@@ -1,0 +1,800 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Driver Use Tutorial: Running an AIMD Simulation &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=b0aaeb25" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/running_driver';</script>
+    <link rel="icon" href="../_static/molssi_square.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Driver Development Tutorial: Developing an AIMD Simulation Driver" href="writing_driver.html" />
+    <link rel="prev" title="Getting Started" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mdi-light.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/mdi-dark.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">MolSSI Driver Interface</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI/molssi_doc_theme" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI/molssi_doc_theme" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Driver Use Tutorial: Running an AIMD Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_driver.html">Driver Development Tutorial: Developing an AIMD Simulation Driver</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Getting Started</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Driver Use Tutorial: Running an AIMD Simulation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="driver-use-tutorial-running-an-aimd-simulation">
+<h1>Driver Use Tutorial: Running an AIMD Simulation<a class="headerlink" href="#driver-use-tutorial-running-an-aimd-simulation" title="Link to this heading">#</a></h1>
+<div class="admonition-prerequisites admonition">
+<p class="admonition-title">Prerequisites</p>
+<p>Completion of this tutoral requires installing Docker.
+Docker is a platform that allows you to run software in a container, which is a standalone environment with everything needed to run the software, including the software itself and all its dependencies.
+If you don’t have Docker installed already, we recommend downloading and installing <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a> for your operating system.</p>
+<p>You will also need to have <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code>.
+We recommend using an environment manager like <code class="docutils literal notranslate"><span class="pre">conda</span></code> or <code class="docutils literal notranslate"><span class="pre">pipenv</span></code> to install <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> in a clean environment.</p>
+<p>To install <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code>, you can use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mdimechanic
+</pre></div>
+</div>
+<p>We also recommend using <code class="docutils literal notranslate"><span class="pre">git</span></code>, though it is not absolutely necessary.</p>
+</div>
+<p>In this tutorial we will use an MDI driver to perform a simple <em>Ab Initio</em> Molecular Dynamics (AIMD) simulation, using Quantum ESPRESSO (QE) to calculate forces and LAMMPS to update the atomic coordinates each time step.
+In an AIMD simulation, the forces on the atoms are calculated using quantum mechanics, and the atomic coordinates are updated using classical mechanics.
+Thus, we will use a QM code (in this case, Quantum ESPRESSO) to calculate the forces, and an MM code (in this case, LAMMPS) to perform the time integration.</p>
+<p>LAMMPS is a code that simulates chemical systems using molecular mechanics (MM) force fields, which are computationally very efficient to evaluate and can be used for lengthy dynamics simulations of large systems.
+Quantum ESPRESSO is a code that runs quantum mechanics (QM) calculations, which are much more computationally expensive, but can be applied much more straigtforwardly to chemically reactive systems and other specific use cases.</p>
+<p>MM codes like LAMMPS often offer time integration features that are not widely available in QM codes, so it can be desirable to be able to mix the time integration functionality of an MM code with the force evaluation functionality of a QM code.</p>
+<p>Although we will be using QE and LAMMPS as the MDI engines in this tutorial, you could do similar calculations using other MDI engines. This means you could switch out LAMMPS for another MM code, or QE for another QM code, and the MDI driver would still work as long as you had files to set up the input of the new codes.</p>
+<p>A list of codes that support MDI can be found in <a class="reference internal" href="../user_guide/mdi_ecosystem/index.html#mdi-ecosystem"><span class="std std-ref">mdi_ecosystem</span></a>.</p>
+<section id="obtaining-tutorial-materials">
+<h2>Obtaining Tutorial Materials<a class="headerlink" href="#obtaining-tutorial-materials" title="Link to this heading">#</a></h2>
+<p>To get started with this tutorial, first download the necessary files using <code class="docutils literal notranslate"><span class="pre">git</span></code> (note: You can also download the files as a zip file from the GitHub repository if you don’t have <code class="docutils literal notranslate"><span class="pre">git</span></code> installed using <a class="reference external" href="https://github.com/janash/MDI_AIMD_user_tutorial/archive/refs/heads/main.zip">this link</a>):</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-0">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/janash/MDI_AIMD_user_tutorial.git
+<span class="nb">cd</span><span class="w"> </span>MDI_AIMD_user_tutorial
+</pre></div>
+</div>
+</div>
+</div>
+<p>Often in computational chemistry, one of the hardest steps to performing a calculation is setting up and compiling the software.
+Fortunately, we have compiled Docker images that contain the MDI-enabled codes we will use in this tutorial and that you can use for other calculations.
+This means you do not have to compile the codes, you just have to install Docker and “pull” (download) the images.
+The <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> software that you installed in step 1 will do this for you when we run the simulation.</p>
+</section>
+<section id="setting-up-the-aimd-simulation">
+<h2>Setting Up the AIMD Simulation<a class="headerlink" href="#setting-up-the-aimd-simulation" title="Link to this heading">#</a></h2>
+<p>When using an already-made MDI driver, you will be using a software package that someone else has prepared that performs some kind of molecular science calculation.
+In this case, the MDI Driver performs ab-initio molecular dynamics (AIMD) calculations.
+As far as the MDI driver is concerned, the only thing you need to know is how to run it and what files it needs to run.</p>
+<p>For the AIMD Driver we will use today:</p>
+<ul class="simple">
+<li><p>You will need to specify what program you would like to use for the QM portion.</p></li>
+<li><p>You will need to provide input files for the QM portion that match your choice of QM program.</p></li>
+<li><p>You will need to specify what program you would like it to use for MM portion.</p></li>
+<li><p>You will need to provide input files for the MM portion that match your choice of MM program.</p></li>
+<li><p>You will need an input for MDIMechanic.</p></li>
+</ul>
+<p>The MDI driver will then take care of the rest.</p>
+<p>This means you have freedom over your input parameters for each program, and freedom over the input system that you simulate.
+For a calculation that is not pre-prepared, preparing your input files can be a time-consuming part of the calculation.</p>
+<p>For the purposes of this tutorial, we will use prepared input files to simulate a small water system using Quantum ESPRESSO and LAMMPS.
+You can find input files for this simulation in <code class="docutils literal notranslate"><span class="pre">simulation_files/starting</span></code> in the repository you just cloned.</p>
+<p>When viewing the contents of this directory, you will see inputs for lammps (<code class="docutils literal notranslate"><span class="pre">lammps.in</span></code>, <code class="docutils literal notranslate"><span class="pre">lammps.data</span></code>) and input files for Quantum ESPRESSO (<code class="docutils literal notranslate"><span class="pre">qe.in</span></code>, <code class="docutils literal notranslate"><span class="pre">pseudo</span></code> - directory containing pseudopotential parameters).
+If you wanted to simulate a different system using AIMD, you would use the same driver, but change these input files.</p>
+<div class="caution admonition">
+<p class="admonition-title">Input File Considerations</p>
+<p>In order to run this simulation, we have to make sure our input files for the quantum program
+and our input files for the molecular dynamics program are compatible with each other.
+This means that the systems for both must have the same number of atoms, and the atoms must be in the same order.</p>
+<p>If using the AIMD Driver, you should also be careful that your boundary conditions match in both programs. In our tutorial, we are using a system with periodic boundary conditions in both programs, and have been careful to set the system up so that the box sizes match.</p>
+</div>
+</section>
+<section id="running-the-aimd-simulation">
+<h2>Running the AIMD Simulation<a class="headerlink" href="#running-the-aimd-simulation" title="Link to this heading">#</a></h2>
+<p>After you have the input files, you can run the AIMD simulation using the MDI driver and MDI Mechanic.
+When we use this AIMD Driver, LAMMPS and Quantum ESPRESSO will both be running, but the Driver will be sending information between the two programs.
+We will use MDI Mechanic to launch the processes.</p>
+<p>This Driver works in the following way:</p>
+<ol class="arabic simple">
+<li><p>Both programs are initialized with their respective input files. In the AIMD Driver, the initial coordinates. are read from your LAMMPS input.</p></li>
+<li><p>Coordinates are sent from LAMMPS to Quantum ESPRESSO to calculate forces.</p></li>
+<li><p>Forces are calculated in our water system using Quantum ESPRESSO.</p></li>
+<li><p>The AIMD Driver retrieves the forces from Quantum ESPRESSO and replaces the forces in the LAMMPS program for that time-step with these forces.</p></li>
+<li><p>LAMMPS is used to update the atomic coordinates using the forces from Quantum ESPRESSO.</p></li>
+<li><p>The AIMD Driver retrieves the new atomic coordinates from LAMMPS and sends them to Quantum ESPRESSO to calculate the forces for the next time step.</p></li>
+</ol>
+<p>Our output will be the atomic coordinates and forces at each time step written by LAMMPS, which we can use to analyze the dynamics of our water system.</p>
+<p>To start our simulation, we’ll first copy our starting files to a new directory to ensure that we don’t overwrite them.
+Note that you must use this exact file name for the configuration of our tutorial.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-1">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>simulation_files/working
+cp<span class="w"> </span>-r<span class="w"> </span>simulation_files/starting/*<span class="w"> </span>simulation_files/working
+</pre></div>
+</div>
+</div>
+</div>
+<p>From the top level of your cloned repository, run the following command to start the AIMD simulation:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-2">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mdimechanic<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>aimd
+</pre></div>
+</div>
+</div>
+</div>
+<p>This will start an AIMD simulation.
+You may have to wait a minute or two for this to run.
+During this time, you will not see any message to the screen, but you should see files changing in your <code class="docutils literal notranslate"><span class="pre">simulation_files/working</span></code> directory.</p>
+</section>
+<section id="what-did-mdimechanic-do">
+<h2>What did <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> do?<a class="headerlink" href="#what-did-mdimechanic-do" title="Link to this heading">#</a></h2>
+<p>As you wait for your simulation to run, you might want to take a look at the <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> command you just ran.</p>
+<p>Open the file <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> in your text editor to view the input to MDI.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="mdimechanic.yml" for="sd-tab-item-3">
+MDIMECHANIC.YML</label><div class="sd-tab-content docutils">
+<div class="highlight-mdimechanic.yml notranslate"><div class="highlight"><pre><span></span>code_name: &#39;MDI_AIMD_Driver&#39;
+docker:
+  image_name: &#39;&#39;
+
+run_scripts:
+  aimd:
+    containers:
+      aimd:
+        image: &#39;janash/aimd_driver:slim&#39;
+        script:
+          - echo &quot;Starting AIMD driver&quot;
+          - export PATH=$PATH:/repo/build/MDI_AIMD_Driver/build/MDI_AIMD_Driver
+          - cd simulation_files/working
+          - MDI_AIMD_Driver -mdi &quot;-role DRIVER -name driver -method TCP -port 8021&quot;
+      lammps:
+        image: &#39;janash/mdi-lammps:slim&#39;
+        script:
+          - cd simulation_files/working
+          - lmp_mpi -mdi &quot;-role ENGINE -name MM -method TCP -port 8021 -hostname aimd&quot; -in lammps.in &gt; lammps.out
+      qe:
+        image: &#39;janash/mdi-qe:slim&#39;
+        script:
+          - export PATH=$PATH:/repo/build/q-e/MDI/src
+          - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/repo/build/q-e/MDI/build/mdi_build-prefix/src/mdi_build-build/MDI_Library
+          - cd simulation_files/working
+          - qemdi.x -mdi &quot;-role ENGINE -name QM -method TCP -port 8021 -hostname aimd&quot; -in qe.in &gt; qe.out
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>This file tells <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> how to run the simulation.
+The important part of this file is in the <code class="docutils literal notranslate"><span class="pre">run_scripts</span></code> section.
+Here, we have three containers: <code class="docutils literal notranslate"><span class="pre">aimd</span></code>, <code class="docutils literal notranslate"><span class="pre">lammps</span></code>, and <code class="docutils literal notranslate"><span class="pre">qe</span></code>.
+Each container has an <code class="docutils literal notranslate"><span class="pre">image</span></code> that tells <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> which Docker image to use for that container.
+Each image is a standalone program that is ready to run with MDI and downloaded the first time you run the simulation.
+This takes the place of you having to compile the programs yourself.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">script</span></code> section of each container tells <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> what commands to run in each container.
+At the end of each script, you will see a command that starts each program that will look very similar to other launch commands you may have used with these programs in the past.
+This time, however, you will see an extra flag <code class="docutils literal notranslate"><span class="pre">-mdi</span></code> that enables the MDI interface for the program.
+For example, the LAMMPS command has the usual input and output for LAMMPS, but also has the flag <code class="docutils literal notranslate"><span class="pre">-mdi</span> <span class="pre">&quot;-role</span> <span class="pre">ENGINE</span> <span class="pre">-name</span> <span class="pre">MM</span> <span class="pre">-method</span> <span class="pre">TCP</span> <span class="pre">-port</span> <span class="pre">8021</span> <span class="pre">-hostname</span> <span class="pre">aimd&quot;</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lmp_mpi<span class="w"> </span>-mdi<span class="w"> </span><span class="s2">&quot;-role ENGINE -name MM -method TCP -port 8021 -hostname aimd&quot;</span><span class="w"> </span>-in<span class="w"> </span>lammps.in<span class="w"> </span>&gt;<span class="w"> </span>lammps.out
+</pre></div>
+</div>
+<p>When using the MolSSI Driver Interface, the programs have a couple ways that they can communicate with each other. MDI allows communication between programs over TCP/IP or Message Passing Interface (MPI).
+TCP/IP operates through network ports, which act like designated channels on a server for specific types of network traffic.
+MDI allows computatoinal chemistry code to communicate on-the-fly (as they run) with other codes through these ports.
+You will see that in our example, the codes have all been set up to communicate over TCP/IP with the port number <code class="docutils literal notranslate"><span class="pre">8021</span></code>.</p>
+<div class="tip admonition">
+<p class="admonition-title">What’s going on under the hood?</p>
+<p>If you’re familiar with Docker, you may wonder more about what MDI Mechanic is actually doing. MDI Mechanic sets up files to run Docker Compose to orchestrate the running of the Docker containers. You can see the generated Docker Compose file in the <code class="docutils literal notranslate"><span class="pre">.mdimechanic/.temp</span></code> directory in repostiorty.
+MDI Mechanic generates these based on the YAML for every run.</p>
+</div>
+</section>
+<section id="examining-the-output">
+<h2>Examining the Output<a class="headerlink" href="#examining-the-output" title="Link to this heading">#</a></h2>
+<p>At the end of the simulation, you should see an output similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Running</span> <span class="n">a</span> <span class="n">custom</span> <span class="n">calculation</span> <span class="k">with</span> <span class="n">MDI</span> <span class="n">Mechanic</span><span class="o">.</span>
+<span class="o">====================================================</span>
+<span class="o">================</span> <span class="n">Output</span> <span class="kn">from</span><span class="w"> </span><span class="nn">Docker</span> <span class="o">================</span>
+<span class="o">====================================================</span>
+<span class="n">Attaching</span> <span class="n">to</span> <span class="n">aimd</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lammps</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">qe</span><span class="o">-</span><span class="mi">1</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">Starting</span> <span class="n">AIMD</span> <span class="n">driver</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">Engine</span> <span class="n">name</span><span class="p">:</span> <span class="n">QM</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">Engine</span> <span class="n">name</span><span class="p">:</span> <span class="n">MM</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">0.0978346</span> <span class="o">-</span><span class="mf">137.599</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span><span class="mf">0.100167</span> <span class="o">-</span><span class="mf">137.602</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">2</span> <span class="o">-</span><span class="mf">0.103482</span> <span class="o">-</span><span class="mf">137.607</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">3</span> <span class="o">-</span><span class="mf">0.109034</span> <span class="o">-</span><span class="mf">137.61</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">4</span> <span class="o">-</span><span class="mf">0.114992</span> <span class="o">-</span><span class="mf">137.611</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">5</span> <span class="o">-</span><span class="mf">0.115626</span> <span class="o">-</span><span class="mf">137.614</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">6</span> <span class="o">-</span><span class="mf">0.107206</span> <span class="o">-</span><span class="mf">137.621</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">7</span> <span class="o">-</span><span class="mf">0.0914601</span> <span class="o">-</span><span class="mf">137.63</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">8</span> <span class="o">-</span><span class="mf">0.0743942</span> <span class="o">-</span><span class="mf">137.637</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span>    <span class="o">|</span> <span class="n">timestep</span><span class="p">:</span> <span class="mi">9</span> <span class="o">-</span><span class="mf">0.0616925</span> <span class="o">-</span><span class="mf">137.641</span>
+<span class="n">aimd</span><span class="o">-</span><span class="mi">1</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="n">lammps</span><span class="o">-</span><span class="mi">1</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="n">qe</span><span class="o">-</span><span class="mi">1</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+
+<span class="o">====================================================</span>
+<span class="o">==============</span> <span class="n">End</span> <span class="n">Output</span> <span class="kn">from</span><span class="w"> </span><span class="nn">Docker</span> <span class="o">==============</span>
+<span class="o">====================================================</span>
+</pre></div>
+</div>
+<p>Your <code class="docutils literal notranslate"><span class="pre">simulation_files/working</span></code> directory should now contain a number of files, including <code class="docutils literal notranslate"><span class="pre">dump.lammpstrj</span></code>, <code class="docutils literal notranslate"><span class="pre">log.lammps</span></code> and <code class="docutils literal notranslate"><span class="pre">qe.out</span></code>.
+If you are familiar with any of these programs, the output files will look the same as they usually do.
+However, this time, the trajectory produced by LAMMPS was generated using forces calculated by Quantum ESPRESSO!</p>
+</section>
+<section id="analyzing-the-results">
+<h2>Analyzing the Results<a class="headerlink" href="#analyzing-the-results" title="Link to this heading">#</a></h2>
+<p>You can now continue with analysis as you would normally analyze your simulation output files.</p>
+</section>
+<section id="extending-to-other-drivers">
+<h2>Extending to Other Drivers<a class="headerlink" href="#extending-to-other-drivers" title="Link to this heading">#</a></h2>
+<p>After completing this tutorial, you may wonder how you can use MDI, other drivers, and other codes.
+As mentioned earlier, in the tutorial, there are several methods to using MDI.
+In this tutorial, we have covered a containerization approach using MDI Mechanic.
+In order to use this approach, you need to have Docker installed and prepare an <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> file.</p>
+<p>You then specify the container images for your programs, and the commands to run them with the MDI interface.
+You can see a list of available MDI-enabled codes in the <a class="reference internal" href="../user_guide/mdi_ecosystem/index.html#mdi-ecosystem"><span class="std std-ref">MDI Ecosystem</span></a> or check out MDI’s DockerHub page for a list of MDI-enabled images.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting Started</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="writing_driver.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Driver Development Tutorial: Developing an AIMD Simulation Driver</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#obtaining-tutorial-materials">Obtaining Tutorial Materials</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-aimd-simulation">Setting Up the AIMD Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-aimd-simulation">Running the AIMD Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-did-mdimechanic-do">What did <code class="docutils literal notranslate"><span class="pre">mdimechanic</span></code> do?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examining-the-output">Examining the Output</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyzing-the-results">Analyzing the Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-other-drivers">Extending to Other Drivers</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/getting_started/running_driver.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2019-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+        <p class="sphinx-version">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br>
+        </p>
+        
+
+        <p class="theme-version">
+        Built with a customized <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+        </p>
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
+</div></div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

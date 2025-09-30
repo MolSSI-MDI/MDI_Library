@@ -1,0 +1,110 @@
+(ELECT_MULT-target)=
+# ELECT_MULT
+```{tags} Quantum Mechanics
+```
+
+Exchange electronic multiplicity.
+
+
+
+## >ELECT_MULT
+
+Send electronic multiplicity.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ The driver sends the electronic multiplicity of the system to the engine.  This command is typically only appropriate for quantum mechanics engines.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the electronic multiplicity to the engine
+elect_mult = 1
+mdi.MDI_Send_Command(">ELECT_MULT", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the electronic multiplicity to the engine
+int elect_mult = 1;
+MDI_Send_Command(">ELECT_MULT", mdi_engine);
+MDI_Send(&elect_mult, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::
+
+## <ELECT_MULT
+
+Receive electronic multiplicity.
+
+**Datatype:** `MDI_INT`  
+**Quantity**: `1`  
+
+ The engine sends the electronic multiplicity of its system to the driver.  This command is typically only appropriate for quantum mechanics engines.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the electronic multiplicity from the engine
+mdi.MDI_Send_Command("<ELECT_MULT", mdi_engine)
+elect_mult = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the electronic multiplicity
+int elect_mult;
+
+// receive the electronic multiplicity from the engine
+MDI_Send_Command("<ELECT_MULT", mdi_engine);
+MDI_Recv(&elect_mult, 1, MDI_INT, mdi_engine);
+
+```
+:::
+
+::::

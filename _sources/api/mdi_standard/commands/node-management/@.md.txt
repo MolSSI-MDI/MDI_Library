@@ -1,0 +1,110 @@
+(@-target)=
+# @
+Manage operations related to the current node.
+
+
+
+## <@
+
+Receive current node name.
+
+**Datatype:** `MDI_CHAR`  
+**Quantity**: `MDI_NAME_LENGTH`  
+
+ The engine sends the driver a string that corresponds to the name of its current node.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the "<@" command to the engine to get the current node
+mdi.MDI_Send_Command("<@", mdi_engine) 
+
+# receive the name of the current node
+node_name = mdi.MDI_Recv(mdi.MDI_NAME_LENGTH, mdi.MDI_CHAR, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the name of the current node
+char* node_name = new char[MDI_NAME_LENGTH];
+
+// send the "<@" command to the engine to get the current node
+MDI_Send_Command("<@", mdi_engine);
+
+// receive the name of the current node
+MDI_Recv(node_name, MDI_NAME_LENGTH, MDI_CHAR, mdi_engine);
+
+```
+:::
+
+::::
+
+## @
+
+Go to the next node.
+
+
+ The engine proceeds to the next node. Typically not supported at the `@DEFAULT` node.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# send the "@INIT_MD" command to the engine (so we are not at default node)
+mdi.MDI_Send_Command("@INIT_MD", mdi_engine)
+
+# send the engine to the next node.
+mdi.MDI_Send_Command("@", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// send the "@INIT_MD" command to the engine (so we are not at default node)
+MDI_Send_Command("@INIT_MD", mdi_engine);
+
+// send the engine to the next node
+MDI_Send_Command("@", mdi_engine);  
+
+```
+:::
+
+::::

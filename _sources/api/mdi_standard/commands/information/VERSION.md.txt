@@ -1,0 +1,56 @@
+(VERSION-target)=
+# VERSION
+Receive MDI Library version.
+
+
+
+## <VERSION
+
+Receive MDI Library version
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `1`  
+
+ The engine sends the version number of the MDI Library to which it is linked to the driver.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the MDI Library version from the engine
+mdi.MDI_Send_Command("<VERSION", mdi_engine)
+version = mdi.MDI_Recv(1, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the MDI Library version
+double version;
+
+// receive the MDI Library version from the engine
+MDI_Send_Command("<VERSION", mdi_engine);
+MDI_Recv(&version, 1, MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+::::

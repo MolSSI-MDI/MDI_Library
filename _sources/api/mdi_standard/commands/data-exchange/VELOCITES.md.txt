@@ -1,0 +1,91 @@
+(VELOCITES-target)=
+# VELOCITES
+Exchange atomic velocities.
+
+
+
+## >VELOCITES
+
+Send atomic velocities.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Format:** Sequentially ascending order of atom index, with the velocities for each individual atom being provided in xyz order.
+
+
+ The driver sends a set of atomic velocities to the driver, which replaces its atomic velocities with those provided by the driver.
+
+
+## <VELOCITES
+
+Receive atomic velocities.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NATOMS`  
+**Format:** Sequentially ascending order of atom index, with the velocities for each individual atom being provided in xyz order.
+
+
+ The engine sends the velocities of the atoms in its system to the driver.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the atomic velocities from the engine
+mdi.MDI_Send_Command("<VELOCITES", mdi_engine)
+velocities = mdi.MDI_Recv(3*NATOMS, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# create a buffer to hold the atomic velocities
+velocities = np.zeros(3*NATOMS, dtype=float)
+
+# receive the atomic velocities from the engine
+mdi.MDI_Send_Command("<VELOCITES", mdi_engine)
+mdi.MDI_Recv(3*NATOMS, mdi.MDI_DOUBLE, mdi_engine, buf=velocities
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the atomic velocities
+double velocities[3*NATOMS];
+
+// receive the atomic velocities from the engine
+MDI_Send_Command("<VELOCITES", mdi_engine);
+MDI_Recv(velocities, 3*NATOMS, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

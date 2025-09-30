@@ -1,0 +1,57 @@
+(NAME-target)=
+# NAME
+Receive engine name.
+
+
+
+## <NAME
+
+Receive engine name
+
+**Datatype:** `MDI_CHAR`  
+**Quantity**: `MDI_NAME_LENGTH`  
+
+ Engine sends its name as per `-name` option in MDI initialization.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# receive the engine name from the engine
+mdi.MDI_Send_Command("<NAME", mdi_engine)
+name = mdi.MDI_Recv(MDI_NAME_LENGTH, mdi.MDI_CHAR, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// create a buffer to hold the engine name
+std::vector<char> name(MDI_NAME_LENGTH);
+
+// receive the engine name from the engine
+MDI_Send_Command("<NAME", mdi_engine);
+MDI_Recv(name.data(), MDI_NAME_LENGTH, MDI_CHAR, mdi_engine)
+
+```
+:::
+
+::::

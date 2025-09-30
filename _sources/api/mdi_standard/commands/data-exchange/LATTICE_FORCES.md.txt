@@ -1,0 +1,95 @@
+(LATTICE_FORCES-target)=
+# LATTICE_FORCES
+Receive lattice forces.
+
+
+
+## <LATTICE_FORCES
+
+Receive lattice forces on lattice charges.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NLATTICE`  
+**Format:** Sequentially ascending order of lattice charge index, with the forces for each individual lattice charge being provided in xyz order.
+
+ If the engine is at the [@DEFAULT](#@DEFAULT-target) node, it calculates and sends the forces on any lattice charges (which must have previously assigned with the [>LATTICE](#LATTICE) command) to the driver. Prior to sending this command, the driver must have set the number, coordinates, and magnitudes of the lattice charges using the [>NLATTICE](NLATTICE), [>CLATTICE](CLATTICE), and [>LATTICE](LATTICE) commands. These forces must include only electrostatic interactions between the lattice charges and the atomic nuclei, and between the lattice charges and any electrons. They must not include electrostatic interactions between the lattice charges and other lattice charges. If the engine has previously calculated these forces, and no intervening commands from the driver could have changed the forces, the engine is permitted to send the previously calculated forces instead of recalculating them.
+If the engine is not at the @DEFAULT node, it sends its most recently calculated lattice forces to the driver.
+This command is primarily intended for use with gas-phase quantum mechanics codes.
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+# connect to the engine
+
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# get lattice information
+lattice = # some array of lattice charges
+clattice = # some array of lattice charge coordintaes
+nlattice = len(lattice)
+
+# send the number of lattice points to the engine
+mdi.MDI_Send_Command(">NLATTICE", mdi_engine)
+mdi.MDI_Send(nlattice, 1, mdi.MDI_INT, mdi_engine)
+
+# send the lattice coordinates to the engine
+mdi.MDI_Send_Command(">CLATTICE", mdi_engine)
+mdi.MDI_Send(clattice, 3*nlattice, mdi.MDI_DOUBLE, mdi_engine)
+
+# send the lattice charges to the engine
+mdi.MDI_Send_Command(">LATTICE", mdi_engine)
+mdi.MDI_Send(clattice, nlattice, mdi.MDI_DOUBLE, mdi_engine)
+
+# receive the lattice forces from the engine
+lattice_forces = mdi.MDI_Recv(3*nlattice, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// get lattice information
+std::vector<double> lattice; // some vector of lattice charges
+
+std::vector<double> clattice; // some vector of lattice charge coordinates
+
+int nlattice = lattice.size();
+
+// send the number of lattice points to the engine
+MDI_Send_Command(">NLATTICE", mdi_engine);
+MDI_Send(nlattice, 1, MDI_INT, mdi_engine);
+
+
+// send the lattice coordinates to the engine
+MDI_Send_Command(">CLATTICE", mdi_engine);
+MDI_Send(clattice, 3*nlattice, MDI_DOUBLE, mdi_engine);
+
+
+// send the lattice charges to the engine
+MDI_Send_Command(">LATTICE", mdi_engine);
+MDI_Send(clattice, nlattice, MDI_DOUBLE, mdi_engine);
+
+// receive the lattice forces from the engine
+std::vector<double> lattice_forces(3*nlattice);
+MDI_Send_Command("<LATTICE_FORCES", mdi_engine);
+MDI_Recv(lattice_forces.data(), 3*nlattice, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

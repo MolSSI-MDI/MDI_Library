@@ -1,0 +1,93 @@
+(DENSITY-target)=
+# DENSITY
+```{tags} Quantum Mechanics
+```
+
+Retrieve electronic density information.
+
+
+
+## <DENSITY
+
+Retrieve electronic density on a set of grid points.
+
+**Datatype:** `MDI_DOUBLE`  
+**Quantity**: `3 * NDENSITY`  
+
+ The engine sends the value of its electronic density on a set of grid points.  This command is intended to be used in conjuction with the [<NDENSITY](NDENSITY) and [<CDENSITY](CDENSITY) commands;  these three commands enable a driver to acquire the electronic density distribution of an engine in a grid representation.
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# retrieve the number of grid points
+mdi.MDI_Send_Command("<NDENSITY", mdi_engine)
+ndensity = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# receive the electronic density on a set of grid points
+mdi.MDI_Send_Command("<DENSITY", mdi_engine)
+density = mdi.MDI_Recv(3*ndensity, mdi.MDI_DOUBLE, mdi_engine)
+
+```
+:::
+
+:::{tab-item} Python (NumPy)
+:sync: python (numpy)
+
+```python
+import mdi
+import numpy as np
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# retrieve the number of grid points
+mdi.MDI_Send_Command("<NDENSITY", mdi_engine)
+ndensity = mdi.MDI_Recv(1, mdi.MDI_INT, mdi_engine)
+
+# create a buffer to hold the electronic density values
+density = np.zeros(3*ndensity, dtype=float)
+
+# receive the electronic density on a set of grid points
+mdi.MDI_Send_Command("<DENSITY", mdi_engine)
+mdi.MDI_Recv(3*ndensity, mdi.MDI_DOUBLE, mdi_engine, buf=density)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+#include <vector>
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// receive the Cartesian coordinates of the grid points
+int ndensity;
+MDI_Send_Command("<NDENSITY", mdi_engine);
+MDI_Recv(&ndensity, 1, MDI_INT, mdi_engine);
+
+// create a vector to hold the Cartesian coordinates of the grid points
+std::vector<double> density(3*ndensity);
+
+// receive the electronic density on a set of grid points
+MDI_Send_Command("<DENSITY", mdi_engine);
+MDI_Recv(density.data(), 3*ndensity, MDI_DOUBLE, mdi_engine);
+
+```
+:::
+
+::::

@@ -1,0 +1,54 @@
+(@INIT_MC-target)=
+# @INIT_MC
+```{tags} Monte Carlo
+```
+
+Initialize a Monte Carlo simulation.
+
+
+
+## @INIT_MC
+
+Go to @INIT_MC node.
+
+
+ The engine performs any initialization operations that are necessary before a Monte Carlo simulation can be performed, 
+proceeding to the `@INIT_MC` node
+
+
+### Examples
+
+
+::::{tab-set}
+
+:::{tab-item} Python
+:sync: python
+
+```python
+import mdi
+
+# connect to the engine
+mdi_engine = mdi.MDI_Accept_Communicator()
+
+# initialize a Monte Carlo simulation
+mdi.MDI_Send_Command("@INIT_MC", mdi_engine)
+
+```
+:::
+
+:::{tab-item} C++
+:sync: cpp
+
+```cpp
+#include "mdi.h"
+
+// connect to the engine
+MDI_Comm mdi_engine = MDI_Accept_Communicator();
+
+// initialize a Monte Carlo simulation
+MDI_Send_Command("@INIT_MC", mdi_engine);
+
+```
+:::
+
+::::
