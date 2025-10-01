@@ -1,0 +1,12 @@
+1:
+  name: "Simulation Control and Node Management"
+  slug: "node-management"
+  description: "Commands that control the flow of the simulation and manage the engine's nodes."
+2:
+  name: "Data Exchange"
+  slug: "data-exchange"
+  description: "Commands that exchange data between the driver and the engine."
+3: 
+  name: "Information"
+  slug: "information"
+  description: "Commands that provide information about MDI and/or an engine."
