@@ -54,7 +54,6 @@ extensions = [
     'breathe',
 ]
 
-breathe_projects = {"mdi_doxy": os.path.join(os.path.abspath('../doxygen'), 'xml')}
 breathe_projects_source = {
     "mdi_doxy" : (
         os.path.join(os.path.abspath('../MDI_Library')), ["mdi.c"]
