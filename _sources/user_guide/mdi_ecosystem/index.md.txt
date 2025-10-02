@@ -35,7 +35,7 @@ The following codes support i-PI, with which MDI is compatible (see the -ipi opt
 
 reports/LAMMPS/README
 reports/Psi4/README
-qcengine
+reports/QCEngine/README
 quantum_espresso
 tinker
 ipi

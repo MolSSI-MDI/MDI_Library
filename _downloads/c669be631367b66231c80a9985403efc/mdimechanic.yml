@@ -1,0 +1,83 @@
+code_name: 'QCEngine'
+docker:
+  image_name: 'mdi/qcengine'
+
+  build_image:
+    - apt-get update
+    - apt-get install -y git cmake wget liblapack-dev libeigen3-dev
+    - pip install numpy
+    - pip install pymdi
+    - pip install pydantic
+    - pip install PyYAML
+    - pip install Pint
+    - pip install psutil
+    - pip install py-cpuinfo
+    - pip install qcelemental
+    - pip install pytest
+
+    # Install miniconda
+    #- mkdir -p ~/miniconda3
+    #- wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    #- bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    #- rm -rf ~/miniconda3/miniconda.sh
+    #- ~/miniconda3/bin/conda init bash
+    #- ~/miniconda3/bin/conda init zsh
+
+    # Install Psi4, so that QCEngine can use it to run the tests
+    #- ~/miniconda3/bin/conda install -c psi4 psi4
+    #- git clone https://github.com/psi4/psi4.git
+    #- cd psi4
+    #- cmake -S. -Bobjdir
+    #- cd objdir
+    ##- make -j $NUM_CPU_CORES
+    #- make -j 1
+    #- make install
+
+  build_engine:
+    - |
+      if [ ! -d "/repo/build/psi4" ]; then
+        git clone https://github.com/psi4/psi4.git /repo/build/psi4
+      fi
+    - cd /repo/build/psi4
+    - |
+      if [ ! -d "objdir" ]; then
+        cmake -S. -Bobjdir -DCMAKE_INSTALL_PREFIX=/repo/build/install
+      fi
+    - cd objdir
+    #- export NUM_CPU_CORES=`grep -c ^processor /proc/cpuinfo`
+    #- make -j $NUM_CPU_CORES
+    - make -j 1
+    - make install
+
+    - |
+      if [ ! -d "/repo/build/QCEngine" ]; then
+        git clone https://github.com/MolSSI/QCEngine.git /repo/build/QCEngine
+      fi
+    - export REPO_DIR=$(pwd)
+    - cd /repo/build/QCEngine
+    - pip install --prefix=${REPO_DIR}/build/install .
+    - echo "Insert commands to build your engine code here"
+
+  validate_engine:
+    - export PATH=${PATH}:/repo/build/install/bin
+    - export PYTHONPATH=${PYTHONPATH}:/repo/build/install/lib/python3.8/site-packages
+    - cd tests/validate
+    - python input.py
+
+engine_tests:
+  # Provide at least one example input that can be used to test your code's MDI functionality
+  script:
+    #- ~/miniconda3/bin/conda init bash
+    #- ~/miniconda3/bin/conda init zsh
+    #- ~/miniconda3/bin/conda activate
+    #- which psi4
+    - export PATH=${PATH}:/repo/build/install/bin
+    - export PYTHONPATH=${PYTHONPATH}:/repo/build/install/lib/python3.8/site-packages
+    - cd tests/engine
+    - python input.py
+
+test_drivers:
+  mytest:
+    script:
+      - cd tests/drivers/mytest
+      - python mytest.py
