@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Driver Development Tutorial: Developing an AIMD Simulation Driver &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+    <title>Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD &#8212; MolSSI Driver Interface (MDI)  documentation</title>
   
   
   
@@ -375,7 +375,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="running_driver.html">Driver Use Tutorial: Running an AIMD Simulation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Driver Development Tutorial: Developing an AIMD Simulation Driver</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD</a></li>
 </ul>
 </div>
 </nav></div>
@@ -419,7 +419,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Getting Started</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Driver Development Tutorial: Developing an AIMD Simulation Driver</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD</span></li>
   </ul>
 </nav>
 </div>
@@ -436,8 +436,311 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="driver-development-tutorial-developing-an-aimd-simulation-driver">
-<h1>Driver Development Tutorial: Developing an AIMD Simulation Driver<a class="headerlink" href="#driver-development-tutorial-developing-an-aimd-simulation-driver" title="Link to this heading">#</a></h1>
+  <section id="driver-development-tutorial-developing-an-mdi-driver-for-running-ab-initio-md">
+<h1>Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD<a class="headerlink" href="#driver-development-tutorial-developing-an-mdi-driver-for-running-ab-initio-md" title="Link to this heading">#</a></h1>
+<p>Open the file called <code class="docutils literal notranslate"><span class="pre">aimd.cpp</span></code>.
+It contains the following code:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-0">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mpi.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdexcept&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mdi.h&quot;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// Initialize the MPI environment</span>
+<span class="w">  </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">world_comm</span><span class="p">;</span>
+<span class="w">  </span><span class="n">MPI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Initialize MDI</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">MDI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;The MDI library was not initialized correctly.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Confirm that MDI was initialized successfully</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">initialized_mdi</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">MDI_Initialized</span><span class="p">(</span><span class="o">&amp;</span><span class="n">initialized_mdi</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;MDI_Initialized failed.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">initialized_mdi</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;MDI not initialized: did you provide the -mdi option?.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Get the correct MPI intra-communicator for this code</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">MDI_MPI_get_world_comm</span><span class="p">(</span><span class="o">&amp;</span><span class="n">world_comm</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;MDI_MPI_get_world_comm failed.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Connect to the engines</span>
+<span class="w">  </span><span class="c1">// &lt;YOUR CODE GOES HERE&gt;</span>
+
+<span class="w">  </span><span class="c1">// Perform the simulation</span>
+<span class="w">  </span><span class="c1">// &lt;YOUR CODE GOES HERE&gt;</span>
+
+<span class="w">  </span><span class="c1">// Send the &quot;EXIT&quot; command to each of the engines</span>
+<span class="w">  </span><span class="c1">// &lt;YOUR CODE GOES HERE&gt;</span>
+
+<span class="w">  </span><span class="c1">// Synchronize all MPI ranks</span>
+<span class="w">  </span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">world_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MPI_Finalize</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The first few lines of code simply initialize both MPI and and MDI.
+Don’t worry if you don’t have access to an MPI library - the code will just fall back to a set of dummy MPI functions provided in <code class="docutils literal notranslate"><span class="pre">STUBS_MPI</span></code>.
+The call to the <code class="docutils literal notranslate"><span class="pre">MDI_MPI_get_world_comm()</span></code> function obtains from MDI an MPI intra-communicator that spans all MPI ranks associated with the driver.
+This call is important when using the MPI protocol for MDI communication, because in that context, <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> spans all ranks associated with both the driver and the engine(s).
+In general, an MDI-enabled code should call <code class="docutils literal notranslate"><span class="pre">MDI_MPI_get_world_comm()</span></code> immediately after calling <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>, and the resulting MPI intra-communicator should be used instead of <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> throughout the remainder of the code.</p>
+<p>After initializing MDI, we need to connect the driver to its engines.
+For this particular tutorial, we will use a QM engine to calculate forces and an MM engine to update the atomic coordinates each timestep.
+In the MDI standard, engines request a connection to a driver.
+The driver will need to call the <code class="docutils literal notranslate"><span class="pre">MDI_Accept_communicator()</span></code> function to accept each connection.
+The general format of this functional call looks like this:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-1">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+<span class="n">MDI_Accept_communicator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This will assign a new MDI communicator to \c comm, which functions very similarly to an MPI communicator and is used in certain MDI function calls to identify which engine is expected to send/receive data to/from the driver.
+Our AIMD driver will connect to two different engines, so we will be calling \c MDI_Accept_communicator() twice.
+We don’t know the order in which the engines will request a connection to the driver, so we will need some way to determine which engine is the QM code and which engine is the MM code.</p>
+<p>This can be accomplished through the use of the <code class="docutils literal notranslate"><span class="pre">&lt;NAME</span></code> command.
+The entire MDI standard is built around the idea that drivers can send “commands” to engines, each of which is defined by the MDI standard and has a specific outcome.
+The <code class="docutils literal notranslate"><span class="pre">&lt;NAME</span></code> command tells the engine to send the driver a string of length <code class="docutils literal notranslate"><span class="pre">MDI_NAME_LENGTH</span></code> that identifies the engine.
+The end-user is responsible for indicating the name of each engine at runtime, using the <code class="docutils literal notranslate"><span class="pre">-name</span></code> command line argument that was described in the user_tutorial.
+As authors of a driver, we will need to decide what we expect each of the engines to be named and clearly document that decision for the benefit of the end-users.
+For the purpose of this tutorial, we will expect the quantum mechanics code to be called “QM” and the molecular mechanics code to be named “MM”.</p>
+<p>Sending the <code class="docutils literal notranslate"><span class="pre">&lt;NAME</span></code> command to an engine and then receiving the engine’s name can be done as follows:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-2">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">code_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">char</span><span class="p">[</span><span class="n">MDI_NAME_LENGTH</span><span class="p">];</span>
+<span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="n">MDI_Recv</span><span class="p">(</span><span class="n">code_name</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_NAME_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_CHAR</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="err">\</span><span class="n">endcode</span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">accepts</span><span class="w"> </span><span class="n">connections</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">engines</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">assigns</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">communicator</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">engine</span><span class="w"> </span><span class="n">named</span><span class="w"> </span><span class="s">&quot;MM&quot;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="err">`</span><span class="n">mm_comm</span><span class="err">`</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">assigns</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">communicator</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">engine</span><span class="w"> </span><span class="n">named</span><span class="w"> </span><span class="s">&quot;QM&quot;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="err">`</span><span class="n">qm_comm</span><span class="err">`</span><span class="p">.</span>
+<span class="n">Replace</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comment</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">reads</span><span class="w"> </span><span class="err">`</span><span class="c1">// Connect to the engines` with:</span>
+
+<span class="err">\</span><span class="n">code</span>
+<span class="w">  </span><span class="c1">// Connect to the engines</span>
+<span class="w">  </span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">mm_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">qm_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">nengines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iengine</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iengine</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nengines</span><span class="p">;</span><span class="w"> </span><span class="n">iengine</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+<span class="w">    </span><span class="n">MDI_Accept_communicator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Determine the name of this engine</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">engine_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">char</span><span class="p">[</span><span class="n">MDI_NAME_LENGTH</span><span class="p">];</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="n">engine_name</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_NAME_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_CHAR</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">engine_name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">engine_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MM&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">mm_comm</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">throw</span><span class="w"> </span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Accepted a communicator from a second MM engine.&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">mm_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">engine_name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;QM&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">qm_comm</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">throw</span><span class="w"> </span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Accepted a communicator from a second QM engine.&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">qm_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Unrecognized engine name.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="k">delete</span><span class="p">[]</span><span class="w"> </span><span class="n">engine_name</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We are now ready to use MDI to orchestrate an AIMD simulation.
+In broad terms, during each dynamics iteration we will send a set of atomic coordinates from the MM engine to the QM engine, order the QM engine to send the driver the corresponding atomic forces, send those forces to the MM engine, and order the MM engine to perform a time step.</p>
+<p>Keep in mind that the driver doesn’t know anything about the simulated system beyond what it can query by sending MDI commands.
+MDI engines initialize basic information about the system using whatever input file format the engine’s developer chose.
+When the MM and QM engines are launched, they will each read their standard input files, perform basic initialization tasks, and then request a connection to the driver.
+The driver can request information about the engine’s system by sending certain MDI commands.
+For example, to determine the number of atoms in the MM engine’s system, you could do:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-3">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Receive the number of atoms from the MM engine</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">natoms</span><span class="p">;</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;NATOMS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_INT</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="err">\</span><span class="n">endcode</span>
+
+<span class="n">Similarly</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">learn</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coordinates</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">atoms</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">MM</span><span class="w"> </span><span class="n">engine</span><span class="err">&#39;</span><span class="n">s</span><span class="w"> </span><span class="n">system</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">could</span><span class="w"> </span><span class="k">do</span><span class="o">:</span>
+
+<span class="err">\</span><span class="n">code</span>
+<span class="w">  </span><span class="c1">// Receive the coordinates from the MM engine</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">coords</span><span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">];</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">coords</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>You could then update the coordinates of the QM engine’s system:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-4">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Send the coordinates to the QM engine</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&gt;COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">coords</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-prerequisites admonition">
+<p class="admonition-title">Prerequisites</p>
+<p>As we will discuss later, this driver assumes that the engines have both been initialized with the same number of atoms, the same atom types and ordering of atom types, and the same cell dimensions.</p>
+</div>
+<p>The following code will handle all of the work associated with driving an AIMD simulation
+Replace the comment that reads <code class="docutils literal notranslate"><span class="pre">//</span> <span class="pre">Perform</span> <span class="pre">the</span> <span class="pre">simulation</span></code> with:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-5">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Perform the simulation</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">niterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">// Number of MD iterations</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">natoms</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">qm_energy</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">mm_energy</span><span class="p">;</span>
+<span class="w"> </span>
+<span class="w">  </span><span class="c1">// Receive the number of atoms from the MM engine</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;NATOMS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_INT</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">  </span><span class="c1">// Allocate the arrays for the coordinates and forces</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">coords</span><span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">];</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">forces</span><span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">];</span>
+
+<span class="w">  </span><span class="c1">// Have the MM engine initialize a new MD simulation</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;@INIT_MD&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">  </span><span class="c1">// Perform each iteration of the simulation</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">iiteration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">iiteration</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">niterations</span><span class="p">;</span><span class="w"> </span><span class="n">iiteration</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="c1">// Receive the coordinates from the MM engine</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">coords</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Send the coordinates to the QM engine</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&gt;COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">coords</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Have the MM engine proceed to the @FORCES node</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;@FORCES&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Get the QM energy</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;ENERGY&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">qm_energy</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Get the MM energy</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;ENERGY&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mm_energy</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Receive the forces from the QM engine</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;FORCES&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Recv</span><span class="p">(</span><span class="o">&amp;</span><span class="n">forces</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Send the forces to the MM engine</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&gt;FORCES&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="n">MDI_Send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">forces</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">natoms</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="c1">// Have the MM engine proceed to the @COORDS node, which completes the timestep</span>
+<span class="w">    </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;@COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w"> </span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;timestep: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">iiteration</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">mm_energy</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">qm_energy</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The above code does the following:</p>
+<ul class="simple">
+<li><p>Queries the number of atoms from the MM engine and allocates appropriately sized arrays for the coordinates and forces</p></li>
+<li><p>Orders the MM engine to initialize a new MD simulation</p></li>
+<li><p>Begins an iterative loop over MD iterations</p>
+<ul>
+<li><p>Receives the atomic coordinates from the MM engine and updates the QM engine with them</p></li>
+<li><p>Receives the energy of the QM and MM systems</p></li>
+<li><p>Receives the atomic forces from the QM engine and sends them to the MM engine</p></li>
+<li><p>Orders the MM engine update the atomic coordinates</p></li>
+</ul>
+</li>
+</ul>
+<p>Finally, we should send an MDI command to cause the engines to exit.
+Replace the comment that reads <code class="docutils literal notranslate"><span class="pre">//</span> <span class="pre">Send</span> <span class="pre">the</span> <span class="pre">&quot;EXIT&quot;</span> <span class="pre">command</span> <span class="pre">to</span> <span class="pre">each</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">engines</span></code> with the following:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-6">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Send the &quot;EXIT&quot; command to each of the engines</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;EXIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;EXIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="driver-compilation">
+<h2>Driver Compilation<a class="headerlink" href="#driver-compilation" title="Link to this heading">#</a></h2>
+<p>The cookiecutter came with everything you need to build with CMake.
+To compile, simply navigate to the directory where you want the driver to be built, then do the following, replacing <code class="docutils literal notranslate"><span class="pre">&lt;driver_top_directory&gt;</span></code> with the path to top directory of your driver repository.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-7">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">&lt;</span><span class="n">driver_top_directory</span><span class="o">&gt;</span>
+<span class="n">make</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="using-the-driver">
+<h2>Using the Driver<a class="headerlink" href="#using-the-driver" title="Link to this heading">#</a></h2>
+<p>To test the driver, you will need access to a QM engine and an MM engine.
+The user tutorial describes how to compile QE and LAMMPS for this purpose.</p>
+<p>You will also need appropriate input files for a test simulation.
+The test files in the <code class="docutils literal notranslate"><span class="pre">MDI_AIMD_Driver</span></code> repository (see the user tutorial) will work fine, as will the scripts.
+You can simply edit <code class="docutils literal notranslate"><span class="pre">MDI_AIMD_Driver/tests/locations/MDI_AIMD_Driver</span></code> to point to your new repository and run the scripts in the manner described in the user tutorial.</p>
+</section>
+<section id="final-notes">
+<h2>Final Notes<a class="headerlink" href="#final-notes" title="Link to this heading">#</a></h2>
+<p>Note that although we used QE as the QM code and LAMMPS as the MM code, we swap out QE for any QM engine with MDI support or LAMMPS for any MM engine with MDI support.
+Furthermore, nothing about our AIMD driver strictly requires that the code named “QM” actually corresponds to a quantum mechanics code.
+You could, for example, use LAMMPS as the QM code, while another instance of LAMMPS serves as the MM code.
+Doing so would allow you to run  a calculation that will produce to same results as simply running an MD simulation entirely within a single instance of LAMMPS.
+Although not generally useful for production runs, this can be a good way to benchmark the cost of the computational overhead introduced by using our driver as a middleman between two codes.</p>
+<p>In other cases, it may be desirable to use two different MM codes as the engines if, for example, you wish to use a force field from one MM code and a thermostat from another MM code.
+The only requirement on the engines is that the “QM” code supports all of the MDI commands sent by the AIMD driver to the “QM” engine, and that the “MM” code supports all of the MDI commands sent by the AIMD driver to the “MM” engine.</p>
+</section>
 </section>
 
 
@@ -478,6 +781,20 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-compilation">Driver Compilation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-driver">Using the Driver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-notes">Final Notes</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
