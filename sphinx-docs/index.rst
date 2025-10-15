@@ -17,10 +17,12 @@ The MolSSI Driver Interface Project
     :align: center
     :class: only-light
 
-The MolSSI Driver Interface (MDI) project provides a :ref:`standardized API<mdi_standard>` for fast, on-the-fly communication between computational chemistry codes.
+The `MolSSI Driver Interface (MDI)`_ project provides a :ref:`standardized API<mdi_standard>` for fast, on-the-fly communication between computational chemistry codes.
 Traditionally, enabling communication between various computational chemistry codes has required a cumbersome process of writing and reading files to disk. 
 The MolSSI Driver Interface (MDI) project offers a streamlined API that facilitates direct, on-the-fly communication between different programs. 
 With MDI, researchers can now seamlessly link multiple computational tools using a Python or C++ script, bypassing the need for intermediate files. 
+
+.. _a MolSSI Driver Interface (MDI): https://github.com/MolSSI-MDI/MDI_Library
 
 .. grid:: 1 1 2 2
 

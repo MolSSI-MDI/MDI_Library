@@ -125,7 +125,7 @@ html_favicon = "_static/molssi_square.png"
 # documentation.
 #
 html_theme_options = {
-	"github_url": "https://github.com/MolSSI/molssi_doc_theme",
+	"github_url": "https://github.com/MolSSI-MDI/MDI_Library",
 	"twitter_url": "https://twitter.com/MolSSI_NSF",
 
 	"logo": {
