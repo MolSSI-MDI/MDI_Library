@@ -221,7 +221,7 @@
           
           
           
-          <a href="https://github.com/MolSSI/molssi_doc_theme" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -347,7 +347,7 @@
           
           
           
-          <a href="https://github.com/MolSSI/molssi_doc_theme" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -438,11 +438,69 @@
                   
   <section id="driver-development-tutorial-developing-an-mdi-driver-for-running-ab-initio-md">
 <h1>Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD<a class="headerlink" href="#driver-development-tutorial-developing-an-mdi-driver-for-running-ab-initio-md" title="Link to this heading">#</a></h1>
+<section id="starting-a-new-driver-project">
+<h2>Starting a New Driver Project<a class="headerlink" href="#starting-a-new-driver-project" title="Link to this heading">#</a></h2>
+<p>The easiest way to start work on a new driver is to use the MDI Driver Cookiecutter, which will automatically do most of the preparatory work for you.
+Using the cookiecutter will require that you have Python and Cookiecutter on your machine.
+To install Cookiecutter, you can use <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-0">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cookiecutter
+</pre></div>
+</div>
+</div>
+</div>
+<p>If you are running on an external machine and do not have write permission to the system directories, you may need to add the \c –user option:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-1">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>cookiecutter
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now use Cookiecutter to create a new driver project:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-2">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cookiecutter<span class="w"> </span>git@github.com:MolSSI/MDI_Driver_Cookiecutter.git
+</pre></div>
+</div>
+</div>
+</div>
+<p>When prompted for the \c repo_name, type \c aimd, and then when prompted to select a language, type \c 1 for C++.
+This will create a new directory called \c aimd and populate it with some of the things you will need for the driver, including a copy of the MDI Library.
+The overall directory structure is:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="bash" for="sd-tab-item-3">
+BASH</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.
+└──<span class="w"> </span>aimd
+<span class="w">    </span>├──<span class="w"> </span>CMakeLists.txt
+<span class="w">    </span>├──<span class="w"> </span>aimd
+<span class="w">        </span>├──<span class="w"> </span>CMakeLists.txt
+<span class="w">        </span>├──<span class="w"> </span>STUBS_MPI
+<span class="w">        </span>│<span class="w">   </span>└──<span class="w"> </span>mpi.h
+<span class="w">        </span>└──<span class="w"> </span>aimd.cpp
+<span class="w">        </span>└──<span class="w"> </span>mdi
+<span class="w">            </span>...
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="writing-the-driver">
+<h2>Writing the Driver<a class="headerlink" href="#writing-the-driver" title="Link to this heading">#</a></h2>
 <p>Open the file called <code class="docutils literal notranslate"><span class="pre">aimd.cpp</span></code>.
 It contains the following code:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-0">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-4">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mpi.h&gt;</span>
@@ -507,8 +565,8 @@ In the MDI standard, engines request a connection to a driver.
 The driver will need to call the <code class="docutils literal notranslate"><span class="pre">MDI_Accept_communicator()</span></code> function to accept each connection.
 The general format of this functional call looks like this:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-1">
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-5">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">;</span>
 <span class="n">MDI_Accept_communicator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comm</span><span class="p">);</span>
@@ -527,8 +585,8 @@ As authors of a driver, we will need to decide what we expect each of the engine
 For the purpose of this tutorial, we will expect the quantum mechanics code to be called “QM” and the molecular mechanics code to be named “MM”.</p>
 <p>Sending the <code class="docutils literal notranslate"><span class="pre">&lt;NAME</span></code> command to an engine and then receiving the engine’s name can be done as follows:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-2" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-2">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-6">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">code_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">char</span><span class="p">[</span><span class="n">MDI_NAME_LENGTH</span><span class="p">];</span>
 <span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&lt;NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">comm</span><span class="p">);</span>
@@ -584,8 +642,8 @@ When the MM and QM engines are launched, they will each read their standard inpu
 The driver can request information about the engine’s system by sending certain MDI commands.
 For example, to determine the number of atoms in the MM engine’s system, you could do:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-3" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-3">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-7">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Receive the number of atoms from the MM engine</span>
 <span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">natoms</span><span class="p">;</span>
@@ -606,8 +664,8 @@ C++</label><div class="sd-tab-content docutils">
 </div>
 <p>You could then update the coordinates of the QM engine’s system:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-4" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-4">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-8">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Send the coordinates to the QM engine</span>
 <span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;&gt;COORDS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">qm_comm</span><span class="p">);</span>
@@ -623,8 +681,8 @@ C++</label><div class="sd-tab-content docutils">
 <p>The following code will handle all of the work associated with driving an AIMD simulation
 Replace the comment that reads <code class="docutils literal notranslate"><span class="pre">//</span> <span class="pre">Perform</span> <span class="pre">the</span> <span class="pre">simulation</span></code> with:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-5" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-5">
+<input checked="checked" id="sd-tab-item-9" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-9">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Perform the simulation</span>
 <span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">niterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">// Number of MD iterations</span>
@@ -698,8 +756,8 @@ C++</label><div class="sd-tab-content docutils">
 <p>Finally, we should send an MDI command to cause the engines to exit.
 Replace the comment that reads <code class="docutils literal notranslate"><span class="pre">//</span> <span class="pre">Send</span> <span class="pre">the</span> <span class="pre">&quot;EXIT&quot;</span> <span class="pre">command</span> <span class="pre">to</span> <span class="pre">each</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">engines</span></code> with the following:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-6" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-6">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-10">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1">// Send the &quot;EXIT&quot; command to each of the engines</span>
 <span class="w">  </span><span class="n">MDI_Send_command</span><span class="p">(</span><span class="s">&quot;EXIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mm_comm</span><span class="p">);</span>
@@ -708,13 +766,14 @@ C++</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
+</section>
 <section id="driver-compilation">
 <h2>Driver Compilation<a class="headerlink" href="#driver-compilation" title="Link to this heading">#</a></h2>
 <p>The cookiecutter came with everything you need to build with CMake.
 To compile, simply navigate to the directory where you want the driver to be built, then do the following, replacing <code class="docutils literal notranslate"><span class="pre">&lt;driver_top_directory&gt;</span></code> with the path to top directory of your driver repository.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-7" type="radio">
-<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-7">
+<input checked="checked" id="sd-tab-item-11" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" data-sync-group="code" data-sync-id="c++" for="sd-tab-item-11">
 C++</label><div class="sd-tab-content docutils">
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">&lt;</span><span class="n">driver_top_directory</span><span class="o">&gt;</span>
 <span class="n">make</span>
@@ -790,6 +849,8 @@ The only requirement on the engines is that the “QM” code supports all of th
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-a-new-driver-project">Starting a New Driver Project</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-the-driver">Writing the Driver</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-compilation">Driver Compilation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-driver">Using the Driver</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-notes">Final Notes</a></li>

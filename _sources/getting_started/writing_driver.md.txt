@@ -1,5 +1,54 @@
 # Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD
 
+## Starting a New Driver Project
+
+The easiest way to start work on a new driver is to use the MDI Driver Cookiecutter, which will automatically do most of the preparatory work for you.
+Using the cookiecutter will require that you have Python and Cookiecutter on your machine.
+To install Cookiecutter, you can use `pip`:
+
+:::{tab-set-code}
+```bash
+pip install cookiecutter
+```
+:::
+
+If you are running on an external machine and do not have write permission to the system directories, you may need to add the \c --user option:
+
+:::{tab-set-code}
+```bash
+pip install --user cookiecutter
+```
+:::
+
+Now use Cookiecutter to create a new driver project:
+
+:::{tab-set-code}
+```bash
+cookiecutter git@github.com:MolSSI/MDI_Driver_Cookiecutter.git
+```
+:::
+
+
+When prompted for the \c repo_name, type \c aimd, and then when prompted to select a language, type \c 1 for C++.
+This will create a new directory called \c aimd and populate it with some of the things you will need for the driver, including a copy of the MDI Library.
+The overall directory structure is:
+:::{tab-set-code}
+```bash
+.
+└── aimd
+    ├── CMakeLists.txt
+    ├── aimd
+        ├── CMakeLists.txt
+        ├── STUBS_MPI
+        │   └── mpi.h
+        └── aimd.cpp
+        └── mdi
+            ...
+```
+:::
+
+## Writing the Driver
+
 Open the file called `aimd.cpp`.
 It contains the following code:
 
