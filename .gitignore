@@ -59,3 +59,13 @@ dkms.conf
 
 # pip
 *.egg-info
+
+# CMake build artifacts
+build
+
+# Sphinx-generated files
+sphinx-docs/api/mdi_standard/
+sphinx-docs/_build/
+sphinx-docs/_tags/
+sphinx-docs/__pycache__/
+sphinx-docs/user_guide/mdi_ecosystem/reports/

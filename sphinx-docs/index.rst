@@ -38,7 +38,7 @@ With MDI, researchers can now seamlessly link multiple computational tools using
     .. grid-item-card::  User Guide
       :margin: 0 3 0 0
       
-      The User Guide provides detailed information on the design of and how to use MDI.
+      The User Guide provides detailed information on the design of MDI and how to use it.
 
       .. button-link:: ./user_guide/index.html
          :color: primary
@@ -62,7 +62,7 @@ With MDI, researchers can now seamlessly link multiple computational tools using
       
       How to make your code MDI-compliant.
 
-      .. button-link:: ./developer_guide.html
+      .. button-link:: ./developer_guide/index.html
          :color: primary
          :expand:
 
