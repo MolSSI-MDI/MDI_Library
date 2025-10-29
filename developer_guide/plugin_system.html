@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The MDI Plugin System &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=b0aaeb25" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/plugin_system';</script>
+    <link rel="icon" href="../_static/molssi_square.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Opening Plugins" href="opening_plugins.html" />
+    <link rel="prev" title="Developer Guide" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mdi-light.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/mdi-dark.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">MolSSI Driver Interface</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The MDI Plugin System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opening_plugins.html">Opening Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launching_plugins.html">Launching Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_nuances.html">Technical Details of the Plugin System</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">The MDI Plugin System</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="the-mdi-plugin-system">
+<h1>The MDI Plugin System<a class="headerlink" href="#the-mdi-plugin-system" title="Link to this heading">#</a></h1>
+<p>In addition to supporting inter-process communication between separately compiled codes, MDI also enables developers to build and utilize MDI engines as highly interoperable plugin libraries.
+The MDI Plugin System defines a standardized application programming interface (API) for plugins, so that drivers can be written in a manner that is agnostic with respect to the API of any particular library.
+This is highly desirable for situations in which end-users might wish to be able to chose between different libraries that perform similar tasks (for example, different time integration codes, or different codes that perform energy evaluations using quantum mechanics).
+Using the MDI Plugin System, developers can support this flexibility without needing to write library-specific code for each library that end-users might wish to use.
+Moreover, it is not necessary to explicitly link against MDI plugins during the driver compile process; instead, the MDI Library loads any desired plugins at runtime.
+As a result, the choice of which specific plugin(s) should be utilized by a driver can be easily changed without needing to recompile the driver.</p>
+<section id="inter-process-vs-intra-process-interoperability">
+<h2>Inter-process vs. Intra-process Interoperability<a class="headerlink" href="#inter-process-vs-intra-process-interoperability" title="Link to this heading">#</a></h2>
+<p>In the case of TCP/IP-based or MPI-based interoperability, the driver and the engine(s) are executed as separate processes; henceforth, this model of interoperability will be described as “inter-process interoperability”.
+By contrast, library code is executed by one or more of the same process(es) that execute the calling program; this will henceforth be described as “intra-process interoperability”.</p>
+<figure>
+  <img src="../_static/Parallelization_vertical.jpg" alt="Illustration of the differences between inter-process and intra-process interoperability." />
+  <figcaption>Figure 1. Illustration of the differences between inter-process and intra-process interoperability.  Part (a) illustrates inter-process interoperability using TCP/IP sockets for communication between codes.  In this particular case, a driver is launched on a single MPI rank (i.e., in serial), while two engines (labeled "Engine A" and "Engine B") are launched on two MPI ranks each.  Communication between the processes is handled via TCP/IP sockets.  Part (b) illustrates intra-process interoperability. 
+ In this case, a driver is launched on eight MPI ranks.  At various points during the driver's runtime, one or more of these ranks execute the functions of various libraries (labeled "Library A", "Library B", and "Library C".).</figcaption>
+</figure>
+<p>Figure 1 illustrates the differences between these two approaches to interoperability.
+Whereas the inter-process interoperability paradigm requires that the driver and the engine be executed on separate, simultaneously running computational processes, the intra-process paradigm involves a program and a library that can be executed on the same set of processes.
+Moreover, control flow passes between the program’s code and the library’s code in a sequential manner: when the program calls a library API function, the process(es) that make the call pass control to the library function, and the library function returns control upon completion.
+An entire calculation within the intra-process paradigm can thus be performed by a single process that executes the relevant program and library code in a serial manner.
+In the case of a parallelized calculation within the intra-process interoperability paradigm, there is considerable flexibility in the way work is distributed between the processes; for example, some processes could be assigned to run library functions, while others might never call any library functions.</p>
+<p>The intra-process paradigm offers several potential advantages relative to the inter-process paradigm, including the following:</p>
+<ul class="simple">
+<li><p><strong>Elimination of communication costs.</strong>
+In the case of intra-process interoperability, “communication” with the library’s code base may involve only trivially inexpensive memory copy operations associated with passing data to/from the library’s functions.</p></li>
+<li><p><strong>More flexible load balancing.</strong>
+The inter-process approach requires that the processes running the engine code(s) be executed continuously, so that they can listen for commands from the driver.
+This can lead to poor load balancing, as the engines must run even when the driver does not have any work to assign to them.
+In the intra-process approach, the library code is only executed by any process(es) that call the library’s functions, and ceases to be executed when the function call returns.</p></li>
+<li><p><strong>Simpler end-user launch process.</strong>
+In the inter-process approach, it is necessary for the end-user to either launch all of the interoperating codes with separate commands (in the case of TCP-based communication), or launch all of the codes as a single MPMD parallelized calculation (in the case of MPI-based communication).
+Both of these scenarios can be more complex than launching a single code that has one or more library dependencies.</p></li>
+</ul>
+<p>One promising approach to mitigating both of the above disadvantages is that of a plugin framework.
+Plugins are widely used within the software development community, and provide a mechanism by which the behavior of a program can be extended or modified by a separate plugin code, which can be installed without any need to recompile the program itself.
+Within the scientific community, plugin frameworks have been employed in the areas of biodiversity, biophysics, biomedical imaging.
+Certain computational chemistry packages, including PySCF and OpenMM, support robust plugin systems, while the PluginPlay project, which is used by NWChemEx, is designed to facilitate the creation of modular computational chemistry plugins.</p>
+<p>Plugins typically take the form of shared libraries, which, unlike static libraries, can be dynamically loaded by a program at runtime.
+Upon launching, the program will search for any plugins the user has installed, often by either examining a specific directory or by reading a list of installed plugins from a file.
+All of the relevant plugins are then dynamically loaded by the program.
+A proper plugin framework will define certain parameters by which the program and its plugins may interact.
+The framework will typically mandate certain standardized method interfaces that must be defined within each of the plugins for the purpose of initializing and running them, while the program must typically define certain methods that can be executed by the plugins.
+Additional details can vary widely between different plugin frameworks.</p>
+<p>Plugins offer significant interoperability advantages compared to other types of libraries.
+They can be straightforwardly swapped by the end-user at runtime, without requiring that the code be recompiled.
+Moreover, it is not necessary for the source code of software that utilizes plugins to explicitly recognize the existence of any particular plugin.
+As a result, each of the plugins can be developed and distributed independently from the main software.
+This is especially desirable for situations in which a developer wishes to offer end-users the option of selecting between two or more libraries that provide similar functionality.
+For example, the developer of a QM/MM driver might wish to grant users a choice between multiple QM or MM libraries.
+If each of these libraries implements a different API, the driver’s code base must include code that explicitly calls the unique API functions of each library that it supports.
+This adds to the workload of the developer, contributes to the technical debt of the code base, complicates the process of compiling the code, and introduces additional work whenever support for another library is desired.
+Furthermore, the end-user must ensure that the driver is compiled and configured in a manner that allows it to use whichever specific libraries the end-user prefers; changing this selection may require recompiling the driver.
+By contrast, if each of the libraries conform to a consistent plugin framework, the driver can be written in a way that is agnostic to the implementation details of any specific plugin.
+Furthermore, the driver does not need to link against any plugins at compile time, and the choice of which specific libraries to use can be deferred until runtime.
+Figure 2 illustrates the differences between these two approaches to using libraries.</p>
+<figure>
+  <img src="../_static/Plugin_Approach.jpg" alt="Illustration of the differences between plugins and a more traditional approach to library usage." />
+  <figcaption>Figure 2. Illustration of the differences between plugins and a more traditional approach to library usage.  Part (a) illustrates a traditional library approach, in which a program can link against either "Library A" or "Library B", which offer similar functionality.  The program's source code must include explicit calls to the API functions of each of the libraries.  For improved code organization, these library-specific calls may be wrapped within a generic wrapper, so that the library API functions are isolated within the wrapper, rather than being scattered throughout the entire code base.  The program's compile process may give the end-user a choice of which library to link against, and changing this selection may require recompiling the code.  In this illustration, the program has been compiled and linked against Library A, but not Library B.  Part (b) illustrates the plugin approach.  In this case, the program implements a plugin framework, and several plugins conform to this framework.  The program does not need to explicitly acknowledge the existence of any specific plugin, and the choice of which plugin is used can be deferred until runtime.</figcaption>
+</figure>
+</section>
+<section id="overview-of-the-mdi-plugin-system">
+<h2>Overview of the MDI Plugin System<a class="headerlink" href="#overview-of-the-mdi-plugin-system" title="Link to this heading">#</a></h2>
+<p>The MDI Plugin System implements a standardized, general-purpose plugin framework that operates within an intra-process interoperability paradigm.</p>
+<p>The MDI Plugin System is designed to conform to the design goals of the MDI Project as a whole, some of which are highly atypical of the priorities of existing plugin systems.
+Pursuit of these goals within the context of plugins introduces several nuanced, low-level computer science challenges that have required the implementation of novel and sophisticated solutions.</p>
+<p>The following are among the most notable characteristics of the MDI Plugin System:</p>
+<ul class="simple">
+<li><p><strong>It is general-purpose.</strong>
+Whereas plugin frameworks often are intended for the purpose of allowing a specific program to utilize plugins that are designed for that particular program, the MDI Plugin System enables the creation of plugins that are broadly usable by many different driver programs corresponding to a diverse range of application areas.
+Drivers and plugins can straightforwardly interact through the broadly useful set of commands defined by the extensible MDI Standard.
+Alternatively, developers in fields far removed from computational chemistry (such as biodiversity or astrophysics) can easily create their own standardized command set and use it within the context of the MDI Plugin System.</p></li>
+<li><p><strong>It uses the MDI Library’s existing API.</strong>
+The MDI Library provides functions that allow MDI drivers to open MDI-compliant plugins.
+Once a plugin has been opened, the driver can interact with the plugin using the same functions that can be used to communicate with external MDI engines (e.g., <code class="docutils literal notranslate"><span class="pre">MDI_Send_command</span></code>, <code class="docutils literal notranslate"><span class="pre">MDI_Send</span></code>, <code class="docutils literal notranslate"><span class="pre">MDI_Recv</span></code>, etc.).
+Although the underlying operations performed by these function calls are quite different depending on whether the driver is interacting via TCP/IP sockets, MPI, or through an opened plugin, the MDI Library appropriately handles these distinctions without requiring the developer to be cognizant of them.
+For example, when the driver calls <code class="docutils literal notranslate"><span class="pre">MDI_Recv</span></code> (which receives data sent from the engine) in the context of a plugin, the MDI Library merely copies the data returned from the plugin into a buffer that is provided by the driver.
+From the perspective of an MDI Driver developer, there is little difference between using an MDI-compliant plugin and using an external MDI engine, and the amount of code reuse that is achievable when supporting both of these use cases is large.
+Similarly, developers of MDI engines can typically implement MDI plugin support with relatively little additional effort.</p></li>
+<li><p><strong>It supports cross-language plugins.</strong>
+Computational molecular sciences codes are written in a wide variety of different languages, and MDI is designed to support interoperability between codes written in different languages.
+The MDI Plugin System allows developers of Fortran, C, and C++ codes to construct MDI-compliant plugins, which can be used by any MDI driver, including drivers written in Python.
+In addition, Python scripts that define certain functions required by the MDI Plugin System can be used as MDI plugins.
+In this way, it is straightforward for a Fortran code to run a Python code as an MDI plugin, or <em>vice versa</em>.</p></li>
+<li><p><strong>It supports the MDI Node System.</strong>
+The MDI Node System allows codes to interact at a highly granular level.
+For example, when LAMMPS runs as an MDI engine, it is possible for an MDI driver to instruct LAMMPS to run a molecular dynamics simulation, while interacting with LAMMPS at multiple points within each timestep (such as immediately after evaluating the atomic forces, or after updating the positions of the atoms).
+This allows the driver to inject modifications to the time integration process being executed by LAMMPS, and is an essential requirement for enabling external drivers to implement techniques like \textit{ab inito} molecular dynamics, metadynamics, QM/MM, etc.
+The MDI Plugin System fully supports the MDI Node System.
+In this way, the MDI Plugin system facilitates a level of granularity that is characteristic of highly sophisticated library APIs.</p></li>
+</ul>
+<p>The MDI Plugin System offers two different approaches to interacting with plugins.
+The first approach is to use the MDI Library to “open” a plugin, in which case the MDI Library will dynamically load the plugin and allow the driver to execute the plugin’s functionality using the same set of MDI functions that can be used to interact with external engines.
+This approach allows developers to design drivers that are agnostic with respect to the specific plugins they are using, with the choice of which specific plugin to open being made by the end-user at runtime.
+Nonetheless, there is one key limitation associated with “opening” MDI plugins: it is not possible to use most of the features of the MDI Node System when interacting with plugins in this manner.
+Specifically, such plugins are confined to listening for commands at the <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code> node; it is not possible to command them to proceed to any other nodes.
+The <a class="reference internal" href="opening_plugins.html"><span class="doc std std-doc">Opening Plugins</span></a> page describes this approach in detail.</p>
+<p>The second approach is to “launch” plugins.
+This approach requires the driver to provide a callback function to the MDI Library, which is executed each time the MDI plugin enters a new node.
+By “launching” plugins, drivers can fully utilize the features of the MDI Node System.
+The <a class="reference internal" href="launching_plugins.html"><span class="doc std std-doc">Launching Plugins</span></a> page describes this approach in detail.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Developer Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="opening_plugins.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Opening Plugins</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inter-process-vs-intra-process-interoperability">Inter-process vs. Intra-process Interoperability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview-of-the-mdi-plugin-system">Overview of the MDI Plugin System</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer_guide/plugin_system.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2019-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+        <p class="sphinx-version">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br>
+        </p>
+        
+
+        <p class="theme-version">
+        Built with a customized <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+        </p>
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
+</div></div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

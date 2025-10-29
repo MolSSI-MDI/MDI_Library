@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Developer Guide &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+    <title>Opening Plugins &#8212; MolSSI Driver Interface (MDI)  documentation</title>
   
   
   
@@ -47,12 +47,12 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/opening_plugins';</script>
     <link rel="icon" href="../_static/molssi_square.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The MDI Plugin System" href="plugin_system.html" />
-    <link rel="prev" title="C++ API" href="../api/mdi_library/cpp_interface.html" />
+    <link rel="next" title="Launching Plugins" href="launching_plugins.html" />
+    <link rel="prev" title="The MDI Plugin System" href="plugin_system.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -161,7 +161,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="index.html">
     Developer Guide
   </a>
 </li>
@@ -306,7 +306,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+  <a class="nav-link nav-internal" href="index.html">
     Developer Guide
   </a>
 </li>
@@ -373,9 +373,9 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="plugin_system.html">The MDI Plugin System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opening_plugins.html">Opening Plugins</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Opening Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="launching_plugins.html">Launching Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plugin_nuances.html">Technical Details of the Plugin System</a></li>
 </ul>
@@ -418,7 +418,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Developer Guide</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Opening Plugins</span></li>
   </ul>
 </nav>
 </div>
@@ -435,22 +438,36 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="developer-guide">
-<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h1>
-<p>There are two main ways you may use MDI: by running a pre-made MDI driver or by writing your own MDI driver.</p>
-<p>The MDI API is sufficiently general to support a wide variety of techniques, including</p>
-<ul class="simple">
-<li><p>Quantum Mechanics/Molecular Mechanics (QM/MM)</p></li>
-<li><p>ab initio molecular dynamics (AIMD)</p></li>
-<li><p>Machine learning</p></li>
-<li><p>Advanced sampling</p></li>
-<li><p>Path integral molecular dynamics (PIMD)</p></li>
-<li><p>and many more!</p></li>
-</ul>
-<p>This section provides introductory tutorials for using a pre-made MDI driver and for writing
-your own MDI Driver.</p>
-<div class="toctree-wrapper compound">
-</div>
+  <section id="opening-plugins">
+<h1>Opening Plugins<a class="headerlink" href="#opening-plugins" title="Link to this heading">#</a></h1>
+<p>“Opening” plugins is a simple process for developers of MDI drivers, and is accomplished by calling an <code class="docutils literal notranslate"><span class="pre">MDI_Open_plugin</span></code> function.
+This function has slightly different forms depending on the language (i.e., C/C++, Fortran, or Python), but its arguments always include (1) the name of the desired plugin, (2) any plugin-specific options needed to configure the plugin (for example, a path to an input file that is read as part of the plugin’s initialization process), and (3) an MPI intra-communicator that spans all ranks that the plugin’s functions should be executed on.
+Depending on the needs of the driver, the plugin can be configured to execute on all of the driver’s ranks, or on a particular subset of ranks.
+The <code class="docutils literal notranslate"><span class="pre">MDI_Open_plugin</span></code> function provides the driver with an MDI communicator upon return, which can be used to interact with the plugin using the same set of MDI Library functions that enable communication with external engines.</p>
+<p>For example, the driver can use the <code class="docutils literal notranslate"><span class="pre">MDI_Send_command</span></code> function to “send” commands to the plugin, while using the <code class="docutils literal notranslate"><span class="pre">MDI_Send</span></code> and <code class="docutils literal notranslate"><span class="pre">MDI_Recv</span></code> functions to “send” and “receive” data, respectively.
+Internally, the MDI Library simply stores data that is “sent” via these commands within temporary buffers.
+When a code calls <code class="docutils literal notranslate"><span class="pre">MDI_Recv</span></code>, the MDI Library copies the stored data into a receive buffer supplied by the code.
+MDI adopts this strategy in order to establish a standardized interface that allows drivers to interact with engines in a consistent manner, regardless of whether they are operating within an inter-process or intra-process interoperability regime.
+In the case of MPI-parallelized codes, data sent and received via MDI communication functions is only communicated on a single MPI rank; MDI does not currently enable distributed communication between drivers and engines.
+This is true for both the inter-process and intra-process regimes, and may require that parallelized codes perform MPI gather or scatter operations on data that is sent or received, respectively, via MDI.</p>
+<p>Plugins are required to define a standardized <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> function that must accept the name of a command as an argument, and then respond to the command in the manner described by the MDI Standard.
+This is the same behavior that the MDI Standard requires of external engines whenever they receive a command via <code class="docutils literal notranslate"><span class="pre">MDI_Recv_command</span></code>, and it is generally possible to utilize the same code to support both the plugin and engine use cases; the plugin use case simply requires that this functionality be accessible via a standardized function interface.
+The MDI Library calls the <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> function whenever it is necessary for the plugin to respond to a command from the driver.
+For example, if the driver sends the command that requests the name of the plugin’s current node (i.e., <code class="docutils literal notranslate"><span class="pre">&lt;&#64;</span></code>), the plugin’s <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> must respond by calling <code class="docutils literal notranslate"><span class="pre">MDI_Send</span></code> to send the name of the current node to the driver.</p>
+<p>Plugins are also required to define an <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_open_&lt;plugin_name&gt;</span></code> function (where <code class="docutils literal notranslate"><span class="pre">&lt;plugin_name&gt;</span></code> is replaced by the name of the plugin).
+This function must perform any initialization that is necessary before the plugin’s <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> function can be called, and it must register the \lstinline{execute_command} function with the MDI Library.
+Finally, the plugin must define an <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_close_&lt;plugin_name&gt;</span></code> function that the MDI Library executes when the plugin is sent the <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> command, and which performs any operations necessary for the plugin to exit cleanly and without memory leaks.
+The primary actions required to add plugin support to an existing MDI engine are thus to (1) ensure that the code can be compiled as a shared library, or that it is a Python script, (2) define an <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> function (which may simply involve defining a standard function interface for accessing existing code), (3) define an <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_open_&lt;plugin_name&gt;</span></code> function, and (4) define an <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_close_&lt;plugin_name&gt;</span></code> function.</p>
+<p>Multiple plugins can be opened simultaneously using <code class="docutils literal notranslate"><span class="pre">MDI_Open_plugin</span></code>, with each one being given its own MPI intra-communicator to define the ranks it will operate on.
+These MPI intra-communicators can span overlapping sets of MPI ranks, if desired; this makes it possible for drivers to implement a wide range of parallelization techniques without any limitations from MDI.
+Whenever the driver interacts with a plugin through an MDI function, the function must be called by all of the ranks that span the plugin’s MPI intra-communicator; this ensures that the MDI Library is able to call the plugin’s <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> function with all the ranks that should execute it.</p>
+<p>A key limitation associated with the use of <code class="docutils literal notranslate"><span class="pre">MDI_Open_plugin</span></code> is that plugins it opens can only respond to commands from the <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code> node.
+This is because the MDI Node System is designed to allow access to low-level simulation operations at a granular level (for example, manipulation of a time integration process at several points within each time integration step).
+Access to these operations through any plugin interface would require either (1) careful structuring of the plugin to provide API access to such low-level operations as a primary design goal, or (2) implementation of a system of callback functions.
+The process of implementing option (1) within an existing code base can potentially require large-scale refactoring of the code, and is thus not consistent with the goals of the MDI Project, which seeks to simplify the process of achieving interoperability in existing codes.
+Option (2) offers a substantial degree of flexibility, and has been utilized to good effect in codes such as LAMMPS and OpenMM; this is also the approach taken by MDI.
+The MDI Plugin System provides an approach by which drivers can define a callback function that is executed whenever a plugin enters an MDI node.
+This approach is described in the <a class="reference internal" href="launching_plugins.html"><span class="doc std std-doc">Launching Plugins</span></a> page.</p>
 </section>
 
 
@@ -464,20 +481,20 @@ your own MDI Driver.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../api/mdi_library/cpp_interface.html"
+       href="plugin_system.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">C++ API</p>
+        <p class="prev-next-title">The MDI Plugin System</p>
       </div>
     </a>
     <a class="right-next"
-       href="plugin_system.html"
+       href="launching_plugins.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The MDI Plugin System</p>
+        <p class="prev-next-title">Launching Plugins</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -496,7 +513,7 @@ your own MDI Driver.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer_guide/index.md.txt"
+      <li><a href="../_sources/developer_guide/opening_plugins.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

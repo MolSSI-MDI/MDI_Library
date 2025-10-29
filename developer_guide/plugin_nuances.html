@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Technical Details of the Plugin System &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=b0aaeb25" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/plugin_nuances';</script>
+    <link rel="icon" href="../_static/molssi_square.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Launching Plugins" href="launching_plugins.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mdi-light.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/mdi-dark.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">MolSSI Driver Interface</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">The MDI Plugin System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opening_plugins.html">Opening Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launching_plugins.html">Launching Plugins</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Technical Details of the Plugin System</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Technical Details of the Plugin System</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="technical-details-of-the-plugin-system">
+<h1>Technical Details of the Plugin System<a class="headerlink" href="#technical-details-of-the-plugin-system" title="Link to this heading">#</a></h1>
+<p>This page describes certain technical nuances of the plugin system that are not essential for typical developers who simply wish to use the MDI plugin system to interoperate codes using MDI, but may be useful for individuals who wish to understand the MDI implementation details more closely.</p>
+<section id="plugin-flow-of-control">
+<h2>Plugin FLow of Control<a class="headerlink" href="#plugin-flow-of-control" title="Link to this heading">#</a></h2>
+<p>As described in the <a class="reference internal" href="opening_plugins.html"><span class="doc std std-doc">Opening Plugins</span></a> and <a class="reference internal" href="launching_plugins.html"><span class="doc std std-doc">Launching Plugins</span></a> pages, the MDI Plugin System largely abstracts the differences between plugins and external engines.
+This feature is highly advantageous from the perspective of developers of MDI-enabled codes, who only need to learn a single API for both the inter-process and intra-process paradigms, and can often reuse large amounts of code when supporting both use cases.
+Underneath the MDI Library’s layer of abstraction, the two use cases are extremely different, especially in the case of “launched” plugins.
+In order to make plugins interact via MDI in a way that superficially appears similar to engines, the MDI Library must engage in careful and sophisticated management of the flow of control between the driver and the plugin.</p>
+<p>The basic sequence of control flow when a driver launches a plugin is as follows:</p>
+<ol class="arabic simple">
+<li><p>The driver calls <code class="docutils literal notranslate"><span class="pre">MDI_Launch_plugin</span></code>, which locates and opens the plugin, and then calls the plugin’s <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_launch_&lt;plugin_name&gt;</span></code> function.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_launch_&lt;plugin_name&gt;</span></code> function registers the <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> callback function with the MDI Library, and then enters the <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code> node, in which it will call the <code class="docutils literal notranslate"><span class="pre">MDI_Recv_command</span></code> function.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">MDI_Recv_command</span></code> function calls the <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code>.</p></li>
+<li><p>When the <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code> calls <code class="docutils literal notranslate"><span class="pre">MDI_Send_command</span></code>, the MDI Library executes the plugin’s <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> callback function.
+In the case of commands that require the driver to send information to the engine before the engine is able to respond (i.e., <code class="docutils literal notranslate"><span class="pre">&gt;FORCES</span></code>, or other MDI commands that begin with a <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> sign), the MDI Library does not call the <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> callback function until the driver sends the required information with a call to <code class="docutils literal notranslate"><span class="pre">MDI_Send</span></code>.
+Because the <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code> and <code class="docutils literal notranslate"><span class="pre">execute_command</span></code> functions are executed on the same set of ranks, “sending” and “receiving” data only involves simple memory operations.
+Data passed to <code class="docutils literal notranslate"><span class="pre">MDI_Send</span></code> calls is temporarily copied to buffers maintained by the MDI Library until it is retrieved by a corresponding <code class="docutils literal notranslate"><span class="pre">MDI_Recv</span></code> call.
+In the case of commands that cause the plugin to leave its current node (such as <code class="docutils literal notranslate"><span class="pre">&#64;INIT_MD</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, and <code class="docutils literal notranslate"><span class="pre">EXIT</span></code>), the MDI Library does not call <code class="docutils literal notranslate"><span class="pre">execute_command</span></code>, but only stores the command in memory.</p></li>
+<li><p>Before the <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code> function returns, it is required to send a command via <code class="docutils literal notranslate"><span class="pre">MDI_Send_command</span></code> that instructs the plugin to leave its current node (such as <code class="docutils literal notranslate"><span class="pre">&#64;INIT_MD</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, and <code class="docutils literal notranslate"><span class="pre">EXIT</span></code>).
+After <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code> returns, the <code class="docutils literal notranslate"><span class="pre">MDI_Recv_command</span></code> function returns this command to the plugin.</p></li>
+<li><p>The plugin responds to the command returned by the <code class="docutils literal notranslate"><span class="pre">MDI_Recv_command</span></code> function.
+This will cause it to either continue execution until it enters another node, or to exit if it receives the <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> command.
+The plugin’s <code class="docutils literal notranslate"><span class="pre">MDI_Plugin_launch_&lt;plugin_name&gt;</span></code> function only returns after the <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> command is received, or when the plugin encounters an error.</p></li>
+<li><p>At this point the call to <code class="docutils literal notranslate"><span class="pre">MDI_Launch_plugin</span></code> returns, and the ranks that called it are available to call <code class="docutils literal notranslate"><span class="pre">MDI_Launch_plugin</span></code> again, if desired.</p></li>
+</ol>
+<p>The above process enables intra-process implementations to use the same MDI Library function calls that are employed for inter-process calculations, while also taking full advantage of the granular level of control afforded by the MDI Node System.
+Developers of MDI-enabled codes do not need to be cognizant of the underlying complexities of the control flow; the MDI Library handles this automatically.</p>
+<p>One restriction associated with the callback system described above is that any given MPI rank can only launch a single MDI plugin at a time.
+There is no restriction on the number of plugins that can be simultaneously launched on different ranks, or the number of plugins that a particular rank can launch sequentially, but the driver’s callback function is not permitted to call <code class="docutils literal notranslate"><span class="pre">MDI_Launch_plugin</span></code> in a nested fashion.
+By contrast, “opened” plugins follow a much simpler flow of control, and there is no restriction upon the number of plugins that can be simultaneously opened on a single rank.
+It is also possible to launch a single plugin and open one or more plugins on the same set of ranks simultaneously; whereas a <code class="docutils literal notranslate"><span class="pre">driver_callback_func</span></code> cannot call <code class="docutils literal notranslate"><span class="pre">MDI_Launch_plugin</span></code>, it <em>can</em> call <code class="docutils literal notranslate"><span class="pre">MDI_Open_plugin</span></code> or interact with previously opened plugins.</p>
+</section>
+<section id="enabling-independent-compilation-of-mdi-supporting-codes">
+<h2>Enabling Independent Compilation of MDI-Supporting Codes<a class="headerlink" href="#enabling-independent-compilation-of-mdi-supporting-codes" title="Link to this heading">#</a></h2>
+<p>The MDI Plugin System is unusual among existing plugin frameworks, in that it is designed to enable interoperability between existing codes that were not necessarily planned with the intention of operating with the context of a plugin framework.
+The MDI Library performs numerous tasks to make this interoperability practical, including transforming data structures when necessitated by different language conventions, providing consistent unit conversions, handling the dynamic loading of shared libraries, enforcing a standardized API for interaction between the codes, <em>etc</em>.
+For these reasons, both the driver and any plugins must link against the MDI Library.</p>
+<p>One of the primary design goals of the MDI Plugin System is that it should be possible to compile the driver and any plugins independently; this feature is important for ensuring that plugins can be swapped in and out at runtime.
+Unfortunately, independent compilation of drivers and plugins introduces the possibility that some of the compiled codes might be linked against different, independently compiled builds of the MDI Library.
+These MDI Library builds might correspond to different versions of the MDI Library, or they might be compiled with different configuration options.</p>
+<p>As a general rule, when a code opens a shared library, and the code and the library link against independently compiled builds of a common dependency, there is a potential for undesirable and unpredictable behavior associated with resolution of any symbols declared within the common dependency.
+The exact outcome will depend sensitively upon the specific manner in which the two builds of the dependency were compiled; in some cases, the global state associated with each build of the dependency will be stored separately in memory (with each build having an independent set of global variables), whereas in other cases, the global state associated with the two builds may correspond to the same locations in memory (and thus be shared between the two builds).
+More nuanced outcomes are also possible.
+Furthermore, if the two builds of the common dependency correspond to different version numbers of the dependency, additional problems can arise due to inconsistencies in the application binary interface (ABI) of the two versions.</p>
+<p>This sort of inconsistent and unportable behavior is unacceptable within the context of the MDI Library.
+To address this challenge, the MDI Library maintains tight control over all data it manages.
+<em>All</em> persistent data managed by the MDI Library is contained within a single pointer to a global data structure, which is allocated by the driver.
+Upon opening or launching a plugin, this pointer is passed to the plugin, so that both the driver’s build of the MDI Library and the plugin’s build of the MDI Library are forced to use the same top-level global data structure.
+In order to future-proof against the introduction of ABI incompatibilities in new versions of the MDI Library, this top-level global data structure is little more than a collection of pointers, with each one pointing to the MDI-managed data associated with a particular code base (<em>i.e.</em>, the driver or a plugin).
+The MDI Library maintains the data associated with each of these code bases separately, greatly reducing the potential for ABI incompatibilities in cases where the driver and plugin link against different MDI Library versions.
+For cases in which data must be shared between potentially different builds of the MDI Library (such as when the driver sends information to a plugin), the data is stored within a data structure that is intended to remain stable across MDI Library versions.</p>
+<p>The above strategy essentially partitions the MDI Library’s global memory into separate allocations that are associated with each instance of a driver/plugin that is linked against the MDI Library, with each allocation potentially corresponding to a different MDI version; however, this is not <em>per se</em> sufficient to future-proof against changes in the MDI Library.
+It is also necessary to ensure that the correct version of each MDI Library function operates on the correct version of the MDI Library data.
+Additional safeguards are thus required to enforce consistency in the resolution of the MDI Library’s function symbols; this is accomplished through the careful storage and sharing of function pointers.
+When the driver initializes the MDI Library, the driver’s build of the MDI Library stores function pointers to certain MDI Library functions.
+When a plugin is opened or launched, the plugin’s build of the MDI Library stores function pointers to these same library functions, and communicates them with the driver.
+If the functions defined by the two MDI Library builds resolve to different memory locations, the function pointers allow each build to explicitly call the functions defined by the other build.
+This enables the driver’s build of the MDI Library to pass control to the plugin’s build of the MDI Library, and <em>vice versa</em>.</p>
+<p>These safeguards represent an extensive and sophisticated effort to enable independent compilation of MDI-supporting codes in a way that is robust with respect to typical compile-time choices.
+Although it is impossible to guarantee consistency under all possible circumstances (for example, situations in which different builds of the MDI Library are compiled for different machine architectures), the MDI Library is capable of self-correcting numerous issues associated with inconsistencies in symbol resolution, which represent one of the most troublesome complications associated with the usage of shared libraries.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="launching_plugins.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Launching Plugins</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plugin-flow-of-control">Plugin FLow of Control</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enabling-independent-compilation-of-mdi-supporting-codes">Enabling Independent Compilation of MDI-Supporting Codes</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer_guide/plugin_nuances.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2019-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+        <p class="sphinx-version">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br>
+        </p>
+        
+
+        <p class="theme-version">
+        Built with a customized <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+        </p>
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
+</div></div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
