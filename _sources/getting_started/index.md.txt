@@ -11,13 +11,11 @@ The MDI API is sufficiently general to support a wide variety of techniques, inc
 * Path integral molecular dynamics (PIMD)
 * and many more!
 
-This section provides introductory tutorials for using a pre-made MDI driver and for writing
-your own MDI Driver. 
+This section provides an introductory tutorial for using a pre-made MDI driver for *ab initio* molecular dynamics. 
 
 ```{toctree}
 :hidden:
 
 running_driver
-writing_driver
 
 ```

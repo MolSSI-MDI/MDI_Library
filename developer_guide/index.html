@@ -51,7 +51,7 @@
     <link rel="icon" href="../_static/molssi_square.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The MDI Plugin System" href="plugin_system.html" />
+    <link rel="next" title="Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD" href="writing_driver.html" />
     <link rel="prev" title="C++ API" href="../api/mdi_library/cpp_interface.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -374,6 +374,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="writing_driver.html">Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plugin_system.html">The MDI Plugin System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opening_plugins.html">Opening Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="launching_plugins.html">Launching Plugins</a></li>
@@ -437,18 +438,12 @@
                   
   <section id="developer-guide">
 <h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h1>
-<p>There are two main ways you may use MDI: by running a pre-made MDI driver or by writing your own MDI driver.</p>
-<p>The MDI API is sufficiently general to support a wide variety of techniques, including</p>
+<p>The MDI Library supports two main strategies for interoperability:</p>
 <ul class="simple">
-<li><p>Quantum Mechanics/Molecular Mechanics (QM/MM)</p></li>
-<li><p>ab initio molecular dynamics (AIMD)</p></li>
-<li><p>Machine learning</p></li>
-<li><p>Advanced sampling</p></li>
-<li><p>Path integral molecular dynamics (PIMD)</p></li>
-<li><p>and many more!</p></li>
+<li><p><strong>Inter-process interoperability:</strong> In this approach, the driver and the engine(s) are launched as separate processes, with the MDI Library establishing on-the-fly communication between the drivers and engines via either TCP/IP sockets or MPI.</p></li>
+<li><p><strong>Intra-process interoperability:</strong> In this approach, the engine(s) are compiled as MDI plugins, and the driver accesses the functionality of these plugins through a standardized API. This respresents a tighter form of coupling, as the driver and engine code(s) run on the same set of processes.</p></li>
 </ul>
-<p>This section provides introductory tutorials for using a pre-made MDI driver and for writing
-your own MDI Driver.</p>
+<p>The pages in this section describe both of these strategies in greater detail, beginning with the inter-process approach.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -473,11 +468,11 @@ your own MDI Driver.</p>
       </div>
     </a>
     <a class="right-next"
-       href="plugin_system.html"
+       href="writing_driver.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The MDI Plugin System</p>
+        <p class="prev-next-title">Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
