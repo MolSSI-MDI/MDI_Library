@@ -1,22 +1,17 @@
 # Developer Guide
 
-There are two main ways you may use MDI: by running a pre-made MDI driver or by writing your own MDI driver.
+The MDI Library supports two main strategies for interoperability:
 
-The MDI API is sufficiently general to support a wide variety of techniques, including 
+- **Inter-process interoperability:** In this approach, the driver and the engine(s) are launched as separate processes, with the MDI Library establishing on-the-fly communication between the drivers and engines via either TCP/IP sockets or MPI.
 
-* Quantum Mechanics/Molecular Mechanics (QM/MM)
-* ab initio molecular dynamics (AIMD)
-* Machine learning
-* Advanced sampling
-* Path integral molecular dynamics (PIMD)
-* and many more!
+- **Intra-process interoperability:** In this approach, the engine(s) are compiled as MDI plugins, and the driver accesses the functionality of these plugins through a standardized API. This respresents a tighter form of coupling, as the driver and engine code(s) run on the same set of processes.
 
-This section provides introductory tutorials for using a pre-made MDI driver and for writing
-your own MDI Driver. 
+The pages in this section describe both of these strategies in greater detail, beginning with the inter-process approach.
 
 ```{toctree}
 :hidden:
 
+writing_driver
 plugin_system
 opening_plugins
 launching_plugins
