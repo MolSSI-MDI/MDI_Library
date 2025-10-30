@@ -1,4 +1,4 @@
-# Driver Development Tutorial: Developing an MDI Driver for Running ab initio MD
+# Driver Development Tutorial
 
 ## Starting a New Driver Project
 

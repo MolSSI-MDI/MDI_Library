@@ -1,0 +1,1254 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Engine Development Tutorial &#8212; MolSSI Driver Interface (MDI)  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=b0aaeb25" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide/engine_tutorial';</script>
+    <link rel="icon" href="../_static/molssi_square.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The MDI Plugin System" href="plugin_system.html" />
+    <link rel="prev" title="Driver Development Tutorial" href="writing_driver.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/mdi-light.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/mdi-dark.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">MolSSI Driver Interface</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MolSSI-MDI/MDI_Library" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="writing_driver.html">Driver Development Tutorial</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Engine Development Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_system.html">The MDI Plugin System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opening_plugins.html">Opening Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launching_plugins.html">Launching Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_nuances.html">Technical Details of the Plugin System</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Engine Development Tutorial</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="engine-development-tutorial">
+<h1>Engine Development Tutorial<a class="headerlink" href="#engine-development-tutorial" title="Link to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>This tutorial will guide you through the process of implementing support for MDI in an existing engine.</p>
+<p>If you just want a quick tl;dr summary of the minimum steps involved in implementing an MDI interface, see the following:</p>
+<ul class="simple">
+<li><p>If your engine is written in a compiled language, build and link your engine against MDI just like any other library.  If it is written in Python, just import the MDI Library.</p></li>
+<li><p>Add a way for end-users of your engine to send runtime options to the MDI Library, preferably through a <code class="docutils literal notranslate"><span class="pre">-mdi</span></code> command-line option.</p></li>
+<li><p>Call <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> and <code class="docutils literal notranslate"><span class="pre">MDI_Accept_communicator()</span></code> as early as possible in your engine.</p></li>
+<li><p>Add some server-like code that allows your engine to listen for commands via MDI and respond to them appropriately.</p></li>
+<li><p>If your engine uses the Message Passing Interface (MPI), be aware that the MDI Library provides a replacement for MPI_COMM_WORLD, and that some MDI functions should only be called by <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">0</span></code>.</p></li>
+</ul>
+</section>
+<section id="step-1-prepare-basic-requirements">
+<h2>Step 1: Prepare Basic Requirements<a class="headerlink" href="#step-1-prepare-basic-requirements" title="Link to this heading">#</a></h2>
+<p>In order to simplify the process of implementing, testing, and analyzing the capabilities of an MDI engine in a portable environment, this tutorial makes use of several tools.
+These tools include Git, GitHub, MDI Mechanic, and Docker.
+Please install each of these tools now:</p>
+<ul class="simple">
+<li><p>If you don’t already have a GitHub account, create one now.</p></li>
+<li><p>If you have never used Git, you may wish to work through <a class="reference external" href="https://education.molssi.org/python_scripting_cms/09-version-control/index.html">a quick tutorial on Git</a>, first.</p></li>
+<li><p>Install MDI Mechanic.  This can be done using pip, (<em>i.e.</em> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">mdimechanic</span></code>).</p></li>
+<li><p>Install Docker and launch Docker Desktop, if applicable.  You don’t need to create a DockerHub account.  You also don’t need to know much about using Docker, as MDI Mechanic will handle those details for you.</p></li>
+</ul>
+<p>Note that although the above are requirements of this tutorial, none of them are required of end-users running your code.</p>
+</section>
+<section id="step-2-initialize-an-mdi-report-repository">
+<h2>Step 2: Initialize an MDI Report Repository<a class="headerlink" href="#step-2-initialize-an-mdi-report-repository" title="Link to this heading">#</a></h2>
+<p>In this step of the tutorial, we will create a new GitHub repository to assist in the process of implementing, testing, and maintaining MDI support in your code.
+This new repository will be separate and independent from any repositories already associated with your code, and will henceforth be referred to as your <strong>report repository</strong>.</p>
+<p>Create your report repository by making a new repository on GitHub.
+This repository does <strong>not</strong> need to include the source code of your engine, so you can make this repository publically accessible even if your source code is maintained privately.
+Don’t initialize the repository with a <code class="docutils literal notranslate"><span class="pre">README</span></code> file or a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file.
+You can select whatever license you prefer; since this repository is separate from the repository that holds your engine’s source code, it does not need to be the same license governing your engine’s code.</p>
+<p>Clone the newly created repository onto your local machine:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:&lt;organization&gt;/&lt;repo_name&gt;.git
+<span class="nb">cd</span><span class="w"> </span>&lt;repo_name&gt;
+</pre></div>
+</div>
+<p>Now use MDI Mechanic to create the initial structure for this report repository:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;repo_name&gt;
+mdimechanic<span class="w"> </span>startproject<span class="w"> </span>--enginereport
+</pre></div>
+</div>
+<p>This will add several new files to your report repository, including one called <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code>.</p>
+</section>
+<section id="step-3-configure-the-mdi-mechanic-yaml-file">
+<h2>Step 3: Configure the MDI Mechanic YAML File<a class="headerlink" href="#step-3-configure-the-mdi-mechanic-yaml-file" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> file created in the previous step is used by MDI Mechanic to build your engine and to test and analyze its functionality as an MDI engine.
+If you have used continuous integration (CI) testing services in the past, you will likely recognize many similarities between <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> and the YAML files that are often used by those services.
+Open <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> in your favorite text editor, and you will see that MDI Mechanic pre-populated this file with a basic template.</p>
+<p>This tutorial will go over each field in <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> in detail, but the following is a quick summary:</p>
+<ul class="simple">
+<li><p><strong>code_name:</strong> The name of your code, which is used when printing out information.</p></li>
+<li><p><strong>image_name:</strong> MDI Mechanic will create an Docker image, which will contain a highly portable environment that can be used to reproducibly build and run your engine.  This field sets the name of the engine MDI Mechanic will create.</p></li>
+<li><p><strong>build_image</strong>: This provides a script that is used to build the Docker image that MDI Mechanic builds.  It corresponds to the steps required to prepare an environment with all of your engine’s dependencies, and is comparable to a <code class="docutils literal notranslate"><span class="pre">before_install</span></code> step in some CI services.</p></li>
+<li><p><strong>build_engine</strong>: This provides a script to build your engine.  It is executed within the context of the Docker image built by MDI Mechanic, and is comparable to an <code class="docutils literal notranslate"><span class="pre">install</span></code> step in some CI services.</p></li>
+<li><p><strong>validate_engine</strong>: This provides a script to verify that your engine has been built successfully.  It is comparable to a <code class="docutils literal notranslate"><span class="pre">script</span></code> step in some CI services.</p></li>
+<li><p><strong>engine_tests</strong>: This provides scripts used to test MDI functionality in your engine.</p></li>
+</ul>
+<p>For now, just replace the value of <code class="docutils literal notranslate"><span class="pre">code_name</span></code> with the name of your engine, and set the value of <code class="docutils literal notranslate"><span class="pre">image_name</span></code> to something appropriate.
+The naming convention for Docker images is <code class="docutils literal notranslate"><span class="pre">&lt;organization_name&gt;/&lt;image_name&gt;</span></code>, and we recommend that you follow this convention when setting <code class="docutils literal notranslate"><span class="pre">image_name</span></code>.
+If in doubt, you can set <code class="docutils literal notranslate"><span class="pre">image_name</span></code> to <code class="docutils literal notranslate"><span class="pre">&lt;engine_name&gt;/mdi_report</span></code>.</p>
+</section>
+<section id="step-4-define-your-engine-s-build-environment-using-mdi-mechanic">
+<h2>Step 4: Define Your Engine’s Build Environment Using MDI Mechanic<a class="headerlink" href="#step-4-define-your-engine-s-build-environment-using-mdi-mechanic" title="Link to this heading">#</a></h2>
+<p>This tutorial uses MDI Mechanic, which in turn runs your code within the context of a Docker image.
+In crude terms, you can think of an image as being a simulated duplicate of another computer, which has a different environment from yours (<em>i.e.</em> different installed libraries and system settings), and might be running an entirely different operating system.
+The image created by MDI Mechanic is based on the Ubunto Linux distribution.
+Starting from the basic Linux environment, MDI Mechanic installs some basic compilers (gcc, g++, and gfortran), an MPI library (MPICH), Python 3, and a handful of other dependencies (make and openssh).
+To finish building the image, MDI Mechanic executes whatever script you’ve provided in the <code class="docutils literal notranslate"><span class="pre">build_image</span></code> section of <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code>.</p>
+<p>You should now fill out <code class="docutils literal notranslate"><span class="pre">build_image</span></code> with an appropriate script that installs any dependencies necessary to compile your engine (if your engine is written in a compiled language) or to run your engine (if your engine is written in an interpreted language).
+To do this, imagine that someone handed you a Linux computer that is completely new and unused, except that the compilers and libraries mentioned in the preceeding paragraph have been installed on it.
+What would you need to do in order to install all the dependencies for your code?
+The answer to this question corresponds to the script you need to provide to <code class="docutils literal notranslate"><span class="pre">build_image</span></code>.</p>
+</section>
+<section id="step-5-build-your-engine-using-mdi-mechanic">
+<h2>Step 5: Build Your Engine Using MDI Mechanic<a class="headerlink" href="#step-5-build-your-engine-using-mdi-mechanic" title="Link to this heading">#</a></h2>
+<p>After you’ve finished with the <code class="docutils literal notranslate"><span class="pre">build_image</span></code> script, it is time to write the <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script.
+This script will be executed within the context of the image you described in the <code class="docutils literal notranslate"><span class="pre">build_image</span></code> script, so it will have access to any dependencies you installed in that script (and <em>only</em> those dependencies).
+To write the <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script, ask yourself “What would someone need to type into their terminal to acquire a copy of my code’s source and compile it?”; the answer to this question corresponds to the script you need to provide to <code class="docutils literal notranslate"><span class="pre">build_engine</span></code>.
+Here are a few important details to keep in mind as you write the <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script:</p>
+<ul class="simple">
+<li><p>The initial working directory for the <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script is the top-level directory of your report repository.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script can access and manipulate any files within your report repository, including creating new files and subdirectories.  It does not have access to any other files or directories on you filesystem (for Docker afficianados: the report repository’s top-level directory is mounted within the image to <code class="docutils literal notranslate"><span class="pre">/repo</span></code>).</p></li>
+<li><p>It is recommended that your <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script should download your engine repository’s source code to a <code class="docutils literal notranslate"><span class="pre">source</span></code> subdirectory within your report repository.</p></li>
+<li><p>It is recommended that your <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script should build/install your engine repository’s source code to a <code class="docutils literal notranslate"><span class="pre">build</span></code> subdirectory within your report repository.</p></li>
+<li><p>If your engine is <strong>not</strong> open-source, it may not be possible to simply download the source code via a command like <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code>.  In this case, you should write the <code class="docutils literal notranslate"><span class="pre">build_engine</span></code> script with the assumption that your engine’s source code has been manually copied by the end-user into a <code class="docutils literal notranslate"><span class="pre">source</span></code> subdirectory within the report repository’s top-level directory.  Uponing cloning the report repository, it will be the responsibility of the user to copy your engine’s source code into the correct location, assuming they have access to it.  Note that you <strong>absolutely should not</strong> include any private information (<em>i.e.</em> software keys, private ssh keys, private source code, <em>etc.</em>) in <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> or any other file that is commited to your report repository.  The <code class="docutils literal notranslate"><span class="pre">build</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code> directories are included in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file of the report; this prevents source code that is temporarily stored in those locations from being accidentally committed, unless <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> is overridden. Override <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> at your peril, and always be aware of anything you are committing to the repository.</p></li>
+</ul>
+<p>At this point, you can execute <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">build</span></code> in the top-level directory of your report repository.
+If this command executes successfully, great!
+If not, work to correct any problems with the build process before continuing to the next step.</p>
+</section>
+<section id="step-6-validate-the-engine-build">
+<h2>Step 6: Validate the Engine Build<a class="headerlink" href="#step-6-validate-the-engine-build" title="Link to this heading">#</a></h2>
+<p>At this point, modify the <code class="docutils literal notranslate"><span class="pre">validate_engine</span></code> field in <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> so that it performs a simple test to confirm that the engine was actually built.
+The script should return a non-zero exit code upon failure.
+If your code is written in a compiled language, this can be as simple as a check to confirm the existence of the executable file:
+\code{.yml}
+validate_engine:
+- ENGINE_EXECUTABLE_PATH=”build/&lt;engine_exectuable_name&gt;”
+- |
+if test -f “$ENGINE_EXECUTABLE_PATH”; then
+echo “$ENGINE_EXECUTABLE_PATH exists”
+else
+echo “Could not find engine executable: $ENGINE_EXECUTABLE_PATH”
+exit 1
+fi
+\endcode
+If your code is written in Python, you might instead confim that your code can be imported (<em>i.e.</em> <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">&quot;import</span> <span class="pre">&lt;engine_name&gt;&quot;</span></code>).</p>
+<p>After providing a <code class="docutils literal notranslate"><span class="pre">validate_engine</span></code> script, run <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">report</span></code> in the top-level directory of your MPI-report repository.
+This will perform a series of tests to confirm whether your engine supports MDI correctly.
+The first of these tests simply runs the <code class="docutils literal notranslate"><span class="pre">validate_engine</span></code> script.
+Since we haven’t even started implementing MDI functionality in your engine yet, it is expected that MDI Mechanic will report errors shortly after starting.
+After <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">report</span></code> stops (most likely throwing an error), you should find that there is a new <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file in your MDI-report repository.
+This file contains the full report from MDI Mechanic.
+To properly view the file, you can either commit the file and push it to GitHub, where it can be viewed at your MDI-report repository’s GitHub page, or you can install an offline markdown viewer (such as <code class="docutils literal notranslate"><span class="pre">grip</span></code>) to view it.
+There isn’t much to see now, but hopefully you can see that there is a green <code class="docutils literal notranslate"><span class="pre">working</span></code> badge next to the step labeled “The engine builds successfully”.
+If not, review the error messages from <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">report</span></code> to try to work out what when wrong, before moving on to the next step.</p>
+</section>
+<section id="step-7-provide-an-example-input">
+<h2>Step 7: Provide an Example Input<a class="headerlink" href="#step-7-provide-an-example-input" title="Link to this heading">#</a></h2>
+<p>When you run <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">report</span></code>, MDI Mechanic tries to run a series of tests to determine whether and to what extent your code supports MDI.
+To do this, MDI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then report the results.
+At this point in the tutorial, MDI Mechanic has no information about how to launch your code, so it can’t run these tests.</p>
+<p>We will now supply MDI Mechanic with everything it needs to run a calculation using your code.
+In <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> you will find an <code class="docutils literal notranslate"><span class="pre">engine_tests</span></code> field.
+This field can contain a list of scripts, each of which is intended to launch a single calculation with your code.
+For now, we only want to supply a single test script.
+The relevant part of <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> reads:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">engine_tests</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Provide at least one example input that can be used to test your code&#39;s MDI functionality</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;Insert commands to run an example calculation here&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exit 1</span>
+</pre></div>
+</div>
+<p>Replace the script in the <code class="docutils literal notranslate"><span class="pre">script</span></code> field here so that, when executed, it will launch a calculation using your code.
+This likely means that you will need to add one or more input files to your MDI-report repository, which we recommend placing in a <code class="docutils literal notranslate"><span class="pre">tests</span></code> subdirectory.
+Your <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code> might end up looking something like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">engine_tests</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cd tests/test1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../${ENGINE_EXECUTABLE_PATH} -in test.inp</span>
+</pre></div>
+</div>
+<p>The exact nature of the test calculation doesn’t matter very much.
+It should be a short calculation, since it will be run many times.
+The calculation might involve a simulation of a Lennard-Jones fluid, evaluation of the single-point energy of a water molecule, or some other small computatation.
+The most important thing about the test script is that <strong>it must return a non-zero exit value if your engine exits due to an error</strong>.</p>
+</section>
+<section id="step-8-make-the-mdi-library-available-to-the-engine">
+<h2>Step 8: Make the MDI Library Available to the Engine<a class="headerlink" href="#step-8-make-the-mdi-library-available-to-the-engine" title="Link to this heading">#</a></h2>
+<p>In this step, we will ensure that MDI functions can be called from your engine.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key1" for="sd-tab-item-0">
+C++</label><div class="sd-tab-content docutils">
+<p>Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine’s source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the <em>engine’s</em> Git repository (<strong>not</strong> in the top directory of the <em>report</em> repository):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>subtree<span class="w"> </span>add<span class="w"> </span>--prefix<span class="o">=</span>lib/mdi<span class="w"> </span>https://github.com/MolSSI-MDI/MDI_Library<span class="w"> </span>master<span class="w"> </span>--squash
+</pre></div>
+</div>
+<p>The argument to the <code class="docutils literal notranslate"><span class="pre">--prefix</span></code> option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine’s directory structure.</p>
+<p>You must then modify your engine’s build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine’s existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in <code class="docutils literal notranslate"><span class="pre">lib/mdi</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>lib/mdi/build
+<span class="nb">cd</span><span class="w"> </span>lib/mdi/build
+cmake<span class="w"> </span>-Dlibtype<span class="o">=</span>STATIC<span class="w"> </span>-Dlanguage<span class="o">=</span>C<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install<span class="w"> </span>..
+make
+make<span class="w"> </span>install
+</pre></div>
+</div>
+<p>The following CMake configuration options are likely to be useful:</p>
+<ul class="simple">
+<li><p><strong>-Dlibtype</strong>: Set this to <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>.</p></li>
+<li><p><strong>-Dlanguage</strong>: Set this to the language of the code you intend to link to the MDI library.  Valid options are <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">CXX</span></code> (for C++), <code class="docutils literal notranslate"><span class="pre">Fortran</span></code>, and <code class="docutils literal notranslate"><span class="pre">Python</span></code>.</p></li>
+<li><p><strong>-DCMAKE_C_COMPILER</strong>: Set this to the C compiler used to build your engine (if applicable).</p></li>
+<li><p><strong>-DCMAKE_Fortran_COMPILER</strong>: Set this to the Fortran compiler used to build your engine (if applicable).</p></li>
+<li><p><strong>-DCMAKE_INSTALL_PREFIX</strong>: Set this to the destination directory for the installation.</p></li>
+</ul>
+<p>Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at <code class="docutils literal notranslate"><span class="pre">${CMAKE_INSTALL_PREFIX}/lib/mdi</span></code>, and will typically be called <code class="docutils literal notranslate"><span class="pre">libmdi.a</span></code> on POSIX systems.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key2" for="sd-tab-item-1">
+Fortran</label><div class="sd-tab-content docutils">
+<p>Your engine must be compiled and linked against the MDI Library.
+The MDI Library is released under a highly permissive BSD-3 License, and developers of MDI-enabled codes are encouraged to copy the MDI Library directly into distributions of their software.
+If your code uses Git for version control, you can include the MDI Library in your engine’s source code repository as either a subtree (recommended) or a submodule.
+To incorporate a distribution of the MDI Library into your engine as a subtree, you can execute the following command in the top directory of the <em>engine’s</em> Git repository (<strong>not</strong> in the top directory of the <em>report</em> repository):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>subtree<span class="w"> </span>add<span class="w"> </span>--prefix<span class="o">=</span>lib/mdi<span class="w"> </span>https://github.com/MolSSI-MDI/MDI_Library<span class="w"> </span>master<span class="w"> </span>--squash
+</pre></div>
+</div>
+<p>The argument to the <code class="docutils literal notranslate"><span class="pre">--prefix</span></code> option indicates the location where the MDI Library source code will reside, and can be changed to better fit your engine’s directory structure.</p>
+<p>You must then modify your engine’s build process to build the MDI Library and link against it.
+The MDI Library builds using CMake.
+If your engine also builds using CMake, you can simply include the MDI Library as a CMake subpackage.
+Otherwise, you can add a few lines to your engine’s existing build scripts to execute CMake and build the MDI Library.
+The following lines illustrate how the MDI Library could be built, assuming that the source code for the MDI Library is located in <code class="docutils literal notranslate"><span class="pre">lib/mdi</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>lib/mdi/build
+<span class="nb">cd</span><span class="w"> </span>lib/mdi/build
+cmake<span class="w"> </span>-Dlibtype<span class="o">=</span>STATIC<span class="w"> </span>-Dlanguage<span class="o">=</span>Fortran<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>../install<span class="w"> </span>..
+make
+make<span class="w"> </span>install
+</pre></div>
+</div>
+<p>The following CMake configuration options are likely to be useful:</p>
+<ul class="simple">
+<li><p><strong>-Dlibtype</strong>: Set this to <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>.</p></li>
+<li><p><strong>-Dlanguage</strong>: Set this to the language of the code you intend to link to the MDI library.  Valid options are <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">CXX</span></code> (for C++), <code class="docutils literal notranslate"><span class="pre">Fortran</span></code>, and <code class="docutils literal notranslate"><span class="pre">Python</span></code>.</p></li>
+<li><p><strong>-DCMAKE_C_COMPILER</strong>: Set this to the C compiler used to build your engine (if applicable).</p></li>
+<li><p><strong>-DCMAKE_Fortran_COMPILER</strong>: Set this to the Fortran compiler used to build your engine (if applicable).</p></li>
+<li><p><strong>-DCMAKE_INSTALL_PREFIX</strong>: Set this to the destination directory for the installation.</p></li>
+</ul>
+<p>Finally, during the link stage of your build process, you will need to ensure that your code is linked against the MDI Library.
+In the case of the above example build process, the compiled static library file will be located at <code class="docutils literal notranslate"><span class="pre">${CMAKE_INSTALL_PREFIX}/lib/mdi</span></code>, and will typically be called <code class="docutils literal notranslate"><span class="pre">libmdi.a</span></code> on POSIX systems.</p>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key3" for="sd-tab-item-2">
+Python</label><div class="sd-tab-content docutils">
+<p>First, install the MDI Library during the <code class="docutils literal notranslate"><span class="pre">build_image</span></code> step in <code class="docutils literal notranslate"><span class="pre">mdimechanic.yml</span></code>.
+This can be done trivially using <code class="docutils literal notranslate"><span class="pre">pip</span></code> (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pymdi</span></code>).
+Your engine can then import the MDI Library where needed (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">mdi</span></code>).</p>
+</div>
+</div>
+</section>
+<section id="step-9-support-user-input-of-the-mdi-options">
+<h2>Step 9: Support User Input of the MDI Options<a class="headerlink" href="#step-9-support-user-input-of-the-mdi-options" title="Link to this heading">#</a></h2>
+<p>Your code should allow users to set certain MDI parameters at runtime.
+Typically, end-users should be able to set these parameters through the use of a <code class="docutils literal notranslate"><span class="pre">-mdi</span></code> command-line option when your engine is launched.
+In this case, the user should be able to launch your code by doing something along the lines of:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>engine_exectable<span class="w"> </span>--mdi<span class="w"> </span><span class="s2">&quot;-name engine -role ENGINE -method TCP -hostname localhost -port 8021&quot;</span>
+</pre></div>
+</div>
+<p>The details of how you read this command-line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-line options.
+The argument to the <code class="docutils literal notranslate"><span class="pre">--mdi</span></code> command-line option should be represented as a <code class="docutils literal notranslate"><span class="pre">char*</span></code> in C++, a <code class="docutils literal notranslate"><span class="pre">CHARACTER</span></code> array in Fortran, and a <code class="docutils literal notranslate"><span class="pre">String</span></code> in Python.
+Subsequent steps in this tutorial will assume that you have named the corresponding variable <code class="docutils literal notranslate"><span class="pre">mdi_options</span></code>.</p>
+<p>We understand that some codes prefer to eschew command-line options where possible.
+If it is preferable not to introduce support for a <code class="docutils literal notranslate"><span class="pre">--mdi</span></code> command-line option, ensure that there is some other mechanism for the user to provide the MDI parameters at runtime.</p>
+<p>Regardless of how you decide to handle user input of the MDI options, you’ll need to modify your <code class="docutils literal notranslate"><span class="pre">engine_tests</span></code> script to ensure that MDI Mechanic can pass this information to your code at runtime.
+When running tests, MDI Mechanic handles selection of MDI options by setting an <code class="docutils literal notranslate"><span class="pre">MDI_OPTIONS</span></code> environment variable.
+If you decide to use a command-line <code class="docutils literal notranslate"><span class="pre">--mdi</span></code> option to allow user input of the MDI options, you’ll need to pass this environment variable as the argument to your <code class="docutils literal notranslate"><span class="pre">--mdi</span></code> option.
+For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">engine_tests</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cd tests/test1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../${ENGINE_EXECUTABLE_PATH} --mdi ${MDI_OPTIONS} -in test.inp</span>
+</pre></div>
+</div>
+</section>
+<section id="step-10-initialize-the-mdi-library">
+<h2>Step 10: Initialize the MDI Library<a class="headerlink" href="#step-10-initialize-the-mdi-library" title="Link to this heading">#</a></h2>
+<p>Your code must initialize the MDI Library by calling the <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> function.
+This is a straightforward process, but there are a couple of important details to keep in mind if you are using both MDI and the Message Passing Interface (MPI):</p>
+<ul class="simple">
+<li><p>If your code uses MPI, you should call <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> after the call to <code class="docutils literal notranslate"><span class="pre">MPI_Init()</span></code> (or <code class="docutils literal notranslate"><span class="pre">MPI_Init_thread()</span></code>, if applicable).  Aside from the restriction, <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> should be called as early in your code as possible.  It is a best practice to call <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> immediately after calling <code class="docutils literal notranslate"><span class="pre">MPI_Init()</span></code>.  Calling MPI functions (other than <code class="docutils literal notranslate"><span class="pre">MPI_Init()</span></code> or <code class="docutils literal notranslate"><span class="pre">MPI_Init_thread()</span></code>) before calling <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code> can lead to bugs.</p></li>
+<li><p>Immediately following the call to <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>, the <code class="docutils literal notranslate"><span class="pre">MDI_MPI_get_world_comm()</span></code> function should be called.  This function accepts a pointer to an MPI communicator as its only argument.  Upon return, this pointer will point to an MPI intra-communicator that spans all ranks associated with your engine.  This intra-communicator should be used whenever you would otherwise use <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code>.  You should <strong>never</strong> perform MPI operations involving <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> in an MDI-enabled code, as <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> will in certain contexts span ranks that are not associated with your engine, but which are instead associated with the driver or other engines.</p></li>
+</ul>
+<p>The following code snippets provide a guide to correctly initializing MDI and MPI together in C++, Fortran, and Python.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key1" for="sd-tab-item-3">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mpi.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mdi.h&quot;</span>
+
+<span class="cm">/* User-selected options for the MDI Library</span>
+<span class="cm">   This should be obtained at runtime from a &quot;-mdi&quot; command-line option */</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">mdi_options</span><span class="p">;</span>
+
+<span class="cm">/* MPI intra-communicator for all processes running this code</span>
+<span class="cm">   It should be set to MPI_COMM_WORLD prior to the call to MDI_Init(), as shown below</span>
+<span class="cm">   Afterwards, you should ALWAYS use this variable instead of MPI_COMM_WORLD */</span>
+<span class="n">MPI_Comm</span><span class="w"> </span><span class="n">world_comm</span><span class="p">;</span>
+
+<span class="cm">/* Pointer to world_comm */</span>
+<span class="n">MPI_Comm</span><span class="w"> </span><span class="o">*</span><span class="n">world_comm_ptr</span><span class="p">;</span>
+
+<span class="cm">/* MDI communicator used to communicate with the driver */</span>
+<span class="n">MDI_Comm</span><span class="w"> </span><span class="n">mdi_comm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="p">;</span>
+
+<span class="cm">/* Rank of this process in the MDI-created intra-communicator */</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">myrank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="cm">/* Function to initialize both MPI and MDI */</span>
+<span class="n">initialize</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="cm">/* If using MPI, it should be initialized before MDI */</span>
+<span class="w">  </span><span class="n">MPI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* MDI should be initialized immediately after MPI */</span>
+<span class="w">  </span><span class="n">MDI_Init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_MPI_get_world_comm</span><span class="p">(</span><span class="n">world_comm_ptr</span><span class="p">);</span>
+<span class="w">  </span><span class="cm">/* Following this point, *world_comm_ptr should be used whenever you would otherwise have used MPI_COMM_WORLD */</span>
+
+<span class="w">  </span><span class="cm">/* Get the rank of this process, within the MDI-created intra-communicator */</span>
+<span class="w">  </span><span class="n">MPI_Comm_rank</span><span class="p">(</span><span class="o">*</span><span class="n">world_comm_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="p">);</span>
+
+<span class="w">  </span><span class="cm">/* Accept a connection from an external driver */</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">MDI_Accept_communicator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mdi_comm</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After implementing the call to <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>, you should recompile the code to confirm that your executable is linked to the MPI Library.</p>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key2" for="sd-tab-item-4">
+Fortran</label><div class="sd-tab-content docutils">
+<div class="highlight-f90 notranslate"><div class="highlight"><pre><span></span><span class="k">SUBROUTINE </span><span class="n">initialize</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">mdi_options</span><span class="p">,</span><span class="w"> </span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="p">,</span><span class="w"> </span><span class="n">mdi_comm</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="k">USE </span><span class="n">mpi</span><span class="p">,</span><span class="w">               </span><span class="k">ONLY</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MPI_COMM_WORLD</span>
+<span class="w">    </span><span class="k">USE </span><span class="n">mdi</span><span class="p">,</span><span class="w">               </span><span class="k">ONLY</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MDI_Init</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! User-selected options for the MDI Library</span>
+<span class="w">    </span><span class="c">! This should be obtained at runtime from a &quot;-mdi&quot; command-line option</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">CHARACTER</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">1024</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">),</span><span class="w"> </span><span class="k">OPTIONAL</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mdi_options</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MPI intra-communicator for all processes running this code</span>
+<span class="w">    </span><span class="c">! It should be set to MPI_COMM_WORLD prior to the call to MDI_Init(), as shown below</span>
+<span class="w">    </span><span class="c">! Afterwards, you should ALWAYS use this variable instead of MPI_COMM_WORLD</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">world_comm</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Rank of this process within the MDI-created intra-communicator</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">my_rank</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI communicator, obtained from MDI_Accept_communicator</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mdi_comm</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Error flag used in MDI calls</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ierr</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! If using MPI, it should be initialized before MDI</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="k">CALL </span><span class="n">MPI_Init</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI should be initialized immediately after MPI</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="k">IF</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">PRESENT</span><span class="p">(</span><span class="n">mdi_options</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span>
+<span class="k">        CALL </span><span class="n">MDI_Init</span><span class="p">(</span><span class="n">mdi_options</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
+<span class="w">	</span><span class="k">CALL </span><span class="n">MDI_MPI_get_world_comm</span><span class="p">(</span><span class="n">world_comm</span><span class="p">)</span>
+<span class="w">    </span><span class="k">END IF</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Following this point, world_comm should be used whenever you would otherwise have used MPI_COMM_WORLD</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Get the rank of this process, within the MDI-created intra-communicator</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="k">CALL </span><span class="n">MPI_Comm_rank</span><span class="p">(</span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Accept a connection from an external driver</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="k">IF</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span>
+<span class="k">        CALL </span><span class="n">MDI_Accept_communicator</span><span class="p">(</span><span class="w"> </span><span class="n">mdi_comm</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="k">END IF</span>
+<span class="k">END SUBROUTINE </span><span class="n">initialize</span>
+</pre></div>
+</div>
+<p>After implementing the call to <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>, you should recompile the code to confirm that your executable is linked to the MPI Library.</p>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key3" for="sd-tab-item-5">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the MDI Library</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mdi</span>
+
+<span class="c1"># Attempt to import mpi4py</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
+    <span class="n">use_mpi4py</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">use_mpi4py</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Get the command-line options for MDI</span>
+<span class="o">...</span>
+
+<span class="c1"># Initialize MDI</span>
+<span class="n">mdi</span><span class="o">.</span><span class="n">MDI_Init</span><span class="p">(</span><span class="n">mdi_options</span><span class="p">)</span>
+<span class="n">world_comm</span> <span class="o">=</span> <span class="n">mdi</span><span class="o">.</span><span class="n">MDI_MPI_get_world_comm</span><span class="p">()</span>
+
+<span class="c1"># Get the MPI rank of this process</span>
+<span class="k">if</span> <span class="n">world_comm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">my_rank</span> <span class="o">=</span> <span class="n">world_comm</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">my_rank</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Accept a connection from an external driver</span>
+<span class="k">if</span> <span class="n">my_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">mdi_comm</span> <span class="o">=</span> <span class="n">MDI_Accept_communicator</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-11-support-basic-mdi-communication">
+<h2>Step 11: Support Basic MDI Communication<a class="headerlink" href="#step-11-support-basic-mdi-communication" title="Link to this heading">#</a></h2>
+<p>In this step, we are going to introduce some basic code that will finally allow external drivers to connect to your code and ask it to do useful things for them.
+First, identify a point in your code when it would be appropriate for the code to accept instructions (in the form of MDI commands) from an external driver.
+The chosen point should occur after your code has completed basic initialization operations (reading input files, doing basic system setup, calling <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>, <em>etc.</em>).
+It should also be practical to implement support for a reasonable number of MDI commands at whatever point you select.
+The <a class="reference external" href="https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html">MDI Standard</a> defines numerous commands that driver developers might want to send to your code.
+You won’t need to support all of the available commands, but it is advisable to support some of the more common commands, such as commands that request or change the nuclear coordinates (<code class="docutils literal notranslate"><span class="pre">&lt;COORDS</span></code> and <code class="docutils literal notranslate"><span class="pre">&gt;COORDS</span></code>, respectively), as well as commands that request the energy (<code class="docutils literal notranslate"><span class="pre">&lt;ENERGY</span></code>) number of atoms (<code class="docutils literal notranslate"><span class="pre">&lt;NATOMS</span></code>), or (<code class="docutils literal notranslate"><span class="pre">&lt;FORCES</span></code>).
+Try to select a point where it will be possible to fulfill some of these requests.
+When in doubt, select a point that is reached early in your code’s execution.
+This tutorial will subsequently refer to the point you have selected as the <strong>MDI node</strong>.</p>
+<p>At the MDI node, you will need to insert some code (probably in the form of a called function) that handles the process of establishing communication with the external driver, accepting MDI commands from the driver, and responding to the commands appropriately.
+For the purpose of this tutorial, we will implement all of this functionality in a function called <code class="docutils literal notranslate"><span class="pre">run_mdi()</span></code>.
+Examples of a minimalistic <code class="docutils literal notranslate"><span class="pre">run_mdi()</span></code> function are provided below, in C++, Fortran, and Python.
+You can simply copy the function into your codebase and call <code class="docutils literal notranslate"><span class="pre">run_mdi()</span></code> at your MDI node.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key1" for="sd-tab-item-6">
+C++</label><div class="sd-tab-content docutils">
+<p>Call this function as <code class="docutils literal notranslate"><span class="pre">run_mdi(&quot;&#64;DEFAULT&quot;,</span> <span class="pre">my_rank,</span> <span class="pre">world_comm,</span> <span class="pre">mdi_comm)</span></code>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mpi&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mdi.h&quot;</span>
+
+<span class="n">run_mdi</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">node_name</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">my_rank</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_Comm</span><span class="w"> </span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_Comm</span><span class="w"> </span><span class="n">mdi_comm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="cm">/* Exit flag for the main MDI loop */</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">exit_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* MDI command from the driver */</span>
+<span class="w">  </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">char</span><span class="p">[</span><span class="n">MDI_COMMAND_LENGTH</span><span class="p">];</span>
+
+<span class="w">  </span><span class="cm">/* Main MDI loop */</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="k">not</span><span class="w"> </span><span class="n">exit_flag</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* Receive a command from the driver */</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">MDI_Recv_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">mdi_comm</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">MPI_Bcast</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_COMMAND_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_CHAR</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">world_comm</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Confirm that this command is actually supported at this node */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">command_supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">MDI_Check_command_exists</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">command_supported</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">command_supported</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="cm">/* Note: Replace this with whatever error handling method your code uses */</span>
+<span class="w">      </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* Respond to the received command */</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EXIT&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">exit_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="cm">/* The received command is not recognized by this engine, so exit</span>
+<span class="cm">         Note: Replace this with whatever error handling method your code uses */</span>
+<span class="w">      </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Free any memory allocations</span>
+<span class="w">  </span><span class="k">delete</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="n">command</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key2" for="sd-tab-item-7">
+Fortran</label><div class="sd-tab-content docutils">
+<p>Call this subroutine as <code class="docutils literal notranslate"><span class="pre">CALL</span> <span class="pre">run_mdi(&quot;&#64;DEFAULT&quot;,</span> <span class="pre">my_rank,</span> <span class="pre">world_comm,</span> <span class="pre">mdi_comm)</span></code>.</p>
+<div class="highlight-f90 notranslate"><div class="highlight"><pre><span></span><span class="k">SUBROUTINE </span><span class="n">run_mdi</span><span class="p">(</span><span class="w"> </span><span class="n">node_name</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="p">,</span><span class="w"> </span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="n">mdi_comm</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="k">USE </span><span class="n">mdi</span><span class="p">,</span><span class="w">              </span><span class="k">ONLY</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MDI_Send</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_Recv</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_Recv_Command</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">                                 </span><span class="n">MDI_Accept_Communicator</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">				 </span><span class="n">MDI_CHAR</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_DOUBLE</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_INT</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">				 </span><span class="n">MDI_COMMAND_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_NAME_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">				 </span><span class="n">MDI_COMM_NULL</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI command from the driver</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">CHARACTER</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">node_name</span><span class="p">(</span><span class="n">MDI_NAME_LENGTH</span><span class="p">)</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Rank of this process in world_comm</span>
+<span class="w">    </span><span class="c">! If you are not using MPI, you can set my_rank = 0</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">my_rank</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI-created intra-communicator</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">world_comm</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI communicator, obtained from MDI_Accept_communicator</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mdi_comm</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! MDI command from the driver</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">CHARACTER</span><span class="p">,</span><span class="w"> </span><span class="k">ALLOCATABLE</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command</span><span class="p">(:)</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Error flag for MDI functions</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ierr</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Flag to indicate whether a received command is supported</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command_supported</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Allocate the command array</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="k">ALLOCATE</span><span class="p">(</span><span class="w"> </span><span class="n">command</span><span class="p">(</span><span class="n">MDI_COMMAND_LENGTH</span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">! Main MDI loop</span>
+<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="n">mdi_loop</span><span class="p">:</span><span class="w"> </span><span class="k">DO</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">! Receive a command from the driver</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span>
+<span class="k">            CALL </span><span class="n">MDI_Recv_command</span><span class="p">(</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">mdi_comm</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="w"> </span><span class="p">)</span>
+<span class="w">            </span><span class="k">WRITE</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;MDI Engine received a command: &quot;</span><span class="p">,</span><span class="nb">trim</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<span class="w">        </span><span class="k">END IF</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">! Broadcast the command to all ranks</span>
+<span class="w">        </span><span class="c">! Note: Remove this line if not using MPI</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="k">CALL </span><span class="n">MPI_Bcast</span><span class="p">(</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_COMMAND_LENGTH</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_CHAR</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">world_comm</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">! Confirm that this command is actually supported at this node</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="n">command_supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">CALL </span><span class="n">MDI_Check_command_exists</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">MDI_COMM_NULL</span><span class="p">,</span><span class="w"> </span><span class="n">command_supported</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">);</span>
+<span class="w">        </span><span class="k">IF</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">command_supported</span><span class="w"> </span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">THEN</span>
+<span class="w">            </span><span class="c">! Note: Replace this with whatever error handling method your code uses</span>
+<span class="w">            </span><span class="k">CALL </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="k">END IF</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">! Respond to the received command</span>
+<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="k">SELECT CASE</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">)</span>
+<span class="w">	</span><span class="k">CASE</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;EXIT&quot;</span><span class="w"> </span><span class="p">)</span>
+<span class="w">	    </span><span class="k">RETURN</span>
+<span class="k">        CASE </span><span class="n">DEFAULT</span>
+<span class="w">            </span><span class="c">!</span>
+<span class="w">            </span><span class="c">! The received command is not recognized by this engine, so exit</span>
+<span class="w">            </span><span class="c">! Note: Replace this with whatever error handling method your code uses</span>
+<span class="w">            </span><span class="c">!</span>
+<span class="w">            </span><span class="k">WRITE</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;MDI Engine received unrecognized command: &quot;</span><span class="p">,</span><span class="nb">trim</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<span class="w">            </span><span class="k">CALL </span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">world_comm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="k">END SELECT</span>
+<span class="k">    END DO </span><span class="n">mdi_loop</span>
+<span class="k">END SUBROUTINE </span><span class="n">run_mdi</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key3" for="sd-tab-item-8">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mdi</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_mdi</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">my_rank</span><span class="p">,</span> <span class="n">world_comm</span><span class="p">,</span> <span class="n">mdi_comm</span><span class="p">):</span>
+
+    <span class="n">exit_flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Main MDI loop</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">exit_flag</span><span class="p">:</span>
+        <span class="c1"># Receive a command from the driver</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">mdi</span><span class="o">.</span><span class="n">MDI_Recv_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Broadcast the command to all ranks, if using MPI</span>
+        <span class="k">if</span> <span class="n">world_comm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">world_comm</span><span class="o">.</span><span class="n">bcast</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Confirm that this command is actually supported at this node</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mdi</span><span class="o">.</span><span class="n">MDI_Check_node_exists</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;MDI Engine received unsupported command: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+
+        <span class="c1"># Respond to the received command</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;EXIT&quot;</span><span class="p">:</span>
+            <span class="n">exit_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The received command is not recognized by this engine, so exit</span>
+            <span class="c1"># Note: Replace this with whatever error handling method your code uses</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;MDI Engine received unrecognized command: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-12-register-the-node-and-commands">
+<h2>Step 12: Register the Node and Commands<a class="headerlink" href="#step-12-register-the-node-and-commands" title="Link to this heading">#</a></h2>
+<p>MDI requires you to “register” a list of all nodes and commands your engine supports.
+This allows you, as an engine developer, to inform any drivers of what your code can do.
+MDI provides two functions that allow you to do this: <code class="docutils literal notranslate"><span class="pre">MDI_Register_node()</span></code> and <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code>.
+The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command.
+As a result, we need to call <code class="docutils literal notranslate"><span class="pre">MDI_Register_node()</span></code> once to register the <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code> node and call <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code> once to register the <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> command.</p>
+<p>Fortunately, this is a very simple process.
+The only argument to the <code class="docutils literal notranslate"><span class="pre">MDI_Register_node()</span></code> function is the name of the node, <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code> function accepts two arguments: the name of the node, and the name of the command that we are registering at that node, <code class="docutils literal notranslate"><span class="pre">EXIT</span></code>.
+In time, you may add support for additional commands at the default node, making additional calls to <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code> for each newly supported command.
+If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the <code class="docutils literal notranslate"><span class="pre">&#64;DEFAULT</span></code> node.</p>
+<p>For now, place the following code immediately after your engine’s call to <code class="docutils literal notranslate"><span class="pre">MDI_Init()</span></code>.
+It is important that it be called prior to the call to <code class="docutils literal notranslate"><span class="pre">MDI_Accept_communicator()</span></code>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key1" for="sd-tab-item-9">
+C++</label><div class="sd-tab-content docutils">
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="cm">/* Register all supported commands and nodes */</span>
+<span class="w">  </span><span class="n">MDI_Register_node</span><span class="p">(</span><span class="s">&quot;@DEFAULT&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MDI_Register_command</span><span class="p">(</span><span class="s">&quot;@DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EXIT&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key2" for="sd-tab-item-10">
+Fortran</label><div class="sd-tab-content docutils">
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c">! Register all supported commands and nodes</span>
+<span class="w">    </span><span class="k">CALL </span><span class="n">MDI_Register_node</span><span class="p">(</span><span class="s2">&quot;@DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">CALL </span><span class="n">MDI_Register_command</span><span class="p">(</span><span class="s2">&quot;@DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;EXIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="category" data-sync-id="key3" for="sd-tab-item-11">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># Register all supported commands and nodes</span>
+    <span class="n">mdi</span><span class="o">.</span><span class="n">MDI_Register_node</span><span class="p">(</span><span class="s2">&quot;@DEFAULT&quot;</span><span class="p">)</span>
+    <span class="n">mdi</span><span class="o">.</span><span class="n">MDI_Register_command</span><span class="p">(</span><span class="s2">&quot;@DEFAULT&quot;</span><span class="p">,</span> <span class="s2">&quot;EXIT&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-13-add-support-for-additional-commands">
+<h2>Step 13: Add Support for Additional Commands<a class="headerlink" href="#step-13-add-support-for-additional-commands" title="Link to this heading">#</a></h2>
+<p>It may not look like much yet, but you have now established a basic MDI interface!
+If you generate a new report by typing <code class="docutils literal notranslate"><span class="pre">mdimechanic</span> <span class="pre">report</span></code> at the command line, MDI Mechanic should confirm that your engine passes all of the “Basic Functionality Tests”.
+If your engine is still failing that test, you should return to the previous steps of this tutorial to determine what went wrong.</p>
+<p>Assuming that your MDI interface is functioning as expected, you can now begin the process of implementing support for more commands.
+Whenever you want to add support for a new command, you will need to do the following:
+-# Add code to the “Main MDI loop” in <code class="docutils literal notranslate"><span class="pre">run_mdi()</span></code> that will respond appropriately to the new command.
+-# Add a call to <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code> to register support for that command.</p>
+<p>Examine the commands specified by the <a class="reference external" href="https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html">MDI Standard</a>, and implement support for the ones that seem relevant for your engine.
+Each command in the MDI Standard describes exactly how the engine is expected to respond.
+Often, the engine is expected to either send or receive information to/from the driver.
+This is accomplished using the <code class="docutils literal notranslate"><span class="pre">MDI_Send()</span></code> and <code class="docutils literal notranslate"><span class="pre">MDI_Recv()</span></code> functions, respectively.</p>
+<p>If you are using MPI, you should be aware that all MDI-based communication must take place through <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">0</span></code>.
+Only <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">0</span></code> should call <code class="docutils literal notranslate"><span class="pre">MPI_Send()</span></code>, <code class="docutils literal notranslate"><span class="pre">MPI_Recv()</span></code>, and <code class="docutils literal notranslate"><span class="pre">MPI_Recv_Command()</span></code>.
+Depending on how you have distributed data structures across ranks, you may need to do <code class="docutils literal notranslate"><span class="pre">MPI_Gather()</span></code> or similar operations to collect the data onto <code class="docutils literal notranslate"><span class="pre">rank</span> <span class="pre">0</span></code> before calling <code class="docutils literal notranslate"><span class="pre">MDI_Send()</span></code>.
+Likewise, you may need to do <code class="docutils literal notranslate"><span class="pre">MPI_Scatter()</span></code> or similar operations to correctly distribute data after calling <code class="docutils literal notranslate"><span class="pre">MDI_Recv()</span></code>.</p>
+</section>
+<section id="step-14-add-support-for-additional-nodes">
+<h2>Step 14: Add Support for Additional Nodes<a class="headerlink" href="#step-14-add-support-for-additional-nodes" title="Link to this heading">#</a></h2>
+<p>Whenever you add a new node, you must also add a call to <code class="docutils literal notranslate"><span class="pre">MDI_Register_node()</span></code> to register support for that node.
+Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it.
+For example, if you implement five nodes, and each of them supports the <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> command, you will need to call the <code class="docutils literal notranslate"><span class="pre">MDI_Register_command()</span></code> function five times, each time with a different node as the first argument and with <code class="docutils literal notranslate"><span class="pre">EXIT</span></code> as the second argument.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="writing_driver.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Driver Development Tutorial</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="plugin_system.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The MDI Plugin System</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-prepare-basic-requirements">Step 1: Prepare Basic Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-initialize-an-mdi-report-repository">Step 2: Initialize an MDI Report Repository</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-configure-the-mdi-mechanic-yaml-file">Step 3: Configure the MDI Mechanic YAML File</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-define-your-engine-s-build-environment-using-mdi-mechanic">Step 4: Define Your Engine’s Build Environment Using MDI Mechanic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-build-your-engine-using-mdi-mechanic">Step 5: Build Your Engine Using MDI Mechanic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-validate-the-engine-build">Step 6: Validate the Engine Build</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-provide-an-example-input">Step 7: Provide an Example Input</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-make-the-mdi-library-available-to-the-engine">Step 8: Make the MDI Library Available to the Engine</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-support-user-input-of-the-mdi-options">Step 9: Support User Input of the MDI Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-10-initialize-the-mdi-library">Step 10: Initialize the MDI Library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-11-support-basic-mdi-communication">Step 11: Support Basic MDI Communication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-12-register-the-node-and-commands">Step 12: Register the Node and Commands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-13-add-support-for-additional-commands">Step 13: Add Support for Additional Commands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-14-add-support-for-additional-nodes">Step 14: Add Support for Additional Nodes</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer_guide/engine_tutorial.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+<div class="row h-10">
+    <div class="col-2">
+        <a href="https://molssi.org/" target="_blank" title="Go to MolSSI in a new tab">
+            <img src="../_static/molssi_main_logo.png" class="logo__image only-light footer_logo" alt="Logo image">
+            <img src="../_static/molssi_main_logo_inverted_white.png" class="logo__image only-dark footer_logo" alt="Logo image">
+        </a>
+    </div>
+    <div class="col-8">
+        <p> &copy; Copyright 2019-2023 <a href="https://molssi.org/">The Molecular Sciences Software Institute</a></p>
+        <p>Funded by the National Science Foundation 
+          <a href="https://nsf.gov/awardsearch/showAward?AWD_ID=1547580">OAC-1547580</a> and 
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2136142">CHE-2136142.</a></p>
+ 
+        
+        <p class="sphinx-version">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br>
+        </p>
+        
+
+        <p class="theme-version">
+        Built with a customized <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+        </p>
+
+    </div>
+    <div class="col-2">
+        <a href="https://nsf.gov/" target="_blank" title="Go to the NSF in a new tab">
+            <img src="../_static/nsf.png" class="footer_logo" alt="The NSF">
+          </a>
+    </div>
+</div></div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
