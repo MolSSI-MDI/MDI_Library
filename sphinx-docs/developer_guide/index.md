@@ -12,6 +12,7 @@ The pages in this section describe both of these strategies in greater detail, b
 :hidden:
 
 writing_driver
+engine_tutorial
 plugin_system
 opening_plugins
 launching_plugins
