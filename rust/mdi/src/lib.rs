@@ -147,6 +147,12 @@ impl Mdi {
     /// * Driver: `"-role DRIVER -name driver -method TCP -port 8021"`
     /// * Engine: `"-role ENGINE -name engine -method TCP -hostname localhost -port 8021"`
     pub fn init_with_options(options: &str) -> Result<()> {
+        // MDI_Init_code() must be called before MDI_Init_with_options()
+        let ret = unsafe { MDI_Init_code() };
+        if ret != 0 {
+            return Err(Error::InitializationFailed);
+        }
+
         let c_options = CString::new(options).map_err(|_| Error::InvalidString)?;
         let ret = unsafe { MDI_Init_with_options(c_options.as_ptr()) };
         if ret != 0 {

@@ -1,0 +1,12 @@
+[package]
+name = "engine_rust"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "engine_rust"
+path = "src/main.rs"
+
+[dependencies]
+mdi-sys = { path = "../../../rust/mdi-sys" }
+libc = "0.2"

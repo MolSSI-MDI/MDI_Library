@@ -1765,3 +1765,339 @@ def test_py_cxx_ipi(manager):
     #assert driver_out == driver_out_expected_py
     assert driver_proc.returncode == 0
     assert engine_proc.returncode == 0
+
+
+##########################
+# Rust Tests             #
+##########################
+
+def test_rust_rust_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Rust driver with Rust engine via TCP"""
+
+    # get the names of the driver and engine codes
+    driver_matches = glob.glob("../build/driver_rust*")
+    engine_matches = glob.glob("../build/engine_rust*")
+
+    if not driver_matches or not engine_matches:
+        pytest.skip("Rust test codes not built")
+
+    driver_name = driver_matches[0]
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_rust_cxx_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Rust driver with C++ engine via TCP"""
+
+    # get the names of the driver and engine codes
+    driver_matches = glob.glob("../build/driver_rust*")
+    engine_matches = glob.glob("../build/engine_cxx*")
+
+    if not driver_matches:
+        pytest.skip("Rust driver not built")
+    if not engine_matches:
+        pytest.skip("C++ engine not built")
+
+    driver_name = driver_matches[0]
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_cxx_rust_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test C++ driver with Rust engine via TCP"""
+
+    # get the names of the driver and engine codes
+    driver_matches = glob.glob("../build/driver_cxx*")
+    engine_matches = glob.glob("../build/engine_rust*")
+
+    if not driver_matches:
+        pytest.skip("C++ driver not built")
+    if not engine_matches:
+        pytest.skip("Rust engine not built")
+
+    driver_name = driver_matches[0]
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_rust_py_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Rust driver with Python engine via TCP"""
+
+    # get the name of the driver code
+    driver_matches = glob.glob("../build/driver_rust*")
+
+    if not driver_matches:
+        pytest.skip("Rust driver not built")
+
+    driver_name = driver_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        manager=manager,
+        command1=[sys.executable, "../build/engine_py.py",
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_py_rust_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Python driver with Rust engine via TCP"""
+
+    # get the name of the engine code
+    engine_matches = glob.glob("../build/engine_rust*")
+
+    if not engine_matches:
+        pytest.skip("Rust engine not built")
+
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        manager=manager,
+        command1=[sys.executable, "../build/driver_py.py",
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_py
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_f90_rust_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Fortran driver with Rust engine via TCP"""
+
+    # get the names of the driver and engine codes
+    driver_matches = glob.glob("../build/driver_f90*")
+    engine_matches = glob.glob("../build/engine_rust*")
+
+    if not driver_matches:
+        pytest.skip("Fortran driver not built")
+    if not engine_matches:
+        pytest.skip("Rust engine not built")
+
+    driver_name = driver_matches[0]
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == driver_out_expected_f90
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0
+
+def test_rust_f90_tcp(valgrind, manager, driver_dir, engine_dir):
+    """Test Rust driver with Fortran engine via TCP"""
+
+    # get the names of the driver and engine codes
+    driver_matches = glob.glob("../build/driver_rust*")
+    engine_matches = glob.glob("../build/engine_f90*")
+
+    if not driver_matches:
+        pytest.skip("Rust driver not built")
+    if not engine_matches:
+        pytest.skip("Fortran engine not built")
+
+    driver_name = driver_matches[0]
+    engine_name = engine_matches[0]
+
+    hostname = get_hostname(manager)
+
+    driver_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[driver_name,
+                  "-mdi", "-role DRIVER -name driver -method TCP -port " + str(port),
+                  ],
+    )
+    engine_command = get_command_line(
+        valgrind=valgrind,
+        manager=manager,
+        command1=[engine_name,
+                  "-mdi", "-role ENGINE -name MM -method TCP -hostname " + hostname + " -port " + str(port),
+                  ],
+    )
+
+    # run the calculation
+    driver_proc = subprocess.Popen(driver_command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+    engine_proc = subprocess.Popen(engine_command)
+    driver_tup = driver_proc.communicate()
+    engine_proc.communicate()
+
+    # convert the driver's output into a string
+    driver_out = format_return(driver_tup[0])
+    driver_err = parse_stderr(driver_tup[1])
+
+    assert driver_err == ""
+    assert driver_out == " Engine name: MM\n"
+    assert driver_proc.returncode == 0
+    assert engine_proc.returncode == 0

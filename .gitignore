@@ -62,4 +62,4 @@ dkms.conf
 
 # Rust
 Cargo.lock
-*/target
+**/target
