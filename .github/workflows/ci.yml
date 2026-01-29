@@ -206,7 +206,7 @@ jobs:
           export FC=gfortran
           export CMAKE_COVERAGE_FLAGS=""
           [ "${{ matrix.platform }}" == "ubuntu-latest" ] && export CMAKE_COVERAGE_FLAGS="-O0 -coverage"
-          cmake -Dtest_codes=ON -Dplugins=${{ matrix.plugins }} -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
+          cmake -Dtest_codes=ON -DMDI_Rust=ON -Dplugins=${{ matrix.plugins }} -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_C_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_CXX_FLAGS="$CMAKE_COVERAGE_FLAGS" -DCMAKE_Fortran_FLAGS="$CMAKE_COVERAGE_FLAGS" ..
           make VERBOSE=1
           make install
           ls
