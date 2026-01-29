@@ -1,16 +1,14 @@
 # Build the Rust driver using Cargo
+# CARGO is found by the parent CMakeLists.txt
 
-# Find cargo
-find_program(CARGO cargo REQUIRED)
-
-# Set output directory
+# Set output directories
 set(RUST_TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR}/target/release)
 set(DRIVER_RUST_EXECUTABLE ${CMAKE_BINARY_DIR}/driver_rust${CMAKE_EXECUTABLE_SUFFIX})
 
-# Build command
+# Build command - use --target-dir to build in CMake build directory
 add_custom_command(
     OUTPUT ${RUST_TARGET_DIR}/driver_rust${CMAKE_EXECUTABLE_SUFFIX}
-    COMMAND ${CARGO} build --release
+    COMMAND ${CARGO} build --release --target-dir ${CMAKE_CURRENT_BINARY_DIR}/target
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Building driver_rust with Cargo"
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/main.rs

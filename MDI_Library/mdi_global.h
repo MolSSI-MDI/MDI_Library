@@ -31,8 +31,8 @@
 
 // MDI version numbers
 #define MDI_MAJOR_VERSION_ 1
-#define MDI_MINOR_VERSION_ 4
-#define MDI_PATCH_VERSION_ 36
+#define MDI_MINOR_VERSION_ 5
+#define MDI_PATCH_VERSION_ 0
 
 // length of an MDI command in characters
 #define MDI_COMMAND_LENGTH_ 256

@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 option(MDI_CXX "Build with CXX suport - ON (DEFAULT) or OFF)" ON)
 option(MDI_Fortran "Build with Fortran support - ON (DEFAULT) or OFF)" ON)
 option(MDI_Python "Build with Python support - ON (DEFAULT) or OFF)" ON)
+option(MDI_Rust "Build with Rust support - ON (DEFAULT) or OFF)" OFF)
 option(MDI_Python_PACKAGE "Flag to install MDI as a Python package" OFF)
 option(MDI_PLUGINS "Flag to compile with support for MDI plugins" ON)
 option(MDI_Python_PLUGINS "Flag to compile with support for MDI Python plugins" ${MDI_PLUGINS})
@@ -44,6 +45,7 @@ set(use_C "")
 set(use_CXX "")
 set(use_Fortran "")
 set(use_Python "")
+set(use_Rust "")
 
 if( NOT language )
    # By default, compile for all languages
@@ -56,6 +58,16 @@ if( NOT language )
    endif()
    if( MDI_Python )
       set(use_Python "Python")
+   endif()
+   if( MDI_Rust )
+      # Check if Cargo (Rust build tool) is available
+      find_program(CARGO cargo)
+      if( CARGO )
+         set(use_Rust "Rust")
+         message(STATUS "Cargo found: ${CARGO} - Rust support enabled")
+      else()
+         message(STATUS "Cargo not found - Rust support disabled")
+      endif()
    endif()
 elseif( language STREQUAL "C" )
    set(use_C "C")
@@ -73,7 +85,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.36
+        VERSION 1.5.0
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # Check for MPI
@@ -125,6 +137,11 @@ endif()
 
 
 add_subdirectory(MDI_Library)
+
+# Build Rust bindings
+if ( use_Rust )
+   add_subdirectory(rust)
+endif()
 
 # compile test codes
 if ( test_codes )

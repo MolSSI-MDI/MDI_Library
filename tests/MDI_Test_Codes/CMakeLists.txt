@@ -107,23 +107,14 @@ if ( use_Python )
    add_subdirectory(misc_py)
 endif()
 
-# Rust test codes
-# Check if Cargo is available
-find_program(CARGO cargo)
-if ( CARGO )
-   option(MDI_Rust "Build Rust test codes" ON)
-   if ( MDI_Rust )
-      message(STATUS "Cargo found: ${CARGO}")
-      message(STATUS "Building Rust test codes")
+if ( use_Rust )
 
-      if ( test_drivers )
-         add_subdirectory(driver_rust)
-      endif()
-
-      if ( test_engines )
-         add_subdirectory(engine_rust)
-      endif()
+   if ( test_drivers )
+      add_subdirectory(driver_rust)
    endif()
-else()
-   message(STATUS "Cargo not found, skipping Rust test codes")
+
+   if ( test_engines )
+      add_subdirectory(engine_rust)
+   endif()
+
 endif()
