@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
+# On macOS, arm64 (Apple Silicon) requires a minimum deployment target of 11.0.
+# Enforce this before project() so the Fortran (and other) compiler checks succeed.
+if(APPLE AND DEFINED CMAKE_SYSTEM_PROCESSOR AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+   if(NOT DEFINED CMAKE_OSX_DEPLOYMENT_TARGET OR CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS "11.0")
+      set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS deployment target" FORCE)
+   endif()
+endif()
+
 # Options
 option(MDI_CXX "Build with CXX suport - ON (DEFAULT) or OFF)" ON)
 option(MDI_Fortran "Build with Fortran support - ON (DEFAULT) or OFF)" ON)
@@ -73,7 +81,7 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.36
+        VERSION 1.4.37
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # Check for MPI
