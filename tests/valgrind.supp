@@ -438,3 +438,11 @@
    fun:_dl_catch_exception
    fun:dl_open_worker
 }
+
+{
+ MPI4Py tuple deallocation
+ Memcheck:Cond
+ fun:__pyx_tp_dealloc_6mpi4py_3MPI_Comm
+ ...
+ fun:tupledealloc
+}
