@@ -63,16 +63,12 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
-        # Get build directory
-        ext_dir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        if not ext_dir.endswith(os.path.sep):
-            ext_dir += os.path.sep
-        install_dir = os.path.join( ext_dir, "mdi" )
+        source_dir = os.path.join(base_path, 'MDI_Library')
 
         # Set CMake arguments
-        cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + install_dir,
-                      '-DCMAKE_INSTALL_INCLUDEDIR=' + ext_dir,
-                      '-DCMAKE_INSTALL_LIBDIR=' + ext_dir,
+        cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + source_dir,
+                      '-DCMAKE_INSTALL_LIBDIR=.',
+                      '-DCMAKE_INSTALL_BINDIR=.',
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-Dlanguage=Python']
 
@@ -83,7 +79,7 @@ class CMakeBuild(build_ext):
                                cwd=self.build_temp)
         subprocess.check_call( ['cmake', '--build', '.'],
                                cwd=self.build_temp)
-        subprocess.check_call( ['cmake', '--install', '.', '--prefix', install_dir],
+        subprocess.check_call( ['cmake', '--install', '.', '--prefix', source_dir],
                                cwd=self.build_temp)
 
 
