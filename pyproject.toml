@@ -27,3 +27,6 @@ classifiers = [
 [tool.setuptools]
 packages = ["mdi"]
 package-dir = { "mdi" = "MDI_Library" }
+
+[tool.setuptools.package-data]
+mdi = ["mdi_name", "libmdi*", "mdi.dll"]
