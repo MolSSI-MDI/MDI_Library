@@ -81,12 +81,12 @@ else()
 endif()
 
 project(mdi
-        VERSION 1.4.37
+        VERSION 1.4.38
         LANGUAGES ${use_C} ${use_CXX} ${use_Fortran})
 
 # Check for MPI
 if ( mpi STREQUAL "ON" )
-   find_package(MPI REQUIRED)
+   find_package(MPI REQUIRED COMPONENTS C)
 elseif( NOT ( mpi STREQUAL "OFF") )
    find_package(MPI)
    if ( MPI_FOUND )
