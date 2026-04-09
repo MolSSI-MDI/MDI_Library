@@ -65,10 +65,10 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
-        source_dir = os.path.join(base_path, 'MDI_Library')
+        install_dir = os.path.join(os.path.abspath(self.build_temp), 'install')
 
         # Set CMake arguments
-        cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + source_dir,
+        cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + install_dir,
                       '-DCMAKE_INSTALL_LIBDIR=.',
                       '-DCMAKE_INSTALL_BINDIR=.',
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
@@ -81,19 +81,19 @@ class CMakeBuild(build_ext):
                                cwd=self.build_temp)
         subprocess.check_call( ['cmake', '--build', '.'],
                                cwd=self.build_temp)
-        subprocess.check_call( ['cmake', '--install', '.', '--prefix', source_dir],
+        subprocess.check_call( ['cmake', '--install', '.', '--prefix', install_dir],
                                cwd=self.build_temp)
 
         # Copy generated files (mdi_name and shared libraries) to build_lib
         build_lib_mdi = os.path.join(self.build_lib, 'mdi')
         os.makedirs(build_lib_mdi, exist_ok=True)
         for fname in ['mdi_name']:
-            src = os.path.join(source_dir, fname)
+            src = os.path.join(install_dir, fname)
             if os.path.exists(src):
                 shutil.copy2(src, build_lib_mdi)
-        for src in glob.glob(os.path.join(source_dir, 'libmdi*')):
+        for src in glob.glob(os.path.join(install_dir, 'libmdi*')):
             shutil.copy2(src, build_lib_mdi)
-        for src in glob.glob(os.path.join(source_dir, 'mdi.dll')):
+        for src in glob.glob(os.path.join(install_dir, 'mdi.dll')):
             shutil.copy2(src, build_lib_mdi)
 
 
