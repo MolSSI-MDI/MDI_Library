@@ -65,7 +65,9 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
-        install_dir = os.path.join(os.path.abspath(self.build_temp), 'install')
+        build_temp = os.path.abspath(self.build_temp)
+        cmake_build_dir = os.path.join(build_temp, 'cmake_build')
+        install_dir = os.path.join(build_temp, 'install')
 
         # Set CMake arguments
         cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + install_dir,
@@ -75,14 +77,13 @@ class CMakeBuild(build_ext):
                       '-Dlanguage=Python']
 
         # Do the CMake install
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
-        subprocess.check_call( ['cmake', ext.source_dir] + cmake_args,
-                               cwd=self.build_temp)
-        subprocess.check_call( ['cmake', '--build', '.'],
-                               cwd=self.build_temp)
-        subprocess.check_call( ['cmake', '--install', '.', '--prefix', install_dir],
-                               cwd=self.build_temp)
+        os.makedirs(cmake_build_dir, exist_ok=True)
+        subprocess.check_call(['cmake', ext.source_dir] + cmake_args,
+                              cwd=cmake_build_dir)
+        subprocess.check_call(['cmake', '--build', '.'],
+                              cwd=cmake_build_dir)
+        subprocess.check_call(['cmake', '--install', '.'],
+                              cwd=cmake_build_dir)
 
         # Copy generated files (mdi_name and shared libraries) to build_lib
         build_lib_mdi = os.path.join(self.build_lib, 'mdi')
