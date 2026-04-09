@@ -1,5 +1,7 @@
+import glob
 import os
 import re
+import shutil
 import sys
 import subprocess
 
@@ -81,6 +83,18 @@ class CMakeBuild(build_ext):
                                cwd=self.build_temp)
         subprocess.check_call( ['cmake', '--install', '.', '--prefix', source_dir],
                                cwd=self.build_temp)
+
+        # Copy generated files (mdi_name and shared libraries) to build_lib
+        build_lib_mdi = os.path.join(self.build_lib, 'mdi')
+        os.makedirs(build_lib_mdi, exist_ok=True)
+        for fname in ['mdi_name']:
+            src = os.path.join(source_dir, fname)
+            if os.path.exists(src):
+                shutil.copy2(src, build_lib_mdi)
+        for src in glob.glob(os.path.join(source_dir, 'libmdi*')):
+            shutil.copy2(src, build_lib_mdi)
+        for src in glob.glob(os.path.join(source_dir, 'mdi.dll')):
+            shutil.copy2(src, build_lib_mdi)
 
 
 setup(
