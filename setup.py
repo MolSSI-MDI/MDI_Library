@@ -86,6 +86,9 @@ class CMakeBuild(build_ext):
 setup(
     name='pymdi',
     version=mdi_version,
+    packages=['mdi'],
+    package_dir={'mdi': 'MDI_Library'},
+    package_data={'mdi': ['mdi_name', 'libmdi*', 'mdi.dll', '__init__.py', 'mdi.py']},
     ext_modules=[CMakeExtension('mdi')],
     cmdclass=dict(build_ext=CMakeBuild),
     )
