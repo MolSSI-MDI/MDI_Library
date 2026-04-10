@@ -28,9 +28,6 @@ classifiers = [
 build = "cp39-* cp310-* cp311-* cp312-* cp313-*"
 skip = "*-win32 *-musllinux*"
 
-[tool.cibuildwheel.macos]
-archs = ["x86_64", "arm64"]
-
 [tool.setuptools]
 packages = ["mdi"]
 package-dir = { "mdi" = "MDI_Library" }

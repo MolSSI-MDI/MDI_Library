@@ -73,16 +73,16 @@ class CMakeBuild(build_ext):
         cmake_args = ['-DCMAKE_INSTALL_PREFIX=' + install_dir,
                       '-DCMAKE_INSTALL_LIBDIR=.',
                       '-DCMAKE_INSTALL_BINDIR=.',
-                      '-DPYTHON_EXECUTABLE=' + sys.executable,
+                      '-DPython_EXECUTABLE=' + sys.executable,
                       '-Dlanguage=Python']
 
         # Do the CMake install
         os.makedirs(cmake_build_dir, exist_ok=True)
         subprocess.check_call(['cmake', ext.source_dir] + cmake_args,
                               cwd=cmake_build_dir)
-        subprocess.check_call(['cmake', '--build', '.'],
+        subprocess.check_call(['cmake', '--build', '.', '--config', 'Release'],
                               cwd=cmake_build_dir)
-        subprocess.check_call(['cmake', '--install', '.'],
+        subprocess.check_call(['cmake', '--install', '.', '--config', 'Release'],
                               cwd=cmake_build_dir)
 
         # Copy generated files (mdi_name and shared libraries) to build_lib
