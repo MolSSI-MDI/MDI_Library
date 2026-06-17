@@ -70,8 +70,8 @@ def test_unit_conversions_py():
 
     # Test all force conversions
     assert mdi.MDI_Conversion_Factor("atomic_unit_of_force", "atomic_unit_of_force") == pytest.approx(1.0)
-    assert mdi.MDI_Conversion_Factor("atomic_unit_of_force", "newton") == pytest.approx(3.753838631429819e-15)
-    assert mdi.MDI_Conversion_Factor("newton", "atomic_unit_of_force") == pytest.approx(1.0 / 3.753838631429819e-15)
+    assert mdi.MDI_Conversion_Factor("atomic_unit_of_force", "newton") == pytest.approx(8.23872336e-08)
+    assert mdi.MDI_Conversion_Factor("newton", "atomic_unit_of_force") == pytest.approx(1.0 / 8.23872336e-08)
     assert mdi.MDI_Conversion_Factor("newton", "newton") == pytest.approx(1.0)
 
     # Test some length conversions
