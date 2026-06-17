@@ -745,7 +745,7 @@ int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* con
   }
   else if ( strcmp( in_unit, "atomic_unit_of_force" ) == 0 ) {
     in_category = 4;
-    in_conv = inverse_meter_energy;
+    in_conv = atomic_unit_of_force;
   }
   else if ( strcmp( in_unit, "newton" ) == 0 ) {
     in_category = 4;
@@ -867,7 +867,7 @@ int MDI_Conversion_factor(const char* in_unit, const char* out_unit, double* con
   }
   else if ( strcmp( out_unit, "atomic_unit_of_force" ) == 0 ) {
     out_category = 4;
-    out_conv = inverse_meter_energy;
+    out_conv = atomic_unit_of_force;
   }
   else if ( strcmp( out_unit, "newton" ) == 0 ) {
     out_category = 4;
