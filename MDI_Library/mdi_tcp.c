@@ -7,6 +7,7 @@
   #include <windows.h>
 #else
   #include <netinet/in.h>
+  #include <netinet/tcp.h>
   #include <sys/socket.h>
   #include <netdb.h>
   #include <unistd.h>
@@ -36,6 +37,25 @@ void sigint_handler(int dummy) {
 #else
   close(sigint_sockfd);
 #endif
+}
+
+
+
+/*! \brief Disable Nagle's algorithm on a connected socket
+ *
+ * Each MDI message is sent as two writes, a small header and then the data, and
+ * the receiver answers only once it has both. With Nagle's algorithm the data
+ * waits until the header is acknowledged, while the receiver delays that
+ * acknowledgement (by up to 40 ms on Linux), so every message can stall. Setting
+ * TCP_NODELAY removes the stall. Failing to set it is not an error: the
+ * connection still works, only more slowly.
+ *
+ * \param [in]       sockfd
+ *                   The connected socket.
+ */
+static void tcp_set_nodelay(sock_t sockfd) {
+  int flag = 1;
+  setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (char*) &flag, sizeof(int));
 }
 
 
@@ -407,6 +427,7 @@ int tcp_request_connection(int port_in, char* hostname_ptr) {
       try_connect = 0;
     }
   }
+  tcp_set_nodelay(sockfd);
 
   MDI_Comm comm_id;
   ret = new_communicator(this_code->id, MDI_TCP, &comm_id);
@@ -517,6 +538,7 @@ int tcp_accept_connection() {
       mdi_error("Could not accept connection");
       return 1;
     }
+    tcp_set_nodelay(connection);
 
     MDI_Comm comm_id;
     ret = new_communicator(this_code->id, MDI_TCP, &comm_id);
